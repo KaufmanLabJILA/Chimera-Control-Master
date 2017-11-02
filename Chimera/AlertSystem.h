@@ -22,7 +22,6 @@ class AlertSystem
 		void alertMainThread( int level );
 		void soundAlert();
 		void rearrange( std::string cameraMode, std::string triggerMode, int width, int height, fontMap fonts );
-		void handleCheckBoxPress();
 		UINT getAlertThreshold();
 		UINT getAlertMessageID();
 		void setAlertThreshold();
@@ -30,13 +29,16 @@ class AlertSystem
 		bool soundIsToBePlayed();
 		void playSound();
 		void stopSound();
+		bool wantsAutoPause( );
 	private:
 		Control<CStatic> title;
 		Control<CButton> alertsActiveCheckBox;
 		Control<CStatic> alertThresholdText;
 		Control<CEdit> alertThresholdEdit;
-		Control<CButton> soundAtFinshCheckBox;
+		Control<CButton> soundAtFinshCheck;
+		Control<CButton> autoPauseAtAlert;
 		int alertThreshold;
 		bool useAlerts;
+		bool autoPause;
 		UINT alertMessageID = 0;
 };

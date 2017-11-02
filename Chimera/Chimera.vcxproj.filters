@@ -37,9 +37,6 @@
     <ClCompile Include="ScriptingWindow.cpp">
       <Filter>Scripting Window</Filter>
     </ClCompile>
-    <ClCompile Include="saveTextFileFromEdit.cpp">
-      <Filter>General Files</Filter>
-    </ClCompile>
     <ClCompile Include="RhodeSchwarz.cpp">
       <Filter>Auxiliary Window</Filter>
     </ClCompile>
@@ -88,9 +85,6 @@
     <ClCompile Include="MainOptionsControl.cpp">
       <Filter>Main Window</Filter>
     </ClCompile>
-    <ClCompile Include="KeyHandler.cpp">
-      <Filter>Main Window</Filter>
-    </ClCompile>
     <ClCompile Include="Gnuplotter.cpp">
       <Filter>Camera Window</Filter>
     </ClCompile>
@@ -102,9 +96,6 @@
     </ClCompile>
     <ClCompile Include="AuxiliaryWindow.cpp">
       <Filter>Auxiliary Window</Filter>
-    </ClCompile>
-    <ClCompile Include="DebuggingOptionsControl.cpp">
-      <Filter>Main Window</Filter>
     </ClCompile>
     <ClCompile Include="DataAnalysisHandler.cpp">
       <Filter>Camera Window</Filter>
@@ -190,14 +181,20 @@
     <ClCompile Include="openWithExplorer.cpp">
       <Filter>General Files</Filter>
     </ClCompile>
-    <ClCompile Include="RearrangeControl.cpp">
-      <Filter>Main Window</Filter>
-    </ClCompile>
     <ClCompile Include="GpibFlume.cpp">
       <Filter>Auxiliary Window</Filter>
     </ClCompile>
     <ClCompile Include="PlotDataSet.cpp">
       <Filter>Camera Window</Filter>
+    </ClCompile>
+    <ClCompile Include="saveWithExplorer.cpp">
+      <Filter>General Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugOptionsControl.cpp">
+      <Filter>Main Window</Filter>
+    </ClCompile>
+    <ClCompile Include="rerngControl.cpp">
+      <Filter>Main Window</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -270,9 +267,6 @@
     <ClInclude Include="ProfileIndicator.h">
       <Filter>General Files</Filter>
     </ClInclude>
-    <ClInclude Include="saveTextFileFromEdit.h">
-      <Filter>General Files</Filter>
-    </ClInclude>
     <ClInclude Include="ScriptStream.h">
       <Filter>General Files</Filter>
     </ClInclude>
@@ -303,9 +297,6 @@
     <ClInclude Include="MainOptionsControl.h">
       <Filter>Main Window</Filter>
     </ClInclude>
-    <ClInclude Include="KeyHandler.h">
-      <Filter>Main Window</Filter>
-    </ClInclude>
     <ClInclude Include="gnuplotter.h">
       <Filter>Camera Window</Filter>
     </ClInclude>
@@ -317,9 +308,6 @@
     </ClInclude>
     <ClInclude Include="EmbeddedPythonHandler.h">
       <Filter>General Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DebuggingOptionsControl.h">
-      <Filter>Main Window</Filter>
     </ClInclude>
     <ClInclude Include="Control.h">
       <Filter>General Files</Filter>
@@ -384,16 +372,9 @@
     <ClInclude Include="DataLogger.h">
       <Filter>Camera Window</Filter>
     </ClInclude>
-    <ClInclude Include="rearrangementStructures.h">
-      <Filter>Main Window\Structures</Filter>
-    </ClInclude>
-    <ClInclude Include="rearrangementThreadInput.h">
-      <Filter>Main Window\Structures</Filter>
-    </ClInclude>
     <ClInclude Include="Fgen.h">
       <Filter>Main Window</Filter>
     </ClInclude>
-    <ClInclude Include="resource2.h" />
     <ClInclude Include="VisaFlume.h">
       <Filter>Auxiliary Window</Filter>
     </ClInclude>
@@ -430,12 +411,6 @@
     <ClInclude Include="VariableStructures.h">
       <Filter>Main Window\Structures</Filter>
     </ClInclude>
-    <ClInclude Include="RearrangeControl.h">
-      <Filter>Main Window</Filter>
-    </ClInclude>
-    <ClInclude Include="rearrangeParams.h">
-      <Filter>Main Window\Structures</Filter>
-    </ClInclude>
     <ClInclude Include="GpibFlume.h">
       <Filter>Auxiliary Window</Filter>
     </ClInclude>
@@ -467,6 +442,39 @@
       <Filter>Main Window\Structures</Filter>
     </ClInclude>
     <ClInclude Include="profileSettings.h">
+      <Filter>Main Window\Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="multiDimensionalKey.h" />
+    <ClInclude Include="debugInfo.h">
+      <Filter>Main Window</Filter>
+    </ClInclude>
+    <ClInclude Include="segmentStructs.h">
+      <Filter>Camera Window\Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="saveWithExplorer.h">
+      <Filter>General Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugOptionsControl.h">
+      <Filter>Main Window</Filter>
+    </ClInclude>
+    <ClInclude Include="MasterThreadInput.h" />
+    <ClInclude Include="directions.h" />
+    <ClInclude Include="rerngContainer.h">
+      <Filter>Main Window</Filter>
+    </ClInclude>
+    <ClInclude Include="rerngControl.h">
+      <Filter>Main Window</Filter>
+    </ClInclude>
+    <ClInclude Include="rerngParams.h">
+      <Filter>Main Window\Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="rerngThreadInput.h">
+      <Filter>Main Window\Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="rerngStructures.h">
+      <Filter>Main Window\Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="rerngMove.h">
       <Filter>Main Window\Structures</Filter>
     </ClInclude>
   </ItemGroup>
@@ -532,16 +540,16 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
+    <Object Include="gpib-32.obj">
+      <Filter>Things I Don%27t Mess With %28Often%29</Filter>
+    </Object>
+  </ItemGroup>
+  <ItemGroup>
     <None Include="DioStructures.h">
       <Filter>Auxiliary Window</Filter>
     </None>
     <None Include="coordinate.h">
       <Filter>Camera Window\Structures</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Object Include="ni4882.obj">
-      <Filter>Things I Don%27t Mess With %28Often%29</Filter>
-    </Object>
   </ItemGroup>
 </Project>

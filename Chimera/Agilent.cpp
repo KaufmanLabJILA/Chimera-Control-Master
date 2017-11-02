@@ -10,12 +10,20 @@
 #include <algorithm>
 #include <numeric>
 #include <fstream>
+
 // NI's visa file. Also gets indirectly included via #include "nifgen.h".
 #include "visa.h"
 
+Agilent::Agilent( const agilentSettings& settings ) : visaFlume( settings.safemode, settings.address ),
+													  sampleRate( settings.sampleRate ),
+													  load( settings.outputImpedance ),
+													  filterState( settings.filterState ),
+													  initSettings( settings ),
+													  triggerRow(settings.triggerRow ), 
+													  triggerNumber( settings.triggerNumber ),
+													  memoryLocation(settings.memoryLocation )
 
-Agilent::Agilent(bool safemode, std::string address) : visaFlume(safemode, address)
-{ 
+{
 	visaFlume.open(); 
 }
 
@@ -28,7 +36,7 @@ Agilent::~Agilent()
 
 
 void Agilent::initialize( POINT& loc, cToolTips& toolTips, CWnd* parent, int& id, std::string headerText,
-						  UINT editHeight, std::array<UINT, 8> ids, COLORREF color )
+						  UINT editHeight, COLORREF color )
 {
 	name = headerText;
 	try
@@ -52,46 +60,49 @@ void Agilent::initialize( POINT& loc, cToolTips& toolTips, CWnd* parent, int& id
 							  parent, id++ );
 	deviceInfoDisplay.fontType = SmallFont;
 
-	channel1Button.sPos = { loc.x, loc.y, loc.x += 100, loc.y + 20 };
-	channel1Button.Create( "Channel 1", BS_AUTORADIOBUTTON | WS_GROUP | WS_VISIBLE | WS_CHILD, channel1Button.sPos,
-						   parent, ids[0] );
+	channel1Button.sPos = { loc.x, loc.y, loc.x += 240, loc.y + 20 };
+	channel1Button.Create( "Channel 1 - No Control", BS_AUTORADIOBUTTON | WS_GROUP | WS_VISIBLE | WS_CHILD, 
+						   channel1Button.sPos, parent, initSettings.chan1ButtonId );
 	channel1Button.SetCheck( true );
 
-	channel2Button.sPos = { loc.x, loc.y, loc.x += 100, loc.y + 20 };
-	channel2Button.Create( "Channel 2", BS_AUTORADIOBUTTON | WS_VISIBLE | WS_CHILD, channel2Button.sPos, parent, ids[1] );
+	channel2Button.sPos = { loc.x, loc.y, loc.x += 240, loc.y += 20 };
+	channel2Button.Create( "Channel 2 - No Control", BS_AUTORADIOBUTTON | WS_VISIBLE | WS_CHILD, channel2Button.sPos, 
+						   parent, initSettings.chan2ButtonId );
+	loc.x -= 480;
 
-	syncedButton.sPos = { loc.x, loc.y, loc.x += 80, loc.y + 20 };
-	syncedButton.Create( "Synced?", BS_AUTOCHECKBOX | WS_VISIBLE | WS_CHILD, syncedButton.sPos, parent, ids[2] );
-	// not supported (yet)
-	syncedButton.EnableWindow( 0 );
+	syncedButton.sPos = { loc.x, loc.y, loc.x += 160, loc.y + 20 };
+	syncedButton.Create( "Synced?", BS_AUTOCHECKBOX | WS_VISIBLE | WS_CHILD, syncedButton.sPos, parent,
+						 initSettings.syncButtonId );
 
-	calibratedButton.sPos = { loc.x, loc.y, loc.x += 100, loc.y + 20 };
+	calibratedButton.sPos = { loc.x, loc.y, loc.x += 160, loc.y + 20 };
 	calibratedButton.Create( "Use Cal?", BS_AUTOCHECKBOX | WS_VISIBLE | WS_CHILD, calibratedButton.sPos, 
-							 parent, ids[3] );
+							 parent, initSettings.calibrationButtonId );
 	calibratedButton.SetCheck( true );
 	
-	programNow.sPos = { loc.x, loc.y, loc.x += 100, loc.y += 20 };
-	programNow.Create( "Program", WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON, programNow.sPos, parent, ids[4] );
+	programNow.sPos = { loc.x, loc.y, loc.x += 160, loc.y += 20 };
+	programNow.Create( "Program", WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON, programNow.sPos, parent, 
+					   initSettings.programButtonId );
 
 	loc.x -= 480;
 
-	settingCombo.sPos = { loc.x, loc.y, loc.x += 240, loc.y + 200 };
+	settingCombo.sPos = { loc.x, loc.y, loc.x += 120, loc.y + 200 };
 	settingCombo.Create( CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE, settingCombo.sPos,
-						 parent, ids[5] );
+						 parent, initSettings.agilentComboId );
 	settingCombo.AddString( "No Control" );
 	settingCombo.AddString( "Output Off" );
-	settingCombo.AddString( "DC Output" );
-	settingCombo.AddString( "Single Frequency Output" );
-	settingCombo.AddString( "Square Output" );
-	settingCombo.AddString( "Preloaded Arbitrary Waveform" );
-	settingCombo.AddString( "Scripted Arbitrary Waveform" );
+	settingCombo.AddString( "DC" );
+	settingCombo.AddString( "Sine" );
+	settingCombo.AddString( "Square" );
+	settingCombo.AddString( "Preloaded" );
+	settingCombo.AddString( "Scripted" );
 	settingCombo.SetCurSel( 0 );
 
-	optionsFormat.sPos = { loc.x, loc.y, loc.x += 240, loc.y += 25 };
+	optionsFormat.sPos = { loc.x, loc.y, loc.x += 360, loc.y += 25 };
 	optionsFormat.Create( "---", WS_CHILD | WS_VISIBLE | SS_SUNKEN, optionsFormat.sPos, parent, id++ );
 	loc.x -= 480;
 
-	agilentScript.initialize( 480, editHeight, loc, toolTips, parent, id, "Agilent", "", { ids[6], ids[7] }, color );
+	agilentScript.initialize( 480, editHeight, loc, toolTips, parent, id, "Agilent", "",
+							  { initSettings.functionComboId, initSettings.editId }, color );
 
 	settings.channel[0].option = -2;
 	settings.channel[1].option = -2;
@@ -101,7 +112,7 @@ void Agilent::initialize( POINT& loc, cToolTips& toolTips, CWnd* parent, int& id
 
 void Agilent::checkSave( std::string categoryPath, RunInfo info )
 {
-	if ( settings.channel[currentChannel].option == 4 )
+	if ( settings.channel[currentChannel-1].option == 4 )
 	{
 		agilentScript.checkSave( categoryPath, info );
 	}
@@ -201,7 +212,7 @@ double Agilent::convertPowerToSetPoint(double powerInMilliWatts, bool conversion
 }
 
 
-void Agilent::analyzeAgilentScript( scriptedArbInfo& infoObj)
+void Agilent::analyzeAgilentScript( scriptedArbInfo& infoObj, std::vector<variableType>& variables)
 {
 	// open the file
 	std::ifstream scriptFile( infoObj.fileAddress );
@@ -213,14 +224,16 @@ void Agilent::analyzeAgilentScript( scriptedArbInfo& infoObj)
 	stream << scriptFile.rdbuf();
 	stream.seekg( 0 );
 	int currentSegmentNumber = 0;
+
+	infoObj.wave.resetNumberOfTriggers( );
 	while (!stream.eof())
 	{
 		// Procedurally read lines into segment informations.
-		int leaveTest = infoObj.wave.readIntoSegment( currentSegmentNumber, stream );
+		int leaveTest = infoObj.wave.analyzeAgilentScriptCommand( currentSegmentNumber, stream, variables );
 
 		if (leaveTest < 0)
 		{
-			thrower( "ERROR: IntensityWaveform.readIntoSegment threw an error! Error occurred in segment #"
+			thrower( "ERROR: IntensityWaveform.analyzeAgilentScriptCommand threw an error! Error occurred in segment #"
 					 + str( currentSegmentNumber ) + "." );
 		}
 		if (leaveTest == 1)
@@ -232,28 +245,10 @@ void Agilent::analyzeAgilentScript( scriptedArbInfo& infoObj)
 	}
 }
 
-/*
-	* This function tells the agilent to use sequence # (varNum) and sets settings correspondingly.
-	*/
-void Agilent::selectIntensityProfile(UINT channel, int variationNumber)
+
+std::pair<UINT, UINT> Agilent::getTriggerLine( )
 {
-	// channel can stay 1-indexed.
-	if (channel != 1 && channel != 2)
-	{
-		thrower( "ERROR: Bad channel value inside \"selectIntensityProfile\"" );
-	}
-	
-	if (varies || variationNumber == 0)
-	{
-		// Load sequence that was previously loaded.
-		prepAgilentSettings( channel );
-		visaFlume.write("MMEM:LOAD:DATA \"INT:\\seq" + str(variationNumber) + ".seq\"");
-		visaFlume.write( "SOURCE" + str(channel) + ":FUNC ARB");
-		visaFlume.write( "SOURCE" + str(channel) + ":FUNC:ARB \"INT:\\seq" + str(variationNumber) + ".seq\"");
-		visaFlume.write( "SOURCE" + str( channel ) + ":VOLT:LOW " + str(ranges[variationNumber].min) + " V");
-		visaFlume.write( "SOURCE" + str( channel ) + ":VOLT:HIGH " + str(ranges[variationNumber].max) + " V");
-		visaFlume.write( "OUTPUT" + str( channel ) + " ON" );
-	}
+	return { triggerRow, triggerNumber };
 }
 
 
@@ -301,7 +296,7 @@ void Agilent::handleInput(int chan, std::string categoryPath, RunInfo info)
 	}
 	// convert to zero-indexed
 	chan -= 1;
-
+	settings.synced = syncedButton.GetCheck( );
 	std::string textStr( agilentScript.getScriptText() );
 	ScriptStream stream;
 	stream << textStr;
@@ -362,11 +357,59 @@ void Agilent::updateSettingsDisplay( std::string currentCategoryPath, RunInfo cu
 }
 
 
+void Agilent::updateButtonDisplay( int chan )
+{
+	std::string channelText;
+	if ( chan == 1 )
+	{
+		channelText = "Channel 1 - ";
+	}
+	else
+	{
+		channelText = "Channel 2 - ";
+	}
+	switch ( settings.channel[chan-1].option )
+	{
+		case -2:
+			channelText += "No Control";
+			break;
+		case -1:
+			channelText += "Output Off";
+			break;
+		case 0:
+			channelText += "DC";
+			break;
+		case 1:
+			channelText += "Sine";
+			break;
+		case 2:
+			channelText += "Square";
+			break;
+		case 3:
+			channelText += "Pre-programmed";
+			break;
+		case 4:
+			channelText += "Scripted";
+			break;
+		default:
+			channelText += "Unrecognized Option???";
+	}
+	if ( chan == 1 )
+	{
+		channel1Button.SetWindowTextA( cstr(channelText) );
+	}
+	else
+	{
+		channel2Button.SetWindowTextA( cstr( channelText ) );
+	}
+}
+
+
 void Agilent::updateSettingsDisplay(int chan, std::string currentCategoryPath, RunInfo currentRunInfo)
 {
+	updateButtonDisplay( chan );
 	// convert to zero-indexed.
 	chan -= 1;
-	std::string tempStr;
 	switch ( settings.channel[chan].option )
 	{
 		case -2:
@@ -471,11 +514,11 @@ void Agilent::handleCombo()
 			settings.channel[selectedChannel].option = 1;
 			break;
 		case 4:
-			optionsFormat.SetWindowTextA( "[Frequency(Hz)] [Amplitude(Vpp)] [Offset(]" );
+			optionsFormat.SetWindowTextA( "[Frequency(Hz)] [Amplitude(Vpp)] [Offset(V)]" );
 			settings.channel[selectedChannel].option = 2;
 			break;
 		case 5:
-			optionsFormat.SetWindowTextA( "[Address]" );
+			optionsFormat.SetWindowTextA( "[File Address]" );
 			settings.channel[selectedChannel].option = 3;
 			break;
 		case 6:
@@ -492,7 +535,7 @@ deviceOutputInfo Agilent::getOutputInfo()
 }
 
 
-void Agilent::convertInputToFinalSettings( UINT chan, key variableKey, UINT variation, std::vector<variableType>& variables)
+void Agilent::convertInputToFinalSettings( UINT chan, UINT variation, std::vector<variableType>& variables)
 {
 	// iterate between 0 and 1...
 	channelInfo& channel( settings.channel[chan] );
@@ -508,29 +551,29 @@ void Agilent::convertInputToFinalSettings( UINT chan, key variableKey, UINT vari
 				break;
 			case 0:
 				// DC output
-				channel.dc.dcLevel = channel.dc.dcLevelInput.evaluate( variableKey, variation );
+				channel.dc.dcLevel = channel.dc.dcLevelInput.evaluate( variables, variation );
 				break;
 			case 1:
 				// single frequency output
 				// frequency
-				channel.sine.frequency = channel.sine.frequencyInput.evaluate( variableKey, variation );
+				channel.sine.frequency = channel.sine.frequencyInput.evaluate( variables, variation );
 				// amplitude
-				channel.sine.amplitude = channel.sine.amplitudeInput.evaluate( variableKey, variation );
+				channel.sine.amplitude = channel.sine.amplitudeInput.evaluate( variables, variation );
 				break;
 			case 2:
 				// Square Output
 				// frequency
-				channel.square.frequency = channel.square.frequencyInput.evaluate( variableKey, variation );
+				channel.square.frequency = channel.square.frequencyInput.evaluate( variables, variation );
 				// amplitude
-				channel.square.amplitude = channel.square.amplitudeInput.evaluate( variableKey, variation );
-				channel.square.offset = channel.square.offsetInput.evaluate( variableKey, variation );
+				channel.square.amplitude = channel.square.amplitudeInput.evaluate( variables, variation );
+				channel.square.offset = channel.square.offsetInput.evaluate( variables, variation );
 				break;
 			case 3:
 				// Preloaded Arb Output... no variations possible...
 				break;
 			case 4:
 				// Scripted Arb Output... 
-				handleScriptVariation( variableKey, variation, channel.scriptedArb, chan+1, variables );
+				handleScriptVariation( variation, channel.scriptedArb, chan+1, variables );
 				break;
 			default:
 				thrower( "Unrecognized Agilent Setting: " + str( channel.option ) );
@@ -679,7 +722,7 @@ void Agilent::handleSavingConfig(std::ofstream& saveFile, std::string categoryPa
 }
 
 
-void Agilent::readConfigurationFile( std::ifstream& file, double version )
+void Agilent::readConfigurationFile( std::ifstream& file, int versionMajor, int versionMinor )
 {
 	ProfileSystem::checkDelimiterLine(file, "AGILENT");
 	file >> settings.synced;
@@ -698,7 +741,7 @@ void Agilent::readConfigurationFile( std::ifstream& file, double version )
 	}
 	std::string calibratedOption;
 	std::getline( file, settings.channel[0].dc.dcLevelInput.expressionStr );
-	if ( version > 2.3 )
+	if ( (versionMajor == 2 && versionMinor > 3) || versionMajor > 2 )
 	{
 		std::getline( file, calibratedOption );
 		bool calOption;
@@ -714,7 +757,7 @@ void Agilent::readConfigurationFile( std::ifstream& file, double version )
 	}
 	std::getline( file, settings.channel[0].sine.amplitudeInput.expressionStr );
 	std::getline( file, settings.channel[0].sine.frequencyInput.expressionStr );
-	if ( version > 2.3 )
+	if ( (versionMajor == 2 && versionMinor > 3) || versionMajor > 2 )
 	{
 		std::getline( file, calibratedOption );
 		bool calOption;
@@ -731,7 +774,7 @@ void Agilent::readConfigurationFile( std::ifstream& file, double version )
 	std::getline( file, settings.channel[0].square.amplitudeInput.expressionStr );
 	std::getline( file, settings.channel[0].square.frequencyInput.expressionStr );
 	std::getline( file, settings.channel[0].square.offsetInput.expressionStr );
-	if ( version > 2.3 )
+	if ( (versionMajor == 2 && versionMinor > 3) || versionMajor > 2 )
 	{
 		std::getline( file, calibratedOption );
 		bool calOption;
@@ -746,7 +789,7 @@ void Agilent::readConfigurationFile( std::ifstream& file, double version )
 		settings.channel[0].square.useCalibration = calOption;
 	}
 	std::getline( file, settings.channel[0].preloadedArb.address);
-	if ( version > 2.3 )
+	if ( (versionMajor == 2 && versionMinor > 3) || versionMajor > 2 )
 	{
 		std::getline( file, calibratedOption );
 		bool calOption;
@@ -761,7 +804,7 @@ void Agilent::readConfigurationFile( std::ifstream& file, double version )
 		settings.channel[0].preloadedArb.useCalibration = calOption;
 	}
 	std::getline( file, settings.channel[0].scriptedArb.fileAddress );
-	if ( version > 2.3 )
+	if ( (versionMajor == 2 && versionMinor > 3) || versionMajor > 2 )
 	{
 		std::getline( file, calibratedOption );
 		bool calOption;
@@ -787,7 +830,7 @@ void Agilent::readConfigurationFile( std::ifstream& file, double version )
 		thrower("ERROR: Bad channel 1 option!");
 	}
 	std::getline( file, settings.channel[1].dc.dcLevelInput.expressionStr );
-	if ( version > 2.3 )
+	if ( (versionMajor == 2 && versionMinor > 3) || versionMajor > 2 )
 	{
 		std::getline( file, calibratedOption );
 		bool calOption;
@@ -803,7 +846,7 @@ void Agilent::readConfigurationFile( std::ifstream& file, double version )
 	}
 	std::getline( file, settings.channel[1].sine.amplitudeInput.expressionStr );
 	std::getline( file, settings.channel[1].sine.frequencyInput.expressionStr );
-	if ( version > 2.3 )
+	if ( (versionMajor == 2 && versionMinor > 3) || versionMajor > 2 )
 	{
 		std::getline( file, calibratedOption );
 		bool calOption;
@@ -820,7 +863,7 @@ void Agilent::readConfigurationFile( std::ifstream& file, double version )
 	std::getline( file, settings.channel[1].square.amplitudeInput.expressionStr );
 	std::getline( file, settings.channel[1].square.frequencyInput.expressionStr );
 	std::getline( file, settings.channel[1].square.offsetInput.expressionStr );
-	if ( version > 2.3 )
+	if ( (versionMajor == 2 && versionMinor > 3) || versionMajor > 2 )
 	{
 		std::getline( file, calibratedOption );
 		bool calOption;
@@ -835,7 +878,7 @@ void Agilent::readConfigurationFile( std::ifstream& file, double version )
 		settings.channel[1].square.useCalibration = calOption;
 	}
 	std::getline( file, settings.channel[1].preloadedArb.address);
-	if ( version > 2.3 )
+	if ( (versionMajor == 2 && versionMinor > 3) || versionMajor > 2 )
 	{
 		std::getline( file, calibratedOption );
 		bool calOption;
@@ -850,7 +893,7 @@ void Agilent::readConfigurationFile( std::ifstream& file, double version )
 		settings.channel[1].preloadedArb.useCalibration = calOption;
 	}
 	std::getline( file, settings.channel[1].scriptedArb.fileAddress );
-	if ( version > 2.3 )
+	if ( (versionMajor == 2 && versionMinor > 3) || versionMajor > 2 )
 	{
 		std::getline( file, calibratedOption );
 		bool calOption;
@@ -865,6 +908,9 @@ void Agilent::readConfigurationFile( std::ifstream& file, double version )
 		settings.channel[1].scriptedArb.useCalibration = calOption;
 	}
 	ProfileSystem::checkDelimiterLine(file, "END_AGILENT");
+
+	updateButtonDisplay( 1 );
+	updateButtonDisplay( 2 );
 }
 
 
@@ -907,9 +953,9 @@ void Agilent::setExistingWaveform( int channel, preloadedArbInfo info )
 	// tell it that it's outputting something arbitrary (not sure if necessary)
 	visaFlume.write( "SOURCE" + str( channel ) + ":FUNC ARB" );
 	// tell it what arb it's outputting.
-	visaFlume.write( "SOURCE" + str( channel ) + ":FUNC:ARB \"INT:\\" + info.address + "\"" );
+	visaFlume.write( "SOURCE" + str( channel ) + ":FUNC:ARB \"" + memoryLocation + ":\\" + info.address + "\"" );
 	// Set output impedance...
-	visaFlume.write( str( "OUTPUT" + str( channel ) + ":LOAD " ) + AGILENT_LOAD );
+	visaFlume.write( str( "OUTPUT" + str( channel ) + ":LOAD " ) + load );
 	// not really bursting... but this allows us to reapeat on triggers. Might be another way to do this.
 	visaFlume.write( "SOURCE" + str( channel ) + ":BURST::MODE TRIGGERED" );
 	visaFlume.write( "SOURCE" + str( channel ) + ":BURST::NCYCLES 1" );
@@ -951,15 +997,15 @@ void Agilent::prepAgilentSettings(UINT channel)
 	}
 	// Set timout, sample rate, filter parameters, trigger settings.
 	visaFlume.setAttribute( VI_ATTR_TMO_VALUE, 40000 );	
-	visaFlume.write( "SOURCE" + str(channel) + ":FUNC:ARB:SRATE " + str( AGILENT_SAMPLE_RATE ) );
-	visaFlume.write( "SOURCE" + str(channel) + ":FUNC:ARB:FILTER " + AGILENT_FILTER_STATE );
+	visaFlume.write( "SOURCE" + str( channel ) + ":FUNC:ARB:FILTER " + filterState );
+	visaFlume.write( "SOURCE" + str(channel) + ":FUNC:ARB:SRATE " + str( sampleRate ) );
 	visaFlume.write( "TRIGGER" + str( channel ) + ":SOURCE EXTERNAL" );
 	visaFlume.write( "TRIGGER" + str( channel ) + ":SLOPE POSITIVE" );
-	visaFlume.write( "OUTPUT" + str( channel ) + ":LOAD " + AGILENT_LOAD );
+	visaFlume.write( "OUTPUT" + str( channel ) + ":LOAD " + load );
 }
 
 
-void Agilent::handleScriptVariation( key variationKey, UINT variation, scriptedArbInfo& scriptInfo, UINT channel, 
+void Agilent::handleScriptVariation( UINT variation, scriptedArbInfo& scriptInfo, UINT channel,  
 									 std::vector<variableType>& variables)
 {
 	// Initialize stuff
@@ -969,14 +1015,14 @@ void Agilent::handleScriptVariation( key variationKey, UINT variation, scriptedA
 	{
 		UINT totalSegmentNumber = scriptInfo.wave.getSegmentNumber( );
 		// replace variable values where found
-		scriptInfo.wave.replaceVarValues( variationKey, variation, variables );
+		scriptInfo.wave.replaceVarValues( variation, variables );
 		// Loop through all segments
 		for ( UINT segNumInc = 0; segNumInc < totalSegmentNumber; segNumInc++ )
 		{
 			// Use that information to write the data.
 			try
 			{
-				scriptInfo.wave.writeData( segNumInc );
+				scriptInfo.wave.writeData( segNumInc, sampleRate );
 			}
 			catch ( Error& err )
 			{
@@ -985,31 +1031,36 @@ void Agilent::handleScriptVariation( key variationKey, UINT variation, scriptedA
 			}
 		}
 		// loop through again and calc/normalize/write values.
-		scriptInfo.wave.convertPowersToVoltages( );
+		scriptInfo.wave.convertPowersToVoltages( scriptInfo.useCalibration );
 		scriptInfo.wave.calcMinMax( );
 		scriptInfo.wave.minsAndMaxes.resize( variation + 1 );
 		scriptInfo.wave.minsAndMaxes[variation].second = scriptInfo.wave.getMaxVolt( );
 		scriptInfo.wave.minsAndMaxes[variation].first = scriptInfo.wave.getMinVolt( );
 		scriptInfo.wave.normalizeVoltages( );
 		visaFlume.write( "SOURCE" + str( channel ) + ":DATA:VOL:CLEAR" );
-		for ( UINT segNumInc = 0; segNumInc < totalSegmentNumber; segNumInc++ )
+		/// new line here:
+		prepAgilentSettings( channel );
+		for ( UINT segNumInc : range( totalSegmentNumber ) )
 		{
 			visaFlume.write( scriptInfo.wave.compileAndReturnDataSendString( segNumInc, variation, 
-																			 totalSegmentNumber ) );
+																			 totalSegmentNumber, channel ) );
 			// Save the segment
-			visaFlume.write( "MMEM:STORE:DATA \"INT:\\segment" 
-							 + str( segNumInc + totalSegmentNumber * variation ) + ".arb\"" );
+			visaFlume.write( "MMEM:STORE:DATA" + str( channel ) + " \"" + memoryLocation + ":\\segment"
+								+ str( segNumInc + totalSegmentNumber * variation ) + ".arb\"" );
+			//visaFlume.write( "MMEM:STORE:DATA" + str( channel ) + " \"" + memoryLocation + ":\\segment"
+			//				 + str( segNumInc ) + ".arb\"" );
 		}
 		// Now handle seqeunce creation / writing.
-		scriptInfo.wave.compileSequenceString( totalSegmentNumber, variation );
+		scriptInfo.wave.compileSequenceString( totalSegmentNumber, variation, channel );
 		// submit the sequence
 		visaFlume.write( scriptInfo.wave.returnSequenceString( ) );
 		// Save the sequence
-		visaFlume.write( "SOURCE" + str( channel ) + ":FUNC:ARB seq" + str( variation ) );
-		visaFlume.write( "MMEM:STORE:DATA \"INT:\\seq" + str( variation ) + ".seq\"" );
+		visaFlume.write( "SOURCE" + str( channel ) + ":FUNC:ARB sequence" + str( variation ) );
+		visaFlume.write( "MMEM:STORE:DATA" + str( channel ) + " \"" + memoryLocation + ":\\sequence" 
+						 + str( variation ) + ".seq\"" );
 		// clear temporary memory.
 		visaFlume.write( "SOURCE" + str( channel ) + ":DATA:VOL:CLEAR" );
-	}
+	}	
 }
 
 
@@ -1026,7 +1077,7 @@ void Agilent::handleNoVariations(scriptedArbInfo& scriptInfo, UINT channel)
 		// Use that information to write the data.
 		try
 		{
-			scriptInfo.wave.writeData( segNumInc );
+			scriptInfo.wave.writeData( segNumInc, sampleRate );
 		}
 		catch (Error& err)
 		{
@@ -1035,28 +1086,27 @@ void Agilent::handleNoVariations(scriptedArbInfo& scriptInfo, UINT channel)
 		}
 	}
 	// no reassignment nessesary, no variables
-	scriptInfo.wave.convertPowersToVoltages();
+	scriptInfo.wave.convertPowersToVoltages( scriptInfo.useCalibration );
 	scriptInfo.wave.calcMinMax();
 	scriptInfo.wave.minsAndMaxes.resize( 1 );
 	scriptInfo.wave.minsAndMaxes[0].second = scriptInfo.wave.getMaxVolt();
 	scriptInfo.wave.minsAndMaxes[0].first = scriptInfo.wave.getMinVolt();
 	scriptInfo.wave.normalizeVoltages();
 	visaFlume.write( "SOURCE" + str( channel ) + ":DATA:VOL:CLEAR" );
+	/// new line here
+	prepAgilentSettings( channel );
 	for (UINT segNumInc = 0; segNumInc < totalSegmentNumber; segNumInc++)
 	{
-		//visaFlume.write( str( "OUTPUT" + str( channel ) + ":LOAD " ) + AGILENT_LOAD );
-		//visaFlume.write( str( "SOURCE" + str( channel ) + ":VOLT:LOW " ) + str( scriptInfo.wave.minsAndMaxes[0].first ) + " V" );
-		//visaFlume.write( str( "SOURCE" + str( channel ) + ":VOLT:HIGH " ) + str( scriptInfo.wave.minsAndMaxes[0].second ) + " V" );
-		visaFlume.write( scriptInfo.wave.compileAndReturnDataSendString( segNumInc, 0, totalSegmentNumber ) );
-		visaFlume.write( "MMEM:STORE:DATA \"INT:\\segment" + str( segNumInc ) + ".arb\"" );
+		visaFlume.write( scriptInfo.wave.compileAndReturnDataSendString( segNumInc, 0, totalSegmentNumber, channel ) );
+		visaFlume.write( "MMEM:STORE:DATA" + str( channel ) + " \"" + memoryLocation + ":\\chan" + str(channel) + "arb" + str( segNumInc ) + ".arb\"" );
 	}
 	// Now handle seqeunce creation / writing.
-	scriptInfo.wave.compileSequenceString( totalSegmentNumber, 0 );
+	scriptInfo.wave.compileSequenceString( totalSegmentNumber, 0, channel );
 	// submit the sequence
 	visaFlume.write( scriptInfo.wave.returnSequenceString() );
 	// Save the sequence
-	visaFlume.write( "SOURCE" + str( channel ) + ":FUNC:ARB seq" + str( 0 ) );
-	visaFlume.write( "MMEM:STORE:DATA \"INT:\\seq" + str( 0 ) + ".seq\"" );
+	visaFlume.write( "SOURCE" + str( channel ) + ":FUNC:ARB sequence0");
+	visaFlume.write( "MMEM:STORE:DATA" + str(channel) + " \"" + memoryLocation + ":\\sequence0.seq\"" );
 	// clear temporary memory.
 	visaFlume.write( "SOURCE" + str( channel ) + ":DATA:VOL:CLEAR" );
 }
@@ -1070,61 +1120,90 @@ void Agilent::setScriptOutput( UINT varNum, scriptedArbInfo scriptInfo, UINT cha
 	if (scriptInfo.wave.isVaried() || varNum == 0)
 	{
 		prepAgilentSettings( channel );
-		// Load sequence that was previously loaded.
-		visaFlume.write( "MMEM:LOAD:DATA \"INT:\\seq" + str( varNum ) + ".seq\"" );
-		visaFlume.write( "SOURCE" + str(channel) + ":FUNC ARB" );
-		visaFlume.write( "SOURCE" + str( channel ) + ":FUNC:ARB \"INT:\\seq" + str( varNum ) + ".seq\"" );
-		// set the offset and then the low & high. this prevents accidentally setting low higher than high or high 
-		// higher than low, which causes agilent to throw annoying errors.
-		visaFlume.write( "SOURCE" + str( channel ) + ":VOLT:OFFSET " 
-						 + str( (scriptInfo.wave.minsAndMaxes[varNum].first 
-								  + scriptInfo.wave.minsAndMaxes[varNum].second) / 2 ) + " V" );
-		visaFlume.write( "SOURCE" + str( channel ) + ":VOLT:LOW " + str( scriptInfo.wave.minsAndMaxes[varNum].first ) + " V" );
-		visaFlume.write( "SOURCE" + str( channel ) + ":VOLT:HIGH " + str( scriptInfo.wave.minsAndMaxes[varNum].second ) + " V" );
-		visaFlume.write( "OUTPUT" + str( channel ) + " ON" );
+		// check if effectively dc
+		if ( fabs( scriptInfo.wave.minsAndMaxes[varNum].first - scriptInfo.wave.minsAndMaxes[varNum].second ) < 1e-6 )
+		{
+			dcInfo tempDc;
+			tempDc.dcLevel = scriptInfo.wave.minsAndMaxes[varNum].first;
+			tempDc.useCalibration = scriptInfo.useCalibration;
+			setDC( channel, tempDc );
+		}
+		else
+		{
+			// Load sequence that was previously loaded.
+			visaFlume.write( "MMEM:LOAD:DATA" + str( channel ) + " \"" + memoryLocation + ":\\sequence" 
+							 + str( varNum ) + ".seq\"" );
+			visaFlume.write( "SOURCE" + str( channel ) + ":FUNC ARB" );
+			visaFlume.write( "SOURCE" + str( channel ) + ":FUNC:ARB \"" + memoryLocation + ":\\sequence" 
+							 + str( varNum ) + ".seq\"" );
+			// set the offset and then the low & high. this prevents accidentally setting low higher than high or high 
+			// higher than low, which causes agilent to throw annoying errors.
+			visaFlume.write( "SOURCE" + str( channel ) + ":VOLT:OFFSET "
+							 + str( (scriptInfo.wave.minsAndMaxes[varNum].first
+									  + scriptInfo.wave.minsAndMaxes[varNum].second) / 2 ) + " V" );
+			visaFlume.write( "SOURCE" + str( channel ) + ":VOLT:LOW " + str( scriptInfo.wave.minsAndMaxes[varNum].first ) + " V" );
+			visaFlume.write( "SOURCE" + str( channel ) + ":VOLT:HIGH " + str( scriptInfo.wave.minsAndMaxes[varNum].second ) + " V" );
+			visaFlume.write( "OUTPUT" + str( channel ) + " ON" );
+		}
 	}
 }
 
 
-void Agilent::setAgilent( key varKey, UINT variation, std::vector<variableType>& variables)
+void Agilent::setAgilent( UINT variation, std::vector<variableType>& variables)
 {
-	if (!connected())
+	if ( !connected( ) )
 	{
 		return;
 	}
+	try
+	{
+		visaFlume.write( "OUTPut:SYNC " + str( settings.synced ) );
+	}
+	catch ( Error& )
+	{
+		visaFlume.write( "OUTPut:SYNC " + str( settings.synced ) );
+	}
 	for (auto chan : range( 2 ))
 	{
-		if (settings.channel[chan].option == 4)
+		try
 		{
-			// need to do this before converting to final settings
-			analyzeAgilentScript(settings.channel[chan].scriptedArb);
+			if ( settings.channel[chan].option == 4 )
+			{
+				// need to do this before converting to final settings
+				analyzeAgilentScript( settings.channel[chan].scriptedArb, variables );
+			}
+			convertInputToFinalSettings( chan, variation, variables );
+			switch ( settings.channel[chan].option )
+				{
+				case -2:
+					// don't do anything.
+					break;
+				case -1:
+					outputOff( chan + 1 );
+					break;
+				case 0:
+					setDC( chan + 1, settings.channel[chan].dc );
+					break;
+				case 1:
+					setSine( chan + 1, settings.channel[chan].sine );
+					break;
+				case 2:
+					setSquare( chan + 1, settings.channel[chan].square );
+					break;
+				case 3:
+					setExistingWaveform( chan + 1, settings.channel[chan].preloadedArb );
+					break;
+				case 4:
+					setScriptOutput( variation, settings.channel[chan].scriptedArb, chan + 1 );
+					break;
+				default:
+					thrower( "ERROR: unrecognized channel 1 setting: " + str( settings.channel[chan].option ) );
+			}
 		}
-		convertInputToFinalSettings(chan, varKey, variation, variables);
-		switch (settings.channel[chan].option)
+		catch ( Error& err )
 		{
-			case -2:
-				// don't do anything.
-				break;
-			case -1:
-				outputOff( chan+1 );
-				break;
-			case 0:
-				setDC( chan+1, settings.channel[chan].dc );
-				break;
-			case 1:
-				setSine( chan+1, settings.channel[chan].sine );
-				break;
-			case 2:
-				setSquare( chan+1, settings.channel[chan].square );
-				break;
-			case 3:
-				setExistingWaveform( chan+1, settings.channel[chan].preloadedArb );
-				break;
-			case 4:
-				setScriptOutput( variation, settings.channel[chan].scriptedArb, chan+1 );
-				break;
-			default:
-				thrower( "ERROR: unrecognized channel 1 setting: " + str(settings.channel[chan].option ) );
+			thrower( "Error seen while programming agilent output for " + name + " agilent channel " 
+					 + str( chan+1) + ": " + err.whatBare( ) );
 		}
 	}
 }
@@ -1136,11 +1215,12 @@ void Agilent::setAgilent()
 	{
 		return;
 	}
+	visaFlume.write( "OUTPut:SYNC " + str( settings.synced ) );
 	for (auto chan : range( 2 ))
 	{
 		if (settings.channel[chan].option == 4)
 		{
-			analyzeAgilentScript(settings.channel[chan].scriptedArb);
+			analyzeAgilentScript(settings.channel[chan].scriptedArb, std::vector<variableType>());
 		}
 		convertInputToFinalSettings(chan);
 		switch (settings.channel[chan].option)

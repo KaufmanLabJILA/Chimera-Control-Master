@@ -5,6 +5,7 @@
 #include "EmbeddedPythonHandler.h"
 #include "commonTypes.h"
 
+
 struct personInfo
 {
 	std::string name;
@@ -14,11 +15,12 @@ struct personInfo
 	bool textIfLoadingStops;
 };
 
+
 class SmsTextingControl
 {
 	public:
-		void promptForEmailAddressAndPassword();
-		void initialize( POINT& pos, CWnd* parent, bool isTriggerModeSensitive, int& id, cToolTips& tooltips, 
+		// void promptForEmailAddressAndPassword();
+		void initialize( POINT& pos, CWnd* parent, int& id, cToolTips& tooltips, 
 						 rgbMap rgbs );
 		void sendMessage( std::string message, EmbeddedPythonHandler* pyHandler, std::string msgType );
 		void addPerson( personInfo person );
@@ -26,8 +28,8 @@ class SmsTextingControl
 		void deletePersonInfo();
 		void rearrange( int width, int height, fontMap fonts );
 	private:
-		std::string emailAddress;
-		std::string password;
+		const std::string emailAddress = "quantumGasAssemblyControl@gmail.com";
+		const std::string password = "theLaughingGoatHasBetterCoffee";
 		Control<CListCtrl> peopleListView;
 		Control<CButton> enterEmailInfoButton;
 		Control<CStatic> title;

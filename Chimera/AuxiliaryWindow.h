@@ -15,11 +15,19 @@
 #include "RhodeSchwarz.h"
 #include "GpibFlume.h"
 #include "MasterConfiguration.h"
-#include "KeyHandler.h"
 #include "Agilent.h"
 #include "commonTypes.h"
 #include "StatusControl.h"
 #include "TektronicsControl.h"
+
+enum agilentNames
+{
+	TopBottom,
+	Axial,
+	Flashing,
+	Microwave
+};
+
 
 // The Device window houses most of the controls for seeting individual devices, other than the camera which gets its 
 // own control. It also houses a couple auxiliary things like variables and the SMS texting control.
@@ -30,7 +38,7 @@ class AuxiliaryWindow : public CDialog
 	public:
 		AuxiliaryWindow();
 		BOOL OnInitDialog();
-		void handleOpeningConfig(std::ifstream& configFile, double version);
+		void handleOpeningConfig(std::ifstream& configFile, int versionMajor, int versionMinor );
 		HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 		void OnCancel();
 		void OnSize(UINT nType, int cx, int cy);
@@ -41,9 +49,6 @@ class AuxiliaryWindow : public CDialog
 		cToolTips toolTips;
 		BOOL PreTranslateMessage(MSG* pMsg);
 		/// Message Map Functions
-		void handleTopBottomEditChange();
-		void handleAxialUwaveEditChange();
-		void handleFlashingEditChange();
 		void OnTimer( UINT_PTR eventID );
 		void handleTtlPush(UINT id);
 		void handlTtlHoldPush();
@@ -56,20 +61,12 @@ class AuxiliaryWindow : public CDialog
 		std::array<std::array<std::string, 16>, 4> getTtlNames();
 		std::array<std::string, 24> getDacNames();
 
-		void newTopBottomAgilentScript();
-		void openTopBottomAgilentScript( CWnd* parent );
-		void saveTopBottomAgilentScript();
-		void saveTopBottomAgilentScriptAs( CWnd* parent );
-
-		void newAxialUwaveAgilentScript();
-		void openAxialUwaveAgilentScript( CWnd* parent );
-		void saveAxialUwaveAgilentScript();
-		void saveAxialUwaveAgilentScriptAs( CWnd* parent );
-
-		void newFlashingAgilentScript();
-		void openFlashingAgilentScript( CWnd* parent );
-		void saveFlashingAgilentScript();
-		void saveFlashingAgilentScriptAs( CWnd* parent );
+		void updateAgilent( agilentNames name );
+		void newAgilentScript( agilentNames name );
+		void openAgilentScript( agilentNames name, CWnd* parent );
+		void saveAgilentScript( agilentNames name );
+		void saveAgilentScriptAs( agilentNames name, CWnd* parent );
+		void handleAgilentEditChange( UINT id );
 
 		void drawVariables(UINT id, NMHDR* pNMHDR, LRESULT* pResultf);
 		void handleEnter();
@@ -85,15 +82,12 @@ class AuxiliaryWindow : public CDialog
 		void zeroDacs();
 
 		void handleAgilentOptions( UINT id );
-		void handleTopBottomAgilentCombo();
-		void handleAxialUWaveAgilentCombo();
-		void handleFlashingAgilentCombo();
 
 		void loadMotSettings(MasterThreadInput* input);
 		void handleTektronicsButtons(UINT id);
 
 		void sendErr(std::string msg);
-		void sendStat(std::string msg);
+		void sendStatus(std::string msg);
 
 		std::vector<variableType> getAllVariables();
 
@@ -110,9 +104,11 @@ class AuxiliaryWindow : public CDialog
 		void handleSaveConfig(std::ofstream& saveFile);
 		std::pair<UINT, UINT> getTtlBoardSize();
 		UINT getNumberOfDacs();
-		void setConfigActive(bool active);
+		void setVariablesActiveState(bool active);
 		void passTopBottomTekProgram();
 		void passEoAxialTekProgram();
+		Agilent& whichAgilent( UINT id );
+		void handleAgilentCombo( UINT id );
 
 	private:
 		DECLARE_MESSAGE_MAP();		
@@ -128,8 +124,9 @@ class AuxiliaryWindow : public CDialog
 
 		/// control system classes
 		RhodeSchwarz RhodeSchwarzGenerator;
-		//
-		Agilent topBottomAgilent, uWaveAxialAgilent, flashingAgilent;
+		// 
+		std::array<Agilent, 4> agilents;
+		
  		DioSystem ttlBoard;
  		DacSystem dacBoards;
  		MasterConfiguration masterConfig{ MASTER_CONFIGURATION_FILE_ADDRESS };

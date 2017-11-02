@@ -13,7 +13,7 @@ sidemotrf
 0
 tweezerrf
 0
-a7
+repumpflash
 0
 eoramanrf
 0
@@ -49,7 +49,7 @@ b7
 0
 b8
 0
-depumptrig
+ropshutter
 0
 795shutter
 0
@@ -199,31 +199,36 @@ sidemotpower
 piezomirror
 -10 - 10
 0
-26
-loadmotrightfield 1.2
+31
+loadmotrightfield 0.8
 loadmotleftfield -0.755
-loadmottopfield -0.2
+loadmottopfield 0.25
 loadmotbottomfield -0.15
-loadmotfrontfield -1
+loadmotfrontfield -0.6
 loadmotbackfield 1.47507
-loadmottime 150
-pgctime 18
-pgcdetuning -1
-pgcleftfield -0.4856
+loadmottime 200
+pgctime 15
+pgcdetuning -1.25
+pgcleftfield -0.65
 pgcrightfield 0.4856
 pgctopfield 1.994
 pgcbottomfield -1.994
 pgcfrontfield -0.551
 pgcbackfield 0.551
 andorimagetime 25
-imagingpower 0.14
+imagingpower 0.225
 imagingdetuning 0.35
 pushoutdepth 0.15
 pushoutfreq 0.6
-fieldtheta 1.5708
-fieldphi 1.5708
+fieldtheta 1.57
+fieldphi 0.5
 rotatefieldtime 3
-imagingflashingdetuning -0.8
+imagingflashingdetuning -1.5
 intrappgcdetuning -4.5
 intrappgcpower 0.225
-256 288 3 238 270 3
+loadmotsidepower 0.25
+loadmotdiagpower 0.3
+imagingrepumppower 0.2
+pushouttime 0.015
+intrappgccoolingtime 0.5
+1 5 1 1 5 1

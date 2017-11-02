@@ -5,9 +5,17 @@
 #include "atomGrid.h"
 #include "tinyPlotInfo.h"
 #include "Expression.h"
+#include <deque>
+#include <map>
 
 struct realTimePlotterInput;
 struct cameraPositions;
+
+// variation data is to be organized
+// variationData[datasetNumber][groupNumber][variationNumber];
+typedef std::vector<std::vector<std::vector<double>>> variationData;
+
+typedef std::vector<std::vector<double>> avgData;
 
 class DataAnalysisControl
 {
@@ -15,7 +23,7 @@ class DataAnalysisControl
 		void initialize( cameraPositions& pos, int& id, CWnd* parent, cToolTips& tooltips,
 						 int isTriggerModeSensitive, rgbMap rgbs );
 		ULONG getPlotFreq( );
-		void handleOpenConfig( std::ifstream& file, double version );
+		void handleOpenConfig( std::ifstream& file, int versionMajor, int versionMinor );
 		void handleNewConfig( std::ofstream& file );
 		void handleSaveConfig(std::ofstream& file );
 		void handleDoubleClick( fontMap* fonts, UINT currentPicsPerRepetition );
@@ -38,25 +46,33 @@ class DataAnalysisControl
 
 		void fillPlotThreadInput( realTimePlotterInput* input );
 		static unsigned __stdcall plotterProcedure( void* voidInput );
+		
+		// an "alias template". effectively a local using std::vector; declaration. makes these declarations much more
+		// readable. I very rarely use things like this.
+		template<class T> using vector = std::vector<T>;
 		// subroutine for handling atom & count plots
-		static void handlePlotAtomsOrCounts( realTimePlotterInput* input, PlottingInfo plotInfo, UINT repNum,
-											 std::vector<std::vector<std::vector<long> > >& finData,
-											 std::vector<std::vector<std::vector<double> > >& finAvgs,
-											 std::vector<std::vector<std::vector<double> > >& finErrs,
-											 std::vector<std::vector<std::vector<double> > >& finX,
-											 std::vector<std::vector<double> > & avgAvgs,
-											 std::vector<std::vector<double> >& avgErrs,
-											 std::vector<std::vector<double> >& avgX,
-											 std::vector<std::vector<bool> >& needNewData,
-											 std::vector<std::vector<bool>>& pscSatisfied, int plotNumber,
-											 std::vector<std::vector<long>>& countData, int plotNumberCount,
-											 std::vector<std::vector<int> > atomPresent );
+		static void handlePlotAtoms( realTimePlotterInput* input, PlottingInfo plotInfo, UINT repNum,
+									 vector<vector<std::pair<double, ULONG>> >& finData, variationData& finAvgs, 
+									 variationData& finErrs, variationData& finX, avgData& avgAvgs, avgData& avgErrs, 
+									 avgData& avgX, vector<vector<bool> >& needNewData, 
+									 vector<vector<bool>>& pscSatisfied, int plotNumber, 
+									 vector<vector<long>>& countData, int plotNumberCount, 
+									 vector<vector<int> > atomPresent );
 
+		static void handlePlotCounts( realTimePlotterInput* input, PlottingInfo plotInfo, UINT pictureNumber,
+									  vector<vector<vector<long> > >& finData, variationData& finAvgs, 
+									  variationData& finErrs, variationData& finX, avgData& avgAvgs, avgData& avgErrs,
+									  avgData& avgX, vector<vector<bool> >& needNewData, 
+									  vector<vector<bool>>& pscSatisfied, int plotNumber, 
+									  vector<vector<long>>& countData, int plotNumberCount, 
+									  vector<vector<int> > atomPresent );
 		static void handlePlotHist( realTimePlotterInput* input, PlottingInfo plotInfo, UINT plotNumber,
-									std::vector<std::vector<long>> countData,
-									std::vector<std::vector<std::vector<long>>>& finData,
-									std::vector<std::vector<bool>>pscSatisfied, int plotNumberCount );
-
+									vector<vector<long>> countData,  vector<vector<std::deque<double>>>& finData,
+									vector<vector<bool>>pscSatisfied, int plotNumberCount, 
+									vector<vector<std::map<int, std::pair<int, ULONG>>>>& histData );
+		static void determineWhichPscsSatisfied( PlottingInfo& info, UINT groupSize, 
+												 vector<vector<int>> atomPresentData,
+												 vector<vector<bool>>& pscSatisfied );
 	private:
 		// real time plotting
 		ULONG updateFrequency;
@@ -70,8 +86,8 @@ class DataAnalysisControl
 		bool currentlySettingGridCorner;
 		bool currentlySettingAnalysisLocations;
 		Control<CStatic> currentDataSetNumberText;
-		Control<CStatic> currentDataSetNumberEdit;
-		Control<CButton> manualSetAnalysisLocationsButton;
+		Control<CStatic> currentDataSetNumberDisp;
+		Control<CButton> manualSetAnalysisLocsButton;
 
 		Control<CStatic> gridHeader;
 		Control<CButton> setGridCorner;
@@ -85,3 +101,5 @@ class DataAnalysisControl
 		std::vector<coordinate> atomLocations;
 		bool threadNeedsCounts;
 };
+
+

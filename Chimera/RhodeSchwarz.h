@@ -1,10 +1,10 @@
 #pragma once
+
+#include "GpibFlume.h"
 #include "Control.h"
 #include <vector>
 #include <string>
 #include <unordered_map>
-#include "GpibFlume.h"
-
 
 struct rsgEventForm
 {
@@ -28,11 +28,11 @@ class RhodeSchwarz
 	public:
 		RhodeSchwarz::RhodeSchwarz();
 		void initialize( POINT& pos, cToolTips& toolTips, AuxiliaryWindow* master, int& id );
-		void programRSG(UINT variation );
+		void programRsg(UINT variation );
 		void addFrequency( rsgEventForm eventInfo );
 		void clearFrequencies();
 		std::vector<rsgEventForm> getFrequencyForms();
-		void interpretKey(key variationKey, std::vector<variableType>& vars);	
+		void interpretKey( std::vector<variableType>& variables);
 		void orderEvents(UINT variation );
 		void setInfoDisp(UINT variation );
 		std::string getIdentity();

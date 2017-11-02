@@ -42,7 +42,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 	std::chrono::time_point<chronoClock> startTime( chronoClock::now( ) );
 	std::vector<long> variedMixedSize;
 	niawgPair<std::vector<std::fstream>> niawgFiles;
-	NiawgOutputInfo output;
+	NiawgOutput output;
 	std::vector<ViChar> userScriptSubmit;
 	output.isDefault = false;
 	// initialize to 2 because of default waveforms. This can probably be changed to 1, since only one default waveform
@@ -51,10 +51,11 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 	std::vector<std::pair<UINT, UINT>> ttlShadeLocs;
 	std::vector<UINT> dacShadeLocs;
 	bool foundRearrangement = false;
+	/// ////////////////////////////
 	/// start analysis & experiment
 	try
 	{
-		UINT variations = determineVariationNumber( input->variables, input->key->getKey() );
+		UINT variations = determineVariationNumber( input->variables );
 		// finishing sentence from before start I think...
 		expUpdate( "Done.\r\n", input->comm, input->quiet );
 		/// Prep agilents
@@ -62,15 +63,13 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 		for (auto agilent : input->agilents)
 		{
 			RunInfo dum;
-			agilent->handleInput( 1, input->profile.categoryPath, dum );
-			agilent->handleInput( 2, input->profile.categoryPath, dum );
+			agilent->handleInput( input->profile.categoryPath, dum );
 		}
 		/// prep master systems
 		expUpdate( "Analyzing Master Script...", input->comm, input->quiet );
 		input->dacs->resetDacEvents();
 		input->ttls->resetTtlEvents();
 		input->rsg->clearFrequencies();
-		input->thisObj->loadVariables( input->variables );
 		if (input->runMaster)
 		{
 			input->thisObj->analyzeMasterScript( input->ttls, input->dacs, ttlShadeLocs, dacShadeLocs, input->rsg,
@@ -79,8 +78,9 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 		/// prep NIAWG
 		if (input->runNiawg)
 		{
-			input->niawg->prepareNiawg( input, output, niawgFiles, warnings, userScriptSubmit, foundRearrangement, 
-										input->rearrangeInfo);
+			input->niawg->prepareNiawg(  input, output, niawgFiles, warnings, userScriptSubmit, foundRearrangement, 
+											input->rearrangeInfo, input->variables );
+			input->niawg->writeStaticNiawg( output, input->debugOptions, input->constants );
 		}
 		if ( input->thisObj->isAborting )
 		{
@@ -101,18 +101,19 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 		// at this point, all scripts have been analyzed, and each system takes the key and generates all of the data
 		// it needs for each variation of the experiment. All these calculations happen at this step.
 		expUpdate( "Programming All Variation Data...\r\n", input->comm, input->quiet );
+		std::chrono::time_point<chronoClock> varProgramStartTime( chronoClock::now( ) );
+		input->thisObj->loadSkipTimes.resize( variations );
 		if (input->runMaster)
 		{
-			input->ttls->interpretKey( input->key->getKey(), input->variables );
-			input->dacs->interpretKey( input->key->getKey(), input->variables, warnings );
+			input->ttls->interpretKey( input->variables );
+			input->dacs->interpretKey( input->variables, warnings );
 		}
-		input->rsg->interpretKey( input->key->getKey(), input->variables );
-		input->topBottomTek->interpretKey( input->key->getKey(), input->variables );
-		input->eoAxialTek->interpretKey( input->key->getKey(), input->variables );
+		input->rsg->interpretKey( input->variables );
+		input->topBottomTek->interpretKey( input->variables );
+		input->eoAxialTek->interpretKey( input->variables );
 		/// organize commands, prepping final forms of the data for each repetition.
 		// This must be done after the "interpret key" step, as before that commands don't have hard times attached to 
 		// them.
-		std::chrono::time_point<chronoClock> varProgramStartTime( chronoClock::now( ) );
 		for (UINT variationInc = 0; variationInc < variations; variationInc++)
 		{
 			// reading these variables should be safe.
@@ -122,11 +123,16 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 			}
 			if (input->runMaster)
 			{
+				double& currLoadSkipTime = input->thisObj->loadSkipTimes[variationInc];
+				currLoadSkipTime = MasterManager::convertToTime( input->thisObj->loadSkipTime, input->variables,
+																 variationInc );
 				// organize & format the ttl and dac commands
 				input->dacs->organizeDacCommands( variationInc );
 				input->dacs->setDacTriggerEvents( input->ttls, variationInc );
+				input->dacs->findLoadSkipSnapshots( currLoadSkipTime, input->variables, variationInc );
 				input->dacs->makeFinalDataFormat( variationInc );
 				input->ttls->organizeTtlCommands( variationInc );
+				input->ttls->findLoadSkipSnapshots( currLoadSkipTime, input->variables, variationInc );
 				input->ttls->convertToFinalFormat( variationInc );
 				// run a couple checks.
 				input->ttls->checkNotTooManyTimes( variationInc );
@@ -138,6 +144,16 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 							 "snapshots was " + str( input->dacs->getNumberSnapshots( variationInc ) ) );
 				}
 				input->dacs->checkTimingsWork( variationInc );
+				if ( input->runNiawg )
+				{
+					if ( input->ttls->countTriggers( input->niawg->getTrigLines( ).first,
+													 input->niawg->getTrigLines( ).second, variationInc ) !=
+						 input->niawg->getNumberTrigsInScript( ) )
+					{
+						warnings += "WARNING: NIAWG is not getting triggered by the ttl system the same number of times a"
+							" trigger command appears in the NIAWG script.";
+					}
+				}
 			}
 			input->rsg->orderEvents( variationInc );
 		}
@@ -179,34 +195,70 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 		{
 			expUpdate( "Variation #" + str( variationInc + 1 ) + "\r\n", input->comm, input->quiet );
 			Sleep( input->debugOptions.sleepTime );
-			for (auto tempVariable : input->key->getKey())
+			for (auto tempVariable : input->variables)
 			{
 				// if varies...
-				if (tempVariable.second.second)
+				if (tempVariable.valuesVary)
 				{
-					if (tempVariable.second.first.size() == 0)
+					if (tempVariable.keyValues.size() == 0)
 					{
-						thrower( "ERROR: Variable " + tempVariable.first + " varies, but has no values assigned to it!" );
+						thrower( "ERROR: Variable " + tempVariable.name + " varies, but has no values assigned to it!" );
 					}
-					expUpdate( tempVariable.first + ": " + str( tempVariable.second.first[variationInc], 12) + "\r\n", input->comm,
-							   input->quiet );
+					expUpdate( tempVariable.name + ": " + str( tempVariable.keyValues[variationInc], 12) + "\r\n", 
+							   input->comm, input->quiet );
 				}
 			}
 			expUpdate( "Programming RSG, Agilents, NIAWG, & Teltronics...\r\n", input->comm, input->quiet );
-			input->rsg->programRSG( variationInc );
+			input->rsg->programRsg( variationInc );
 			input->rsg->setInfoDisp( variationInc );
 			// program devices
 			for (auto& agilent : input->agilents)
 			{
 				input->comm->sendColorBox( Intensity, 'Y' );
-				agilent->setAgilent( input->key->getKey(), variationInc, input->variables );
+				agilent->setAgilent( variationInc, input->variables );
 				input->comm->sendColorBox( Intensity, 'G' );
+			}
+			// check right number of triggers (currently must be done after agilent is set.
+			for ( auto& agilent : input->agilents )
+			{
+				for ( auto chan : range( 2 ) )
+				{
+					if ( agilent->getOutputInfo( ).channel[chan].option != 4 )
+					{
+						continue;
+					}
+					UINT ttlTrigs;
+					if ( input->runMaster )
+					{
+						ttlTrigs = input->ttls->countTriggers( agilent->getTriggerLine( ).first,
+																 agilent->getTriggerLine( ).second, variationInc );
+					}
+					else
+					{
+						ttlTrigs = 0;
+					}					 
+					UINT agilentExpectedTrigs = agilent->getOutputInfo( ).channel[chan].scriptedArb.wave.getNumTrigs( );
+					if ( ttlTrigs != agilentExpectedTrigs )
+					{
+						warnings += "WARNING: Agilent " + agilent->getName( ) + " is not getting triggered by the "
+							"ttl system the same number of times a trigger command appears in the agilent channel "
+							+ str( chan + 1 ) + " script. There are " + str( agilentExpectedTrigs ) + " triggers in"
+							" the agilent script, and " + str( ttlTrigs ) + " ttl triggers sent to that agilent.";
+					}
+				}
 			}
 			if (input->runNiawg)
 			{
 				input->niawg->programNiawg( input, output, warnings, variationInc, variations, variedMixedSize,
 											userScriptSubmit );
+				if ( foundRearrangement )
+				{
+					input->niawg->turnOffRerng( );
+					input->conditionVariableForRearrangement->notify_all( );
+					input->niawg->handleStartingRerng( input, output );
+				}
 			}
+			input->comm->sendError( warnings );
 			input->topBottomTek->programMachine( variationInc );
 			input->eoAxialTek->programMachine( variationInc );
 			//
@@ -220,26 +272,38 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 				}
 				else if (input->thisObj->isPaused)
 				{
-					expUpdate( "\r\nPaused!\r\n...", input->comm, input->quiet );
+					expUpdate( "Paused\r\n!", input->comm, input->quiet );
 					// wait...
 					while (input->thisObj->isPaused)
 					{
 						// this could be changed to be a bit smarter using a std::condition_variable
 						Sleep( 100 );
 					}
-					expUpdate( "\r\nUn-Paused!\r\n", input->comm, input->quiet );
+					expUpdate( "Un-Paused!\r\n", input->comm, input->quiet );
 				}
 				input->comm->sendRepProgress( repInc + 1 );
 				// this was re-written each time from looking at the VB6 code.
 				if (input->runMaster)
 				{
 					input->dacs->stopDacs();
-					input->dacs->configureClocks( variationInc );
-					input->dacs->writeDacs( variationInc );
+					// it's important to grab the skipoption from input->skipNext only once because in principle
+					// if the cruncher thread was running behind, it could change between writing and configuring the 
+					// dacs and configuring the TTLs;
+					bool skipOption;
+					if ( input->skipNext == NULL )
+					{
+						skipOption = false;
+					}
+					else
+					{
+						skipOption = input->skipNext->load( );
+					}
+					input->dacs->configureClocks( variationInc, skipOption );
+					input->dacs->writeDacs( variationInc, skipOption );
 					input->dacs->startDacs();
-					input->ttls->writeTtlData( variationInc );
+					input->ttls->writeTtlData( variationInc, skipOption );
 					input->ttls->startBoard();
-					input->ttls->waitTillFinished( variationInc );
+					input->ttls->waitTillFinished( variationInc, skipOption );
 				}
 			}
 			expUpdate( "\r\n", input->comm, input->quiet );
@@ -267,8 +331,8 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 		}
 		if (input->runNiawg)
 		{
-			input->niawg->cleanupNiawg( input->profile, input->runMaster, niawgFiles, output, input->comm, 
-										input->settings.dontActuallyGenerate );
+			input->niawg->cleanupNiawg( input->profile, input->runMaster, niawgFiles, output, input->comm,
+										   input->settings.dontActuallyGenerate );
 		}
 		input->comm->sendNormalFinish( );
 	}
@@ -289,7 +353,6 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 					}
 				}
 			}
-
 			// clear out some niawg stuff
 			for (auto& wave : output.waves)
 			{
@@ -297,8 +360,6 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 				wave.core.waveVals.shrink_to_fit();
 			}
 		}
-
-
 		input->thisObj->experimentIsRunning = false;
 		{
 			std::lock_guard<std::mutex> locker( input->thisObj->abortLock );
@@ -309,7 +370,6 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 			input->ttls->unshadeTtls();
 			input->dacs->unshadeDacs();
 		}
-
 		if ( input->thisObj->isAborting )
 		{
 			expUpdate( abortString, input->comm, input->quiet );
@@ -325,20 +385,27 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 			input->comm->sendFatalError( "Exited main experiment thread abnormally." );
 		}	
 	}
-	if ( input->runNiawg )
-	{
-		if ( foundRearrangement )
-		{
-			input->niawg->turnOffRearranger( );
-			input->conditionVariableForRearrangement->notify_all( );
-		}
-	}
 	std::chrono::time_point<chronoClock> endTime( chronoClock::now( ) );
-	expUpdate( "Experiment took " + str( std::chrono::duration<double>( (endTime - startTime) ).count( ) / 1000.0 ) 
+	expUpdate( "Experiment took " + str( std::chrono::duration<double>( (endTime - startTime) ).count( ) ) 
 			   + " seconds.\r\n", input->comm, input->quiet );
 	input->thisObj->experimentIsRunning = false;
 	delete input;
 	return false;
+}
+
+
+double MasterManager::convertToTime( timeType time, std::vector<variableType> variables, UINT variation )
+{
+	double variableTime = 0;
+	// add together current values for all variable times.
+	if ( time.first.size( ) != 0 )
+	{
+		for ( auto varTime : time.first )
+		{
+			variableTime += varTime.evaluate( variables, variation );
+		}
+	}
+	return variableTime + time.second;
 }
 
 
@@ -404,8 +471,8 @@ void MasterManager::loadMotSettings(MasterThreadInput* input)
 
 	loadMasterScript(input->masterScriptAddress);
 	input->thisObj = this;
-	input->key->loadVariables(input->variables);
-	input->key->generateKey(false);
+	//input->key->loadVariables(input->variables);
+	VariableSystem::generateKey( input->variables, false );
 	// start thread.
 	runningThread = AfxBeginThread(experimentThreadProcedure, input);	
 }
@@ -502,12 +569,6 @@ void MasterManager::loadMasterScript(std::string scriptAddress)
 }
 
 
-void MasterManager::loadVariables(std::vector<variableType> newVariables)
-{
-	//variables = newVariables;
-}
-
-
 // makes sure formatting is correct, returns the arguments and the function name from reading the firs real line of a function file.
 void MasterManager::analyzeFunctionDefinition(std::string defLine, std::string& functionName, std::vector<std::string>& args)
 {
@@ -591,7 +652,7 @@ void MasterManager::analyzeFunction( std::string function, std::vector<std::stri
 	std::fstream functionFile;
 	// check if file address is good.
 	FILE *file;
-	fopen_s( &file, cstr(FUNCTIONS_FOLDER_LOCATION + function + FUNCTION_EXTENSION), "r" );
+	fopen_s( &file, cstr(FUNCTIONS_FOLDER_LOCATION + function + "." + FUNCTION_EXTENSION), "r" );
 	if ( !file )
 	{
 		thrower("ERROR: Function " + function + " does not exist!");
@@ -600,7 +661,7 @@ void MasterManager::analyzeFunction( std::string function, std::vector<std::stri
 	{
 		fclose( file );
 	}
-	functionFile.open(FUNCTIONS_FOLDER_LOCATION + function + FUNCTION_EXTENSION, std::ios::in);
+	functionFile.open(FUNCTIONS_FOLDER_LOCATION + function + "." + FUNCTION_EXTENSION, std::ios::in);
 	// check opened correctly
 	if (!functionFile.is_open())
 	{
@@ -925,7 +986,10 @@ void MasterManager::analyzeMasterScript( DioSystem* ttls, DacSystem* dacs,
 										 std::vector<std::pair<UINT, UINT>>& ttlShades, std::vector<UINT>& dacShades, 
 										 RhodeSchwarz* rsg, std::vector<variableType>& vars)
 {
-	// reset this.
+	// reset some things.
+	loadSkipTime.first.clear( );
+	loadSkipTime.second = 0;
+	loadSkipTimes.clear( );
 	currentMasterScriptText = currentMasterScript.str();
 	// starts at 0.1 if not initialized by the user.
 	operationTime.second = 0.1;
@@ -948,11 +1012,15 @@ void MasterManager::analyzeMasterScript( DioSystem* ttls, DacSystem* dacs,
 		}
 		/// callcppcode function
 		else if (word == "callcppcode")
-		{
+		{			
 			// and that's it... 
 			callCppCodeFunction();
 		}
 		/// deal with ttl commands
+		else if ( word == "loadskipentrypoint!" )
+		{
+			loadSkipTime = operationTime;
+		}
 		else if (word == "on:" || word == "off:")
 		{
 			std::string name;
@@ -1192,16 +1260,16 @@ void MasterManager::expUpdate(std::string text, Communicator* comm, bool quiet)
 	}
 }
 
-UINT MasterManager::determineVariationNumber( std::vector<variableType> vars, key tempKey )
+UINT MasterManager::determineVariationNumber( std::vector<variableType> variables )
 {
 	int variationNumber;
-	if (vars.size() == 0)
+	if ( variables.size() == 0)
 	{
 		variationNumber = 1;
 	}
 	else
 	{
-		variationNumber = tempKey[vars[0].name].first.size();
+		variationNumber = variables.front().keyValues.size();
 		if (variationNumber == 0)
 		{
 			variationNumber = 1;

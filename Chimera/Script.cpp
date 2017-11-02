@@ -28,15 +28,15 @@ void Script::initialize( int width, int height, POINT& startingLocation, cToolTi
 	deviceType = deviceTypeInput;
 	if (deviceTypeInput == "Horizontal NIAWG" || deviceTypeInput == "Vertical NIAWG")
 	{
-		extension = NIAWG_SCRIPT_EXTENSION;
+		extension = str( "." ) + NIAWG_SCRIPT_EXTENSION;
 	}
 	else if (deviceTypeInput == "Agilent")
 	{
-		extension = AGILENT_SCRIPT_EXTENSION;
+		extension = str( "." ) + AGILENT_SCRIPT_EXTENSION;
 	}
 	else if (deviceTypeInput == "Master")
 	{
-		extension = MASTER_SCRIPT_EXTENSION;
+		extension = str( "." ) + MASTER_SCRIPT_EXTENSION;
 	}
 	else
 	{
@@ -52,21 +52,21 @@ void Script::initialize( int width, int height, POINT& startingLocation, cToolTi
 	{
 		// user has option to not have a header if scriptheader is "".
 		title.sPos = { startingLocation.x, startingLocation.y, startingLocation.x + width, startingLocation.y + 25 };
-		title.Create( cstr( scriptHeader ), WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER, title.sPos, parent, id++ );
+		title.Create( cstr( scriptHeader ), NORM_HEADER_OPTIONS, title.sPos, parent, id++ );
 		title.fontType = HeadingFont;
 		startingLocation.y += 25;
 	}
 	// saved indicator
 	savedIndicator.sPos = { startingLocation.x, startingLocation.y, startingLocation.x + 80, startingLocation.y + 20 };
-	savedIndicator.Create( "Saved?", WS_CHILD | WS_VISIBLE | BS_CHECKBOX | BS_LEFTTEXT, savedIndicator.sPos, parent, id++ );
+	savedIndicator.Create( "Saved?", NORM_CWND_OPTIONS | BS_CHECKBOX | BS_LEFTTEXT, savedIndicator.sPos, parent, id++ );
 	savedIndicator.SetCheck( true );
 	// filename
 	fileNameText.sPos = { startingLocation.x + 80, startingLocation.y, startingLocation.x + width - 20, startingLocation.y + 20 };
-	fileNameText.Create( WS_CHILD | WS_VISIBLE | SS_ENDELLIPSIS | ES_READONLY, fileNameText.sPos, parent, id++ );
+	fileNameText.Create( NORM_STATIC_OPTIONS, fileNameText.sPos, parent, id++ );
 	isSaved = true;
 	// help
 	help.sPos = { startingLocation.x + width - 20, startingLocation.y, startingLocation.x + width, startingLocation.y + 20 };
-	help.Create( WS_CHILD | WS_VISIBLE | ES_READONLY, help.sPos, parent, id++ );
+	help.Create( NORM_STATIC_OPTIONS, help.sPos, parent, id++ );
 	help.SetWindowTextA( "?" );
 	// don't want this for the scripting window, hence the extra check.
 	if (deviceType == "Agilent" && ids[0] != IDC_INTENSITY_FUNCTION_COMBO)
@@ -77,8 +77,7 @@ void Script::initialize( int width, int height, POINT& startingLocation, cToolTi
 	startingLocation.y += 20;
 	// available functions combo
 	availableFunctionsCombo.sPos = { startingLocation.x, startingLocation.y, startingLocation.x + width, startingLocation.y + 800 };
-	availableFunctionsCombo.Create( CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE,
-									availableFunctionsCombo.sPos, parent, ids[0] );
+	availableFunctionsCombo.Create( NORM_COMBO_OPTIONS, availableFunctionsCombo.sPos, parent, ids[0] );
 	
 	loadFunctions( ); 
 	// select "parent script".
@@ -87,8 +86,7 @@ void Script::initialize( int width, int height, POINT& startingLocation, cToolTi
 	startingLocation.y += 25;
 	// Edit
 	edit.sPos = { startingLocation.x, startingLocation.y, startingLocation.x + width, startingLocation.y += height };
-	edit.Create( WS_CHILD | WS_VISIBLE | ES_MULTILINE | ES_AUTOVSCROLL | WS_VSCROLL | ES_AUTOHSCROLL | WS_HSCROLL
-				 | ES_WANTRETURN | WS_BORDER, edit.sPos, parent, ids[1] );
+	edit.Create( NORM_EDIT_OPTIONS | ES_AUTOVSCROLL | WS_VSCROLL | ES_AUTOHSCROLL | WS_HSCROLL, edit.sPos, parent, ids[1] );
 	edit.fontType = CodeFont;
 	edit.SetBackgroundColor( FALSE, backgroundColor );
 	edit.SetEventMask( ENM_CHANGE );
@@ -151,14 +149,15 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 {
 	// convert word to lower case.
 	std::transform( word.begin(), word.end(), word.begin(), ::tolower );
-
 	// check special cases
 	if (word.size() == 0)
 	{
+		// nothing??
 		return rgbs["Solarized Red"];
 	}
 	else if (word[0] == '%')
 	{
+		// comments
 		colorLine = true;
 		if (word.size() > 1)
 		{
@@ -169,7 +168,6 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 		}
 		return rgbs["Slate Grey"];
 	}
-
 	// Check NIAWG-specific commands
 	if ( editType == "Horizontal NIAWG" || editType == "Vertical NIAWG" )
 	{
@@ -206,26 +204,18 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 			}
 		}
 	}
-	// check Agilent-specific commands
+	// Check Agilent-specific commands
 	else if (editType == "Agilent")
 	{
 		std::transform(word.begin(), word.end(), word.begin(), ::tolower);
-		if (word == "ramp" || word == "hold")
+		if (word == "ramp" || word == "hold" || word == "pulse" )
 		{
 			return rgbs["Solarized Violet"];
 		}
-		else if (word == "once" || word == "oncewaittrig" || word == "lin" || word == "tanh" || word == "repeatuntiltrig")
+		else if ( word == "once" || word == "oncewaittrig" || word == "lin" || word == "tanh" 
+				  || word == "repeatuntiltrig" || word == "sech" || word == "gaussian" || word == "lorentzian" )
 		{
 			return rgbs["Solarized Yellow"];
-		}
-		else if (word == "+" || word == "=" || word == "(" || word == ")" || word == "*" || word == "-" || word == "/")
-		{
-			return rgbs["Solarized Cyan"];
-		}
-		else if (word == "def")
-		{
-			colorLine = true;
-			return rgbs["Solarized Blue"];
 		}
 	}
 	else if (editType == "Master")
@@ -243,16 +233,13 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 			colorLine = true;
 			return rgbs["Solarized Blue"];
 		}
-		else if (word == "+" || word == "=" || word=="(" || word==")" || word=="*" || word == "-" || word=="/")
-		{
-			return rgbs["Solarized Cyan"];
-		}
 		else if (word == "def")
 		{
 			colorLine = true;
 			return rgbs["Solarized Blue"];
 		}
-		else if ( word == "rsg:" || word == "repeat:" || word == "end" || word == "callcppcode")
+		else if ( word == "rsg:" || word == "repeat:" || word == "end" || word == "callcppcode" 
+				  || word == "loadskipentrypoint!")
 		{
 			return rgbs["Solarized Green"];
 		}
@@ -295,6 +282,13 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 			}
 		}
 	}
+
+	if ( word == "+" || word == "=" || word == "(" || word == ")" || word == "*" || word == "-" || word == "/" )
+	{
+		// all scripts now support math expressions.
+		return rgbs["Solarized Cyan"];
+	}
+
 	for (UINT varInc = 0; varInc < variables.size(); varInc++)
 	{
 		if (word == variables[varInc].name)
@@ -310,6 +304,7 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 	// see if it's a double.
 	try
 	{
+		// not sure why not just using std::stod.
 		boost::lexical_cast<double>(word);
 		return rgbs["White"];
 	}
@@ -610,7 +605,7 @@ void Script::changeView(std::string viewName, bool isFunction, std::string categ
 	}
 	else if (isFunction)
 	{
-		loadFile(FUNCTIONS_FOLDER_LOCATION + viewName + FUNCTION_EXTENSION);
+		loadFile(FUNCTIONS_FOLDER_LOCATION + viewName + "." + FUNCTION_EXTENSION);
 	}
 	else
 	{
@@ -920,21 +915,21 @@ void Script::openParentScript(std::string parentScriptFileAndPath, std::string c
 	std::string extStr(extChars);
 	if (deviceType == "Horizontal NIAWG" || deviceType == "Vertical NIAWG")
 	{
-		if (extStr != NIAWG_SCRIPT_EXTENSION)
+		if (extStr != str(".") + NIAWG_SCRIPT_EXTENSION)
 		{
 			thrower("ERROR: Attempted to open non-NIAWG script inside NIAWG script control.");
 		}
 	}
 	else if (deviceType == "Agilent")
 	{
-		if (extStr != AGILENT_SCRIPT_EXTENSION)
+		if (extStr != str( "." ) + AGILENT_SCRIPT_EXTENSION)
 		{
 			thrower("ERROR: Attempted to open non-agilent script from agilent script control.");
 		}
 	}
 	else if (deviceType == "Master")
 	{
-		if (extStr != MASTER_SCRIPT_EXTENSION)
+		if (extStr != str( "." ) + MASTER_SCRIPT_EXTENSION)
 		{
 			thrower("ERROR: Attempted to open non-master script from master script control!");
 		}
@@ -952,10 +947,10 @@ void Script::openParentScript(std::string parentScriptFileAndPath, std::string c
 	std::string scriptLocation = parentScriptFileAndPath.substr(0, sPos);
 	if (scriptLocation + "\\" != categoryPath && categoryPath != "")
 	{
-		int answer = promptBox("The requested script is not currently located in the current configuration folder. "
-								"This is recommended so that scripts related to a particular configuration are "
-								"reserved to that configuration folder. Copy script to current configuration folder?", 
-								MB_YESNO);
+		int answer = promptBox("The requested " + deviceType + " script: " + parentScriptFileAndPath + " is not "
+								"currently located in the current configuration folder. This is recommended so that "
+								"scripts related to a particular configuration are reserved to that configuration "
+								"folder. Copy script to current configuration folder?", MB_YESNO);
 		if (answer == IDYES)
 		{
 			std::string scriptName = parentScriptFileAndPath.substr(sPos+1, parentScriptFileAndPath.size());
@@ -963,7 +958,7 @@ void Script::openParentScript(std::string parentScriptFileAndPath, std::string c
 			saveScriptAs(path, info);
 		}
 	}
-	updateScriptNameText(parentScriptFileAndPath);
+	updateScriptNameText( categoryPath );
 	availableFunctionsCombo.SelectString(0, "Parent Script");
 }
 
@@ -1031,8 +1026,10 @@ void Script::considerCurrentLocation(std::string categoryPath, RunInfo info)
 		std::string scriptLocation = scriptFullAddress.substr(0, sPos);
 		if (scriptLocation + "\\" != categoryPath)
 		{
-			int answer = promptBox("The requested vertical script is not currently located in the current configuration folder. This is recommended so that scripts related to a"
-				" particular configuration are reserved to that configuration folder. Copy script to current configuration folder?", MB_YESNO);
+			int answer = promptBox( "The requested " + deviceType + " script location: \"" + scriptLocation + "\" "
+									"is not currently located in the current configuration folder. This is recommended"
+									" so that scripts related to a particular configuration are reserved to that "
+									"configuration folder. Copy script to current configuration folder?", MB_YESNO );
 			if (answer == IDYES)
 			{
 				std::string scriptName = scriptFullAddress.substr(sPos, scriptFullAddress.size());
@@ -1050,17 +1047,14 @@ std::string Script::getExtension()
 	return extension;
 }
 
-void Script::updateScriptNameText(std::string path)
+void Script::updateScriptNameText(std::string categoryPath)
 {
-	//std::string categoryPath = eProfile.getCurrentPathIncludingCategory();
 	// there are some \\ on the end of the path by default.
-	path = path.substr(0, path.size() - 1);
-	int sPos = path.find_last_of('\\');
+	categoryPath = categoryPath.substr(0, categoryPath.size() - 1);
+	int sPos = categoryPath.find_last_of('\\');
 	if (sPos != -1)
 	{
-		std::string categoryPath = path.substr(0, sPos);
-		std::string category = path.substr(sPos + 1, path.size());
-		sPos = categoryPath.find_last_of('\\');
+		std::string category = categoryPath.substr(sPos + 1, categoryPath.size());
 		std::string text = category + "->" + scriptName;
 		fileNameText.SetWindowTextA(cstr(text));
 	}
@@ -1136,7 +1130,7 @@ void Script::saveAsFunction()
 	{
 		thrower("ERROR: Function name included a space! Name was" + functionName);
 	}
-	std::string path = FUNCTIONS_FOLDER_LOCATION + functionName + FUNCTION_EXTENSION;
+	std::string path = FUNCTIONS_FOLDER_LOCATION + functionName + "." + FUNCTION_EXTENSION;
 	FILE *file;
 	fopen_s( &file, cstr(path), "r" );
 	if ( !file )
@@ -1168,7 +1162,7 @@ void Script::saveAsFunction()
 
 void Script::loadFunctions()
 {
-	ProfileSystem::reloadCombo( availableFunctionsCombo.GetSafeHwnd( ), functionLocation, str("*") + FUNCTION_EXTENSION,
-								"__NONE__" );
+	ProfileSystem::reloadCombo( availableFunctionsCombo.GetSafeHwnd( ), functionLocation, str("*.") 
+								+ FUNCTION_EXTENSION, "__NONE__" );
 	availableFunctionsCombo.InsertString( 0, "Parent Script" );
 }

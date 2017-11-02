@@ -1,6 +1,5 @@
 #pragma once
 #include "Control.h"
-#include "KeyHandler.h"
 #include "miscellaneousCommonFunctions.h"
 #include "DioStructures.h"
 #include "Expression.h"
@@ -21,7 +20,7 @@ class DioSystem
 	    DioSystem();
 		void handleNewConfig( std::ofstream& saveFile );
 		void handleSaveConfig(std::ofstream& saveFile);
-		void handleOpenConfig(std::ifstream& openFile, double version);
+		void handleOpenConfig(std::ifstream& openFile, int versionMajor, int versionMinor );
 		void initialize(POINT& startLocation, cToolTips& toolTips, AuxiliaryWindow* master, int& id);
 		double getTotalTime(UINT variation );
 		void checkFinalFormatTimes( UINT variation );
@@ -63,27 +62,26 @@ class DioSystem
 		void handleTtlScriptCommand( std::string command, timeType time, std::string name,
 									 Expression pulseLength, std::vector<std::pair<UINT, UINT>>& ttlShadeLocations,
 									 std::vector<variableType>& vars );
-		void interpretKey(key variationKey, std::vector<variableType>& vars);
+		void interpretKey( std::vector<variableType>& variables );
 		void organizeTtlCommands(UINT variation );
 		void convertToFinalFormat(UINT variation );
-		void writeTtlData( UINT variation );
+		void writeTtlData( UINT variation, bool loadSkip );
 		void startBoard();
 		void stopBoard();
 		double getClockStatus();
 		void wait(double time);
-		void waitTillFinished(UINT variation );
+		void waitTillFinished( UINT variation, bool skipOption );
 		void shadeTTLs(std::vector<std::pair<UINT, UINT>>);
 		void unshadeTtls();
 		bool isValidTTLName(std::string name);
-
 		void resetTtlEvents();
 		void prepareForce();
 		void updateDefaultTtl(UINT row, UINT column, bool state);
-
+		UINT countTriggers( UINT row, UINT number, UINT variation );
 		bool getDefaultTtl(UINT row, UINT column);
-
-	private:
-
+		void findLoadSkipSnapshots( double time, std::vector<variableType>& variables, UINT variation );
+		std::pair<USHORT, USHORT> calcDoubleShortTime( double time );
+	private:		
 		// one control for each TTL
 		Control<CStatic> ttlTitle;
 		Control<CButton> ttlHold;
@@ -99,17 +97,15 @@ class DioSystem
 		bool holdStatus;
 
 
-
 		std::vector<DioCommandForm> ttlCommandFormList;
 		// Each element of first vector is for each variation.
 		std::vector<std::vector<DioCommand>> ttlCommandList;
 		// Each element of first vector is for each variation.
-		std::vector<std::vector<DioSnapshot>> ttlSnapshots;
+		std::vector<std::vector<DioSnapshot>> ttlSnapshots, loadSkipTtlSnapshots;
 		// Each element of first vector is for each variation.
-		std::vector<std::vector<std::array<WORD, 6>>> formattedTtlSnapshots;
+		std::vector<std::vector<std::array<WORD, 6>>> formattedTtlSnapshots, loadSkipFormattedTtlSnapshots;
 		// this is just a flattened version of the above snapshots. This is what gets directly sent to the dio64 card.
-		std::vector<std::vector<WORD>> finalFormatTtlData;
-
+		std::vector<std::vector<WORD>> finalFormatTtlData, loadSkipFinalFormatTtlData;
 		std::array<std::array<bool, 16>, 4> defaultTtlState;
 
 

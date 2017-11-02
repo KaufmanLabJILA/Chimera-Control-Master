@@ -3,10 +3,12 @@
 #include "MainWindow.h"
 #include "CameraWindow.h"
 #include "AuxiliaryWindow.h"
+#include <future>
 
 MainWindow::MainWindow(UINT id, CDialog* splash) : CDialog(id), profile(PROFILES_PATH), 
     masterConfig( MASTER_CONFIGURATION_FILE_ADDRESS ), 
-	appSplash( splash )
+	appSplash( splash ),
+	niawg( 1,14 )
 {
 	// create all the main rgbs and brushes. I want to make sure this happens before other windows are created.
 	mainRGBs["Light Green"]			= RGB( 163,	190, 140);
@@ -142,32 +144,17 @@ MainWindow::MainWindow(UINT id, CDialog* splash) : CDialog(id), profile(PROFILES
 					  CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, TEXT("Arial"));
 }
 
-
 IMPLEMENT_DYNAMIC( MainWindow, CDialog )
 
 BEGIN_MESSAGE_MAP( MainWindow, CDialog )
+
 	ON_WM_CTLCOLOR( )
 	ON_WM_SIZE( )
-	ON_COMMAND_RANGE( ID_ACCELERATOR_ESC, ID_ACCELERATOR_ESC, &MainWindow::passCommonCommand )
-	ON_COMMAND_RANGE( ID_ACCELERATOR_F5, ID_ACCELERATOR_F5, &MainWindow::passCommonCommand )
-	ON_COMMAND_RANGE( ID_ACCELERATOR_F2, ID_ACCELERATOR_F2, &MainWindow::passCommonCommand )
-	ON_COMMAND_RANGE( ID_ACCELERATOR_F1, ID_ACCELERATOR_F1, &MainWindow::passCommonCommand )
-	ON_COMMAND_RANGE( MENU_ID_RANGE_BEGIN, MENU_ID_RANGE_END, &MainWindow::passCommonCommand )
-	ON_COMMAND_RANGE( IDC_DEBUG_OPTIONS_RANGE_BEGIN, IDC_DEBUG_OPTIONS_RANGE_END, &MainWindow::passDebugPress )
-	ON_COMMAND_RANGE( IDC_MAIN_OPTIONS_RANGE_BEGIN, IDC_MAIN_OPTIONS_RANGE_END, &MainWindow::passMainOptionsPress )
-	//
-	ON_CBN_SELENDOK( IDC_EXPERIMENT_COMBO, &MainWindow::handleExperimentCombo )
-	ON_CBN_SELENDOK( IDC_CATEGORY_COMBO, &MainWindow::handleCategoryCombo )
 	ON_CBN_SELENDOK( IDC_SEQUENCE_COMBO, &MainWindow::handleSequenceCombo )
-	ON_CBN_SELENDOK( IDC_CONFIGURATION_COMBO, &MainWindow::handleConfigurationCombo )
-	// 
 	ON_NOTIFY( NM_DBLCLK, IDC_SMS_TEXTING_LISTVIEW, &MainWindow::handleDblClick )
 	ON_NOTIFY( NM_RCLICK, IDC_SMS_TEXTING_LISTVIEW, &MainWindow::handleRClick )
-	ON_EN_CHANGE( IDC_EXPERIMENT_NOTES, &MainWindow::handleExperimentNotesChange )
-	ON_EN_CHANGE( IDC_CATEGORY_NOTES, &MainWindow::handleCategoryNotesChange )
 	ON_EN_CHANGE( IDC_CONFIGURATION_NOTES, &MainWindow::notifyConfigUpdate )
 	ON_EN_CHANGE( IDC_REPETITION_EDIT, &MainWindow::notifyConfigUpdate )
-
 	ON_REGISTERED_MESSAGE( eRepProgressMessageID, &MainWindow::onRepProgress )
 	ON_REGISTERED_MESSAGE( eStatusTextMessageID, &MainWindow::onStatusTextMessage )
 	ON_REGISTERED_MESSAGE( eNormalFinishMessageID, &MainWindow::onNormalFinishMessage )
@@ -175,31 +162,212 @@ BEGIN_MESSAGE_MAP( MainWindow, CDialog )
 	ON_REGISTERED_MESSAGE( eFatalErrorMessageID, &MainWindow::onFatalErrorMessage )
 	ON_REGISTERED_MESSAGE( eColoredEditMessageID, &MainWindow::onColoredEditMessage )
 	ON_REGISTERED_MESSAGE( eDebugMessageID, &MainWindow::onDebugMessage )
-
+	ON_REGISTERED_MESSAGE( eNoAtomsAlertMessageID, &MainWindow::onNoAtomsAlertMessage )
+	ON_COMMAND_RANGE( ID_ACCELERATOR_ESC, ID_ACCELERATOR_ESC, &MainWindow::passCommonCommand )
+	ON_COMMAND_RANGE( ID_ACCELERATOR_F5, ID_ACCELERATOR_F5, &MainWindow::passCommonCommand )
+	ON_COMMAND_RANGE( ID_ACCELERATOR_F2, ID_ACCELERATOR_F2, &MainWindow::passCommonCommand )
+	ON_COMMAND_RANGE( ID_ACCELERATOR_F1, ID_ACCELERATOR_F1, &MainWindow::passCommonCommand )
+	ON_COMMAND_RANGE( MENU_ID_RANGE_BEGIN, MENU_ID_RANGE_END, &MainWindow::passCommonCommand )
+	ON_COMMAND_RANGE( IDC_DEBUG_OPTIONS_RANGE_BEGIN, IDC_DEBUG_OPTIONS_RANGE_END, &MainWindow::passDebugPress )
+	ON_COMMAND_RANGE( IDC_MAIN_OPTIONS_RANGE_BEGIN, IDC_MAIN_OPTIONS_RANGE_END, &MainWindow::passMainOptionsPress )
 	ON_COMMAND_RANGE( IDC_MAIN_STATUS_BUTTON, IDC_MAIN_STATUS_BUTTON, &MainWindow::passClear )
 	ON_COMMAND_RANGE( IDC_ERROR_STATUS_BUTTON, IDC_ERROR_STATUS_BUTTON, &MainWindow::passClear )
 	ON_COMMAND_RANGE( IDC_DEBUG_STATUS_BUTTON, IDC_DEBUG_STATUS_BUTTON, &MainWindow::passClear )
-
-	ON_COMMAND(IDOK,  &MainWindow::catchEnter)
-	ON_COMMAND( IDC_ENTER_EMAIL_INFO, &MainWindow::handleEmailButton )
-
+	ON_COMMAND( IDC_SELECT_CONFIG_COMBO, &MainWindow::passConfigPress )
+	ON_COMMAND( IDOK,  &MainWindow::catchEnter)
 END_MESSAGE_MAP()
 
 
-void MainWindow::handleEmailButton( )
+void MainWindow::passConfigPress( )
 {
-	texter.promptForEmailAddressAndPassword( );
+	try
+	{
+		profile.handleSelectConfigButton( this, TheScriptingWindow, this, TheAuxiliaryWindow, TheCameraWindow );
+	}
+	catch ( Error& err )
+	{
+		comm.sendError( err.what( ) );
+	}
 }
 
 
-void MainWindow::handleExperimentNotesChange( )
+void MainWindow::passNiawgIsOnPress( )
 {
-	profile.updateExperimentSavedStatus( false );
+	if ( niawg.isOn() )
+	{
+		niawg.turnOff( );
+		menu.CheckMenuItem( ID_NIAWG_NIAWGISON, MF_UNCHECKED );
+	}
+	else
+	{
+		niawg.turnOn( );
+		menu.CheckMenuItem( ID_NIAWG_NIAWGISON, MF_CHECKED );
+	}
 }
 
-void MainWindow::handleCategoryNotesChange( )
+
+LRESULT MainWindow::onNoAtomsAlertMessage( WPARAM wp, LPARAM lp )
 {
-	profile.updateCategorySavedStatus( false );
+	try
+	{	
+		if ( TheCameraWindow->wantsAutoPause( ) )
+		{
+			masterThreadManager.pause( );
+			menu.CheckMenuItem( ID_RUNMENU_PAUSE, MF_CHECKED );
+			comm.sendColorBox( Master, 'Y' );			
+		}
+		auto asyncbeep = std::async( std::launch::async, [] { Beep( 1000, 500 ); } );
+		time_t t = time( 0 );
+		struct tm now;
+		localtime_s( &now, &t );
+
+		std::string message = "Experiment Stopped loading atoms at ";
+		if ( now.tm_hour < 10 )
+		{
+			message += "0";
+		}
+		message += str( now.tm_hour ) + ":";
+		if ( now.tm_min < 10 )
+		{
+			message += "0";
+		}
+		message += str( now.tm_min ) + ":";
+		if ( now.tm_sec < 10 )
+		{
+			message += "0";
+		}
+		message += str( now.tm_sec );
+		texter.sendMessage( message, &python, "Loading" );
+	}
+	catch ( Error& err )
+	{
+		comm.sendError( err.what( ) );
+	}
+	return 0;
+}
+
+
+BOOL MainWindow::OnInitDialog( )
+{
+	eMainWindowHwnd = GetSafeHwnd( );
+	// don't redraw until the first OnSize.
+	SetRedraw( false );
+
+	/// initialize niawg.
+	try
+	{
+		niawg.initialize( );
+	}
+	catch ( Error& except )
+	{
+		errBox( "ERROR: NIAWG failed to start! Error: " + except.whatStr( ) );
+		return -1;
+	}
+
+	try
+	{
+		niawg.setDefaultWaveforms( this );
+		// but the default starts in the horizontal configuration, so switch back and start in this config.
+		restartNiawgDefaults( );
+	}
+	catch ( Error& exception )
+	{
+		errBox( "ERROR: failed to start niawg default waveforms! Niawg gave the following error message: " + exception.whatStr( ) );
+	}
+	// not done with the script, it will not stay on the NIAWG, so I need to keep track of it so thatI can reload it onto the NIAWG when necessary.	
+	/// Initialize Windows
+	std::string which = "";
+	try
+	{
+		which = "Scripting";
+		TheScriptingWindow = new ScriptingWindow;
+		which = "Camera";
+		TheCameraWindow = new CameraWindow;
+		which = "Auxiliary";
+		TheAuxiliaryWindow = new AuxiliaryWindow;
+	}
+	catch ( Error& err )
+	{
+		errBox( "FATAL ERROR: " + which + " Window constructor failed! Error: " + err.what( ) );
+		return -1;
+	}
+
+	TheScriptingWindow->loadFriends( this, TheCameraWindow, TheAuxiliaryWindow );
+	TheCameraWindow->loadFriends( this, TheScriptingWindow, TheAuxiliaryWindow );
+	TheAuxiliaryWindow->loadFriends( this, TheScriptingWindow, TheCameraWindow );
+
+	try
+	{
+		// these each call oninitdialog after the create call. Hence the try / catch.
+		TheScriptingWindow->Create( IDD_LARGE_TEMPLATE, 0 );
+		TheCameraWindow->Create( IDD_LARGE_TEMPLATE, 0 );
+		TheAuxiliaryWindow->Create( IDD_LARGE_TEMPLATE, 0 );
+	}
+	catch ( Error& err )
+	{
+		errBox( err.what( ) );
+	}
+
+	/// initialize main window controls.
+	comm.initialize( this, TheScriptingWindow, TheCameraWindow, TheAuxiliaryWindow );
+	int id = 1000;
+	POINT controlLocation = { 0,0 };
+	mainStatus.initialize( controlLocation, this, id, 975, "EXPERIMENT STATUS", RGB( 100, 100, 250 ), tooltips, IDC_MAIN_STATUS_BUTTON );
+	controlLocation = { 480, 0 };
+	errorStatus.initialize( controlLocation, this, id, 480, "ERROR STATUS", RGB( 200, 0, 0 ), tooltips, IDC_ERROR_STATUS_BUTTON );
+	debugStatus.initialize( controlLocation, this, id, 480, "DEBUG STATUS", RGB( 13, 152, 186 ), tooltips, IDC_DEBUG_STATUS_BUTTON );
+	controlLocation = { 960, 0 };
+	profile.initialize( controlLocation, this, id, tooltips );
+	controlLocation = { 960, 175};
+	notes.initialize( controlLocation, this, id, tooltips);
+	controlLocation = { 1440, 50 };
+	repetitionControl.initialize( controlLocation, tooltips, this, id );
+	settings.initialize( id, controlLocation, this, tooltips );
+	rearrangeControl.initialize( id, controlLocation, this, tooltips );
+	debugger.initialize( id, controlLocation, this, tooltips );
+	texter.initialize( controlLocation, this, id, tooltips, mainRGBs );
+	controlLocation = { 960, 910 };
+	boxes.initialize( controlLocation, id, this, 960, tooltips );
+	shortStatus.initialize( controlLocation, this, id, tooltips );
+	menu.LoadMenu( IDR_MAIN_MENU );
+	SetMenu( &menu );
+	// just initializes the rectangles.
+	TheCameraWindow->redrawPictures( true );
+	try
+	{
+		masterConfig.load( this, TheAuxiliaryWindow, TheCameraWindow );
+	}
+	catch ( Error& err )
+	{
+		errBox( err.what( ) );
+	}
+
+
+	ShowWindow( SW_MAXIMIZE );
+	TheCameraWindow->ShowWindow( SW_MAXIMIZE );
+	TheScriptingWindow->ShowWindow( SW_MAXIMIZE );
+	TheAuxiliaryWindow->ShowWindow( SW_MAXIMIZE );
+	std::vector<CDialog*> windows = { this, TheCameraWindow, NULL, TheScriptingWindow, TheAuxiliaryWindow };
+	EnumDisplayMonitors( NULL, NULL, monitorHandlingProc, reinterpret_cast<LPARAM>(&windows) );
+	// hide the splash just before the first window requiring input pops up.
+	appSplash->ShowWindow( SW_HIDE );
+
+	/// summarize system status.
+	std::string initializationString;
+	try
+	{
+		initializationString += getSystemStatusString( );
+		initializationString += TheAuxiliaryWindow->getSystemStatusMsg( );
+		initializationString += TheCameraWindow->getSystemStatusString( );
+		initializationString += TheScriptingWindow->getSystemStatusString( );
+		infoBox( initializationString );
+	}
+	catch ( Error& err )
+	{
+		errBox( err.what( ) );
+	}
+	updateConfigurationSavedStatus( true );
+	return TRUE;
 }
 
 
@@ -215,139 +383,23 @@ void MainWindow::catchEnter( )
 	// the default handling is to close the window, so I need to catch it.
 }
 
-BOOL MainWindow::OnInitDialog()
-{
-	eMainWindowHwnd = GetSafeHwnd();
-	// don't redraw until the first OnSize.
-	SetRedraw( false );
-
-	/// initialize niawg.
-	try
-	{
-		niawg.initialize();
-	}
-	catch (Error& except)
-	{
-		errBox( "ERROR: NIAWG failed to start! Error: " + except.whatStr() );
-		return -1;
-	}
-
-	try
-	{
-		niawg.setDefaultWaveforms( this );
-		// but the default starts in the horizontal configuration, so switch back and start in this config.
-		restartNiawgDefaults();
-	}
-	catch (Error& exception)
-	{
-		errBox( "ERROR: failed to start niawg default waveforms! Niawg gave the following error message: " + exception.whatStr() );
-	}
-	// not done with the script, it will not stay on the NIAWG, so I need to keep track of it so thatI can reload it onto the NIAWG when necessary.	
-	/// Initialize Windows
-	std::string which = "";
-	try
-	{
-		which = "Scripting";
-		TheScriptingWindow = new ScriptingWindow;
-		which = "Camera";
-		TheCameraWindow = new CameraWindow;
-		which = "Auxiliary";
-		TheAuxiliaryWindow = new AuxiliaryWindow;
-	}
-	catch (Error& err)
-	{
-		errBox("FATAL ERROR: " + which + " Window constructor failed! Error: " + err.what());
-		return -1;
-	}
-
-	TheScriptingWindow-> loadFriends( this, TheCameraWindow, TheAuxiliaryWindow );
-	TheCameraWindow->loadFriends( this, TheScriptingWindow, TheAuxiliaryWindow );
-	TheAuxiliaryWindow->loadFriends( this, TheScriptingWindow, TheCameraWindow );
-
-	try
-	{    
-		// these each call oninitdialog after the create call. Hence the try / catch.
-		TheScriptingWindow->Create( IDD_LARGE_TEMPLATE, 0 );
-		TheCameraWindow->Create( IDD_LARGE_TEMPLATE, 0 );
-		TheAuxiliaryWindow->Create( IDD_LARGE_TEMPLATE, 0 );
-	}
-	catch (Error& err)
-	{
-		errBox( err.what() );
-	}
-
-	/// initialize main window controls.
-	comm.initialize( this, TheScriptingWindow, TheCameraWindow, TheAuxiliaryWindow );
-	int id = 1000;
-	POINT controlLocation = { 0,0 };
-	mainStatus.initialize( controlLocation, this, id, 975, "EXPERIMENT STATUS", RGB( 100, 100, 250 ), tooltips, IDC_MAIN_STATUS_BUTTON );
-	controlLocation = { 480, 0 };
-	errorStatus.initialize( controlLocation, this, id, 480, "ERROR STATUS", RGB( 200, 0, 0 ), tooltips, IDC_ERROR_STATUS_BUTTON );
-	debugStatus.initialize( controlLocation, this, id, 480, "DEBUG STATUS", RGB( 13, 152, 186 ), tooltips, IDC_DEBUG_STATUS_BUTTON );
-	controlLocation = { 960, 0 };
-	profile.initialize( controlLocation, this, id, tooltips );
-	controlLocation = { 960, 250 };
-	notes.initialize( controlLocation, this, id, tooltips, { IDC_EXPERIMENT_NOTES, IDC_CATEGORY_NOTES, 
-					  IDC_CONFIGURATION_NOTES } );
-	controlLocation = { 1440, 105 };
-	repetitionControl.initialize( controlLocation, tooltips, this, id );
-	settings.initialize( id, controlLocation, this, tooltips );
-	rearrangeControl.initialize( id, controlLocation, this, tooltips );
-	debugger.initialize( id, controlLocation, this, tooltips );
-	texter.initialize( controlLocation, this, false, id, tooltips, mainRGBs );
-	controlLocation = { 960, 910 };
-	boxes.initialize( controlLocation, id, this, 960, tooltips );
-	shortStatus.initialize( controlLocation, this, id, tooltips );
-	menu.LoadMenu( IDR_MAIN_MENU );
-	SetMenu( &menu );
-	// just initializes the rectangles.
-	TheCameraWindow->redrawPictures( true );
-	try
-	{
-		masterConfig.load( this, TheAuxiliaryWindow, TheCameraWindow );
-	}
-	catch (Error& err)
-	{
-		errBox( err.what() );
-	}
-
-
-	ShowWindow( SW_MAXIMIZE );
-	TheCameraWindow->ShowWindow( SW_MAXIMIZE );
-	TheScriptingWindow->ShowWindow( SW_MAXIMIZE );
-	TheAuxiliaryWindow->ShowWindow( SW_MAXIMIZE );	
-	std::vector<CDialog*> windows = { this, TheCameraWindow, TheScriptingWindow, TheAuxiliaryWindow };
-	EnumDisplayMonitors( NULL, NULL, monitorHandlingProc, reinterpret_cast<LPARAM>(&windows));
-	// hide the splash just before the first window requiring input pops up.
-	appSplash->ShowWindow( SW_HIDE );
-
-	/// summarize system status.
-	std::string initializationString;
-	try
-	{
-		initializationString += getSystemStatusString();
-		initializationString += TheAuxiliaryWindow->getSystemStatusMsg();
-		initializationString += TheCameraWindow->getSystemStatusString();
-		initializationString += TheScriptingWindow->getSystemStatusString();
-		infoBox(initializationString);
-	}
-	catch (Error& err)
-	{
-		errBox(err.what());
-	}
-	return TRUE;
-}
 
 BOOL CALLBACK MainWindow::monitorHandlingProc( _In_ HMONITOR hMonitor, _In_ HDC hdcMonitor,
 											   _In_ LPRECT lprcMonitor, _In_ LPARAM dwData )
 {
 	static UINT count = 0;
 	std::vector<CDialog*>* windows = reinterpret_cast<std::vector<CDialog*>*>(dwData);
-	if ( count < 4 )
+	if ( count == 2 )
+	{
+		// skip the high monitor.
+		count++;
+		return TRUE;
+	}
+	if ( count < 5 )
 	{
 		windows->at(count)->MoveWindow( lprcMonitor );
 	}
-	//delete windows;
+	count++;
 	return TRUE;
 }
 
@@ -404,13 +456,13 @@ void MainWindow::handleSaveConfig(std::ofstream& saveFile)
 }
 
 
-void MainWindow::handleOpeningConfig(std::ifstream& configFile, double version)
+void MainWindow::handleOpeningConfig(std::ifstream& configFile, int versionMajor, int versionMinor )
 {
-	notes.handleOpenConfig( configFile,  version );
-	settings.handleOpenConfig( configFile, version );
-	debugger.handleOpenConfig( configFile, version );
-	repetitionControl.handleOpenConfig(configFile, version);
-	rearrangeControl.handleOpenConfig( configFile, version );
+	notes.handleOpenConfig( configFile, versionMajor, versionMinor );
+	settings.handleOpenConfig( configFile, versionMajor, versionMinor );
+	debugger.handleOpenConfig( configFile, versionMajor, versionMinor );
+	repetitionControl.handleOpenConfig(configFile, versionMajor, versionMinor );
+	rearrangeControl.handleOpenConfig( configFile, versionMajor, versionMinor );
 }
 
 
@@ -613,9 +665,17 @@ void MainWindow::startMaster( MasterThreadInput* input, bool isTurnOnMot )
 void MainWindow::fillMotInput( MasterThreadInput* input )
 {
 	input->comm = &comm;
-	input->key = &masterKey;
-	input->key->loadVariables( input->variables );
-	input->key->generateKey( input->settings.randomizeVariations );
+	VariableSystem::generateKey( input->variables, input->settings.randomizeVariations );
+	for ( auto& variable : input->variables )
+	{
+		if ( variable.constant )
+		{
+			input->constants.push_back( variable );
+		}
+	}
+	// the mot procedure doesn't need the NIAWG at all.
+	input->runNiawg = false;
+	input->skipNext = NULL;
 	input->rearrangeInfo = rearrangeControl.getParams( );
 	input->rearrangeInfo.active = false;
 
@@ -632,9 +692,15 @@ void MainWindow::fillMasterThreadInput(MasterThreadInput* input)
 	input->profile = profile.getProfileSettings();
 	input->niawg = &niawg;
 	input->comm = &comm;
-	input->key = &masterKey;
-	input->key->loadVariables( input->variables );
-	input->key->generateKey( input->settings.randomizeVariations );
+	VariableSystem::generateKey( input->variables, input->settings.randomizeVariations );
+	// it's important to do this after the key is generated so that the constants have their values.
+	for ( auto& variable : input->variables )
+	{
+		if ( variable.constant )
+		{
+			input->constants.push_back( variable );
+		}
+	}
 	input->rearrangeInfo = rearrangeControl.getParams( );
 }
 
@@ -669,53 +735,16 @@ void MainWindow::updateConfigurationSavedStatus(bool status)
 }
 
 
-std::string MainWindow::getNotes(std::string whichLevel)
+std::string MainWindow::getNotes()
 {
-	std::transform(whichLevel.begin(), whichLevel.end(), whichLevel.begin(), ::tolower);
-	if (whichLevel == "experiment")
-	{
-		return notes.getExperimentNotes();
-	}
-	else if (whichLevel == "category")
-	{
-		return notes.getCategoryNotes();
-	}
-	else if (whichLevel == "configuration")
-	{
-		return notes.getConfigurationNotes();
-	}
-	else
-	{
-		thrower("The Main window's getNotes function was called with a bad argument:" 
-			    + whichLevel + ". Acceptable arguments are \"experiment\", \"category\", and \"configuration\". "
-			    "This throw can be continued successfully, the notes will just be recorded.");
-	}
-	return "";
+	return notes.getConfigurationNotes();
 }
 
 
-void MainWindow::setNotes(std::string whichLevel, std::string newNotes)
+void MainWindow::setNotes(std::string newNotes)
 {
-	std::transform(whichLevel.begin(), whichLevel.end(), whichLevel.begin(), ::tolower);
-	if (whichLevel == "experiment")
-	{
-		notes.setExperimentNotes(newNotes);
-	}
-	else if (whichLevel == "category")
-	{
-		notes.setCategoryNotes(newNotes);
-	}
-	else if (whichLevel == "configuration")
-	{
-		notes.setConfigurationNotes(newNotes);
-	}
-	else
-	{
-		thrower( "ERROR: The Main window's setNotes function was called with a bad argument:" + whichLevel + ". Acceptable arguments are "
-				 "\"experiment\", \"category\", and \"configuration\"." );
-	}
+	notes.setConfigurationNotes(newNotes);
 }
-
 
 
 debugInfo MainWindow::getDebuggingOptions()
@@ -797,13 +826,13 @@ void MainWindow::changeShortStatusColor(std::string color)
 
 void MainWindow::passDebugPress(UINT id)
 {
-	debugger.handleEvent(id, this);
+	profile.updateConfigurationSavedStatus( false );
 }
 
 
 void MainWindow::passMainOptionsPress(UINT id)
 {
-	settings.handleEvent(id, this);
+	profile.updateConfigurationSavedStatus( false );
 }
 
 
@@ -818,49 +847,6 @@ void MainWindow::handleRClick(NMHDR * pNotifyStruct, LRESULT * result)
 {
 	texter.deletePersonInfo();
 	profile.updateConfigurationSavedStatus(false);
-}
-
-
-void MainWindow::handleExperimentCombo()
-{
-	try
-	{
-		profile.experimentChangeHandler(TheScriptingWindow, this);
-		TheAuxiliaryWindow->setConfigActive(false);
-	}
-	catch (Error& err)
-	{
-		getComm()->sendError(err.what());
-	}
-}
-
-
-void MainWindow::handleCategoryCombo()
-{
-	try
-	{
-		profile.categoryChangeHandler(TheScriptingWindow, this);
-		TheAuxiliaryWindow->setConfigActive(false);
-	}
-	catch (Error& err)
-	{
-		getComm()->sendError(err.what());
-	}
-}
-
-
-void MainWindow::handleConfigurationCombo()
-{
-	try
-	{
-		profile.configurationChangeHandler(TheScriptingWindow, this, TheAuxiliaryWindow, TheCameraWindow);
-		TheAuxiliaryWindow->setConfigActive(true);
-	}
-	catch (Error& err)
-	{
-		errBox( err.what( ) );
-		getComm()->sendError(err.what());
-	}
 }
 
 
@@ -977,12 +963,12 @@ LRESULT MainWindow::onFatalErrorMessage(WPARAM wParam, LPARAM lParam)
 
 void MainWindow::stopRearranger( )
 {
-	niawg.turnOffRearranger( );
+	niawg.turnOffRerng( );
 }
 
 void MainWindow::waitForRearranger( )
 {
-	niawg.waitForRearranger( );
+	niawg.waitForRerng( );
 }
 
 

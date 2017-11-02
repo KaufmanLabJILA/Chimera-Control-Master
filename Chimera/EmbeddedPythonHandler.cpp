@@ -12,34 +12,34 @@
 #include "SMSTextingControl.h"
 
 // constructor is important.
-EmbeddedPythonHandler::EmbeddedPythonHandler()
+EmbeddedPythonHandler::EmbeddedPythonHandler( )
 {
-	if (PYTHON_SAFEMODE)
+	if ( PYTHON_SAFEMODE )
 	{
 		return;
 	}
-	Py_SetPythonHome(PYTHON_HOME);
-	Py_Initialize();
+	Py_SetPythonHome( PYTHON_HOME );
+	Py_Initialize( );
 	std::string stdOutErr = "import sys\n"
-							"class CatchOutErr:\n"
-							"\tdef __init__(self):\n"
-							"\t\tself.value = ''\n"
-							"\tdef write(self, txt):\n"
-							"\t\tself.value += txt\n"
-							"catchOutErr = CatchOutErr()\n"
-							"sys.stderr = catchOutErr\n";
-	// create main module
-	mainModule = PyImport_AddModule("__main__"); 
+		"class CatchOutErr:\n"
+		"\tdef __init__(self):\n"
+		"\t\tself.value = ''\n"
+		"\tdef write(self, txt):\n"
+		"\t\tself.value += txt\n"
+		"catchOutErr = CatchOutErr()\n"
+		"sys.stderr = catchOutErr\n";
+	//create main module
+	mainModule = PyImport_AddModule( "__main__" );
 	//invoke code to redirect
-	PyRun_SimpleString(stdOutErr.c_str()); 
+	PyRun_SimpleString( stdOutErr.c_str( ) );
 	//get our catchOutErr object (of type CatchOutErr) created above
-	errorCatcher = PyObject_GetAttrString(mainModule, "catchOutErr"); 
+	errorCatcher = PyObject_GetAttrString( mainModule, "catchOutErr" );
 	// start using the run function.
-	ERR_POP(run("import smtplib"));
+	ERR_POP( run( "import smtplib" ) );
 	// for some reason the default qt based backed doesn't work
-	ERR_POP(run("from email.mime.text import MIMEText"));
+	ERR_POP( run( "from email.mime.text import MIMEText" ) );
 	ERR_POP( run( "import sys" ) );
-	ERR_POP(run("sys.path.append('" + PYTHON_CODE_LOCATION + "')" ) )
+	ERR_POP( run( "sys.path.append('" + PYTHON_CODE_LOCATION + "')" ) )
 	ERR_POP( run( "import plotDacs" ) );
 	ERR_POP( run( "import plotTtls" ) );
 }
@@ -47,12 +47,12 @@ EmbeddedPythonHandler::EmbeddedPythonHandler()
 
 void EmbeddedPythonHandler::flush()
 {
-	// this resets the value of the class object, meaning that it resets the error text inside it.
-	std::string flushMsg = "catchOutErr.__init__()";
 	if (PYTHON_SAFEMODE)
 	{
 		return;
 	}
+	// this resets the value of the class object, meaning that it resets the error text inside it.
+	std::string flushMsg = "catchOutErr.__init__()";
 	run(flushMsg, false);
 }
 
@@ -75,9 +75,7 @@ void EmbeddedPythonHandler::runPlotTtls( )
 void EmbeddedPythonHandler::runDataAnalysis( std::string date, long runNumber, long accumulations, 
 											 std::vector<coordinate> atomLocations)
 {
-	
 	/* I don't use this anymore, but keeping it around in case I want to do anything like this again. */
-	/*
 	// for full data analysis set.
 	flush();
 	if (autoAnalysisModule == NULL)
@@ -144,7 +142,7 @@ void EmbeddedPythonHandler::runDataAnalysis( std::string date, long runNumber, l
 	// def analyzeSingleLocation(date, runNumber, atomLocationRow, atomLocationColumn, picturesPerExperiment, accumulations, fileName) :
 	// hard-coded for now to 2. (might change or remove later...)
 	// pythonFunctionArguments, pythonPicturesPerExperiment
-	PyObject* pythonPicturesPerExperiment = PyLong_FromLong(2/*ePicturesPerRepetition*//*);
+	PyObject* pythonPicturesPerExperiment = PyLong_FromLong(2/*ePicturesPerRepetition*/);
 	if (pythonPicturesPerExperiment == NULL)
 	{
 		Py_DECREF(pythonFunctionArguments);
@@ -171,7 +169,6 @@ void EmbeddedPythonHandler::runDataAnalysis( std::string date, long runNumber, l
 	}
 	Py_DECREF(pythonReturnValue);
 	// finished successfully.
-	*/
 }
 
 
@@ -206,6 +203,7 @@ void EmbeddedPythonHandler::sendText(personInfo person, std::string msg, std::st
 	{
 		recipient += "@msg.fi.google.com";
 	}
+
 	ERR_POP_RETURN(run("email['To'] = '" + recipient + "'"));
 	ERR_POP_RETURN(run("mail = smtplib.SMTP('smtp.gmail.com', 587)"));
 	ERR_POP_RETURN(run("mail.ehlo()"));

@@ -2,6 +2,57 @@
 #include "PictureControl.h"
 
 
+
+/*
+* initialize all controls associated with single picture.
+*/
+void PictureControl::initialize( POINT& loc, CWnd* parent, int& id, int width, int height, std::array<UINT, 2> minMaxIds )
+{
+	if ( width < 100 )
+	{
+		throw std::invalid_argument( "Pictures must be greater than 100 in width because this is the size of the max/min"
+									 "controls." );
+	}
+	if ( height < 100 )
+	{
+		throw std::invalid_argument( "Pictures must be greater than 100 in height because this is the minimum height "
+									 "of the max/min controls." );
+	}
+
+	setPictureArea( loc, width, height );
+
+	loc.x += unscaledBackgroundArea.right - unscaledBackgroundArea.left;
+	// "min" text
+	labelMin.sPos = { loc.x, loc.y, loc.x + 50, loc.y + 30 };
+	labelMin.Create( "MIN", NORM_STATIC_OPTIONS, labelMin.sPos, parent, id++ );
+	// minimum number text
+	editMin.sPos = { loc.x, loc.y + 30, loc.x + 50, loc.y + 60 };
+	editMin.Create( NORM_EDIT_OPTIONS | ES_AUTOHSCROLL, editMin.sPos, parent, minMaxIds[0] );
+	// minimum slider
+	sliderMin.sPos = { loc.x, loc.y + 60, loc.x + 50, loc.y + unscaledBackgroundArea.bottom - unscaledBackgroundArea.top };
+	sliderMin.Create( NORM_CWND_OPTIONS | TBS_AUTOTICKS | TBS_VERT, sliderMin.sPos, parent, id++ );
+	sliderMin.SetRange( 0, 2000 );
+	sliderMin.SetPageSize( UINT( (minSliderPosition - minSliderPosition) / 10.0 ) );
+	// "max" text
+	labelMax.sPos = { loc.x + 50, loc.y, loc.x + 100, loc.y + 30 };
+	labelMax.Create( "MAX", NORM_STATIC_OPTIONS, labelMax.sPos, parent, id++ );
+	// maximum number text
+	editMax.sPos = { loc.x + 50, loc.y + 30, loc.x + 100, loc.y + 60 };
+	editMax.Create( NORM_EDIT_OPTIONS | ES_AUTOHSCROLL, editMax.sPos, parent, minMaxIds[1] );
+	// maximum slider
+	sliderMax.sPos = { loc.x + 50, loc.y + 60, loc.x + 100, loc.y + unscaledBackgroundArea.bottom - unscaledBackgroundArea.top };
+	sliderMax.Create( NORM_CWND_OPTIONS | TBS_AUTOTICKS | TBS_VERT, sliderMax.sPos, parent, id++ );
+	sliderMax.SetRange( 0, 2000 );
+	sliderMax.SetPageSize( int( (minSliderPosition - minSliderPosition) / 10.0 ) );
+	// reset this.
+	loc.x -= unscaledBackgroundArea.right - unscaledBackgroundArea.left;
+	// manually scroll the objects to initial positions.
+	handleScroll( sliderMin.GetDlgCtrlID( ), 95 );
+	handleScroll( sliderMax.GetDlgCtrlID( ), 395 );
+}
+
+
+
 bool PictureControl::isActive()
 {
 	return active;
@@ -196,54 +247,6 @@ void PictureControl::handleScroll(int id, UINT nPos)
 	}
 }
 
-/*
- * initialize all controls associated with single picture.
- */
-void PictureControl::initialize(POINT& loc, CWnd* parent, int& id, int width, int height, std::array<UINT, 2> minMaxIds)
-{
-	if (width < 100)
-	{
-		throw std::invalid_argument("Pictures must be greater than 100 in width because this is the size of the max/min"
-			"controls.");
-	}
-	if (height < 100)
-	{
-		throw std::invalid_argument("Pictures must be greater than 100 in height because this is the minimum height "
-			"of the max/min controls.");
-	}
-
-	setPictureArea( loc, width, height );
-
-	loc.x += unscaledBackgroundArea.right - unscaledBackgroundArea.left;
-	// "min" text
-	labelMin.sPos = { loc.x, loc.y, loc.x + 50, loc.y + 30 };
-	labelMin.Create("MIN", WS_CHILD | WS_VISIBLE | SS_CENTER, labelMin.sPos, parent, id++ );
-	// minimum number text
-	editMin.sPos = { loc.x, loc.y + 30, loc.x + 50, loc.y + 60 };
-	editMin.Create(WS_CHILD | WS_VISIBLE | SS_LEFT | ES_AUTOHSCROLL, editMin.sPos, parent, minMaxIds[0] );
-	// minimum slider
-	sliderMin.sPos = { loc.x, loc.y + 60, loc.x + 50, loc.y + unscaledBackgroundArea.bottom - unscaledBackgroundArea.top};
-	sliderMin.Create(WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS | TBS_VERT, sliderMin.sPos, parent, id++ );
-	sliderMin.SetRange(0, 2000);
-	sliderMin.SetPageSize(UINT((minSliderPosition - minSliderPosition)/10.0));
-	// "max" text
-	labelMax.sPos = { loc.x + 50, loc.y, loc.x + 100, loc.y + 30 };
-	labelMax.Create("MAX", WS_CHILD | WS_VISIBLE | SS_CENTER, labelMax.sPos, parent, id++ );
-	// maximum number text
-	editMax.sPos = { loc.x + 50, loc.y + 30, loc.x + 100, loc.y + 60 };
-	editMax.Create(WS_CHILD | WS_VISIBLE | SS_LEFT | ES_AUTOHSCROLL, editMax.sPos, parent, minMaxIds[1] );
-	// maximum slider
-	sliderMax.sPos = { loc.x + 50, loc.y + 60, loc.x + 100, loc.y + unscaledBackgroundArea.bottom - unscaledBackgroundArea.top};
-	sliderMax.Create(WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS | TBS_VERT, sliderMax.sPos, parent, id++ );
-	sliderMax.SetRange(0, 2000);
-	sliderMax.SetPageSize( int((minSliderPosition - minSliderPosition) / 10.0));
-	// reset this.
-	loc.x -= unscaledBackgroundArea.right - unscaledBackgroundArea.left;
-	// manually scroll the objects to initial positions.
-	handleScroll( sliderMin.GetDlgCtrlID(), 95);
-	handleScroll( sliderMax.GetDlgCtrlID(), 395);
-}
-
 
 /*
  * Recalculate the grid of pixels, which needs to be done e.g. when changing number of pictures or re-sizing the 
@@ -352,10 +355,11 @@ void PictureControl::resetStorage()
  * the camera window context since there's no direct control associated with the picture itself. Could probably change 
  * that.
  */
-void PictureControl::drawPicture(CDC* deviceContext, std::vector<long> picData, 
-								 std::tuple<bool, int/*min*/, int/*max*/> autoScaleInfo, bool specialMin, 
-								 bool specialMax)
+void PictureControl::drawPicture( CDC* deviceContext, std::vector<long> picData, 
+								  std::tuple<bool, int/*min*/, int/*max*/> autoScaleInfo, bool specialMin, 
+								  bool specialMax )
 {
+	/// initialize various structures
 	mostRecentImage = picData;
 	float yscale;
 	long colorRange;
@@ -376,27 +380,21 @@ void PictureControl::drawPicture(CDC* deviceContext, std::vector<long> picData,
 	mostRecentAutoscaleInfo = autoScaleInfo;
 	mostRecentSpecialMinSetting = specialMin;
 	mostRecentSpecialMaxSetting = specialMax;
-
-
-	double dTemp = 1;
 	int pixelsAreaWidth;
 	int pixelsAreaHeight;
 	int dataWidth, dataHeight;
-	int iTemp;
-	PBITMAPINFO pbmi;
+	PBITMAPINFO bitmapInfoPtr;
 	WORD argbq[PICTURE_PALETTE_SIZE];
 	BYTE *DataArray;
+	// this should probably be rewritten to use the deviceContext directly instead of this win32 style call.
 	// Rotated
-	SelectPalette( deviceContext->GetSafeHdc(), (HPALETTE)this->imagePalette, true );
+	SelectPalette( deviceContext->GetSafeHdc(), imagePalette, true );
 	RealizePalette( deviceContext->GetSafeHdc() );
-
 	pixelsAreaWidth = pictureArea.right - pictureArea.left + 1;
-	pixelsAreaHeight = pictureArea.bottom - pictureArea.top + 1;
-	
+	pixelsAreaHeight = pictureArea.bottom - pictureArea.top + 1;	
 	dataWidth = grid.size();
 	// assumes non-zero size...
 	dataHeight = grid[0].size();
-
 	// imageBoxWidth must be a multiple of 4, otherwise StretchDIBits has problems apparently T.T
 	if (pixelsAreaWidth % 4)
 	{
@@ -410,29 +408,20 @@ void PictureControl::drawPicture(CDC* deviceContext, std::vector<long> picData,
 		argbq[paletteIndex] = (WORD)paletteIndex;
 	}
 
-	//hloc = LocalAlloc(LMEM_ZEROINIT | LMEM_MOVEABLE, sizeof(BITMAPINFOHEADER) + (sizeof(WORD)*PICTURE_PALETTE_SIZE));
-	//hloc = LocalAlloc( LMEM_ZEROINIT | LMEM_MOVEABLE, sizeof( pbmi ) );
-	//hloc = LocalAlloc( LMEM_ZEROINIT | LMEM_MOVEABLE, sizeof( BITMAPINFOHEADER ));
-	//pbmi = (PBITMAPINFO)LocalLock(hloc);
-	pbmi = (PBITMAPINFO)LocalAlloc( LPTR,
-									sizeof( BITMAPINFOHEADER ) +
-									sizeof( RGBQUAD ) * (1 << 8) );
-	pbmi->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-	pbmi->bmiHeader.biPlanes = 1;
-	pbmi->bmiHeader.biBitCount = 8;
-	pbmi->bmiHeader.biCompression = BI_RGB;
-	pbmi->bmiHeader.biClrUsed = PICTURE_PALETTE_SIZE;
-	pbmi->bmiHeader.biSizeImage = 0;// ((pbmi->bmiHeader.biWidth * 8 + 31) & ~31) / 8 * pbmi->bmiHeader.biHeight;
-
-	pbmi->bmiHeader.biHeight = dataHeight;
-	memcpy(pbmi->bmiColors, argbq, sizeof(WORD) * PICTURE_PALETTE_SIZE);
-
-	//errBox( str( sizeof( DataArray ) / sizeof( DataArray[0] ) ) );
-	//DataArray = (BYTE*)malloc(dataWidth * dataHeight * sizeof(BYTE));
-	//memset(DataArray, 0, dataWidth * dataHeight);
-
+	bitmapInfoPtr = (PBITMAPINFO)LocalAlloc( LPTR, sizeof( BITMAPINFOHEADER ) + sizeof( RGBQUAD ) * (1 << 8) );
+	bitmapInfoPtr->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+	bitmapInfoPtr->bmiHeader.biPlanes = 1;
+	bitmapInfoPtr->bmiHeader.biBitCount = 8;
+	bitmapInfoPtr->bmiHeader.biCompression = BI_RGB;
+	bitmapInfoPtr->bmiHeader.biClrUsed = PICTURE_PALETTE_SIZE;
+	bitmapInfoPtr->bmiHeader.biSizeImage = 0;
+	bitmapInfoPtr->bmiHeader.biHeight = dataHeight;
+	memcpy(bitmapInfoPtr->bmiColors, argbq, sizeof(WORD) * PICTURE_PALETTE_SIZE);
 	DataArray = (BYTE*)malloc( (dataWidth * dataHeight) * sizeof( BYTE ) );
 	memset( DataArray, 255, (dataWidth * dataHeight) * sizeof( BYTE ) );
+	double tempDouble = 1;
+	int tempInteger;
+	/// convert image data to correspond to colors, i.e. convert to being between 0 and 255.
 	for (int heightInc = 0; heightInc < dataHeight; heightInc++)
 	{
 		for (int widthInc = 0; widthInc < dataWidth; widthInc++)
@@ -442,61 +431,64 @@ void PictureControl::drawPicture(CDC* deviceContext, std::vector<long> picData,
 			{
 				return;
 			}
-			dTemp = ceil(yscale * (picData[widthInc + heightInc * dataWidth] - minColor));
+			tempDouble = ceil(yscale * (picData[widthInc + heightInc * dataWidth] - minColor));
 
 			// interpret the value depending on the range of values it can take.
-			if (dTemp < 1)
+			if (tempDouble < 1)
 			{
 				// raise value to zero which is the floor of values this parameter can take.
 				if (specialMin)
 				{
 					// the absolute lowest color is a special color that doesn't match the rest of the pallete. 
 					// Typically a bright blue.
-					iTemp = 0;
+					tempInteger = 0;
 				}
 				else
 				{
-					iTemp = 1;
+					tempInteger = 1;
 				}
 			}
-			else if (dTemp > PICTURE_PALETTE_SIZE - 2)
+			else if (tempDouble > PICTURE_PALETTE_SIZE - 2)
 			{
 				// round to maximum value.
 				if (specialMax)
 				{
 					// the absolute highest color is a special color that doesn't match the rest of the pallete.
 					// typically a bright red.
-					iTemp = PICTURE_PALETTE_SIZE - 1;
+					tempInteger = PICTURE_PALETTE_SIZE - 1;
 				}
 				else
 				{
-					iTemp = PICTURE_PALETTE_SIZE - 2;
+					tempInteger = PICTURE_PALETTE_SIZE - 2;
 				}
 			}
 			else
 			{
 				// no rounding or flooring to min or max needed.
-				iTemp = (int)dTemp;
+				tempInteger = (int)tempDouble;
 			}
 			// store the value.
-			DataArray[widthInc + heightInc * dataWidth] = (BYTE)iTemp;
+			DataArray[widthInc + heightInc * dataWidth] = (BYTE)tempInteger;
 		}
 	}
+
 	SetStretchBltMode( deviceContext->GetSafeHdc(), COLORONCOLOR );
-	// eCurrentAccumulationNumber starts at 1.
+	// I think that this should be possible to do witha  std::vector<BYTE> and getting the pointer to that vector using
+	// .data() member.
 	BYTE *finalDataArray = NULL;
+	/// draw the final data.
+	// handle the 0 (simple), 2 and 1/3 cases separately, scaling the latter three so that the data width is a multiple
+	// of 4 pixels wide. There might be a faster way to do this. If you don't do this however, StretchDIBits fails in
+	// very strange ways.
 	switch (dataWidth)
 	{
 		case 0:
 		{
-			
-			//pixelsAreaHeight -= 1;
-			pbmi->bmiHeader.biWidth = dataWidth;
-			pbmi->bmiHeader.biSizeImage = 1;// pbmi->bmiHeader.biWidth * pbmi->bmiHeader.biHeight;// * sizeof( BYTE );
-			//memset( DataArray, 0, (dataWidth*dataHeight) * sizeof( *DataArray ) );
+			bitmapInfoPtr->bmiHeader.biWidth = dataWidth;
+			bitmapInfoPtr->bmiHeader.biSizeImage = 1;
 			StretchDIBits( deviceContext->GetSafeHdc(), pictureArea.left, pictureArea.top,
 						   pixelsAreaWidth, pixelsAreaHeight, 0, 0, dataWidth,
-						   dataHeight, DataArray, (BITMAPINFO FAR*)pbmi, DIB_PAL_COLORS, SRCCOPY );
+						   dataHeight, DataArray, (BITMAPINFO FAR*)bitmapInfoPtr, DIB_PAL_COLORS, SRCCOPY );
 			break;
 		}
 		case 2:
@@ -504,21 +496,21 @@ void PictureControl::drawPicture(CDC* deviceContext, std::vector<long> picData,
 			// make array that is twice as long.
 			finalDataArray = (BYTE*)malloc(dataWidth * dataHeight * 2);
 			memset(finalDataArray, 255, dataWidth * dataHeight * 2);
-
 			for (int dataInc = 0; dataInc < dataWidth * dataHeight; dataInc++)
 			{
 				finalDataArray[2 * dataInc] = DataArray[dataInc];
 				finalDataArray[2 * dataInc + 1] = DataArray[dataInc];
 			}
-			pbmi->bmiHeader.biWidth = dataWidth * 2;
-			StretchDIBits( *deviceContext, pictureArea.left, pictureArea.top, pixelsAreaWidth, pixelsAreaHeight, 0, 0, dataWidth * 2, dataHeight,
-						   finalDataArray, (BITMAPINFO FAR*)pbmi, DIB_PAL_COLORS, SRCCOPY );
+			bitmapInfoPtr->bmiHeader.biWidth = dataWidth * 2;
+			StretchDIBits( *deviceContext, pictureArea.left, pictureArea.top, pixelsAreaWidth, pixelsAreaHeight, 0, 0, 
+						   dataWidth * 2, dataHeight, finalDataArray, (BITMAPINFO FAR*)bitmapInfoPtr, DIB_PAL_COLORS, 
+						   SRCCOPY );
 			free(finalDataArray);
 			break;
 		}
 		default:
 		{
-			// make array that is 4X as long.
+			// scale by a factor of 4.
 			finalDataArray = (BYTE*)malloc(dataWidth * dataHeight * 4);
 			memset(finalDataArray, 255, dataWidth * dataHeight * 4);
 			for (int dataInc = 0; dataInc < dataWidth * dataHeight; dataInc++)
@@ -529,9 +521,9 @@ void PictureControl::drawPicture(CDC* deviceContext, std::vector<long> picData,
 				finalDataArray[4 * dataInc + 2] = data;
 				finalDataArray[4 * dataInc + 3] = data;
 			}
-			pbmi->bmiHeader.biWidth = dataWidth * 4;
+			bitmapInfoPtr->bmiHeader.biWidth = dataWidth * 4;
 			StretchDIBits( *deviceContext, pictureArea.left, pictureArea.top, pixelsAreaWidth, pixelsAreaHeight, 0, 0, dataWidth * 4, dataHeight,
-						   finalDataArray, (BITMAPINFO FAR*)pbmi, DIB_PAL_COLORS, SRCCOPY );
+						   finalDataArray, (BITMAPINFO FAR*)bitmapInfoPtr, DIB_PAL_COLORS, SRCCOPY );
 			free(finalDataArray);
 			break;
 		}

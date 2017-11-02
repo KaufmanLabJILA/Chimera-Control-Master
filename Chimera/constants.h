@@ -1,6 +1,8 @@
 #pragma once
 
 #include "stdafx.h"
+#include "agilentStructures.h"
+#include "miscellaneousCommonFunctions.h"
 #include "niFgen.h"
 #include <string>
 #include "miscellaneousCommonFunctions.h"
@@ -68,13 +70,15 @@
 	#define EO_AXIAL_TEK_USB_ADDRESS "USB0::0x0699::0x034C::C010386::0::INSTR"
 	#define TOP_BOTTOM_AGILENT_SAFEMODE true
 	#define TOP_BOTTOM_AGILENT_USB_ADDRESS "USB0::0x0957::0x2307::MY50002574::0::INSTR"
-	#define UWAVE_AXIAL_AGILENT_SAFEMODE true
-	#define UWAVE_AXIAL_AGILENT_USB_ADDRESS "USB0::0x0957::0x2C07::MY52810615::0::INSTR"
+	#define AXIAL_AGILENT_SAFEMODE true
+	#define AXIAL_AGILENT_USB_ADDRESS "USB0::0x0957::0x2C07::MY52810615::0::INSTR"
 	#define INTENSITY_SAFEMODE true
 	#define INTENSITY_AGILENT_USB_ADDRESS "USB0::0x0957::0x2307::MY50004500::0::INSTR"
 	#define FLASHING_SAFEMODE true
 	#define FLASHING_AGILENT_USB_ADDRESS "USB0::0x0957::0x2307::MY50003003::0::INSTR"
 	#define TESTING_AGILENT_USB_ADDRESS "USB0::0x0957::0x2C07::MY52801397::0::INSTR"
+	#define UWAVE_SAFEMODE true
+	#define UWAVE_AGILENT_USB_ADDRESS "USB0::0x0957::0x2C07::MY52801397::0::INSTR"
 
 	const std::string PROJECT_LOCATION = "C:\\Users\\Mark-Brown\\Chimera-Control\\";
 	const std::string PYTHON_CODE_LOCATION = "C:/Users/Mark-Brown/Chimera-Control/Chimera";
@@ -94,8 +98,8 @@
 	const std::string NIAWG_WAVEFORM_OUTPUT_LOCATION = TIMING_OUTPUT_LOCATION;
 #endif
 
-#ifdef MASTER_COMPUTER
 
+#ifdef MASTER_COMPUTER
 	#define NIAWG_SAFEMODE false
 	#define ANDOR_SAFEMODE false
 	#define PYTHON_SAFEMODE false
@@ -108,12 +112,15 @@
 	#define EO_AXIAL_TEK_USB_ADDRESS "USB0::0x0699::0x034C::C010386::0::INSTR"
 	#define TOP_BOTTOM_AGILENT_SAFEMODE false
 	#define TOP_BOTTOM_AGILENT_USB_ADDRESS "USB0::0x0957::0x2307::MY50002574::0::INSTR"
-	#define UWAVE_AXIAL_AGILENT_SAFEMODE false
-	#define UWAVE_AXIAL_AGILENT_USB_ADDRESS "USB0::0x0957::0x2C07::MY52810615::0::INSTR"
+	#define AXIAL_AGILENT_SAFEMODE false
+	#define AXIAL_AGILENT_USB_ADDRESS "USB0::0x0957::0x2C07::MY52810615::0::INSTR"
 	#define INTENSITY_SAFEMODE false
 	#define INTENSITY_AGILENT_USB_ADDRESS "USB0::0x0957::0x2307::MY50004500::0::INSTR"
 	#define FLASHING_SAFEMODE false
 	#define FLASHING_AGILENT_USB_ADDRESS "USB0::0x0957::0x2307::MY50003003::0::INSTR"
+	#define UWAVE_SAFEMODE false
+	#define UWAVE_AGILENT_USB_ADDRESS "USB0::0x0957::0x2C07::MY52801397::0::INSTR"
+
 
 	#define PYTHON_HOME L"C:\\Program Files (x86)\\Anaconda3\\"
 
@@ -162,14 +169,6 @@
 // in hertz
 #define NIAWG_FILTER_FREQENCY 80000000
 
-#define CONFIG_EXTENSION ".Config"
-#define EXPERIMENT_EXTENSION ".eConfig"
-#define CATEGORY_EXTENSION ".catConfig"
-#define SEQUENCE_EXTENSION ".sConfig"
-
-#define AGILENT_SCRIPT_EXTENSION ".aScript"
-#define NIAWG_SCRIPT_EXTENSION ".nScript"
-
 //
 #define PICTURE_PALETTE_SIZE 256
 #define RAW_COUNTS "Raw Counts"
@@ -178,10 +177,6 @@
 
 
 /// Agilent Parameters
-// sample rate is typically 1 MS/s.
-#define AGILENT_SAMPLE_RATE 100000
-#define AGILENT_FILTER_STATE "OFF"
-#define AGILENT_LOAD "INF"
 #define AGILENT_DEFAULT_POWER 3.5
 
 #define NUMBER_OF_LIBRARY_FILES MAX_NIAWG_SIGNALS*4
@@ -222,28 +217,25 @@ const char * const SERVER_ADDRESS = "192.168.236.1";
 // the controls of interest, there are throw statements that stop the program early on if an ID doesn't match, so 
 // you don't have to worry about these things so much.
 
-// there's got to 
-
 // Main Window
-#define IDC_MAIN_STATUS_BUTTON 11001
-#define IDC_ERROR_STATUS_BUTTON 11002
-#define IDC_DEBUG_STATUS_BUTTON 11003
-#define IDC_EXPERIMENT_COMBO 11004
-#define IDC_CATEGORY_COMBO 11005
-#define IDC_CONFIGURATION_COMBO 11006
+#define IDC_MAIN_STATUS_BUTTON 11000
+#define IDC_ERROR_STATUS_BUTTON 11001
+#define IDC_DEBUG_STATUS_BUTTON 11002
+#define IDC_EXPERIMENT_COMBO 11003
+#define IDC_CATEGORY_COMBO 11004
+#define IDC_CONFIGURATION_COMBO 11005
+#define IDC_SELECT_CONFIG_COMBO 11006
 #define IDC_SEQUENCE_COMBO 11007
 #define IDC_MAIN_OPTIONS_RANGE_BEGIN 11008
 #define IDC_MAIN_OPTIONS_RANGE_END 11009
 #define IDC_DEBUG_OPTIONS_RANGE_BEGIN 11010
-#define IDC_DEBUG_OPTIONS_RANGE_END 11017
-#define IDC_SHOW_TTLS 11018
-#define IDC_SHOW_DACS 11019
-#define IDC_SMS_TEXTING_LISTVIEW 10020
-#define IDC_EXPERIMENT_NOTES 10021
-#define IDC_CATEGORY_NOTES 10022
-#define IDC_CONFIGURATION_NOTES 10023
-#define IDC_REPETITION_EDIT 10024
-#define IDC_ENTER_EMAIL_INFO 10025
+#define IDC_DEBUG_OPTIONS_RANGE_END 11018
+#define IDC_SHOW_TTLS 11019
+#define IDC_SHOW_DACS 11020
+#define IDC_SMS_TEXTING_LISTVIEW 10021
+#define IDC_CONFIGURATION_NOTES 10022
+#define IDC_REPETITION_EDIT 10023
+#define IDC_ENTER_EMAIL_INFO 10024
 // Scripting Window
 #define IDC_VERTICAL_NIAWG_FUNCTION_COMBO 12001
 #define IDC_VERTICAL_NIAWG_EDIT 12002
@@ -271,7 +263,7 @@ const char * const SERVER_ADDRESS = "192.168.236.1";
 #define IDC_TRIGGER_COMBO 23007
 #define IDC_SET_TEMPERATURE_BUTTON 23008
 #define PICTURE_SETTINGS_ID_START 23009
-#define PICTURE_SETTINGS_ID_END 23044
+#define PICTURE_SETTINGS_ID_END 23034
 // #define IDC_SET_IMAGE_PARAMETERS_BUTTON 23045
 #define IDC_SET_REPETITONS_PER_VARIATION_BUTTON 23046
 #define IDC_SET_VARIATION_NUMBER 23047
@@ -320,13 +312,13 @@ const char * const SERVER_ADDRESS = "192.168.236.1";
 #define IDC_TOP_BOTTOM_FUNCTION_COMBO 14111
 #define IDC_TOP_BOTTOM_EDIT 14112
 #define IDC_TOP_BOTTOM_PROGRAM 14113
-#define IDC_AXIAL_UWAVE_CHANNEL1_BUTTON 14114
-#define IDC_AXIAL_UWAVE_CHANNEL2_BUTTON 14115
-#define IDC_AXIAL_UWAVE_SYNC_BUTTON 14116
-#define IDC_AXIAL_UWAVE_AGILENT_COMBO 14117
-#define IDC_AXIAL_UWAVE_FUNCTION_COMBO 14118
-#define IDC_AXIAL_UWAVE_EDIT 14119
-#define IDC_AXIAL_UWAVE_PROGRAM 14120
+#define IDC_AXIAL_CHANNEL1_BUTTON 14114
+#define IDC_AXIAL_CHANNEL2_BUTTON 14115
+#define IDC_AXIAL_SYNC_BUTTON 14116
+#define IDC_AXIAL_AGILENT_COMBO 14117
+#define IDC_AXIAL_FUNCTION_COMBO 14118
+#define IDC_AXIAL_EDIT 14119
+#define IDC_AXIAL_PROGRAM 14120
 #define IDC_FLASHING_CHANNEL1_BUTTON 14121
 #define IDC_FLASHING_CHANNEL2_BUTTON 14122
 #define IDC_FLASHING_SYNC_BUTTON 14123
@@ -334,13 +326,88 @@ const char * const SERVER_ADDRESS = "192.168.236.1";
 #define IDC_FLASHING_FUNCTION_COMBO 14125
 #define IDC_FLASHING_EDIT 14126
 #define IDC_FLASHING_PROGRAM 14127
+#define IDC_UWAVE_CHANNEL1_BUTTON 14128
+#define IDC_UWAVE_CHANNEL2_BUTTON 14129
+#define IDC_UWAVE_SYNC_BUTTON 14130
+#define IDC_UWAVE_AGILENT_COMBO 14131
+#define IDC_UWAVE_FUNCTION_COMBO 14132
+#define IDC_UWAVE_EDIT 14133
+#define IDC_UWAVE_PROGRAM 14134
 //
-#define IDC_GLOBAL_VARS_LISTVIEW 14128
-#define IDC_CONFIG_VARS_LISTVIEW 14129
-#define IDC_TOP_BOTTOM_CALIBRATION_BUTTON 14130
-#define IDC_AXIAL_UWAVE_CALIBRATION_BUTTON 14131
-#define IDC_FLASHING_CALIBRATION_BUTTON 14132
-#define IDC_INTENSITY_CALIBRATION_BUTTON 14133
+#define IDC_GLOBAL_VARS_LISTVIEW 14135
+#define IDC_CONFIG_VARS_LISTVIEW 14136
+#define IDC_TOP_BOTTOM_CALIBRATION_BUTTON 14137
+#define IDC_AXIAL_CALIBRATION_BUTTON 14138
+#define IDC_FLASHING_CALIBRATION_BUTTON 14139
+#define IDC_INTENSITY_CALIBRATION_BUTTON 14140
+#define IDC_UWAVE_CALIBRATION_BUTTON 14141
+
+#define UWAVE_AGILENT_TRIGGER_ROW 3
+#define UWAVE_AGILENT_TRIGGER_NUM 1
+#define TOP_BOTTOM_AGILENT_TRIGGER_ROW 0
+#define TOP_BOTTOM_AGILENT_TRIGGER_NUM 13
+#define AXIAL_AGILENT_TRIGGER_ROW 3
+#define AXIAL_AGILENT_TRIGGER_NUM 3
+#define FLASHING_AGILENT_TRIGGER_ROW 0
+#define FLASHING_AGILENT_TRIGGER_NUM 0
+#define INTENSITY_AGILENT_TRIGGER_ROW 1
+#define INTENSITY_AGILENT_TRIGGER_NUM 6
+
+
+const agilentSettings UWAVE_AGILENT_SETTINGS = { 
+												// safemode option											
+												UWAVE_SAFEMODE, 
+												// usb address
+												UWAVE_AGILENT_USB_ADDRESS,
+												// sample rate (Hz)
+												10e6, 
+												// impedance (ohms, or inf)
+												"50", 
+												// the output filter state (controls rounding & overshoot issues 
+												// between samples)
+												"NORMal",
+												// Memory location, whether the device will save waveforms to 
+												// the internal 64MB Memory buffer or to an external USB drive, which
+												// can (obviously) have much more space.f
+												"INT",
+												// various control IDs (no need to change)
+												 IDC_UWAVE_CHANNEL1_BUTTON, IDC_UWAVE_CHANNEL2_BUTTON, 
+												 IDC_UWAVE_SYNC_BUTTON, IDC_UWAVE_AGILENT_COMBO,
+												 IDC_UWAVE_FUNCTION_COMBO, IDC_UWAVE_EDIT, IDC_UWAVE_PROGRAM, 
+												 IDC_UWAVE_CALIBRATION_BUTTON,
+												 UWAVE_AGILENT_TRIGGER_ROW, UWAVE_AGILENT_TRIGGER_NUM };
+
+const agilentSettings TOP_BOTTOM_AGILENT_SETTINGS = { TOP_BOTTOM_AGILENT_SAFEMODE, TOP_BOTTOM_AGILENT_USB_ADDRESS,
+													  1e6, "INF", "NORMal", "INT",
+													  IDC_TOP_BOTTOM_CHANNEL1_BUTTON, IDC_TOP_BOTTOM_CHANNEL2_BUTTON,
+													  IDC_TOP_BOTTOM_SYNC_BUTTON, IDC_TOP_BOTTOM_AGILENT_COMBO,
+													  IDC_TOP_BOTTOM_FUNCTION_COMBO, IDC_TOP_BOTTOM_EDIT, 
+													  IDC_TOP_BOTTOM_PROGRAM, IDC_TOP_BOTTOM_CALIBRATION_BUTTON,
+													  TOP_BOTTOM_AGILENT_TRIGGER_ROW, TOP_BOTTOM_AGILENT_TRIGGER_NUM };
+
+const agilentSettings AXIAL_AGILENT_SETTINGS = { AXIAL_AGILENT_SAFEMODE, AXIAL_AGILENT_USB_ADDRESS,
+												 1e6, "INF", "NORMal", "INT",
+												 IDC_AXIAL_CHANNEL1_BUTTON, IDC_AXIAL_CHANNEL2_BUTTON,
+												 IDC_AXIAL_SYNC_BUTTON, IDC_AXIAL_AGILENT_COMBO,
+												 IDC_AXIAL_FUNCTION_COMBO, IDC_AXIAL_EDIT, IDC_AXIAL_PROGRAM,
+												 IDC_AXIAL_CALIBRATION_BUTTON,
+												 AXIAL_AGILENT_TRIGGER_ROW, AXIAL_AGILENT_TRIGGER_NUM };
+
+const agilentSettings FLASHING_AGILENT_SETTINGS = { FLASHING_SAFEMODE, FLASHING_AGILENT_USB_ADDRESS,
+													1e6, "INF", "NORMal", "INT",
+													IDC_FLASHING_CHANNEL1_BUTTON, IDC_FLASHING_CHANNEL2_BUTTON,
+													IDC_FLASHING_SYNC_BUTTON, IDC_FLASHING_AGILENT_COMBO,
+													IDC_FLASHING_FUNCTION_COMBO, IDC_FLASHING_EDIT, 
+													IDC_FLASHING_PROGRAM, IDC_FLASHING_CALIBRATION_BUTTON,
+													FLASHING_AGILENT_TRIGGER_ROW, FLASHING_AGILENT_TRIGGER_NUM };
+
+const agilentSettings INTENSITY_AGILENT_SETTINGS = { INTENSITY_SAFEMODE, INTENSITY_AGILENT_USB_ADDRESS,
+													 1e6, "INF", "NORMal", "USB",
+													 IDC_INTENSITY_CHANNEL1_BUTTON, IDC_INTENSITY_CHANNEL2_BUTTON,
+													 IDC_INTENSITY_SYNC_BUTTON, IDC_INTENSITY_AGILENT_COMBO,
+													 IDC_INTENSITY_FUNCTION_COMBO, IDC_INTENSITY_EDIT,
+													 IDC_INTENSITY_PROGRAM, IDC_INTENSITY_CALIBRATION_BUTTON,
+													 INTENSITY_AGILENT_TRIGGER_ROW, INTENSITY_AGILENT_TRIGGER_NUM };
 
 // plot designer
 #define IDC_GENERAL_PLOT_TYPE 15008
@@ -367,16 +434,13 @@ const char * const SERVER_ADDRESS = "192.168.236.1";
 #define LORENTZIAN_FIT 16006
 #define SINE_FIT 16007
 
-#define MASTER_SCRIPT_EXTENSION ".mScript"
-#define NIAWG_SCRIPT_EXTENSION ".nScript"
-#define AGILENT_SCRIPT_EXTENSION ".aScript"
-#define HORIZONTAL_EXTENSION ".hConfig"
-#define VERTICAL_EXTENSION ".vConfig"
-#define EXPERIMENT_EXTENSION ".eConfig"
-#define CATEGORY_EXTENSION ".catConfig"
-#define SEQUENCE_EXTENSION ".sConfig"
-#define FUNCTION_EXTENSION ".func"
-#define PLOTTING_EXTENSION ".plot"
+#define MASTER_SCRIPT_EXTENSION "mScript"
+#define NIAWG_SCRIPT_EXTENSION "nScript"
+#define AGILENT_SCRIPT_EXTENSION "aScript"
+#define CONFIG_EXTENSION "Config"
+#define SEQUENCE_EXTENSION "sConfig"
+#define FUNCTION_EXTENSION "func"
+#define PLOTTING_EXTENSION "plot"
 
 #define OSCILLOSCOPE_TRIGGER "C11"
 
@@ -395,8 +459,10 @@ const float MAX_GAIN = 5.0; // Current Value: 5
 // help text
 const char AGILENT_INFO_TEXT[] = ">>> Scripted Agilent Waveform Help <<<\n"
 "Accepted Commands (syntax for command is encased in <>)\n"
-"- hold <val(V)> <time(ms)> <Continuation Type> <Possibly Repeat #> <#>\n"
-"- ramp <rampType> <initVal(V)> <finVal(V)> <time(ms)> <Continuation Type> <Possibly Repeat #> <#>\n"
+"- hold <val> <time(ms)> <Continuation Type> <Possibly Repeat #> <#>\n"
+"- ramp <type> <initVal> <finVal(V)> <time(ms)> <Continuation Type> <Possibly Repeat #> <#>\n"
+"- pulse <pulse type> <offset> <amp> <pulse-width> <time(ms)> <Continuation Type> <Possibly Repeat #> <#>\n"
+"- modPulse <pulse-type> <offset> <amp> <pulse-width> <mod-Freq(MHz)> <mod-Phase(Rad)> <time(ms)> <Continuation Type> <Repeat #>\n"
 "The continuation type determines what the agilent does when it reaches the end of the <time> \n"
 "argument. Accepted Values for the continuation type are:\n"
 "- repeat <requires repeat #>\n"
@@ -407,7 +473,11 @@ const char AGILENT_INFO_TEXT[] = ">>> Scripted Agilent Waveform Help <<<\n"
 "Accepted ramp types are:\n"
 "- nr (no ramp)\n"
 "- lin\n"
-"- tanh\n";
+"- tanh\n"
+"Accepted pulse types are:\n"
+"- sech, ~ sech(time/width)\n"
+"- gaussian, width = gaussian sigma\n"
+"- lorentzian, width = FWHM (curve is normalized)\n";
 
 
 //

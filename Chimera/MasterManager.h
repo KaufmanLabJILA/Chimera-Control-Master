@@ -3,12 +3,9 @@
 #include "DioSystem.h"
 #include "DacSystem.h"
 #include "VariableSystem.h"
-#include "RichEditControl.h"
-#include "KeyHandler.h"
-#include "SocketWrapper.h"
 #include "RhodeSchwarz.h"
 #include "GpibFlume.h"
-#include "DebuggingOptionsControl.h"
+#include "DebugOptionsControl.h"
 #include "ScriptStream.h"
 #include "Agilent.h"
 #include "commonTypes.h"
@@ -18,65 +15,17 @@
 #include "DataLogger.h"
 #include "atomCruncherInput.h"
 #include "realTimePlotterInput.h"
-#include "rearrangeParams.h"
+#include "rerngParams.h"
 #include "commonTypes.h"
-#include "nidaqmx2.h"
 #include "EmbeddedPythonHandler.h"
+#include "MasterThreadInput.h"
+#include "nidaqmx2.h"
 #include <string>
 #include <vector>
 #include <sstream>
 #include <mutex>
 
-
 class MasterManager;
-
-struct MasterThreadInput
-{
-	EmbeddedPythonHandler* python;
-	DataLogger* logger;
-	profileSettings profile;
-	DioSystem* ttls;											
-	DacSystem* dacs;
-	UINT repetitionNumber;
-	std::vector<variableType> variables;
-	MasterManager* thisObj;
-	KeyHandler* key;
-	std::string masterScriptAddress;
-	Communicator* comm;
-	RhodeSchwarz* rsg;
-	debugInfo debugOptions;
-	std::vector<Agilent*> agilents;
-	TektronicsControl* topBottomTek;
-	TektronicsControl* eoAxialTek;
-	VariableSystem* globalControl;
-	NiawgController* niawg;
-	UINT intensityAgilentNumber;
-	bool quiet;
-	mainOptions settings;
-	bool runNiawg;
-	bool runMaster;
-	// only for rearrangement.
-	std::mutex* rearrangerLock;
-	std::vector<std::vector<bool>>* atomQueueForRearrangement;
-	chronoTimes* andorsImageTimes;
-	chronoTimes* grabTimes;
-	std::condition_variable* conditionVariableForRearrangement;
-	rearrangeParams rearrangeInfo;
-
-};
-
-
-struct ExperimentInput
-{
-	ExperimentInput::ExperimentInput() : 
-		includesCameraRun(false), masterInput(NULL), plotterInput(NULL), cruncherInput(NULL){ }
-	MasterThreadInput* masterInput;
-	realTimePlotterInput* plotterInput;
-	atomCruncherInput* cruncherInput;
-	AndorRunSettings camSettings;
-	bool includesCameraRun;
-};
-
 
 class MasterManager
 {
@@ -96,7 +45,6 @@ class MasterManager
 		// this function needs the mastewindow in order to gather the relevant parameters for the experiment.
 		void startExperimentThread(MasterThreadInput* input);
 		void loadMotSettings(MasterThreadInput* input);
-		void loadVariables(std::vector<variableType> newVariables);
 		bool runningStatus();
 		bool isValidWord(std::string word);
 		bool getAbortStatus();
@@ -105,11 +53,13 @@ class MasterManager
 		static UINT __cdecl experimentThreadProcedure(void* voidInput);
 		static void expUpdate(std::string text, Communicator* comm, bool quiet = false);
 		static void analyzeFunctionDefinition(std::string defLine, std::string& functionName, std::vector<std::string>& args);
-		static UINT determineVariationNumber(std::vector<variableType> vars, key tempKey);
+		static UINT determineVariationNumber(std::vector<variableType> vars);
 		static void handleDebugPlots( debugInfo debugOptions, Communicator* comm, DioSystem* ttls, DacSystem* dacs,
 									  bool quiet, EmbeddedPythonHandler* python );
-
+		static double convertToTime( timeType time, std::vector<variableType> variables, UINT variation );
 	private:
+		timeType loadSkipTime;
+		std::vector<double> loadSkipTimes;
 		void callCppCodeFunction();
 		// the master script file contents get dumped into this.
 		std::string currentFunctionText;

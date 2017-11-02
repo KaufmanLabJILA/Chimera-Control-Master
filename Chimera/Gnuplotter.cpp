@@ -9,7 +9,6 @@ void Gnuplotter::send(std::string cmd)
 	plotter << (cmd + "\n").c_str();
 }
 
-
 // could prob make the following template function overloads instead of having double, but this works fine for now.
 void Gnuplotter::sendData(std::vector<double> vals)
 {
@@ -17,9 +16,22 @@ void Gnuplotter::sendData(std::vector<double> vals)
 }
 
 
+void Gnuplotter::sendData( std::deque<double> vals )
+{
+	plotter.send1d( vals );
+}
+
+
+
 void Gnuplotter::sendData(std::vector<long> vals)
 {
 	plotter.send1d(vals);
+}
+
+
+void Gnuplotter::sendData( std::vector<int> xvals, std::vector<ULONG> yvals )
+{
+	plotter.send1d( boost::make_tuple( xvals, yvals ) );
 }
 
 

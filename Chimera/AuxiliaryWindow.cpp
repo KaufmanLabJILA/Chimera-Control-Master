@@ -5,45 +5,51 @@
 #include "DacSettingsDialog.h"
 #include "TextPromptDialog.h"
 #include "DioSystem.h"
-#include "explorerOpen.h"
 #include "commonFunctions.h"
 #include "openWithExplorer.h"
-#include "saveTextFileFromEdit.h"
+#include "saveWithExplorer.h"
+#include "agilentStructures.h"
 
 AuxiliaryWindow::AuxiliaryWindow() : CDialog(), 
-									 topBottomAgilent(TOP_BOTTOM_AGILENT_SAFEMODE, TOP_BOTTOM_AGILENT_USB_ADDRESS),								
-									 uWaveAxialAgilent(UWAVE_AXIAL_AGILENT_SAFEMODE, UWAVE_AXIAL_AGILENT_USB_ADDRESS), 
-									 flashingAgilent(FLASHING_SAFEMODE, FLASHING_AGILENT_USB_ADDRESS), 
 									 topBottomTek(TOP_BOTTOM_TEK_SAFEMODE, TOP_BOTTOM_TEK_USB_ADDRESS), 
-									 eoAxialTek(EO_AXIAL_TEK_SAFEMODE, EO_AXIAL_TEK_USB_ADDRESS)
-{ 
-}
+									 eoAxialTek(EO_AXIAL_TEK_SAFEMODE, EO_AXIAL_TEK_USB_ADDRESS),
+									 agilents{ TOP_BOTTOM_AGILENT_SETTINGS, AXIAL_AGILENT_SETTINGS,
+												FLASHING_AGILENT_SETTINGS, UWAVE_AGILENT_SETTINGS }
+{}
+
 
 IMPLEMENT_DYNAMIC( AuxiliaryWindow, CDialog )
 
-BEGIN_MESSAGE_MAP( AuxiliaryWindow, CDialog )
-	
-	ON_WM_TIMER()
 
-	ON_WM_CTLCOLOR()
-	ON_WM_SIZE()
-	
-	ON_COMMAND_RANGE( MENU_ID_RANGE_BEGIN, MENU_ID_RANGE_END, &AuxiliaryWindow::passCommonCommand)
+BEGIN_MESSAGE_MAP( AuxiliaryWindow, CDialog )
+
+	ON_WM_TIMER( )
+
+	ON_WM_CTLCOLOR( )
+	ON_WM_SIZE( )
+
+	ON_COMMAND_RANGE( MENU_ID_RANGE_BEGIN, MENU_ID_RANGE_END, &AuxiliaryWindow::passCommonCommand )
 	ON_COMMAND_RANGE( TTL_ID_BEGIN, TTL_ID_END, &AuxiliaryWindow::handleTtlPush )
 
 	ON_COMMAND( TTL_HOLD, &handlTtlHoldPush )
 	ON_COMMAND( ID_DAC_SET_BUTTON, &SetDacs )
 	ON_COMMAND( IDC_ZERO_TTLS, &zeroTtls )
 	ON_COMMAND( IDC_ZERO_DACS, &zeroDacs )
-	ON_COMMAND( IDOK, &handleEnter)
+	ON_COMMAND( IDOK, &handleEnter )
 	ON_COMMAND( TOP_BOTTOM_PROGRAM, &passTopBottomTekProgram )
 	ON_COMMAND( EO_AXIAL_PROGRAM, &passEoAxialTekProgram )
+
+	ON_COMMAND_RANGE( IDC_TOP_BOTTOM_CHANNEL1_BUTTON, IDC_UWAVE_PROGRAM, &AuxiliaryWindow::handleAgilentOptions )
+	ON_COMMAND_RANGE( TOP_ON_OFF, AXIAL_FSK, &AuxiliaryWindow::handleTektronicsButtons )
 	
-	ON_COMMAND_RANGE( IDC_TOP_BOTTOM_CHANNEL1_BUTTON, IDC_FLASHING_PROGRAM, &AuxiliaryWindow::handleAgilentOptions )
-	ON_COMMAND_RANGE( TOP_ON_OFF, AXIAL_FSK, &AuxiliaryWindow::handleTektronicsButtons )	
-	ON_CBN_SELENDOK( IDC_TOP_BOTTOM_AGILENT_COMBO, &AuxiliaryWindow::handleTopBottomAgilentCombo )
- 	ON_CBN_SELENDOK( IDC_AXIAL_UWAVE_AGILENT_COMBO, &AuxiliaryWindow::handleAxialUWaveAgilentCombo )
- 	ON_CBN_SELENDOK( IDC_FLASHING_AGILENT_COMBO, &AuxiliaryWindow::handleFlashingAgilentCombo )	
+	ON_CONTROL_RANGE( CBN_SELENDOK, IDC_TOP_BOTTOM_AGILENT_COMBO, IDC_TOP_BOTTOM_AGILENT_COMBO, 
+					  &AuxiliaryWindow::handleAgilentCombo )
+	ON_CONTROL_RANGE( CBN_SELENDOK, IDC_AXIAL_AGILENT_COMBO, IDC_AXIAL_AGILENT_COMBO, 
+					  &AuxiliaryWindow::handleAgilentCombo )
+	ON_CONTROL_RANGE( CBN_SELENDOK, IDC_FLASHING_AGILENT_COMBO, IDC_FLASHING_AGILENT_COMBO, 
+					  &AuxiliaryWindow::handleAgilentCombo )
+	ON_CONTROL_RANGE( CBN_SELENDOK, IDC_UWAVE_AGILENT_COMBO, IDC_UWAVE_AGILENT_COMBO, 
+					  &AuxiliaryWindow::handleAgilentCombo )
 
 	ON_CONTROL_RANGE( EN_CHANGE, ID_DAC_FIRST_EDIT, (ID_DAC_FIRST_EDIT + 23), &AuxiliaryWindow::DacEditChange )
 	ON_NOTIFY( LVN_COLUMNCLICK, IDC_CONFIG_VARS_LISTVIEW, &AuxiliaryWindow::ConfigVarsColumnClick )
@@ -54,298 +60,156 @@ BEGIN_MESSAGE_MAP( AuxiliaryWindow, CDialog )
 	ON_NOTIFY( NM_RCLICK, IDC_GLOBAL_VARS_LISTVIEW, &AuxiliaryWindow::GlobalVarRClick )
 	ON_NOTIFY_RANGE( NM_CUSTOMDRAW, IDC_GLOBAL_VARS_LISTVIEW, IDC_GLOBAL_VARS_LISTVIEW, &AuxiliaryWindow::drawVariables )
 	ON_NOTIFY_RANGE( NM_CUSTOMDRAW, IDC_CONFIG_VARS_LISTVIEW, IDC_CONFIG_VARS_LISTVIEW, &AuxiliaryWindow::drawVariables )
+	
+	ON_CONTROL_RANGE( EN_CHANGE, IDC_TOP_BOTTOM_EDIT, IDC_TOP_BOTTOM_EDIT, &AuxiliaryWindow::handleAgilentEditChange )
+	ON_CONTROL_RANGE( EN_CHANGE, IDC_FLASHING_EDIT, IDC_FLASHING_EDIT, &AuxiliaryWindow::handleAgilentEditChange )
+	ON_CONTROL_RANGE( EN_CHANGE, IDC_AXIAL_EDIT, IDC_AXIAL_EDIT, &AuxiliaryWindow::handleAgilentEditChange )
+	ON_CONTROL_RANGE( EN_CHANGE, IDC_UWAVE_EDIT, IDC_UWAVE_EDIT, &AuxiliaryWindow::handleAgilentEditChange )
 
-	ON_EN_CHANGE( IDC_TOP_BOTTOM_EDIT, &AuxiliaryWindow::handleTopBottomEditChange )
-	ON_EN_CHANGE( IDC_FLASHING_EDIT, &AuxiliaryWindow::handleFlashingEditChange )
-	ON_EN_CHANGE( IDC_AXIAL_UWAVE_EDIT, &AuxiliaryWindow::handleAxialUwaveEditChange )
-
-	//ON_COMMAND( ID_ACCELERATOR40121, &AuxiliaryWindow::OnAccelerator40121 )
 END_MESSAGE_MAP()
 
 
-void AuxiliaryWindow::newTopBottomAgilentScript()
+void AuxiliaryWindow::newAgilentScript( agilentNames name)
 {
 	try
 	{
-		topBottomAgilent.checkSave( mainWindowFriend->getProfileSettings().categoryPath, mainWindowFriend->getRunInfo() );
-		topBottomAgilent.agilentScript.newScript( );
 		mainWindowFriend->updateConfigurationSavedStatus( false );
-		topBottomAgilent.agilentScript.updateScriptNameText( mainWindowFriend->getProfileSettings().categoryPath );
-		topBottomAgilent.agilentScript.colorEntireScript( getAllVariables(), mainWindowFriend->getRgbs(),
-														  getTtlNames(), getDacNames() );
+		agilents[name].checkSave( mainWindowFriend->getProfileSettings( ).categoryPath, mainWindowFriend->getRunInfo( ) );
+		agilents[name].agilentScript.newScript( );
+		agilents[name].agilentScript.updateScriptNameText( mainWindowFriend->getProfileSettings( ).categoryPath );
+		agilents[name].agilentScript.colorEntireScript( getAllVariables( ), mainWindowFriend->getRgbs( ),
+														  getTtlNames( ), getDacNames( ) );
 	}
-	catch (Error& err)
+	catch ( Error& err )
 	{
-		sendErr( err.what() );
+		sendErr( err.what( ) );
 	}
+
 }
 
 
-void AuxiliaryWindow::openTopBottomAgilentScript( CWnd* parent )
+void AuxiliaryWindow::openAgilentScript( agilentNames name, CWnd* parent)
 {
 	try
 	{
-		topBottomAgilent.agilentScript.checkSave( mainWindowFriend->getProfileSettings().categoryPath, mainWindowFriend->getRunInfo() );
-		std::string openFileName = openWithExplorer( parent, AGILENT_SCRIPT_EXTENSION);
-		topBottomAgilent.agilentScript.openParentScript( openFileName, 
-														 mainWindowFriend->getProfileSettings().categoryPath, 
-														 mainWindowFriend->getRunInfo() );
-		mainWindowFriend->updateConfigurationSavedStatus( false );
-		topBottomAgilent.agilentScript.updateScriptNameText( mainWindowFriend->getProfileSettings().categoryPath );
-	}
-	catch (Error& err)
-	{
-		sendErr( err.what() );
-	}
-}
-
-
-void AuxiliaryWindow::saveTopBottomAgilentScript()
-{
-	try
-	{
-		topBottomAgilent.agilentScript.saveScript( mainWindowFriend->getProfileSettings().categoryPath, 
-												   mainWindowFriend->getRunInfo() );
-		topBottomAgilent.agilentScript.updateScriptNameText( mainWindowFriend->getProfileSettings().categoryPath );
-	}
-	catch (Error& err)
-	{
-		sendErr( err.what() );
-	}
-}
-
-
-void AuxiliaryWindow::saveTopBottomAgilentScriptAs( CWnd* parent )
-{
-	try
-	{
-		std::string extensionNoPeriod = topBottomAgilent.agilentScript.getExtension();
-		if (extensionNoPeriod.size() == 0)
-		{
-			return;
-		}
-		extensionNoPeriod = extensionNoPeriod.substr( 1, extensionNoPeriod.size() );
-		std::string newScriptAddress = saveWithExplorer( parent, extensionNoPeriod, 
-															 mainWindowFriend->getProfileSettings() );
-		topBottomAgilent.agilentScript.saveScriptAs( newScriptAddress, mainWindowFriend->getRunInfo() );
-		mainWindowFriend->updateConfigurationSavedStatus( false );
-		topBottomAgilent.agilentScript.updateScriptNameText( mainWindowFriend->getProfileSettings().categoryPath );
-	}
-	catch (Error& err)
-	{
-		sendErr( err.what() );
-	}
-}
-
-
-void AuxiliaryWindow::newAxialUwaveAgilentScript()
-{
-	try
-	{
-		uWaveAxialAgilent.agilentScript.checkSave( mainWindowFriend->getProfileSettings().categoryPath, mainWindowFriend->getRunInfo() );
-		uWaveAxialAgilent.agilentScript.newScript( );
-		mainWindowFriend->updateConfigurationSavedStatus( false );
-		uWaveAxialAgilent.agilentScript.updateScriptNameText( mainWindowFriend->getProfileSettings().categoryPath );
-		uWaveAxialAgilent.agilentScript.colorEntireScript( getAllVariables(), mainWindowFriend->getRgbs(),
-														  getTtlNames(), getDacNames() );
-
-	}
-	catch (Error& err)
-	{
-		sendErr( err.what() );
-	}
-}
-
-
-void AuxiliaryWindow::openAxialUwaveAgilentScript( CWnd* parent )
-{
-	try
-	{
-		uWaveAxialAgilent.agilentScript.checkSave( mainWindowFriend->getProfileSettings().categoryPath, mainWindowFriend->getRunInfo() );
+		mainWindowFriend->updateConfigurationSavedStatus( false );		
+		agilents[name].agilentScript.checkSave( mainWindowFriend->getProfileSettings( ).categoryPath, 
+												mainWindowFriend->getRunInfo( ) );
 		std::string openFileName = openWithExplorer( parent, AGILENT_SCRIPT_EXTENSION );
-		uWaveAxialAgilent.agilentScript.openParentScript( openFileName,
-														 mainWindowFriend->getProfileSettings().categoryPath,
-														 mainWindowFriend->getRunInfo() );
+		agilents[name].agilentScript.openParentScript( openFileName,
+														 mainWindowFriend->getProfileSettings( ).categoryPath,
+														 mainWindowFriend->getRunInfo( ) );
+		agilents[name].agilentScript.updateScriptNameText( mainWindowFriend->getProfileSettings( ).categoryPath );
+	}
+	catch ( Error& err )
+	{
+		sendErr( err.what( ) );
+	}
+}
+
+
+void AuxiliaryWindow::updateAgilent( agilentNames name )
+{
+	try
+	{
+		agilents[name].handleInput( mainWindowFriend->getProfileSettings( ).categoryPath,
+									mainWindowFriend->getRunInfo( ) );
+	}
+	catch ( Error& err )
+	{
+		sendErr( err.what( ) );
+	}
+}
+
+
+void AuxiliaryWindow::saveAgilentScript( agilentNames name )
+{
+	try
+	{
 		mainWindowFriend->updateConfigurationSavedStatus( false );
-		uWaveAxialAgilent.agilentScript.updateScriptNameText( mainWindowFriend->getProfileSettings().categoryPath );
-
+		agilents[name].agilentScript.saveScript( mainWindowFriend->getProfileSettings( ).categoryPath,
+												   mainWindowFriend->getRunInfo( ) );
+		agilents[name].agilentScript.updateScriptNameText( mainWindowFriend->getProfileSettings( ).categoryPath );
 	}
-	catch (Error& err)
+	catch ( Error& err )
 	{
-		sendErr( err.what() );
-	}
-}
-
-
-void AuxiliaryWindow::saveAxialUwaveAgilentScript()
-{
-	try
-	{
-		uWaveAxialAgilent.agilentScript.saveScript( mainWindowFriend->getProfileSettings().categoryPath,
-												   mainWindowFriend->getRunInfo() );
-		uWaveAxialAgilent.agilentScript.updateScriptNameText( mainWindowFriend->getProfileSettings().categoryPath );
-
-	}
-	catch (Error& err)
-	{
-		sendErr( err.what() );
+		sendErr( err.what( ) );
 	}
 }
 
 
-void AuxiliaryWindow::saveAxialUwaveAgilentScriptAs( CWnd* parent )
+void AuxiliaryWindow::saveAgilentScriptAs( agilentNames name, CWnd* parent )
 {
 	try
 	{
-		std::string extensionNoPeriod = topBottomAgilent.agilentScript.getExtension();
-		if (extensionNoPeriod.size() == 0)
+		mainWindowFriend->updateConfigurationSavedStatus( false );
+		std::string extensionNoPeriod = agilents[name].agilentScript.getExtension( );
+		if ( extensionNoPeriod.size( ) == 0 )
 		{
 			return;
 		}
-		extensionNoPeriod = extensionNoPeriod.substr( 1, extensionNoPeriod.size() );
+		extensionNoPeriod = extensionNoPeriod.substr( 1, extensionNoPeriod.size( ) );
 		std::string newScriptAddress = saveWithExplorer( parent, extensionNoPeriod,
-															 mainWindowFriend->getProfileSettings() );
-		topBottomAgilent.agilentScript.saveScriptAs( newScriptAddress, mainWindowFriend->getRunInfo() );
-		mainWindowFriend->updateConfigurationSavedStatus( false );
-		topBottomAgilent.agilentScript.updateScriptNameText( mainWindowFriend->getProfileSettings().categoryPath );
+														 mainWindowFriend->getProfileSettings( ) );
+		agilents[name].agilentScript.saveScriptAs( newScriptAddress, mainWindowFriend->getRunInfo( ) );
+		agilents[name].agilentScript.updateScriptNameText( mainWindowFriend->getProfileSettings( ).categoryPath );
 	}
-	catch (Error& err)
+	catch ( Error& err )
 	{
-		sendErr( err.what() );
+		sendErr( err.what( ) );
 	}
 }
-
-
-void AuxiliaryWindow::newFlashingAgilentScript()
-{
-	try
-	{
-		flashingAgilent.agilentScript.checkSave( mainWindowFriend->getProfileSettings().categoryPath, mainWindowFriend->getRunInfo() );
-		flashingAgilent.agilentScript.newScript( );
-		mainWindowFriend->updateConfigurationSavedStatus( false );
-		flashingAgilent.agilentScript.updateScriptNameText( mainWindowFriend->getProfileSettings().categoryPath );
-		flashingAgilent.agilentScript.colorEntireScript( getAllVariables(), mainWindowFriend->getRgbs(),
-														 getTtlNames(), getDacNames() );
-	}
-	catch (Error& err)
-	{
-		sendErr( err.what() );
-	}
-}
-
-
-void AuxiliaryWindow::openFlashingAgilentScript( CWnd* parent )
-{
-	try
-	{
-		flashingAgilent.agilentScript.checkSave( mainWindowFriend->getProfileSettings().categoryPath, mainWindowFriend->getRunInfo() );
-		std::string openFileName = openWithExplorer( parent, AGILENT_SCRIPT_EXTENSION );
-		flashingAgilent.agilentScript.openParentScript( openFileName,
-														  mainWindowFriend->getProfileSettings().categoryPath,
-														  mainWindowFriend->getRunInfo() );
-		mainWindowFriend->updateConfigurationSavedStatus( false );
-		flashingAgilent.agilentScript.updateScriptNameText( mainWindowFriend->getProfileSettings().categoryPath );
-
-
-	}
-	catch (Error& err)
-	{
-		sendErr( err.what() );
-	}
-}
-
-
-void AuxiliaryWindow::saveFlashingAgilentScript()
-{
-	try
-	{
-		flashingAgilent.agilentScript.saveScript( mainWindowFriend->getProfileSettings().categoryPath,
-												   mainWindowFriend->getRunInfo() );
-		flashingAgilent.agilentScript.updateScriptNameText( mainWindowFriend->getProfileSettings().categoryPath );
-	}
-	catch (Error& err)
-	{
-		sendErr( err.what() );
-	}
-}
-
-
-void AuxiliaryWindow::saveFlashingAgilentScriptAs( CWnd* parent )
-{
-	try
-	{
-		std::string extensionNoPeriod = flashingAgilent.agilentScript.getExtension();
-		if (extensionNoPeriod.size() == 0)
-		{
-			return;
-		}
-		extensionNoPeriod = extensionNoPeriod.substr( 1, extensionNoPeriod.size() );
-		std::string newScriptAddress = saveWithExplorer( parent, extensionNoPeriod,
-															 mainWindowFriend->getProfileSettings() );
-		flashingAgilent.agilentScript.saveScriptAs( newScriptAddress, mainWindowFriend->getRunInfo() );
-		mainWindowFriend->updateConfigurationSavedStatus( false );
-		flashingAgilent.agilentScript.updateScriptNameText( mainWindowFriend->getProfileSettings().categoryPath );
-	}
-	catch (Error& err)
-	{
-		sendErr( err.what() );
-	}
-}
-
 
 
 void AuxiliaryWindow::OnTimer( UINT_PTR eventID )
 {
-	uWaveAxialAgilent.agilentScript.handleTimerCall( getAllVariables(), mainWindowFriend->getRgbs(),
-													 getTtlNames(), getDacNames());
-	flashingAgilent.agilentScript.handleTimerCall( getAllVariables(), mainWindowFriend->getRgbs(),
-												   getTtlNames(), getDacNames());
-	topBottomAgilent.agilentScript.handleTimerCall( getAllVariables(), mainWindowFriend->getRgbs(),
-													getTtlNames(), getDacNames() );
+	for ( auto& agilent : agilents )
+	{
+		agilent.agilentScript.handleTimerCall( getAllVariables( ), mainWindowFriend->getRgbs( ),
+												getTtlNames( ), getDacNames( ) );
+	}
 }
 
 
-void AuxiliaryWindow::handleTopBottomEditChange()
+Agilent& AuxiliaryWindow::whichAgilent( UINT id )
 {
+	if ( id >= IDC_TOP_BOTTOM_CHANNEL1_BUTTON && id <= IDC_TOP_BOTTOM_PROGRAM 
+		 || id == IDC_TOP_BOTTOM_CALIBRATION_BUTTON )
+	{
+		return agilents[TopBottom];
+	}
+	else if ( id >= IDC_AXIAL_CHANNEL1_BUTTON && id <= IDC_AXIAL_PROGRAM
+			  || id == IDC_AXIAL_CALIBRATION_BUTTON )
+	{
+		return agilents[Axial];
+	}
+	else if ( id >= IDC_FLASHING_CHANNEL1_BUTTON && id <= IDC_FLASHING_PROGRAM
+			  || id == IDC_FLASHING_CALIBRATION_BUTTON )
+	{
+		return agilents[Flashing];
+	}
+	else if ( id >= IDC_UWAVE_CHANNEL1_BUTTON && id <= IDC_UWAVE_PROGRAM
+			  || id == IDC_UWAVE_CALIBRATION_BUTTON )
+	{
+		return agilents[Microwave];
+	}
+	thrower( "ERROR: id seen in \"whichAgilent\" handler does not belong to any agilent!" );
+}
+
+
+void AuxiliaryWindow::handleAgilentEditChange( UINT id )
+{
+	Agilent& agilent = whichAgilent( id );
 	try
 	{
-		topBottomAgilent.agilentScript.handleEditChange();
+		agilent.agilentScript.handleEditChange( );
 		SetTimer( SYNTAX_TIMER_ID, SYNTAX_TIMER_LENGTH, NULL );
 	}
-	catch (Error& err)
+	catch ( Error& err )
 	{
-		sendErr( err.what() );
+		sendErr( err.what( ) );
 	}
 }
-
-
-void AuxiliaryWindow::handleAxialUwaveEditChange()
-{
-	try
-	{
-		uWaveAxialAgilent.agilentScript.handleEditChange();
-		SetTimer( SYNTAX_TIMER_ID, SYNTAX_TIMER_LENGTH, NULL );
-	}
-	catch (Error& err)
-	{
-		sendErr( err.what() );
-	}
-}
-
-
-void AuxiliaryWindow::handleFlashingEditChange()
-{
-	try
-	{
-		flashingAgilent.agilentScript.handleEditChange();
-		SetTimer( SYNTAX_TIMER_ID, SYNTAX_TIMER_LENGTH, NULL );
-	}
-	catch (Error& err)
-	{
-		sendErr( err.what() );
-	}
-}
-
 
 
 void AuxiliaryWindow::passTopBottomTekProgram()
@@ -353,7 +217,7 @@ void AuxiliaryWindow::passTopBottomTekProgram()
 	try
 	{
 		topBottomTek.handleProgram();
-		sendStat( "Programmed Top/Bottom Tektronics Generator.\r\n" );
+		sendStatus( "Programmed Top/Bottom Tektronics Generator.\r\n" );
 	}
 	catch (Error& exception)
 	{
@@ -367,7 +231,7 @@ void AuxiliaryWindow::passEoAxialTekProgram()
 	try
 	{
 		eoAxialTek.handleProgram();
-		sendStat( "Programmed E.O.M / Axial Tektronics Generator.\r\n" );
+		sendStatus( "Programmed E.O.M / Axial Tektronics Generator.\r\n" );
 	}
 	catch (Error& exception)
 	{
@@ -388,50 +252,56 @@ void AuxiliaryWindow::handleNewConfig( std::ofstream& newFile )
 	configVariables.handleNewConfig( newFile );
 	ttlBoard.handleNewConfig( newFile );
 	dacBoards.handleNewConfig( newFile );
-	topBottomAgilent.handleNewConfig( newFile );
-	uWaveAxialAgilent.handleNewConfig( newFile );
-	flashingAgilent.handleNewConfig( newFile );
+	for ( auto& agilent : agilents )
+	{
+		agilent.handleNewConfig( newFile );
+	}
 	topBottomTek.handleNewConfig( newFile );
 	eoAxialTek.handleNewConfig( newFile );
 }
 
 
-void AuxiliaryWindow::handleSaveConfig(std::ofstream& saveFile)
+void AuxiliaryWindow::handleSaveConfig( std::ofstream& saveFile )
 {
 	// order matters.
-	configVariables.handleSaveConfig(saveFile);
-	ttlBoard.handleSaveConfig(saveFile);
-	dacBoards.handleSaveConfig(saveFile);
-	topBottomAgilent.handleSavingConfig(saveFile, mainWindowFriend->getProfileSettings().categoryPath, 
-										 mainWindowFriend->getRunInfo());
-	uWaveAxialAgilent.handleSavingConfig(saveFile, mainWindowFriend->getProfileSettings( ).categoryPath,
-										  mainWindowFriend->getRunInfo( ) );
-	flashingAgilent.handleSavingConfig(saveFile, mainWindowFriend->getProfileSettings( ).categoryPath,
-										mainWindowFriend->getRunInfo( ) );
-	topBottomTek.handleSaveConfig(saveFile);
-	eoAxialTek.handleSaveConfig(saveFile);
+	configVariables.handleSaveConfig( saveFile );
+	ttlBoard.handleSaveConfig( saveFile );
+	dacBoards.handleSaveConfig( saveFile );
+	for ( auto& agilent : agilents )
+	{
+		agilent.handleSavingConfig( saveFile, mainWindowFriend->getProfileSettings( ).categoryPath,
+									mainWindowFriend->getRunInfo( ) );
+	}
+	topBottomTek.handleSaveConfig( saveFile );
+	eoAxialTek.handleSaveConfig( saveFile );
 }
 
-
-void AuxiliaryWindow::handleOpeningConfig(std::ifstream& configFile, double version)
+void AuxiliaryWindow::handleOpeningConfig(std::ifstream& configFile, int versionMajor, int versionMinor )
 {
 	ttlBoard.prepareForce( );
 	dacBoards.prepareForce( );
 
-	configVariables.handleOpenConfig(configFile, version);
+	configVariables.handleOpenConfig(configFile, versionMajor, versionMinor );
+	ttlBoard.handleOpenConfig(configFile, versionMajor, versionMinor );
+	dacBoards.handleOpenConfig(configFile, versionMajor, versionMinor, &ttlBoard);
 
-	ttlBoard.handleOpenConfig(configFile, version);
-	dacBoards.handleOpenConfig(configFile, version, &ttlBoard);
-
-	topBottomAgilent.readConfigurationFile(configFile, version);
-	topBottomAgilent.updateSettingsDisplay( 1, mainWindowFriend->getProfileSettings().categoryPath, mainWindowFriend->getRunInfo() );
-	uWaveAxialAgilent.readConfigurationFile(configFile, version );
-	uWaveAxialAgilent.updateSettingsDisplay( 1, mainWindowFriend->getProfileSettings().categoryPath, mainWindowFriend->getRunInfo() );
-	flashingAgilent.readConfigurationFile(configFile, version );
-	flashingAgilent.updateSettingsDisplay( 1, mainWindowFriend->getProfileSettings().categoryPath, mainWindowFriend->getRunInfo() );
-
-	topBottomTek.handleOpeningConfig(configFile, version);
-	eoAxialTek.handleOpeningConfig(configFile, version);
+	agilents[TopBottom].readConfigurationFile(configFile, versionMajor, versionMinor );
+	agilents[TopBottom].updateSettingsDisplay( 1, mainWindowFriend->getProfileSettings().categoryPath,
+											   mainWindowFriend->getRunInfo() );
+	agilents[Axial].readConfigurationFile(configFile, versionMajor, versionMinor );
+	agilents[Axial].updateSettingsDisplay( 1, mainWindowFriend->getProfileSettings().categoryPath, 
+										   mainWindowFriend->getRunInfo() );
+	agilents[Flashing].readConfigurationFile(configFile, versionMajor, versionMinor );
+	agilents[Flashing].updateSettingsDisplay( 1, mainWindowFriend->getProfileSettings( ).categoryPath,
+											  mainWindowFriend->getRunInfo( ) );
+	if ( (versionMajor == 2 && versionMinor > 6) || versionMajor > 2)
+	{
+		agilents[Microwave].readConfigurationFile( configFile, versionMajor, versionMinor );
+		agilents[Microwave].updateSettingsDisplay( 1, mainWindowFriend->getProfileSettings( ).categoryPath, 
+												   mainWindowFriend->getRunInfo( ) );
+	}
+	topBottomTek.handleOpeningConfig(configFile, versionMajor, versionMinor );
+	eoAxialTek.handleOpeningConfig(configFile, versionMajor, versionMinor );
 }
 
 
@@ -471,6 +341,7 @@ void AuxiliaryWindow::ConfigVarsDblClick(NMHDR * pNotifyStruct, LRESULT * result
 	std::vector<Script*> scriptList;
 	try
 	{
+		mainWindowFriend->updateConfigurationSavedStatus( false );
 		configVariables.updateVariableInfo(scriptList, mainWindowFriend, this, &ttlBoard, &dacBoards);
 	}
 	catch (Error& exception)
@@ -485,6 +356,7 @@ void AuxiliaryWindow::ConfigVarsRClick(NMHDR * pNotifyStruct, LRESULT * result)
 {
 	try
 	{
+		mainWindowFriend->updateConfigurationSavedStatus( false );
 		configVariables.deleteVariable();
 	}
 	catch (Error& exception)
@@ -508,6 +380,7 @@ void AuxiliaryWindow::GlobalVarDblClick(NMHDR * pNotifyStruct, LRESULT * result)
 	std::vector<Script*> scriptList;
 	try
 	{
+		mainWindowFriend->updateConfigurationSavedStatus( false );
 		globalVariables.updateVariableInfo(scriptList, mainWindowFriend, this, &ttlBoard, &dacBoards);
 	}
 	catch (Error& exception)
@@ -521,13 +394,13 @@ void AuxiliaryWindow::GlobalVarRClick(NMHDR * pNotifyStruct, LRESULT * result)
 {
 	try
 	{
+		mainWindowFriend->updateConfigurationSavedStatus( false );
 		globalVariables.deleteVariable();
 	}
 	catch (Error& exception)
 	{
 		sendErr("Global Variables Right Click Handler : " + exception.whatStr() + "\r\n");
 	}
-	//masterConfig.save(&ttlBoard, &dacBoards, &globalVariables);
 }
 
 
@@ -536,6 +409,7 @@ void AuxiliaryWindow::ConfigVarsColumnClick(NMHDR * pNotifyStruct, LRESULT * res
 {
 	try
 	{
+		mainWindowFriend->updateConfigurationSavedStatus( false );
 		configVariables.handleColumnClick(pNotifyStruct, result);
 	}
 	catch (Error& exception)
@@ -609,9 +483,9 @@ void AuxiliaryWindow::handleEnter()
 }
 
 
-void AuxiliaryWindow::setConfigActive(bool active)
+void AuxiliaryWindow::setVariablesActiveState(bool activeState)
 {
-	configVariables.setActive(active);
+	configVariables.setActive(activeState);
 }
 
 
@@ -627,9 +501,10 @@ void AuxiliaryWindow::OnSize(UINT nType, int cx, int cy)
 	topBottomTek.rearrange(cx, cy, getFonts());
 	eoAxialTek.rearrange(cx, cy, getFonts());
 
-	topBottomAgilent.rearrange(cx, cy, getFonts());
-	uWaveAxialAgilent.rearrange(cx, cy, getFonts());
-	flashingAgilent.rearrange(cx, cy, getFonts());
+	for ( auto& ag : agilents )
+	{
+		ag.rearrange( cx, cy, getFonts( ) );
+	}
 
 	RhodeSchwarzGenerator.rearrange(cx, cy, getFonts());
 
@@ -653,105 +528,55 @@ fontMap AuxiliaryWindow::getFonts()
 
 void AuxiliaryWindow::handleAgilentOptions( UINT id )
 {
+	Agilent& agilent = whichAgilent( id );
 	// zero the id.
 	id -= IDC_TOP_BOTTOM_CHANNEL1_BUTTON;
-	int agilentNum = id / 10;
-	// figure out which box it was.
-	Agilent* agilent = NULL;
-	if (agilentNum == 0)
-	{
-		agilent = &topBottomAgilent;
-	}
-	else if (agilentNum == 1)
-	{
-		agilent = &uWaveAxialAgilent;
-	}
-	else if (agilentNum == 2)
-	{
-		agilent = &flashingAgilent;
-	}
-	else
-	{
-		errBox( "4th agilent???" );
-		return;
-	}
+	int agilentNum = id / 7;
+	// figure out which box it was.	
 	// call the correct function.
 	if (id % 7 == 0)
 	{
 		// channel 1
-		agilent->handleChannelPress( 1, mainWindowFriend->getProfileSettings().categoryPath, 
+		agilent.handleChannelPress( 1, mainWindowFriend->getProfileSettings().categoryPath, 
 									 mainWindowFriend->getRunInfo() );
 	}
 	else if (id % 7 == 1)
 	{
 		// channel 2
-		agilent->handleChannelPress( 2, mainWindowFriend->getProfileSettings().categoryPath, 
+		agilent.handleChannelPress( 2, mainWindowFriend->getProfileSettings().categoryPath, 
 									 mainWindowFriend->getRunInfo() );
 	}
-	else if (id % 7 == 3)
-	{
-		// TODO:
-		// handle sync 
-		//agilent->handleSync();
-	}
+	// sync is just a check, no handling needed.
 	else if (id % 7 == 6)
 	{
 		try
 		{
-			agilent->handleInput( mainWindowFriend->getProfileSettings().categoryPath, mainWindowFriend->getRunInfo() );
-			agilent->setAgilent();
-			sendStat( "Programmed Agilent " + agilent->getName() + ".\r\n" );
+			agilent.handleInput( mainWindowFriend->getProfileSettings().categoryPath, mainWindowFriend->getRunInfo() );
+			agilent.setAgilent();
+			sendStatus( "Programmed Agilent " + agilent.getName() + ".\r\n" );
 		}
 		catch (Error& err)
 		{
-			sendErr( "Error while programming agilent " + agilent->getName() + ": " + err.what() + "\r\n" );
+			sendErr( "Error while programming agilent " + agilent.getName() + ": " + err.what() + "\r\n" );
 		}
 	}
 	// else it's a combo or edit that must be handled separately, not in an ON_COMMAND handling.
+	mainWindowFriend->updateConfigurationSavedStatus( false );
 }
 
 
-void AuxiliaryWindow::handleTopBottomAgilentCombo()
+void AuxiliaryWindow::handleAgilentCombo(UINT id)
 {
+	Agilent& ag = whichAgilent( id );
 	try
 	{
-		topBottomAgilent.handleInput( mainWindowFriend->getProfileSettings().categoryPath, mainWindowFriend->getRunInfo() );
-		topBottomAgilent.handleCombo();
-		topBottomAgilent.updateSettingsDisplay( mainWindowFriend->getProfileSettings().categoryPath, mainWindowFriend->getRunInfo() );
+		ag.handleInput( mainWindowFriend->getProfileSettings( ).categoryPath, mainWindowFriend->getRunInfo( ) );
+		ag.handleCombo( );
+		ag.updateSettingsDisplay( mainWindowFriend->getProfileSettings( ).categoryPath, mainWindowFriend->getRunInfo( ) );
 	}
-	catch (Error& err)
+	catch ( Error& err )
 	{
-		sendErr( "ERROR: error while handling agilent combo change: " + err.whatStr() );
-	}
-}
-
-
-void AuxiliaryWindow::handleAxialUWaveAgilentCombo()
-{
-	try
-	{
-		uWaveAxialAgilent.handleInput( mainWindowFriend->getProfileSettings().categoryPath, mainWindowFriend->getRunInfo() );
-		uWaveAxialAgilent.handleCombo();
-		uWaveAxialAgilent.updateSettingsDisplay( mainWindowFriend->getProfileSettings().categoryPath, mainWindowFriend->getRunInfo() );
-	}
-	catch (Error& err)
-	{
-		sendErr( "ERROR: error while handling agilent combo change: " + err.whatStr() );
-	}
-}
-
-
-void AuxiliaryWindow::handleFlashingAgilentCombo()
-{
-	try
-	{
-		flashingAgilent.handleInput( mainWindowFriend->getProfileSettings().categoryPath, mainWindowFriend->getRunInfo() );
-		flashingAgilent.handleCombo();
-		flashingAgilent.updateSettingsDisplay( mainWindowFriend->getProfileSettings().categoryPath, mainWindowFriend->getRunInfo() );
-	}
-	catch (Error& err)
-	{
-		sendErr( "ERROR: error while handling agilent combo change: " + err.whatStr() );
+		sendErr( "ERROR: error while handling agilent combo change: " + err.whatStr( ) );
 	}
 }
 
@@ -762,41 +587,41 @@ void AuxiliaryWindow::sendErr(std::string msg)
 }
 
 
-void AuxiliaryWindow::sendStat(std::string msg)
+void AuxiliaryWindow::sendStatus(std::string msg)
 {
 	mainWindowFriend->getComm()->sendStatus(msg);
 }
 
 
-void AuxiliaryWindow::zeroDacs()
+void AuxiliaryWindow::zeroDacs( )
 {
 	try
 	{
-		dacBoards.resetDacEvents();
-		ttlBoard.resetTtlEvents();
-		dacBoards.prepareForce();
-		ttlBoard.prepareForce();
-		for (int dacInc = 0; dacInc < 24; dacInc++)
+		dacBoards.resetDacEvents( );
+		ttlBoard.resetTtlEvents( );
+		dacBoards.prepareForce( );
+		ttlBoard.prepareForce( );
+		for ( int dacInc : range( 24 ) )
 		{
 			dacBoards.prepareDacForceChange( dacInc, 0, &ttlBoard );
 		}
-		dacBoards.organizeDacCommands(0);
-		dacBoards.makeFinalDataFormat(0);
-		dacBoards.stopDacs(); 
-		dacBoards.configureClocks(0);
-		dacBoards.writeDacs(0);
-		dacBoards.startDacs();
-		ttlBoard.organizeTtlCommands(0);
-		ttlBoard.convertToFinalFormat(0);
-		ttlBoard.writeTtlData(0);
-		ttlBoard.startBoard();
-		ttlBoard.waitTillFinished(0);
-		sendStat( "Zero'd DACs.\r\n");
+		dacBoards.organizeDacCommands( 0 );
+		dacBoards.makeFinalDataFormat( 0 );
+		dacBoards.stopDacs( );
+		dacBoards.configureClocks( 0, false );
+		dacBoards.writeDacs( 0, false );
+		dacBoards.startDacs( );
+		ttlBoard.organizeTtlCommands( 0 );
+		ttlBoard.convertToFinalFormat( 0 );
+		ttlBoard.writeTtlData( 0, false );
+		ttlBoard.startBoard( );
+		ttlBoard.waitTillFinished( 0, false );
+		sendStatus( "Zero'd DACs.\r\n" );
 	}
-	catch (Error& exception)
+	catch ( Error& exception )
 	{
-		sendStat( "Failed to Zero DACs!!!\r\n" );
-		sendErr( exception.what() );
+		sendStatus( "Failed to Zero DACs!!!\r\n" );
+		sendErr( exception.what( ) );
 	}
 }
 
@@ -806,11 +631,11 @@ void AuxiliaryWindow::zeroTtls()
 	try
 	{
 		ttlBoard.zeroBoard();
-		sendStat( "Zero'd TTLs.\r\n" );
+		sendStatus( "Zero'd TTLs.\r\n" );
 	}
 	catch (Error& exception)
 	{
-		sendStat( "Failed to Zero TTLs!!!\r\n" );
+		sendStatus( "Failed to Zero TTLs!!!\r\n" );
 		sendErr( exception.what() );
 	}
 }
@@ -820,7 +645,7 @@ void AuxiliaryWindow::loadMotSettings(MasterThreadInput* input)
 {
 	try
 	{
-		sendStat("Loading MOT Configuration...\r\n" );
+		sendStatus("Loading MOT Configuration...\r\n" );
 		input->quiet = true;
 		input->ttls = &ttlBoard;
 		input->dacs = &dacBoards;
@@ -834,9 +659,6 @@ void AuxiliaryWindow::loadMotSettings(MasterThreadInput* input)
 		input->repetitionNumber = 1;
 		input->masterScriptAddress = MOT_ROUTINE_ADDRESS;
 		input->rsg = &RhodeSchwarzGenerator;
-		input->agilents.push_back( &topBottomAgilent );
-		input->agilents.push_back( &uWaveAxialAgilent );
-		input->agilents.push_back( &flashingAgilent );
 		input->intensityAgilentNumber = -1;
 		input->topBottomTek = &topBottomTek;
 		input->eoAxialTek = &eoAxialTek;
@@ -845,7 +667,7 @@ void AuxiliaryWindow::loadMotSettings(MasterThreadInput* input)
 	}
 	catch (Error& exception)
 	{
-		sendStat(": " + exception.whatStr() + " " + exception.whatStr() + "\r\n" );
+		sendStatus(": " + exception.whatStr() + " " + exception.whatStr() + "\r\n" );
 	}
 }
 
@@ -867,7 +689,6 @@ void AuxiliaryWindow::fillMasterThreadInput(MasterThreadInput* input)
 	std::vector<variableType> configVars = configVariables.getEverything();
 	std::vector<variableType> globals = globalVariables.getEverything();
 	std::vector<variableType> experimentVars = configVars;
-
 	for (auto& globalVar : globals)
 	{
 		globalVar.overwritten = false;
@@ -888,9 +709,10 @@ void AuxiliaryWindow::fillMasterThreadInput(MasterThreadInput* input)
 	input->variables = experimentVars;
 	globalVariables.setUsages(globals);
 	input->rsg = &RhodeSchwarzGenerator;
-	input->agilents.push_back(&topBottomAgilent);
-	input->agilents.push_back(&uWaveAxialAgilent);
-	input->agilents.push_back( &flashingAgilent );
+	for ( auto& agilent : agilents )
+	{
+		input->agilents.push_back( &agilent );
+	}
 	topBottomTek.getSettings();
 	eoAxialTek.getSettings();
 	input->topBottomTek = &topBottomTek;
@@ -963,15 +785,13 @@ void AuxiliaryWindow::handleMasterConfigSave(std::stringstream& configStream)
 	// Number of Variables
 	configStream << globalVariables.getCurrentNumberOfVariables() << "\n";
 	/// Variables
-
-	for (UINT varInc = 0; varInc < globalVariables.getCurrentNumberOfVariables(); varInc++)
+	for (UINT varInc : range( globalVariables.getCurrentNumberOfVariables() ) )
 	{
 		variableType info = globalVariables.getVariableInfo(varInc);
 		configStream << info.name << " ";
 		configStream << info.ranges.front().initialValue << "\n";
 		// all globals are constants, no need to output anything else.
 	}
-
 }
 
 
@@ -982,9 +802,9 @@ void AuxiliaryWindow::handleMasterConfigOpen(std::stringstream& configStream, do
 	dacBoards.resetDacEvents();
 	dacBoards.prepareForce();
 	// save info
-	for (UINT ttlRowInc = 0; ttlRowInc < ttlBoard.getTtlBoardSize().first; ttlRowInc++)
+	for (UINT ttlRowInc : range( ttlBoard.getTtlBoardSize().first))
 	{
-		for (UINT ttlNumberInc = 0; ttlNumberInc < ttlBoard.getTtlBoardSize().second; ttlNumberInc++)
+		for (UINT ttlNumberInc : range( ttlBoard.getTtlBoardSize().second ) )
 		{
 			std::string name;
 			std::string statusString;
@@ -1007,7 +827,7 @@ void AuxiliaryWindow::handleMasterConfigOpen(std::stringstream& configStream, do
 		}
 	}
 	// getting dacs.
-	for (UINT dacInc = 0; dacInc < dacBoards.getNumberOfDacs(); dacInc++)
+	for (UINT dacInc : range( dacBoards.getNumberOfDacs()) )
 	{
 		std::string name;
 		std::string defaultValueString;
@@ -1094,44 +914,31 @@ void AuxiliaryWindow::SetDacs()
 	// have the dac values change
 	try
 	{
-		sendStat("----------------------\r\n");
+		mainWindowFriend->updateConfigurationSavedStatus( false );
+		sendStatus("----------------------\r\n");
 		dacBoards.resetDacEvents();
 		ttlBoard.resetTtlEvents();
-		sendStat( "Setting Dacs...\r\n" );
+		sendStatus( "Setting Dacs...\r\n" );
 		dacBoards.handleButtonPress( &ttlBoard );
 		dacBoards.organizeDacCommands(0);
 		dacBoards.makeFinalDataFormat(0);
 		// start the boards which actually sets the dac values.
 		dacBoards.stopDacs();
-		dacBoards.configureClocks(0);
-		sendStat( "Writing New Dac Settings...\r\n" );
-		dacBoards.writeDacs(0);
+		dacBoards.configureClocks(0, false );
+		sendStatus( "Writing New Dac Settings...\r\n" );
+		dacBoards.writeDacs(0, false );
 		dacBoards.startDacs();
 		ttlBoard.organizeTtlCommands(0);
 		ttlBoard.convertToFinalFormat(0);
-		ttlBoard.writeTtlData(0);
+		ttlBoard.writeTtlData(0, false);
 		ttlBoard.startBoard();
-		ttlBoard.waitTillFinished(0);
-		sendStat( "Finished Setting Dacs.\r\n" );
-		/*
-		dacBoards.analyzeDacCommands(0);
-		dacBoards.makeFinalDataFormat(0);
-		dacBoards.stopDacs();
-		dacBoards.configureClocks(0);
-		dacBoards.writeDacs(0);
-		dacBoards.startDacs();
-		ttlBoard.organizeTtlCommands(0);
-		ttlBoard.convertToFinalFormat(0);
-		ttlBoard.writeTtlData(0);
-		ttlBoard.startBoard();
-		ttlBoard.waitTillFinished(0);
-		sendStat( "Zero'd DACs.\r\n");
-		*/
+		ttlBoard.waitTillFinished(0, false);
+		sendStatus( "Finished Setting Dacs.\r\n" );
 	}
 	catch (Error& exception)
 	{
 		errBox( exception.what() );
-		sendStat( ": " + exception.whatStr() + "\r\n" );
+		sendStatus( ": " + exception.whatStr() + "\r\n" );
 		sendErr( exception.what() );
 	}
 	mainWindowFriend->updateConfigurationSavedStatus(false);
@@ -1142,6 +949,7 @@ void AuxiliaryWindow::DacEditChange(UINT id)
 {
 	try
 	{
+		mainWindowFriend->updateConfigurationSavedStatus( false );
 		dacBoards.handleEditChange(id - ID_DAC_FIRST_EDIT);
 	}
 	catch (Error& err)
@@ -1155,6 +963,7 @@ void AuxiliaryWindow::handleTtlPush(UINT id)
 {
 	try
 	{
+		mainWindowFriend->updateConfigurationSavedStatus( false );
 		ttlBoard.handleTTLPress( id );
 	}
 	catch (Error& exception)
@@ -1181,6 +990,7 @@ void AuxiliaryWindow::handlTtlHoldPush()
 
 void AuxiliaryWindow::ViewOrChangeTTLNames()
 {
+	mainWindowFriend->updateConfigurationSavedStatus( false );
 	ttlInputStruct input;
 	input.ttls = &ttlBoard;
 	input.toolTips = toolTips;
@@ -1191,6 +1001,7 @@ void AuxiliaryWindow::ViewOrChangeTTLNames()
 
 void AuxiliaryWindow::ViewOrChangeDACNames()
 {
+	mainWindowFriend->updateConfigurationSavedStatus( false );
 	dacInputStruct input;
 	input.dacs = &dacBoards;
 	input.toolTips = toolTips;
@@ -1209,20 +1020,14 @@ HBRUSH AuxiliaryWindow::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
 	brushMap brushes = mainWindowFriend->getBrushes();
 	rgbMap rgbs = mainWindowFriend->getRgbs();
-	HBRUSH result = flashingAgilent.handleColorMessage( pWnd, brushes, rgbs, pDC );
-	if (result != NULL)
+	HBRUSH result;
+	for ( auto& ag : agilents )
 	{
-		return result;
-	}
-	result = uWaveAxialAgilent.handleColorMessage( pWnd, brushes, rgbs, pDC );
-	if (result != NULL)
-	{
-		return result;
-	}
-	result = topBottomAgilent.handleColorMessage( pWnd, brushes, rgbs, pDC );
-	if (result != NULL)
-	{
-		return result;
+		result = ag.handleColorMessage( pWnd, brushes, rgbs, pDC );
+		if ( result != NULL )
+		{
+			return result;
+		}
 	}
 	result = ttlBoard.handleColorMessage(pWnd, brushes, rgbs, pDC);
 	if (result != NULL)
@@ -1307,25 +1112,16 @@ BOOL AuxiliaryWindow::OnInitDialog()
 							   EO_ON_OFF, EO_FSK, AXIAL_ON_OFF, AXIAL_FSK } );
 		RhodeSchwarzGenerator.initialize( controlLocation, toolTips, this, id );
 		controlLocation = POINT{ 480, 0 };
-		topBottomAgilent.initialize( controlLocation, toolTips, this, id, "Top-Bottom-Agilent", 120, 
-									{ IDC_TOP_BOTTOM_CHANNEL1_BUTTON, IDC_TOP_BOTTOM_CHANNEL2_BUTTON,
-									  IDC_TOP_BOTTOM_SYNC_BUTTON, IDC_TOP_BOTTOM_CALIBRATION_BUTTON, 
-									 IDC_TOP_BOTTOM_PROGRAM, IDC_TOP_BOTTOM_AGILENT_COMBO,
-									 IDC_TOP_BOTTOM_FUNCTION_COMBO, IDC_TOP_BOTTOM_EDIT},
-									 mainWindowFriend->getRgbs()["Solarized Base03"] );
-		uWaveAxialAgilent.initialize( controlLocation, toolTips, this, id, 
-									  "Microwave-Axial-Agilent",   120, { IDC_AXIAL_UWAVE_CHANNEL1_BUTTON, 
-									  IDC_AXIAL_UWAVE_CHANNEL2_BUTTON, IDC_AXIAL_UWAVE_SYNC_BUTTON, 
-									  IDC_AXIAL_UWAVE_CALIBRATION_BUTTON,
-									  IDC_AXIAL_UWAVE_PROGRAM, IDC_AXIAL_UWAVE_AGILENT_COMBO, 
-									  IDC_AXIAL_UWAVE_FUNCTION_COMBO, IDC_AXIAL_UWAVE_EDIT },
-									  mainWindowFriend->getRgbs()["Solarized Base03"] );
-		flashingAgilent.initialize( controlLocation, toolTips, this, id, 
-									"Flashing-Agilent",  120, {IDC_FLASHING_CHANNEL1_BUTTON, 
-									IDC_FLASHING_CHANNEL2_BUTTON, IDC_FLASHING_SYNC_BUTTON, 
-									IDC_FLASHING_CALIBRATION_BUTTON, IDC_FLASHING_PROGRAM, 
-									IDC_FLASHING_AGILENT_COMBO, IDC_FLASHING_FUNCTION_COMBO, IDC_FLASHING_EDIT}, 
+		
+		agilents[TopBottom].initialize( controlLocation, toolTips, this, id, "Top-Bottom-Agilent", 100,
+										mainWindowFriend->getRgbs()["Solarized Base03"] );
+		agilents[Axial].initialize( controlLocation, toolTips, this, id, "Microwave-Axial-Agilent", 100,
 									mainWindowFriend->getRgbs()["Solarized Base03"] );
+		agilents[Flashing].initialize( controlLocation, toolTips, this, id,
+									   "Flashing-Agilent", 100, mainWindowFriend->getRgbs()["Solarized Base03"] );
+		agilents[Microwave].initialize( controlLocation, toolTips, this, id, "Microwave-Agilent", 100,
+										mainWindowFriend->getRgbs( )["Solarized Base03"] );
+
 		controlLocation = POINT{ 1440, 0 };
 		globalVariables.initialize( controlLocation, toolTips, this, id, "GLOBAL VARIABLES",
 									mainWindowFriend->getRgbs(), IDC_GLOBAL_VARS_LISTVIEW );
@@ -1377,15 +1173,13 @@ std::string AuxiliaryWindow::getSystemStatusMsg()
 	msg += "Tektronics 2: " + eoAxialTek.queryIdentity() + "\n";
 	msg += "\n\n>>> Agilents <<<\n";
 	msg += "Code System is Active!\n";
-	msg += "Top / Bottom Agilent: " + topBottomAgilent.getDeviceIdentity();
-	msg += "U Wave / Axial Agilent: " + uWaveAxialAgilent.getDeviceIdentity();
-	msg += "Flashing Agilent: " + flashingAgilent.getDeviceIdentity();
-
+	for ( auto& agilent : agilents )
+	{
+		msg += agilent.getName( ) + ": " + agilent.getDeviceIdentity( );
+	}
 	msg += "\n>>> GPIB System <<<\n";
 	msg += "Code System is Active!\n";
 	msg += "RSG: " + RhodeSchwarzGenerator.getIdentity() + "\n";
-
-	// 
 	return msg;
 }
 

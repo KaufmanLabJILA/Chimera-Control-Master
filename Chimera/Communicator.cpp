@@ -16,15 +16,16 @@ void Communicator::initialize(MainWindow* mainWinParent, ScriptingWindow* script
 }
 
 
-/*
-	Note that in all of the following, using "" as the input means that the communicaotr does not send any message to the
-	control of interest.
-*/
+void Communicator::sendNoAtomsAlert( )
+{
+	mainWin->PostMessageA( eNoAtomsAlertMessageID, 0, 0 );
+}
+
 
 // the two camera messages go straight to the camera window.
 void Communicator::sendCameraFin()
 {
-	PostMessage( camWin->GetSafeHwnd(), eCameraFinishMessageID, 0, 0 );
+	camWin->PostMessage( eCameraFinishMessageID, 0, 0 );
 }
 
 void Communicator::sendNormalFinish( )
@@ -34,7 +35,7 @@ void Communicator::sendNormalFinish( )
 
 void Communicator::sendCameraProgress(long progress)
 {
-	PostMessage( camWin->GetSafeHwnd(), eCameraProgressMessageID, 0, (LPARAM)progress );
+	camWin->PostMessageA( eCameraProgressMessageID, 0, (LPARAM)progress );
 }
 
 void Communicator::sendRepProgress(ULONG rep)

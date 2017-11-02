@@ -37,7 +37,6 @@ class CameraWindow : public CDialog
 		void OnLButtonUp( UINT stuff, CPoint loc );
 		void OnRButtonUp( UINT stuff, CPoint loc );
 		/// directly called by the message map or 1 simple step removed.
-		void temp( UINT id );
 		void wakeRearranger( );
 		LRESULT onCameraFinish( WPARAM wParam, LPARAM lParam );
 		LRESULT onCameraProgress( WPARAM wParam, LPARAM lParam );
@@ -49,16 +48,12 @@ class CameraWindow : public CDialog
 		void passCommonCommand( UINT id );
 		void passTrigger();
 		void passCameraMode();
-		void passAlertPress();
 		void passSetTemperaturePress();
-		void passRepsPerVarPress();
-		void passVariationNumberPress();
 		void passAlwaysShowGrid();
 		void passManualSetAnalysisLocations();
 		void passSetGridCorner( );
 		void catchEnter();
 
-		
 		/// auxiliary functions.
 		void fillMasterThreadInput( MasterThreadInput* input );
 		DataLogger* getLogger();
@@ -69,7 +64,7 @@ class CameraWindow : public CDialog
 		void handleMasterConfigSave(std::stringstream& configStream);
 		void handleMasterConfigOpen(std::stringstream& configStream, double version);
 		void handlePictureEditChange(UINT id);
-		void handleOpeningConfig(std::ifstream& configFile, double version);
+		void handleOpeningConfig(std::ifstream& configFile, int versionMajor, int versionMinor );
 		void redrawPictures( bool andGrid );
 		void changeBoxColor( systemInfo<char> colors );
 		cToolTips getToolTips();
@@ -94,7 +89,9 @@ class CameraWindow : public CDialog
 														  CameraWindow* camWin, AuxiliaryWindow* masterWin );
 		void startAtomCruncher(ExperimentInput& input);
 		void startPlotterThread( ExperimentInput& input );
-
+		bool wantsAutoPause( );
+		std::atomic<bool>* getSkipNextAtomic();
+		void stopPlotter( );
 	private:
 		DECLARE_MESSAGE_MAP();
 
@@ -138,6 +135,8 @@ class CameraWindow : public CDialog
 		std::atomic<bool> atomCrunchThreadActive;
 		// 
 		std::atomic<bool> plotThreadActive;
+		std::atomic<bool> plotThreadAborting = false;
+		std::atomic<bool> skipNext=false;
 		std::vector<double> plotterKey;
 		chronoTimes imageTimes, imageGrabTimes, mainThreadStartTimes, crunchSeesTimes, crunchFinTimes;
 		Gnuplotter plotter;

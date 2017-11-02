@@ -6,14 +6,21 @@ ScriptedAgilentWaveform::ScriptedAgilentWaveform()
 {
 	segmentNum = 0;
 	totalSequence = "";
-	varies = false;
 };
 
-/*	* This function reads out a segment of script file and loads it into a segment to be calculated and manipulated.
+
+void ScriptedAgilentWaveform::resetNumberOfTriggers( )
+{
+	numberOfTriggers = 0;
+}
+
+
+/** This function reads out a segment of script file and loads it into a segment to be calculated and manipulated.
 * segNum: This tells the function what the next segment # is.
 * script: this is the object to be read from.
 */
-bool ScriptedAgilentWaveform::readIntoSegment( int segNum, ScriptStream& script )
+bool ScriptedAgilentWaveform::analyzeAgilentScriptCommand( int segNum, ScriptStream& script, 
+														   std::vector<variableType>& variables )
 {
 	segmentInfoInput workingInput;
 	std::string intensityCommand;
@@ -26,12 +33,59 @@ bool ScriptedAgilentWaveform::readIntoSegment( int segNum, ScriptStream& script 
 	if (intensityCommand == "hold")
 	{
 		waveformSegments.resize( segNum + 1 );
-		workingInput.segmentType = 0;
+
+		workingInput.ramp.isRamp = false;
+		workingInput.pulse.isPulse = false;
+		workingInput.mod.modulationIsOn = false;
+
+		script >> workingInput.holdVal;
+		workingInput.holdVal.assertValid( variables );
 	}
 	else if (intensityCommand == "ramp")
 	{
 		waveformSegments.resize( segNum + 1 );
-		workingInput.segmentType = 1;
+		// this segment type means ramping.
+		workingInput.ramp.isRamp = true;
+		workingInput.pulse.isPulse = false;
+		workingInput.mod.modulationIsOn = false;
+		script >> workingInput.ramp.type;
+		script >> workingInput.ramp.start;
+		workingInput.ramp.start.assertValid( variables );
+		script >> workingInput.ramp.end;
+		workingInput.ramp.end.assertValid( variables );
+	}
+	else if ( intensityCommand == "pulse" )
+	{
+		waveformSegments.resize( segNum + 1 );
+		workingInput.ramp.isRamp = false;
+		workingInput.pulse.isPulse = true;
+		workingInput.mod.modulationIsOn = false;
+		script >> workingInput.pulse.type;
+		script >> workingInput.pulse.offset;
+		workingInput.pulse.offset.assertValid( variables );
+		script >> workingInput.pulse.amplitude;
+		workingInput.pulse.amplitude.assertValid( variables );
+		script >> workingInput.pulse.width;
+		workingInput.pulse.width.assertValid( variables );
+	}
+	else if ( intensityCommand == "modpulse" )
+	{
+		waveformSegments.resize( segNum + 1 );
+		workingInput.ramp.isRamp = false;
+		workingInput.pulse.isPulse = true;
+		workingInput.mod.modulationIsOn = true;
+		script >> workingInput.pulse.type;
+		script >> workingInput.pulse.offset;
+		workingInput.pulse.offset.assertValid( variables );
+		script >> workingInput.pulse.amplitude;
+		workingInput.pulse.amplitude.assertValid( variables );
+		script >> workingInput.pulse.width;
+		workingInput.pulse.width.assertValid( variables );
+		// mod stuff
+		script >> workingInput.mod.frequency;
+		workingInput.mod.frequency.assertValid( variables );
+		script >> workingInput.mod.phase;
+		workingInput.mod.phase.assertValid( variables );
 	}
 	else
 	{
@@ -41,44 +95,31 @@ bool ScriptedAgilentWaveform::readIntoSegment( int segNum, ScriptStream& script 
 		}
 		thrower( "ERROR: Agilent Script command not recognized. The command was \"" + intensityCommand + "\"" );
 	}
-	std::string delimiter;
-	// List of data types for variables for the different arguments:
-	// initial intensity = 1
-	// final intensity = 2
-	// time = 3
-	if (workingInput.segmentType == 1)
-	{
-		// this segment type means ramping.
-		script >> workingInput.rampType;
-		script >> workingInput.initValue;
-		script >> workingInput.finValue;
-	}
-	else
-	{
-		workingInput.rampType = "nr";
-		script >> workingInput.initValue;
-		workingInput.finValue = workingInput.initValue;
-	}
 	script >> workingInput.time;
+	workingInput.time.assertValid( variables );
+
 	std::string tempContinuationType;
 	script >> tempContinuationType;
 	if (tempContinuationType == "repeat")
 	{
 		// There is an extra input in this case.
 		script >> workingInput.repeatNum;
+		workingInput.repeatNum.assertValid( variables );
 	}
 	else
 	{
 		workingInput.repeatNum.expressionStr = "0";
 	}
+	std::string delimiter;
 	script >> delimiter;
 	if (delimiter != "#")
 	{
 		// input number mismatch.
 		thrower( "ERROR: The delimeter is missing in the Intensity script file for Segment #" + str( segNum + 1 )
-				 + ". The value placed in the delimeter location was " + delimiter + " while it should have been '#'.This"
-				 " indicates that either the code is not interpreting the user input incorrectly or that the user has inputted too many parameters for this type"
-				 " of Segment. Use of \"Repeat\" without the number of repeats following will also trigger this error." );
+				 + ". The value placed in the delimeter location was " + delimiter + " while it should have been '#'. "
+				 "This indicates that either the code is not interpreting the user input incorrectly or that the user "
+				 "has inputted too many parameters for this type of Segment. Use of \"Repeat\" without the number of "
+				 "repeats following will also trigger this error." );
 		return false;
 	}
 	if (tempContinuationType == "repeat")
@@ -87,6 +128,7 @@ bool ScriptedAgilentWaveform::readIntoSegment( int segNum, ScriptStream& script 
 	}
 	else if (tempContinuationType == "repeatuntiltrig")
 	{
+		numberOfTriggers++;
 		workingInput.continuationType = 1;
 	}
 	else if (tempContinuationType == "once")
@@ -99,25 +141,15 @@ bool ScriptedAgilentWaveform::readIntoSegment( int segNum, ScriptStream& script 
 	}
 	else if (tempContinuationType == "oncewaittrig")
 	{
+		numberOfTriggers++;
 		workingInput.continuationType = 4;
 	}
 	else
 	{
 		// string not recognized
-		thrower( "ERROR: Invalid Continuation Option on intensity segment #" + str( segNum + 1 ) + ". The string entered was " + tempContinuationType
-				 + ". Please enter \"Repeat #\", \"RepeatUntilTrigger\", \"OnceWaitTrig\", or \"Once\". Code should not be case-sensititve." );
-	}
-	// see if it varies.
-	try
-	{
-		double test;
-		test = workingInput.repeatNum.evaluate();
-		test = workingInput.finValue.evaluate();
-		test = workingInput.repeatNum.evaluate();
-	}
-	catch (Error&)
-	{
-		varies = true;
+		thrower( "ERROR: Invalid Continuation Option on intensity segment #" + str( segNum + 1 ) + ". The string "
+				 "entered was " + tempContinuationType + ". Please enter \"Repeat #\", \"RepeatUntilTrigger\", "
+				 "\"OnceWaitTrig\", or \"Once\". Code should not be case-sensititve." );
 	}
 
 	// Make Everything Permanent
@@ -132,11 +164,11 @@ bool ScriptedAgilentWaveform::readIntoSegment( int segNum, ScriptStream& script 
  * varNum: This is the variation number for this segment (matters for naming the segments)
  * totalSegNum: This is the number of segments in the waveform (also matters for naming)
  */
-std::string ScriptedAgilentWaveform::compileAndReturnDataSendString( int segNum, int varNum, int totalSegNum )
+std::string ScriptedAgilentWaveform::compileAndReturnDataSendString( int segNum, int varNum, int totalSegNum, UINT chan )
 {
 	// must get called after data conversion
 	std::string tempSendString;
-	tempSendString = "DATA:ARB seg" + str( segNum + totalSegNum * varNum ) + ",";
+	tempSendString = "SOURce" + str( chan ) + ":DATA:ARB segment" + str( segNum + totalSegNum * varNum ) + ",";
 	// need to handle last one separately so that I can /not/ put a comma after it.
 	UINT numData = waveformSegments[segNum].returnDataSize( ) - 1;
 	for (UINT sendDataInc = 0; sendDataInc < numData; sendDataInc++)
@@ -150,10 +182,11 @@ std::string ScriptedAgilentWaveform::compileAndReturnDataSendString( int segNum,
 
 
 /*
-*/
-void ScriptedAgilentWaveform::writeData( int segNum )
+ *
+ */
+void ScriptedAgilentWaveform::writeData( int segNum, ULONG sampleRate )
 {
-	waveformSegments[segNum].calcData();
+	waveformSegments[segNum].calcData(sampleRate);
 }
 
 ULONG ScriptedAgilentWaveform::getSegmentNumber()
@@ -165,13 +198,13 @@ ULONG ScriptedAgilentWaveform::getSegmentNumber()
 * This function compiles the sequence string which tells the agilent what waveforms to output when and with what trigger control. The sequence is stored
 * as a part of the class.
 */
-void ScriptedAgilentWaveform::compileSequenceString( int totalSegNum, int sequenceNum )
+void ScriptedAgilentWaveform::compileSequenceString( int totalSegNum, int sequenceNum, UINT channel )
 {
 	std::string tempSequenceString, tempSegmentInfoString;
 	// Total format is  #<n><n digits><sequence name>,<arb name1>,<repeat count1>,<play control1>,<marker mode1>,<marker point1>,<arb name2>,<repeat count2>,
 	// <play control2>, <marker mode2>, <marker point2>, and so on.
-	tempSequenceString = "DATA:SEQ #";
-	tempSegmentInfoString = "seq" + str( sequenceNum ) + ",";
+	tempSequenceString = "SOURce" + str( channel) + ":DATA:SEQ #";
+	tempSegmentInfoString = "sequence" + str( sequenceNum ) + ",";
 	if (totalSegNum == 0)
 	{
 		thrower("ERROR: No segments in agilent waveform???\r\n");
@@ -179,7 +212,8 @@ void ScriptedAgilentWaveform::compileSequenceString( int totalSegNum, int sequen
 	for (int segNumInc = 0; segNumInc < totalSegNum - 1; segNumInc++)
 	{
 		// Format is 
-		tempSegmentInfoString += "seg" + str( segNumInc + totalSegNum * sequenceNum ) + ",";
+		tempSegmentInfoString += "segment" + str( segNumInc + totalSegNum * sequenceNum ) + ",";
+		//tempSegmentInfoString += "segment" + str( segNumInc ) + ",";
 		tempSegmentInfoString += str( waveformSegments[segNumInc].getFinalSettings().repeatNum ) + ",";
 		switch (waveformSegments[segNumInc].getFinalSettings().continuationType)
 		{
@@ -205,9 +239,9 @@ void ScriptedAgilentWaveform::compileSequenceString( int totalSegNum, int sequen
 		tempSegmentInfoString += "highAtStart,4,";
 	}
 
-	tempSegmentInfoString += "seg" + str( (totalSegNum - 1) + totalSegNum * sequenceNum ) + ",";
-	tempSegmentInfoString += str( waveformSegments[totalSegNum - 1].getFinalSettings().repeatNum ) + ",";
-	switch (waveformSegments[totalSegNum - 1].getFinalSettings().continuationType)
+	tempSegmentInfoString += "segment" + str( (totalSegNum - 1) + totalSegNum * sequenceNum ) + ",";
+	tempSegmentInfoString += str( waveformSegments[totalSegNum - 1].getFinalSettings( ).repeatNum ) + ",";
+	switch ( waveformSegments[totalSegNum - 1].getFinalSettings( ).continuationType )
 	{
 		case 0:
 			tempSegmentInfoString += "repeat,";
@@ -230,15 +264,15 @@ void ScriptedAgilentWaveform::compileSequenceString( int totalSegNum, int sequen
 	}
 	tempSegmentInfoString += "highAtStart,4";
 	//
-	totalSequence = tempSequenceString + str( (str( tempSegmentInfoString.size() )).size() )
-		+ str( tempSegmentInfoString.size() ) + tempSegmentInfoString;
+	totalSequence = tempSequenceString + str( (str( tempSegmentInfoString.size( ) )).size( ) )
+		+ str( tempSegmentInfoString.size( ) ) + tempSegmentInfoString;
 }
 
 
 /*
 * This function just returns the sequence string. It should already have been compiled using compileSequenceString when this is called.
 */
-std::string ScriptedAgilentWaveform::returnSequenceString()
+std::string ScriptedAgilentWaveform::returnSequenceString( )
 {
 	return totalSequence;
 }
@@ -247,9 +281,52 @@ std::string ScriptedAgilentWaveform::returnSequenceString()
 /*
 * This function returns the truth of whether this sequence is being varied or not. This gets determined during the reading process.
 */
-bool ScriptedAgilentWaveform::isVaried()
+bool ScriptedAgilentWaveform::isVaried( )
 {
-	return varies;
+	for ( auto& seg : waveformSegments )
+	{
+		auto& input = seg.getInput( );
+		if ( input.time.varies( ) )
+		{
+			return true;
+		}
+		if ( input.repeatNum.varies( ) )
+		{
+			return true;
+		}
+		if ( input.ramp.isRamp )
+		{
+			if ( input.ramp.start.varies( ) || input.ramp.end.varies( ) )
+			{
+				return true;
+			}
+		}
+		else if ( input.pulse.isPulse )
+		{
+			if ( input.pulse.amplitude.varies( ) || input.pulse.offset.varies( ) || input.pulse.width.varies( ) )
+			{
+				return true;
+			}
+			if ( input.mod.modulationIsOn )
+			{
+				if ( input.mod.frequency.varies( ) || input.mod.phase.varies( ) )
+				{
+					return true;
+				}
+			}
+		}
+		else
+		{
+			if ( input.holdVal.varies( ) )
+			{
+				return true;
+			}
+		}
+
+
+
+	}
+	return false;
 }
 
 
@@ -265,22 +342,25 @@ void ScriptedAgilentWaveform::replaceVarValues()
 /*
 * This waveform loops through all of the segments to find places where a variable value needs to be changed, and changes it.
 */
-void ScriptedAgilentWaveform::replaceVarValues( key variableKey, UINT variation, std::vector<variableType>& variables )
+void ScriptedAgilentWaveform::replaceVarValues( UINT variation, std::vector<variableType>& variables )
 {
 	for (UINT segNumInc = 0; segNumInc < waveformSegments.size(); segNumInc++)
 	{
-		waveformSegments[segNumInc].convertInputToFinal( variableKey, variation, variables );
+		waveformSegments[segNumInc].convertInputToFinal( variation, variables );
 	}
 }
 
-
+ULONG ScriptedAgilentWaveform::getNumTrigs( )
+{
+	return numberOfTriggers;
+}
 
 /*
 * This function takes the powers inputted by the user and converts them (based on calibrations that we have done) to the corresponding voltage values
 * that the agilent needs to output in order to reach those powers. The calibration is currently hard-coded. This needs to be run before compiling the
 * data string.
 */
-void ScriptedAgilentWaveform::convertPowersToVoltages()
+void ScriptedAgilentWaveform::convertPowersToVoltages(bool useCal)
 {
 
 	// for each part of the waveform returnDataSize
@@ -294,7 +374,7 @@ void ScriptedAgilentWaveform::convertPowersToVoltages()
 			double power = waveformSegments[segmentInc].returnDataVal( dataConvertInc );
 			// setPoint = a * power + b
 			//double newValue = -a * log(y * b);
-			double setPointinVolts = Agilent::convertPowerToSetPoint(power, true);
+			double setPointinVolts = Agilent::convertPowerToSetPoint(power, useCal);
 			waveformSegments[segmentInc].assignDataVal( dataConvertInc, setPointinVolts);
 		}
 	}

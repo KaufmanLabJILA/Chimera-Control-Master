@@ -3,14 +3,15 @@
 #include "afxwin.h"
 #include "MainWindow.h"
 #include "openWithExplorer.h"
-#include "saveTextFileFromEdit.h"
+#include "saveWithExplorer.h"
 #include "commonFunctions.h"
 #include "textPromptDialog.h"
 #include "AuxiliaryWindow.h"
 
 
-ScriptingWindow::ScriptingWindow() : CDialog(), intensityAgilent(INTENSITY_SAFEMODE, INTENSITY_AGILENT_USB_ADDRESS)
+ScriptingWindow::ScriptingWindow() : CDialog(), intensityAgilent( INTENSITY_AGILENT_SETTINGS )
 {}
+
 
 IMPLEMENT_DYNAMIC(ScriptingWindow, CDialog)
 
@@ -28,7 +29,6 @@ BEGIN_MESSAGE_MAP(ScriptingWindow, CDialog)
 
 	ON_COMMAND_RANGE(IDC_INTENSITY_CHANNEL1_BUTTON, IDC_INTENSITY_PROGRAM, &ScriptingWindow::handleIntensityButtons)
 	ON_CBN_SELENDOK( IDC_INTENSITY_AGILENT_COMBO, &ScriptingWindow::handleIntensityCombo )
-
 
 	ON_COMMAND_RANGE(MENU_ID_RANGE_BEGIN, MENU_ID_RANGE_END, &ScriptingWindow::passCommonCommand)
 
@@ -225,11 +225,7 @@ BOOL ScriptingWindow::OnInitDialog()
 									  "Horizontal NIAWG Script", { IDC_HORIZONTAL_NIAWG_FUNCTION_COMBO, 
 									  IDC_HORIZONTAL_NIAWG_EDIT }, mainWindowFriend->getRgbs()["Solarized Base03"]);
 	startLocation = { 960, 28 };
-	intensityAgilent.initialize( startLocation, tooltips, this, id, 
-								 "Intensity Agilent", 865, { IDC_INTENSITY_CHANNEL1_BUTTON,
-								 IDC_INTENSITY_CHANNEL2_BUTTON, IDC_INTENSITY_SYNC_BUTTON, 
-								 IDC_INTENSITY_CALIBRATION_BUTTON, IDC_INTENSITY_PROGRAM, 
-								 IDC_INTENSITY_AGILENT_COMBO, IDC_INTENSITY_FUNCTION_COMBO, IDC_INTENSITY_EDIT }, 
+	intensityAgilent.initialize( startLocation, tooltips, this, id, "Intensity Agilent", 865, 
 								 mainWindowFriend->getRgbs()["Solarized Base03"] );
 	startLocation = { 1440, 28 };
 	masterScript.initialize( 480, 900, startLocation, tooltips, this, id, "Master", "Master Script",
@@ -589,7 +585,6 @@ void ScriptingWindow::newHorizontalScript()
 	{
 		comm()->sendError( err.what() );
 	}
-
 }
 
 
@@ -670,7 +665,7 @@ void ScriptingWindow::openIntensityScript(std::string name)
 }
 
 
-void ScriptingWindow::handleOpenConfig(std::ifstream& configFile, double version)
+void ScriptingWindow::handleOpenConfig(std::ifstream& configFile, int versionMajor, int versionMinor)
 {
 	ProfileSystem::checkDelimiterLine(configFile, "SCRIPTS");
 	// the reading for the scripts is simple enough at the moment that I just read everything here.
@@ -681,14 +676,50 @@ void ScriptingWindow::handleOpenConfig(std::ifstream& configFile, double version
 	getline(configFile, masterName);
 	ProfileSystem::checkDelimiterLine(configFile, "END_SCRIPTS");
 
-	intensityAgilent.readConfigurationFile(configFile, version );
-	intensityAgilent.updateSettingsDisplay(1, mainWindowFriend->getProfileSettings().categoryPath, mainWindowFriend->getRunInfo());
-	openVerticalScript(vertName);
-	openHorizontalScript(horName);
-	openMasterScript(masterName);
+	intensityAgilent.readConfigurationFile(configFile, versionMajor, versionMinor );
+	intensityAgilent.updateSettingsDisplay(1, mainWindowFriend->getProfileSettings().categoryPath, 
+											mainWindowFriend->getRunInfo());
+	try
+	{
+		openVerticalScript( vertName );
+	}
+	catch ( Error& err )
+	{
+		int answer = promptBox( "ERROR: Failed to open vertical script file: " + vertName + ", with error \r\n" 
+								+ err.whatStr( ) + "\r\nAttempt to find file yourself?", MB_YESNO );
+		if ( answer == IDYES )
+		{
+			openVerticalScript( openWithExplorer( NULL, "nScript" ) );
+		}
+	}
+	try
+	{
+		openHorizontalScript(horName);
+	}
+	catch ( Error& err )
+	{
+		int answer = promptBox( "ERROR: Failed to open Horizontal script file: " + horName + ", with error \r\n"
+								+ err.whatStr( ) + "\r\nAttempt to find file yourself?", MB_YESNO );
+		if ( answer == IDYES )
+		{
+			openHorizontalScript( openWithExplorer( NULL, "nScript" ) );
+		}
+	}
+	try
+	{
+		openMasterScript(masterName);
+	}
+	catch ( Error& err )
+	{
+		int answer = promptBox( "ERROR: Failed to open master script file: " + masterName + ", with error \r\n"
+								+ err.whatStr( ) + "\r\nAttempt to find file yourself?", MB_YESNO );
+		if ( answer == IDYES )
+		{
+			openMasterScript( openWithExplorer( NULL, "mScript" ) );
+		}
+	}
 	considerScriptLocations();
 	recolorScripts();
-
 }
 
 
@@ -815,27 +846,13 @@ void ScriptingWindow::openMasterScript(std::string name)
 
 void ScriptingWindow::openVerticalScript(std::string name)
 {
-	try
-	{
-		verticalNiawgScript.openParentScript(name, getProfile().categoryPath, mainWindowFriend->getRunInfo());
-	}
-	catch(Error& err)
-	{
-		comm()->sendError(err.what());
-	}
+	verticalNiawgScript.openParentScript( name, getProfile( ).categoryPath, mainWindowFriend->getRunInfo( ) );
 }
 
 
 void ScriptingWindow::openHorizontalScript(std::string name)
 {
-	try
-	{
-		horizontalNiawgScript.openParentScript(name, getProfile().categoryPath, mainWindowFriend->getRunInfo());
-	}
-	catch (Error& err)
-	{
-		comm()->sendError(err.what());
-	}
+	horizontalNiawgScript.openParentScript(name, getProfile().categoryPath, mainWindowFriend->getRunInfo());
 }
 
 

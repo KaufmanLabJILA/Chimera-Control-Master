@@ -1,59 +1,53 @@
 ===================
 TODO
 ===================
-
-Features:
-- finish implementing 2D scans
-- Remove three-stage config file system
-
+FEATURES:
+- revive sequences of experiments
 - NIAWG scripting in single script instead of separate Hor/Vert scripts.
-- Watch cursor location, sim to basler program
+- finish implementing randomizing repetitions.
+	- Create per-repetitiong list of variation values to use
+	- Be able to randomize
+	- handle random case in plotting.
+- be able to add more repetitions on the fly if randomizing reps.
+- Be able to set different analysis locations for different plots
+
+- if aborts or crashes in the middle of run, code should close HDF5 file and make it usable, somehow.
+- Watch cursor location on andor pictures, sim to basler program
 - restore the Niawg functionality where it calculates next varying waveform during the run of the previous waveform.
 - support functions for niawg and agilent scripts
-- if fails to open script file give user opportunity to find it themselves.
-- handle niawg waiting more elegantly
-- make the big text short status messages better.
-- be able to program agilents with or without power->volt conversion. Think I just want a combo.
-- indicate setting (no, off, dc, sine, square, pre, script) next to agilent channel text
-- make agilent smart about trying to program a sequence that's only one voltage. Can prob just add one check
-- support math in niawg and intensity scripts
-- if aborts or crashes in the middle of run, code should close HDF5 file and make it usable, somehow.
-- Be able to turn off / on NIAWG without stopping program
-- finish implementing randomizing repetitions.
-- Finish implementing agilent channel sync.
-- handle config not opening better
-	- option to find config file?
-	- option to create new default config file with that name?
-- Be able to set different analysis locations for different plots
-- Be able to scroll into empty space at bottom of scripts
-- be able to output niawg waveforms to text files
 - support aborting while paused
-- be able to set binsize for histograms
-- change colormap radios to a single combo.
-- load colormaps from file, allowing custom colormaps.
-- make count-down use TTL time?
 - check that the picture rate is matching the rep rate
-- cross-check number of NIAWG triggers, number of Agilent triggers in code
 - agilent script programNow with variables, should be able to set constants with program now.
 - agilent should be able to go smoothly from one waveform to another.
 - more tooltips
+- catch and warn about attemtps to save script when agilent isn't in scripting mode
+- get running average working again
+- add all agilents / tek to color boxes?
 
 Refactoring / Other:
-- refactor variables & variable key so that they aren't two separate objects. Consider if reasonable to also include 
-	variation number in a class
 - change thread that wait on bools to waiting on signalers
 - test running avg gnuplot
 - test fitting in gnuplot
 - refactor groups in plotinfo and gnuplot stuffs
+- change plotting to have fixed x-axis size.
+- change pointers to smart-ptrs where possible
+- remove intensity from color boxes
 
 Bugs:
-- Add new data set not working in plot designer
-- closing window doesn't stop program, running in background (release mode only?)
+- something wrong with set New dac Values! Pressing seems to change whether shutter is open or closed???
+- exposure time setting properly for andor camera? (maybe just prob in video mode)
+
 - scripts becoming unsaved after move, should preserve saved status
 - investigate save on change config
-- New Experiment doesn't copy everything in folder
-- after script save-as, new name not loaded if run experiment until reload config
+- global config colors don't appear to always be correct. (not sure how to repeat yet)
+- fix over-writing to the agilent.
+- niawg is doing something during turnonmot
+
+Rearranging
+- smartly figure out where to rearrange to and move at the end to center
+- utilize compound moves
 
 =================
 Finished
 =================
+

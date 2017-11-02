@@ -9,6 +9,29 @@
 
 class Agilent;
 
+struct agilentSettings
+{
+	bool safemode;
+	std::string address;
+	ULONG sampleRate;
+	std::string outputImpedance;
+	std::string filterState;
+	// "INT" or "USB"
+	std::string memoryLocation;
+	// button ids.
+	ULONG chan1ButtonId;
+	ULONG chan2ButtonId;
+	ULONG syncButtonId;
+	ULONG agilentComboId;
+	ULONG functionComboId;
+	ULONG editId;
+	ULONG programButtonId;
+	ULONG calibrationButtonId;
+
+	ULONG triggerRow;
+	ULONG triggerNumber;
+};
+
 struct minMaxDoublet
 {
 	double min;

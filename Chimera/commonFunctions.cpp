@@ -7,8 +7,7 @@
 //#include "scriptWriteHelpProc.h"
 #include "beginningSettingsDialogProc.h"
 #include "openWithExplorer.h"
-#include "saveTextFileFromEdit.h"
-
+#include "saveWithExplorer.h"
 #include "MainWindow.h"
 #include "CameraWindow.h"
 #include "AuxiliaryWindow.h"
@@ -206,6 +205,7 @@ namespace commonFunctions
 				}
 				try
 				{
+					//???
 				}
 				catch (Error& err)
 				{
@@ -264,8 +264,13 @@ namespace commonFunctions
 					scriptWin->saveVerticalScript( );
 					scriptWin->saveIntensityScript( );
 					scriptWin->saveMasterScript( );
+					auxWin->updateAgilent( TopBottom );
+					auxWin->updateAgilent( Axial );
+					auxWin->updateAgilent( Flashing );
+					auxWin->updateAgilent( Microwave );
 					mainWin->profile.saveEntireProfile( scriptWin, mainWin, auxWin, camWin );
 					mainWin->masterConfig.save( mainWin, auxWin, camWin );
+					
 				}
 				catch ( Error& err )
 				{
@@ -290,6 +295,11 @@ namespace commonFunctions
 				}
 				break;
 			}
+			case ID_PLOTTING_STOPPLOTTER:
+			{
+				camWin->stopPlotter( );
+				break;
+			}
 			case ID_FILE_MY_INTENSITY_NEW:
 			{
 				scriptWin->newIntensityScript();
@@ -312,63 +322,83 @@ namespace commonFunctions
 			}
 			case ID_TOP_BOTTOM_NEW_SCRIPT:
 			{
-				auxWin->newTopBottomAgilentScript();
+				auxWin->newAgilentScript(TopBottom);
 				break;
 			}
 			case ID_TOP_BOTTOM_OPEN_SCRIPT:
 			{
-				auxWin->openTopBottomAgilentScript( parent );
+				auxWin->openAgilentScript( TopBottom, parent );
 				break;
 			}
 			case ID_TOP_BOTTOM_SAVE_SCRIPT:
 			{
-				auxWin->saveTopBottomAgilentScript();
+				auxWin->saveAgilentScript(TopBottom);
 				break;
 			}
 			case ID_TOP_BOTTOM_SAVE_SCRIPT_AS:
 			{
-				auxWin->saveTopBottomAgilentScriptAs( parent );
+				auxWin->saveAgilentScriptAs( TopBottom, parent );
 				break;
 			}
-			case ID_AXIAL_UWAVE_NEW_SCRIPT:
+			case ID_AXIAL_NEW_SCRIPT:
 			{
-				auxWin->newAxialUwaveAgilentScript();
+				auxWin->newAgilentScript(Axial);
 				break;
 			}
-			case ID_AXIAL_UWAVE_OPEN_SCRIPT:
+			case ID_AXIAL_OPEN_SCRIPT:
 			{
-				auxWin->openAxialUwaveAgilentScript( parent );
+				auxWin->openAgilentScript( Axial, parent );
 				break;
 			}
-			case ID_AXIAL_UWAVE_SAVE_SCRIPT:
+			case ID_AXIAL_SAVE_SCRIPT:
 			{
-				auxWin->saveAxialUwaveAgilentScript();
+				auxWin->saveAgilentScript(Axial);
 				break;
 			}
-			case ID_AXIAL_UWAVE_SAVE_SCRIPT_AS:
+			case ID_AXIAL_SAVE_SCRIPT_AS:
 			{
-				auxWin->saveAxialUwaveAgilentScriptAs( parent );
+				auxWin->saveAgilentScriptAs( Axial, parent );
 				break;
 			}
 			case ID_FLASHING_NEW_SCRIPT:
 			{
-				auxWin->newFlashingAgilentScript();
+				auxWin->newAgilentScript( Flashing );
 				break;
 			}
 			case ID_FLASHING_OPEN_SCRIPT:
 			{
-				auxWin->openFlashingAgilentScript( parent );
+				auxWin->openAgilentScript( Flashing, parent );
 				break;
 			}
 			case ID_FLASHING_SAVE_SCRIPT:
 			{
-				auxWin->saveFlashingAgilentScript();
+				auxWin->saveAgilentScript( Flashing );
 				break;
 			}
 			case ID_FLASHING_SAVE_SCRIPT_AS:
 			{
-				auxWin->saveFlashingAgilentScriptAs( parent );
+				auxWin->saveAgilentScriptAs( Flashing, parent );
 				break;
+			}
+			case ID_UWAVE_NEW_SCRIPT:
+			{
+				auxWin->newAgilentScript( Microwave );
+				break;
+			}
+			case ID_UWAVE_OPEN_SCRIPT:
+			{
+				auxWin->openAgilentScript( Microwave, parent );
+				break;
+			}
+			case ID_UWAVE_SAVE_SCRIPT:
+			{
+				auxWin->saveAgilentScript( Microwave );
+				break;
+			}
+			case ID_UWAVE_SAVE_SCRIPT_AS:
+			{
+				auxWin->saveAgilentScriptAs( Microwave, parent );
+				break; 
 			}
 			case ID_FILE_MY_VERTICAL_NEW:
 			{
@@ -440,12 +470,6 @@ namespace commonFunctions
 				scriptWin->saveMasterFunction();
 				break;
 			}
-
-			/*			
-			ID_MASTERSCRIPT_RENAME
-			ID_MASTERSCRIPT_DELETEFUNCTION	
-			*/
-
 			case ID_SEQUENCE_RENAMESEQUENCE:
 			{
 				mainWin->profile.renameSequence();
@@ -485,6 +509,7 @@ namespace commonFunctions
 				commonFunctions::reloadNIAWGDefaults(mainWin);
 				break;
 			}
+			/*
 			case ID_EXPERIMENT_NEW_EXPERIMENT_TYPE:
 			{
 				mainWin->profile.newExperiment();
@@ -535,7 +560,7 @@ namespace commonFunctions
 			{
 				mainWin->profile.saveCategoryAs(mainWin);
 				break;
-			}
+			}*/
 			case ID_CONFIGURATION_NEW_CONFIGURATION:
 			{
 				mainWin->profile.newConfiguration(mainWin, auxWin, camWin, scriptWin);
@@ -594,6 +619,11 @@ namespace commonFunctions
 			case ID_PICTURES_ALWAYSSHOWGRID:
 			{
 				camWin->passAlwaysShowGrid();
+				break;
+			}
+			case ID_NIAWG_NIAWGISON:
+			{
+				mainWin->passNiawgIsOnPress( );
 				break;
 			}
 			case ID_RUNMENU_ABORTCAMERA:
@@ -674,7 +704,7 @@ namespace commonFunctions
 			case ID_ACCELERATOR_F1:
 			{
 				MasterThreadInput* input = new MasterThreadInput;
-				auxWin->loadMotSettings(input);
+				auxWin->loadMotSettings( input );
 				mainWin->fillMotInput( input );
 				mainWin->startMaster(input, true);
 				break;
@@ -782,6 +812,7 @@ namespace commonFunctions
 			}
 			beginInfo += "\r\n";
 		}
+		
 		mainOptions settings = mainWin->getMainOptions();
 		std::string beginQuestion = "\r\n\r\nBegin Waveform Generation with these Settings?";
 		INT_PTR areYouSure = DialogBoxParam( NULL, MAKEINTRESOURCE( IDD_BEGINNING_SETTINGS ), 0,
@@ -796,6 +827,7 @@ namespace commonFunctions
 			// Set the thread structure.
 			input.masterInput = new MasterThreadInput();
 			input.masterInput->runMaster = runTtls;
+			input.masterInput->skipNext = camWin->getSkipNextAtomic( );
 			// force accumulations to zero. This shouldn't affect anything, this should always get set by the master or be infinite.
 			if (msgID == ID_FILE_MY_WRITE_WAVEFORMS)
 			{

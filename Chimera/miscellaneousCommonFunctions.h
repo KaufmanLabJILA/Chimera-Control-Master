@@ -1,9 +1,6 @@
 #pragma once
 #include "Control.h"
-#include "KeyHandler.h"
-
 #include "afxwin.h"
-
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
@@ -15,6 +12,8 @@
  * stolen From http://stackoverflow.com/questions/348833/how-to-know-the-exact-line-of-code-where-where-an-exception-has-been-caused
  * Slightly modified.
  */
+
+
 class Error : public std::runtime_error
 {
 	public:
@@ -93,7 +92,7 @@ template <typename IntType> std::vector<IntType> range( IntType stop )
 
 // this can replace str() and str(), as well as providing functionality to set the precision of
 // to_string() conversions.
-template <typename T> std::string str(T input, const int precision = 6, bool eatZeros = false, bool toLower = false)
+template <typename T> std::string str(T input, const int precision = 13, bool eatZeros = false, bool toLower = false)
 {
 	std::ostringstream out;
 	out << std::setprecision(precision) << input;
