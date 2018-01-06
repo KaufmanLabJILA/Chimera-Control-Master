@@ -57,68 +57,7 @@ int RC028::connectasync(const char devSerial[])
 	
 }
 
-int RC028::connectRS232(LPCWSTR Port)
-{
-	if (this->connType == NONE)
-	{
-		std::wcout << L"Port: " << Port << endl;
 
-		this->m_hSerialComm = CreateFile(Port,
-			GENERIC_READ | GENERIC_WRITE,
-			0,
-			NULL,
-			OPEN_EXISTING,
-			NULL,
-			NULL);
-
-		if (this->m_hSerialComm == INVALID_HANDLE_VALUE)
-			//Handle Error Condition
-			std::cout << "INVALID_HANDLE_VALUE" << endl;
-
-		DCB dcbConfig = { 0 };
-
-		FillMemory(&dcbConfig, sizeof(dcbConfig), 0);
-
-		if (GetCommState(this->m_hSerialComm, &dcbConfig))
-		{
-			dcbConfig.BaudRate = 115200;
-			dcbConfig.ByteSize = 8;
-			dcbConfig.Parity = NOPARITY;
-			dcbConfig.StopBits = ONESTOPBIT;
-			dcbConfig.fBinary = TRUE;
-			dcbConfig.fParity = TRUE;
-		}
-		else
-		{
-			//Handle Error Condition
-			cout << "Error GetCommState" << endl;
-			return 1;
-		}
-
-		dcbConfig.BaudRate = 115200;
-		dcbConfig.ByteSize = 8;
-		dcbConfig.Parity = NOPARITY;
-		dcbConfig.StopBits = ONESTOPBIT;
-		dcbConfig.fBinary = TRUE;
-		dcbConfig.fParity = TRUE;
-
-
-		if (!SetCommState(this->m_hSerialComm, &dcbConfig))
-		{
-			//Handle Error Condition
-			cout << "Error SetCommState" << endl;
-			return 1;
-		}
-		this->connType = SERIAL;
-		return 0;
-	}
-	else
-	{
-		cout << "ERROR - already connected...";
-		return 1;
-	}
-	
-}
 
 int RC028::trigger()
 {

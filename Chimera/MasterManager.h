@@ -25,6 +25,7 @@
 #include <sstream>
 #include <mutex>
 
+
 class MasterManager;
 
 class MasterManager

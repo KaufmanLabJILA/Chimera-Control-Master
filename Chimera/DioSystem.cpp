@@ -9,6 +9,7 @@
 #include "constants.h"
 #include "AuxiliaryWindow.h"
 
+
 // I don't use this because I manually import dll functions.
 // #include "Dio64.h"
 
@@ -273,6 +274,13 @@ std::array<std::array<std::string, 16>, 4> DioSystem::getAllNames()
 	return ttlNames;
 }
 
+
+void DioSystem::startDioFPGA()
+{
+	
+	dioFPGA.trigger();
+	dioFPGA.disconnect();
+}
 
 void DioSystem::startBoard()
 {
@@ -849,6 +857,7 @@ void DioSystem::forceTtl(int row, int number, int state)
 	tempCommand[2] = static_cast <unsigned short>(ttlBits[2].to_ulong());
 	tempCommand[3] = static_cast <unsigned short>(ttlBits[3].to_ulong());
 	dioForceOutput( 0, tempCommand.data(), 15 );
+	fpgaForceOutput(tempCommand.data()); //Note, .data is a pointer to the first element in the array, hence this is just passing a pointer to the data in teh array. 
 }
 
 
@@ -900,6 +909,15 @@ int DioSystem::getNameIdentifier(std::string name, UINT& row, UINT& number)
 	return -1;
 }
 
+void DioSystem::writeTtlDataToFPGA(UINT variation, bool loadSkip) //arguments unused, just paralleling original DIO structure
+{
+
+	//d
+	dioFPGA.connectasync("FT1VAHJPB"); //This is the serial number of the FTDI chip "FT1VAHJP" - B is added to select channel B
+
+	dioFPGA.write();
+
+}
 
 void DioSystem::writeTtlData(UINT variation, bool loadSkip)
 {
@@ -1124,6 +1142,56 @@ std::pair<USHORT, USHORT> DioSystem::calcDoubleShortTime( double time )
 	return { lowordTime, hiwordTime };
 }
 
+
+
+
+void DioSystem::formatForFPGA(UINT variation)
+{
+	int snapIndex = 0; 
+	int val1, val2, fpgaBankCtr;
+	ULONG timeConv = 100000;
+	std::array<int, 8> fpgaBanks;
+	for (auto snapshot : ttlSnapshots[variation])
+	{
+	    fpgaBankCtr = 0;
+		for (auto bank : snapshot.ttlStatus) //bank here is set of 16 booleans
+		{
+			val1 = 0;//convert first 8 of snap shot to int
+			for (int i = 0; i < 8; i++)
+			{
+				val1 = val1 + pow(2, i)*bank[i];
+			}
+			val2 = 0;//convert next 8 of snap shot to int
+			for (int j = 0; j < 8; j++)
+			{
+				val2 = val2 + pow(2, j)*bank[j+8];
+			}
+			fpgaBanks[fpgaBankCtr] = val1;
+			fpgaBanks[fpgaBankCtr +1] = val2;
+			fpgaBankCtr = fpgaBankCtr + 2;
+		}
+		dioFPGA.setPoint(snapIndex, snapshot.time*timeConv, fpgaBanks[0], fpgaBanks[1], fpgaBanks[2], fpgaBanks[3], fpgaBanks[4], fpgaBanks[5], fpgaBanks[6], fpgaBanks[7]);
+		//errBox("Snapindex: " + str(fpgaBankCtr));
+		//std::cout << "SnapIndex: " << snapIndex << " blah" << std::endl;
+		snapIndex = snapIndex + 1;
+	}
+
+	//For each snapShot
+	//dioSetpoint(ii, .time, 0;;7, 8;;15, 16...)
+
+	//dioFPGA.setPoint(0, 0, 1, 1, 0, 0, 0, 0, 0, 0);
+	//dioFPGA.setPoint(1, 10, 0, 0, 0, 0, 0, 0, 0, 0);
+//	dioFPGA.setPoint(2, 20, 1, 1, 0, 0, 0, 0, 0, 0);
+	//dioFPGA.setPoint(3, 40, 0, 0, 0, 0, 0, 0, 0, 0);
+	//dioFPGA.setPoint(4, 50, 1, 1, 0, 0, 0, 0, 0, 0);
+	//dioFPGA.setPoint(5, 80, 0, 0, 0, 0, 0, 0, 0, 0);
+	//dioFPGA.setPoint(6, 90, 1, 1, 0, 0, 0, 0, 0, 0);
+	//dioFPGA.setPoint(7, 130, 0, 0, 0, 0, 0, 0, 0, 0);
+	//dioFPGA.setPoint(8, 140, 1, 1, 0, 0, 0, 0, 0, 0);
+	//dioFPGA.setPoint(9, 190, 0, 0, 0, 0, 0, 0, 0, 0);
+	//dioFPGA.setPoint(10, 250, 0, 0, 0, 0, 0, 0, 0, 0);
+	//dioFPGA.setPoint(11, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+}
 
 void DioSystem::convertToFinalFormat(UINT variation)
 {
@@ -1490,6 +1558,28 @@ void DioSystem::dioForceOutput(WORD board, WORD* buffer, DWORD mask)
 	}
 }
 
+void DioSystem::fpgaForceOutput(WORD* buffer) //UNTESTED
+{
+	std::array<unsigned short, 4 > dataToForce;
+	std::array<int, 8> fpgaBanks;
+	uint8_t xlow, xhigh;
+	//dataToForce = *buffer; //Array of four words, each corresponding to a row of 16 ttls. FPGA takes 
+
+	//for (int i = 0; i < 4; i+=2)
+	//{
+	//	 xlow = dataToForce[i] & 0xff;
+	//	 xhigh = (dataToForce[i] >> 8);
+	//	 fpgaBanks[i] = (int)xlow;
+	//	 fpgaBanks[i + 1] = (int)xhigh;
+//	}
+	//dioFPGA.setPoint(1,1, fpgaBanks[0], fpgaBanks[1], fpgaBanks[2], fpgaBanks[3], fpgaBanks[4], fpgaBanks[5], fpgaBanks[6], fpgaBanks[7]);
+
+	//Could call the functions that contain these but this felt more appropriate since this isn't in a standard call  
+	//dioFPGA.connectasync("FT1VAHJPB"); 
+	//dioFPGA.write();
+	//dioFPGA.trigger();
+	//dioFPGA.disconnect();
+}
 
 void DioSystem::dioOutGetInput(WORD board, WORD& buffer)
 {

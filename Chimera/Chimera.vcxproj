@@ -83,6 +83,7 @@
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>C:\ProgramData\Anaconda3\include;C:\Program Files (x86)\IVI Foundation\VISA\WinNt\include;C:\Program Files (x86)\IVI Foundation\IVI\Include;C:\Program Files\Agilent\IO Libraries Suite\lib_x64;C:\Program Files\Agilent\IO Libraries Suite\include;$(VXIPNPPATH)WinNT\include;$(IncludePath);C:\Users\Mark\Anaconda3\include;C:\Users\Regal Lab\Anaconda3\include;C:\Anaconda3\include;$(ProjectDir)\Packages\64-Bit-Libs\boost_1_64_0;$(ProjectDir)\Packages\64-Bit-Libs\Debug\HDF5-1.10.1-win64\include;C:\Users\KLab\Desktop\Chimera-Control-Master\Chimera\Packages\64-Bit-Libs\Debug\HDF5-1.10.1-win64-Debug\include</IncludePath>
     <LibraryPath>C:\Program Files\Andor SOLIS\Drivers;C:\Users\Mark\Documents\Quantum Gas Assembly Control\Chimera;C:\Program Files\Agilent\IO Libraries Suite\lib_x64;C:\Program Files\IVI Foundation\VISA\Win64\Lib_x64\msc;$(ProjectDir)\Packages\64-Bit-Libs\boost_1_64_0\lib-64bit;$(ProjectDir)\Packages\64-Bit-Libs\Debug\HDF5-1.10.1-win64\lib;C:\Users\KLab\Desktop\Chimera-Control-Master\Chimera\Packages\64-Bit-Libs\Debug\Python;C:\Users\KLab\Desktop\Chimera-Control-Master\Chimera\Packages\64-Bit-Libs\Release\Python;C:\Users\KLab\Desktop\Chimera-Control-Master\Chimera\Packages\64-Bit-Libs\Debug\HDF5-1.10.1-win64\lib;C:\Program Files (x86)\National Instruments\Shared\ExternalCompilerSupport\C\lib64\msvc;$(LibraryPath)</LibraryPath>
+    <ExecutablePath>$(VC_ExecutablePath_x64);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(FxCopDir);$(PATH);</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>true</LinkIncremental>
@@ -202,6 +203,7 @@
     <ClInclude Include="commonTypes.h" />
     <ClInclude Include="Communicator.h" />
     <ClInclude Include="DacStructures.h" />
+    <ClInclude Include="DebugOptionsControl.h" />
     <ClInclude Include="Expression.h" />
     <ClInclude Include="profileSettings.h" />
     <ClInclude Include="ProfileSystem.h" />
@@ -216,7 +218,6 @@
     <ClInclude Include="gnuplotter.h" />
     <ClInclude Include="GpibFlume.h" />
     <ClInclude Include="imageParameters.h" />
-    <ClInclude Include="KeyHandler.h" />
     <ClInclude Include="longnam.h" />
     <ClInclude Include="MainOptionsControl.h" />
     <ClInclude Include="Andor.h" />
@@ -236,16 +237,21 @@
     <ClInclude Include="ProfileIndicator.h" />
     <ClInclude Include="constants.h" />
     <ClInclude Include="Control.h" />
-    <ClInclude Include="DebuggingOptionsControl.h" />
     <ClInclude Include="externals.h" />
     <ClInclude Include="MainWindow.h" />
+    <ClInclude Include="RC028.h" />
     <ClInclude Include="realTimePlotterInput.h" />
     <ClInclude Include="rearrangementStructures.h" />
     <ClInclude Include="rearrangementThreadInput.h" />
     <ClInclude Include="rearrangeParams.h" />
     <ClInclude Include="RearrangeControl.h" />
     <ClInclude Include="Repetitions.h" />
-    <ClInclude Include="resource2.h" />
+    <ClInclude Include="rerngContainer.h" />
+    <ClInclude Include="rerngControl.h" />
+    <ClInclude Include="rerngMove.h" />
+    <ClInclude Include="rerngParams.h" />
+    <ClInclude Include="rerngStructures.h" />
+    <ClInclude Include="rerngthreadinput.h" />
     <ClInclude Include="RhodeSchwarz.h" />
     <ClInclude Include="NoteSystem.h" />
     <ClInclude Include="Script.h" />
@@ -258,6 +264,7 @@
     <ClInclude Include="StatusControl.h" />
     <ClInclude Include="StatusIndicator.h" />
     <ClInclude Include="TektronicsControl.h" />
+    <ClInclude Include="TestWin.h" />
     <ClInclude Include="TextPromptDialog.h" />
     <ClInclude Include="fonts.h" />
     <ClInclude Include="commonFunctions.h" />
@@ -286,6 +293,7 @@
     <ClCompile Include="cleanString.cpp" />
     <ClCompile Include="ColorBox.cpp" />
     <ClCompile Include="Communicator.cpp" />
+    <ClCompile Include="DebugOptionsControl.cpp" />
     <ClCompile Include="Expression.cpp" />
     <ClCompile Include="openWithExplorer.cpp" />
     <ClCompile Include="ProfileSystem.cpp" />
@@ -294,14 +302,12 @@
     <ClCompile Include="DacSystem.cpp" />
     <ClCompile Include="DataLogger.cpp" />
     <ClCompile Include="PlotDataSet.cpp" />
-    <ClCompile Include="DebuggingOptionsControl.cpp" />
     <ClCompile Include="EmbeddedPythonHandler.cpp" />
     <ClCompile Include="ExperimentTimer.cpp" />
     <ClCompile Include="externals.cpp" />
     <ClCompile Include="Fgen.cpp" />
     <ClCompile Include="Gnuplotter.cpp" />
     <ClCompile Include="GpibFlume.cpp" />
-    <ClCompile Include="KeyHandler.cpp" />
     <ClCompile Include="MainOptionsControl.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="Andor.cpp" />
@@ -317,8 +323,10 @@
     <ClCompile Include="PlotDesignerDialog.cpp" />
     <ClCompile Include="PlottingInfo.cpp" />
     <ClCompile Include="ProfileIndicator.cpp" />
+    <ClCompile Include="RC028.cpp" />
     <ClCompile Include="RearrangeControl.cpp" />
     <ClCompile Include="Repetitions.cpp" />
+    <ClCompile Include="rerngControl.cpp" />
     <ClCompile Include="RhodeSchwarz.cpp" />
     <ClCompile Include="Script.cpp" />
     <ClCompile Include="scriptedAgilentWaveform.cpp" />
@@ -330,6 +338,7 @@
     <ClCompile Include="StatusControl.cpp" />
     <ClCompile Include="StatusIndicator.cpp" />
     <ClCompile Include="TektronicsControl.cpp" />
+    <ClCompile Include="TestWin.cpp" />
     <ClCompile Include="TextPromptDialog.cpp" />
     <ClCompile Include="commonFunctions.cpp" />
     <ClCompile Include="NiawgController.cpp" />
@@ -367,9 +376,17 @@
   <ItemGroup>
     <None Include="coordinate.h" />
     <None Include="DioStructures.h" />
+    <None Include="ftbusui.dll" />
+    <None Include="ftcserco.dll" />
+    <None Include="ftd2xx64.dll" />
+    <None Include="ftlang.dll" />
+    <None Include="ftserui2.dll" />
   </ItemGroup>
   <ItemGroup>
     <Object Include="ni4882.obj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="ftd2xx.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

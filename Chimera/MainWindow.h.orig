@@ -1,0 +1,204 @@
+#pragma once
+#include "stdafx.h"
+#include "ProfileSystem.h"
+<<<<<<< HEAD
+#include "DebuggingOptionsControl.h"
+=======
+#include "DebugOptionsControl.h"
+>>>>>>> 750e7f923638bc09c2c9486ae03a82546e6e9e7f
+#include "MainOptionsControl.h"
+#include "StatusControl.h"
+#include "StatusIndicator.h"
+#include "Communicator.h"
+<<<<<<< HEAD
+#include "SMSTextingControl.h"
+=======
+#include "SmsTextingControl.h"
+>>>>>>> 750e7f923638bc09c2c9486ae03a82546e6e9e7f
+#include "EmbeddedPythonHandler.h"
+#include "MasterConfiguration.h"
+#include "Repetitions.h"
+#include "MasterManager.h"
+#include "commonFunctions.h"
+#include "DataLogger.h"
+#include "NoteSystem.h"
+#include "profileSettings.h"
+#include "NiawgController.h"
+<<<<<<< HEAD
+#include "RearrangeControl.h"
+=======
+#include "rerngControl.h"
+>>>>>>> 750e7f923638bc09c2c9486ae03a82546e6e9e7f
+
+class ScriptingWindow;
+class CameraWindow;
+class AuxiliaryWindow;
+
+<<<<<<< HEAD
+
+=======
+>>>>>>> 750e7f923638bc09c2c9486ae03a82546e6e9e7f
+class MainWindow : public CDialog
+{
+	using CDialog::CDialog;
+	DECLARE_DYNAMIC(MainWindow);
+	public:
+	    // overrides
+<<<<<<< HEAD
+=======
+		void passNiawgIsOnPress( );
+>>>>>>> 750e7f923638bc09c2c9486ae03a82546e6e9e7f
+		MainWindow(UINT id, CDialog*);
+		BOOL OnInitDialog() override;
+		HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+		BOOL PreTranslateMessage(MSG* pMsg); 
+		void OnSize(UINT nType, int cx, int cy);
+		void OnClose();
+		void catchEnter( );
+		void OnCancel() override;
+		// stuff directly called (or 1 simple step removed) by message map.
+		LRESULT onRepProgress(WPARAM wParam, LPARAM lParam);
+		LRESULT onStatusTextMessage(WPARAM wParam, LPARAM lParam);
+		LRESULT onErrorMessage(WPARAM wParam, LPARAM lParam);
+		LRESULT onFatalErrorMessage(WPARAM wParam, LPARAM lParam);
+		LRESULT onNormalFinishMessage(WPARAM wParam, LPARAM lParam);
+		LRESULT onColoredEditMessage(WPARAM wParam, LPARAM lParam);
+		LRESULT onDebugMessage(WPARAM wParam, LPARAM lParam);		
+<<<<<<< HEAD
+		
+=======
+		LRESULT onNoAtomsAlertMessage( WPARAM wp, LPARAM lp);
+>>>>>>> 750e7f923638bc09c2c9486ae03a82546e6e9e7f
+		//
+		void stopRearranger( );
+		void waitForRearranger( );
+		void passCommonCommand( UINT id );
+		void handlePause();
+		void passDebugPress( UINT id );
+		void passMainOptionsPress( UINT id );
+		void handleDblClick( NMHDR * pNotifyStruct, LRESULT * result );
+		void handleRClick( NMHDR * pNotifyStruct, LRESULT * result );
+<<<<<<< HEAD
+		void handleExperimentCombo();
+		void handleCategoryCombo();
+		void handleConfigurationCombo();
+=======
+>>>>>>> 750e7f923638bc09c2c9486ae03a82546e6e9e7f
+		void handleSequenceCombo();
+		void passClear( UINT id );
+
+		// auxiliary functions used by the window.
+<<<<<<< HEAD
+		void setNotes(std::string whichLevel, std::string notes);
+=======
+		void setNotes(std::string notes);
+>>>>>>> 750e7f923638bc09c2c9486ae03a82546e6e9e7f
+		void setNiawgDefaults();
+		void fillMasterThreadInput( MasterThreadInput* input );
+		void fillMotInput( MasterThreadInput* input);
+		void startMaster( MasterThreadInput* input, bool isTurnOnMot );
+<<<<<<< HEAD
+		std::string getNotes(std::string whichLevel);
+=======
+		std::string getNotes( );
+>>>>>>> 750e7f923638bc09c2c9486ae03a82546e6e9e7f
+		brushMap getBrushes();
+		rgbMap getRgbs();
+		fontMap getFonts();
+		profileSettings getProfileSettings();
+		debugInfo getDebuggingOptions();
+		mainOptions getMainOptions();
+
+		void checkProfileReady();
+		void checkProfileSave();
+		void updateConfigurationSavedStatus(bool status);
+
+		void setDebuggingOptions(debugInfo options);
+		void updateStatusText(std::string whichStatus, std::string text);
+		void addTimebar(std::string whichStatus);
+		void setShortStatus(std::string text);
+		void changeShortStatusColor(std::string color);
+		void restartNiawgDefaults();
+		void stopNiawg();
+		void changeBoxColor(systemInfo<char> colors);
+		void handleNewConfig( std::ofstream& newFile );
+		void handleSaveConfig(std::ofstream& saveFile);
+<<<<<<< HEAD
+		void handleOpeningConfig(std::ifstream& configFile, double version);
+=======
+		void handleOpeningConfig(std::ifstream& configFile, int versionMajor, int versionMinor );
+>>>>>>> 750e7f923638bc09c2c9486ae03a82546e6e9e7f
+		void abortMasterThread();
+		Communicator* getComm();
+		std::string getSystemStatusString();
+
+		bool niawgIsRunning();
+		bool masterIsRunning();
+		void setNiawgRunningState( bool newRunningState );
+		RunInfo getRunInfo();
+		void handleFinish();
+		UINT getRepNumber();
+		void logParams( DataLogger* logger, MasterThreadInput* input );
+		bool experimentIsPaused( );
+<<<<<<< HEAD
+		void handleExperimentNotesChange( );
+		void handleCategoryNotesChange( );
+		void notifyConfigUpdate( );
+		void handleEmailButton( );
+=======
+		void notifyConfigUpdate( );
+		void passConfigPress( );
+>>>>>>> 750e7f923638bc09c2c9486ae03a82546e6e9e7f
+
+	private:		
+		DECLARE_MESSAGE_MAP();
+		ScriptingWindow* TheScriptingWindow;
+		CameraWindow* TheCameraWindow;
+		AuxiliaryWindow* TheAuxiliaryWindow;
+		// members that have gui elements
+		ProfileSystem profile;
+		MasterConfiguration masterConfig;
+		NoteSystem notes;
+		DebugOptionsControl debugger;
+		Repetitions repetitionControl;
+		MainOptionsControl settings;
+		StatusControl mainStatus;
+		StatusControl debugStatus;
+		StatusControl errorStatus;
+		SmsTextingControl texter;
+		StatusIndicator shortStatus;
+<<<<<<< HEAD
+		RearrangeControl rearrangeControl;
+		NiawgController niawg;
+
+=======
+		rerngControl rearrangeControl;
+		NiawgController niawg;
+>>>>>>> 750e7f923638bc09c2c9486ae03a82546e6e9e7f
+		ColorBox boxes;
+		// auxiliary members
+		Communicator comm;
+		brushMap mainBrushes;
+		rgbMap mainRGBs;
+		fontMap mainFonts;
+		MasterManager masterThreadManager;
+		CMenu menu;
+		RunInfo systemRunningInfo;
+		cToolTips tooltips;
+		EmbeddedPythonHandler python;
+<<<<<<< HEAD
+		KeyHandler masterKey;
+=======
+		//KeyHandler masterKey;
+>>>>>>> 750e7f923638bc09c2c9486ae03a82546e6e9e7f
+
+		static BOOL CALLBACK monitorHandlingProc( _In_ HMONITOR hMonitor, _In_ HDC      hdcMonitor,
+										   _In_ LPRECT   lprcMonitor, _In_ LPARAM   dwData );
+
+		// friends (try to minimize these)
+		friend void commonFunctions::handleCommonMessage( int msgID, CWnd* parent, MainWindow* mainWin,
+														  ScriptingWindow* scriptWin, CameraWindow* camWin,
+														  AuxiliaryWindow* masterWin );
+		CDialog* appSplash;
+};
+

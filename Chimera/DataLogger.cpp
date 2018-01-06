@@ -497,8 +497,7 @@ H5::DataSet DataLogger::writeDataSet( double data, std::string name, H5::Group& 
 	}
 	catch ( H5::Exception& err )
 	{
-		thrower( "ERROR: error while writing double data set to H5 File. double was " + str(data) 
-				 + ". Dataset name was " + name + ". Error was :\r\n" + err.getDetailMsg( ) );
+		thrower( "ERROR: error while writing double data set to H5 File. double was " + str(data) + ". Dataset name was " + name + ". Error was :\r\n" + err.getDetailMsg( ) );
 	}
 }
 

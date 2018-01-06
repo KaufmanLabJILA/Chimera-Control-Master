@@ -42,7 +42,7 @@ void VisaFlume::open()
 }
 
 
-void VisaFlume::setAttribute( ULONG attributeName, ULONG value )
+void VisaFlume::setAttribute(ViAttr attributeName, ViAttrState value)
 {
 	if (!deviceSafemode)
 	{

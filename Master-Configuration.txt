@@ -51,7 +51,7 @@ b8
 0
 ropshutter
 0
-795shutter
+shutter795
 0
 b11
 0
@@ -61,53 +61,53 @@ b13
 0
 niawgtrig
 0
-afgsweeptrig
+b15
 0
-eoswitch
+c0
 0
-eoswitch2
+c1
 0
-andortrig
+c2
 0
-rstrig
+c3
 0
-ramanshutter
+c4
 0
-tweezerflashrf
+c5
 0
-lsrf
+c6
 0
-tweezerflashrf2
+c7
 0
 c8
 0
-depumpingrf
+c9
 0
-795rf
+c10
 0
-oscilloscopetrig
+c11
 0
-probeshutter
+c12
 0
-sidemotshutter
+c13
 0
 c14
 0
-acetrig
+c15
 0
-diagmotshutter
+d0
 0
 d1
 0
-andorshutter
+d2
 0
-axialmicropulsetrig
+d3
 0
-topfsktrig
+d4
 0
-botfsktrig
+d5
 0
-axialfsktrig
+d6
 0
 d7
 0
@@ -115,7 +115,7 @@ d8
 0
 d9
 0
-acetrig
+d10
 0
 d11
 0
@@ -123,9 +123,9 @@ d12
 0
 d13
 0
-dacboardtrig
+d14
 0
-d15
+testport
 0
 rightcoilcurrent
 -10 - 10
@@ -178,10 +178,10 @@ sigmarepumppower
 lspower
 -10 - 10
 0
-795freq
+freq795
 -10 - 10
 0
-795power
+power795
 -10 - 10
 0
 dac19
@@ -231,4 +231,4 @@ loadmotdiagpower 0.3
 imagingrepumppower 0.2
 pushouttime 0.015
 intrappgccoolingtime 0.5
-1 5 1 1 5 1
+1 512 1 1 512 1

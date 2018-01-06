@@ -37,7 +37,11 @@
 	#define FLASHING_SAFEMODE true
 	#define FLASHING_AGILENT_USB_ADDRESS "USB0::0x0957::0x2307::MY50003003::0::INSTR"
 	#define TESTING_AGILENT_USB_ADDRESS "USB0::0x0957::0x2C07::MY52801397::0::INSTR"
-	
+	#define AXIAL_AGILENT_SAFEMODE true
+	#define AXIAL_AGILENT_USB_ADDRESS ""
+	#define UWAVE_SAFEMODE true
+	#define UWAVE_AGILENT_USB_ADDRESS ""
+
 	const std::string PROJECT_LOCATION = "C:\\Users\\KLab\\Desktop\\Chimera-Control-Master\\";
 	const std::string PYTHON_CODE_LOCATION = "C:/Users/KLab/Desktop/Chimera-Control-Master/";
 	// same as debug output location but with forward slashes for ease of use in python

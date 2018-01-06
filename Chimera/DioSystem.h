@@ -6,6 +6,15 @@
 #include <array>
 #include <sstream>
 #include <unordered_map>
+
+//Below are for the FPGA
+//#include "stdafx.h"
+//#include <string>
+//#include <iostream>
+//#include <stdio.h>
+#include "RC028.h"
+//#include <windows.h>
+//#include <chrono>
 /**/
 class AuxiliaryWindow;
 
@@ -64,9 +73,13 @@ class DioSystem
 									 std::vector<variableType>& vars );
 		void interpretKey( std::vector<variableType>& variables );
 		void organizeTtlCommands(UINT variation );
+		void formatForFPGA(UINT variation);
 		void convertToFinalFormat(UINT variation );
 		void writeTtlData( UINT variation, bool loadSkip );
+		void writeTtlDataToFPGA(UINT variation, bool loadSkip);
 		void startBoard();
+		void startDioFPGA();
+		void fpgaForceOutput(WORD* buffer);
 		void stopBoard();
 		double getClockStatus();
 		void wait(double time);
@@ -81,6 +94,8 @@ class DioSystem
 		bool getDefaultTtl(UINT row, UINT column);
 		void findLoadSkipSnapshots( double time, std::vector<variableType>& variables, UINT variation );
 		std::pair<USHORT, USHORT> calcDoubleShortTime( double time );
+
+		
 	private:		
 		// one control for each TTL
 		Control<CStatic> ttlTitle;
@@ -96,6 +111,7 @@ class DioSystem
 		// tells whether the hold button is down or not.
 		bool holdStatus;
 
+		RC028 dioFPGA; //FPGA object 
 
 		std::vector<DioCommandForm> ttlCommandFormList;
 		// Each element of first vector is for each variation.

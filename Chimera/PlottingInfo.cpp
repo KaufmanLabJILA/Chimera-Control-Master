@@ -997,7 +997,7 @@ UINT PlottingInfo::getPixelGroupNumber()
 }
 
 
-size_t PlottingInfo::getDataSetNumber()
+UINT PlottingInfo::getDataSetNumber()
 {
 	return dataSets.size();
 }

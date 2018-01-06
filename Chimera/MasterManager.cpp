@@ -9,6 +9,7 @@
 #include "NiawgWaiter.h"
 #include "Expression.h"
 
+
 MasterManager::MasterManager()
 {
 	functionsFolderLocation = FUNCTIONS_FOLDER_LOCATION;
@@ -134,6 +135,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 				input->ttls->organizeTtlCommands( variationInc );
 				input->ttls->findLoadSkipSnapshots( currLoadSkipTime, input->variables, variationInc );
 				input->ttls->convertToFinalFormat( variationInc );
+				input->ttls->formatForFPGA(variationInc); //FPGA FORMATTING from TTLSNAPSHOTS
 				// run a couple checks.
 				input->ttls->checkNotTooManyTimes( variationInc );
 				input->ttls->checkFinalFormatTimes( variationInc );
@@ -301,7 +303,9 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 					input->dacs->configureClocks( variationInc, skipOption );
 					input->dacs->writeDacs( variationInc, skipOption );
 					input->dacs->startDacs();
-					input->ttls->writeTtlData( variationInc, skipOption );
+					//input->ttls->writeTtlData( variationInc, skipOption );
+					input->ttls->writeTtlDataToFPGA(variationInc, skipOption);
+					input->ttls->startDioFPGA();
 					input->ttls->startBoard();
 					input->ttls->waitTillFinished( variationInc, skipOption );
 				}

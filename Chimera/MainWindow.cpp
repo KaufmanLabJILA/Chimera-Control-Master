@@ -1,9 +1,11 @@
 #include "stdafx.h"
+#include "DebugOptionsControl.h"
 #include "commonFunctions.h"
 #include "MainWindow.h"
 #include "CameraWindow.h"
 #include "AuxiliaryWindow.h"
 #include <future>
+//#include "TestWin.cpp"
 
 MainWindow::MainWindow(UINT id, CDialog* splash) : CDialog(id), profile(PROFILES_PATH), 
     masterConfig( MASTER_CONFIGURATION_FILE_ADDRESS ), 
@@ -147,7 +149,6 @@ MainWindow::MainWindow(UINT id, CDialog* splash) : CDialog(id), profile(PROFILES
 IMPLEMENT_DYNAMIC( MainWindow, CDialog )
 
 BEGIN_MESSAGE_MAP( MainWindow, CDialog )
-
 	ON_WM_CTLCOLOR( )
 	ON_WM_SIZE( )
 	ON_CBN_SELENDOK( IDC_SEQUENCE_COMBO, &MainWindow::handleSequenceCombo )

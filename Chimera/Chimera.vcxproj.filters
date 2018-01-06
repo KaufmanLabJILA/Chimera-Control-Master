@@ -187,15 +187,12 @@
     <ClCompile Include="PlotDataSet.cpp">
       <Filter>Camera Window</Filter>
     </ClCompile>
-    <ClCompile Include="saveWithExplorer.cpp">
-      <Filter>General Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DebugOptionsControl.cpp">
-      <Filter>Main Window</Filter>
-    </ClCompile>
-    <ClCompile Include="rerngControl.cpp">
-      <Filter>Main Window</Filter>
-    </ClCompile>
+    <ClCompile Include="RearrangeControl.cpp" />
+    <ClCompile Include="saveTextFileFromEdit.cpp" />
+    <ClCompile Include="DebugOptionsControl.cpp" />
+    <ClCompile Include="rerngControl.cpp" />
+    <ClCompile Include="RC028.cpp" />
+    <ClCompile Include="TestWin.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -444,39 +441,20 @@
     <ClInclude Include="profileSettings.h">
       <Filter>Main Window\Structures</Filter>
     </ClInclude>
-    <ClInclude Include="multiDimensionalKey.h" />
-    <ClInclude Include="debugInfo.h">
-      <Filter>Main Window</Filter>
-    </ClInclude>
-    <ClInclude Include="segmentStructs.h">
-      <Filter>Camera Window\Structures</Filter>
-    </ClInclude>
-    <ClInclude Include="saveWithExplorer.h">
-      <Filter>General Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DebugOptionsControl.h">
-      <Filter>Main Window</Filter>
-    </ClInclude>
-    <ClInclude Include="MasterThreadInput.h" />
-    <ClInclude Include="directions.h" />
-    <ClInclude Include="rerngContainer.h">
-      <Filter>Main Window</Filter>
-    </ClInclude>
-    <ClInclude Include="rerngControl.h">
-      <Filter>Main Window</Filter>
-    </ClInclude>
-    <ClInclude Include="rerngParams.h">
-      <Filter>Main Window\Structures</Filter>
-    </ClInclude>
-    <ClInclude Include="rerngThreadInput.h">
-      <Filter>Main Window\Structures</Filter>
-    </ClInclude>
-    <ClInclude Include="rerngStructures.h">
-      <Filter>Main Window\Structures</Filter>
-    </ClInclude>
-    <ClInclude Include="rerngMove.h">
-      <Filter>Main Window\Structures</Filter>
-    </ClInclude>
+    <ClInclude Include="rearrangementStructures.h" />
+    <ClInclude Include="rearrangementThreadInput.h" />
+    <ClInclude Include="rearrangeParams.h" />
+    <ClInclude Include="RearrangeControl.h" />
+    <ClInclude Include="saveTextFileFromEdit.h" />
+    <ClInclude Include="DebugOptionsControl.h" />
+    <ClInclude Include="rerngContainer.h" />
+    <ClInclude Include="rerngControl.h" />
+    <ClInclude Include="rerngMove.h" />
+    <ClInclude Include="rerngParams.h" />
+    <ClInclude Include="rerngStructures.h" />
+    <ClInclude Include="rerngthreadinput.h" />
+    <ClInclude Include="RC028.h" />
+    <ClInclude Include="TestWin.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Icon2.ico">
@@ -540,9 +518,7 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Object Include="gpib-32.obj">
-      <Filter>Things I Don%27t Mess With %28Often%29</Filter>
-    </Object>
+    <Object Include="ni4882.obj" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DioStructures.h">
@@ -551,5 +527,13 @@
     <None Include="coordinate.h">
       <Filter>Camera Window\Structures</Filter>
     </None>
+    <None Include="ftbusui.dll" />
+    <None Include="ftcserco.dll" />
+    <None Include="ftd2xx64.dll" />
+    <None Include="ftlang.dll" />
+    <None Include="ftserui2.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="ftd2xx.lib" />
   </ItemGroup>
 </Project>
