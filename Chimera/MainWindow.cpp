@@ -300,9 +300,9 @@ BOOL MainWindow::OnInitDialog( )
 	try
 	{
 		// these each call oninitdialog after the create call. Hence the try / catch.
-		TheScriptingWindow->Create( IDD_LARGE_TEMPLATE, 0 );
-		TheCameraWindow->Create( IDD_LARGE_TEMPLATE, 0 );
-		TheAuxiliaryWindow->Create( IDD_LARGE_TEMPLATE, 0 );
+		TheScriptingWindow->Create( IDD_LARGE_TEMPLATE, GetDesktopWindow() );
+		TheCameraWindow->Create( IDD_LARGE_TEMPLATE, GetDesktopWindow());
+		TheAuxiliaryWindow->Create( IDD_LARGE_TEMPLATE, GetDesktopWindow());
 	}
 	catch ( Error& err )
 	{
