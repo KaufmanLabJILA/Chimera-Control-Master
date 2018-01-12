@@ -16,7 +16,7 @@
 #include "NoteSystem.h"
 #include "profileSettings.h"
 #include "NiawgController.h"
-#include "rerngControl.h"
+//#include "rerngControl.h"
 
 class ScriptingWindow;
 class CameraWindow;
@@ -119,7 +119,7 @@ class MainWindow : public CDialog
 		StatusControl errorStatus;
 		SmsTextingControl texter;
 		StatusIndicator shortStatus;
-		rerngControl rearrangeControl;
+		//rerngControl rearrangeControl;
 		NiawgController niawg;
 		ColorBox boxes;
 		// auxiliary members
