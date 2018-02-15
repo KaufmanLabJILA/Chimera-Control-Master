@@ -136,6 +136,44 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 				input->ttls->findLoadSkipSnapshots( currLoadSkipTime, input->variables, variationInc );
 				input->ttls->convertToFinalFormat( variationInc );
 				input->ttls->formatForFPGA(variationInc); //FPGA FORMATTING from TTLSNAPSHOTS
+
+				const char *PORT = "COM3";
+				serial_port_base::baud_rate BAUD(77700);
+				input->moog->start(PORT, BAUD);
+				input->moog->writefreqstep(10);
+				input->moog->writeonoff(0xFF000000);
+
+				for (unsigned i = 0; i < 32; i++) {
+					input->moog->writegain(0xFFFF, i);
+					input->moog->writestartfreq(90.0 + 5 * i, i);
+					input->moog->writestopfreq(10.0 + 5 * i, i);
+					input->moog->writeloadphase(5 * i, i);
+					input->moog->writemovephase(5 * i, i);
+				}
+
+				input->moog->load();
+				input->moog->move();
+				input->moog->stop();
+
+				//input->moog.start(PORT, BAUD);
+
+				//input->moog.writefreqstep(10);
+				//input->moog.writeonoff(0xFF000000);
+
+
+				//for (unsigned i = 0; i < 32; i++) {
+				//	input->moog.writegain(0xFFFF, i);
+				//	input->moog.writestartfreq(90.0 + 5 * i, i);
+				//	input->moog.writestopfreq(10.0 + 5 * i, i);
+
+				//	input->moog.writeloadphase(5 * i, i);
+				//	input->moog.writemovephase(5 * i, i);
+				//}
+
+				//input->moog.load();
+				//input->moog.move();
+				//input->moog.stop();
+
 				// run a couple checks.
 				input->ttls->checkNotTooManyTimes( variationInc );
 				input->ttls->checkFinalFormatTimes( variationInc );
@@ -573,7 +611,7 @@ void MasterManager::loadMasterScript(std::string scriptAddress)
 }
 
 
-// makes sure formatting is correct, returns the arguments and the function name from reading the firs real line of a function file.
+// makes sure formatting is correct, returns the arguments and the function name from reading the first real line of a function file.
 void MasterManager::analyzeFunctionDefinition(std::string defLine, std::string& functionName, std::vector<std::string>& args)
 {
 	args.clear();

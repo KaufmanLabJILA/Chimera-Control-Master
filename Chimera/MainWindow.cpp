@@ -693,6 +693,8 @@ void MainWindow::fillMasterThreadInput(MasterThreadInput* input)
 	input->profile = profile.getProfileSettings();
 	input->niawg = &niawg;
 	input->comm = &comm;
+	input->moog = &moog;
+
 	VariableSystem::generateKey( input->variables, input->settings.randomizeVariations );
 	// it's important to do this after the key is generated so that the constants have their values.
 	for ( auto& variable : input->variables )

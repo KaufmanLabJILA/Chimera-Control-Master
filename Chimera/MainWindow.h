@@ -18,6 +18,9 @@
 #include "NiawgController.h"
 //#include "rerngControl.h"
 
+//megamoog controller
+#include "serial_synth.h"
+
 class ScriptingWindow;
 class CameraWindow;
 class AuxiliaryWindow;
@@ -119,8 +122,11 @@ class MainWindow : public CDialog
 		StatusControl errorStatus;
 		SmsTextingControl texter;
 		StatusIndicator shortStatus;
+		
 		//rerngControl rearrangeControl;
 		NiawgController niawg;
+		serial_synth moog;
+
 		ColorBox boxes;
 		// auxiliary members
 		Communicator comm;

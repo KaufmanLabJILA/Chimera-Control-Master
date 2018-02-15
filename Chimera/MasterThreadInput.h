@@ -12,10 +12,15 @@
 #include <vector>
 #include <atomic>
 
+//for moog test:
+#include "serial_synth.h"
+
 class MasterManager;
 
 struct MasterThreadInput
 {
+	//for moog test:
+	serial_synth* moog;
 	EmbeddedPythonHandler* python;
 	DataLogger* logger;
 	profileSettings profile;
