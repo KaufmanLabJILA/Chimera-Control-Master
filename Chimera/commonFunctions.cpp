@@ -1,4 +1,7 @@
+#pragma once
+
 #include "stdafx.h"
+#include "resource.h"
 #include <array>
 #include "commonFunctions.h"
 #include "TextPromptDialog.h"
@@ -261,7 +264,8 @@ namespace commonFunctions
 				try
 				{
 					scriptWin->saveHorizontalScript( );
-					scriptWin->saveVerticalScript( );
+					//scriptWin->saveVerticalScript( );
+					scriptWin->saveMoogScript();
 					scriptWin->saveIntensityScript( );
 					scriptWin->saveMasterScript( );
 					auxWin->updateAgilent( TopBottom );
@@ -400,7 +404,7 @@ namespace commonFunctions
 				auxWin->saveAgilentScriptAs( Microwave, parent );
 				break; 
 			}
-			case ID_FILE_MY_VERTICAL_NEW:
+			/*case ID_FILE_MY_VERTICAL_NEW:
 			{
 				scriptWin->newVerticalScript();
 				break;
@@ -418,6 +422,26 @@ namespace commonFunctions
 			case ID_FILE_MY_VERTICAL_SAVEAS:
 			{
 				scriptWin->saveVerticalScriptAs(parent);
+				break;
+			}*/
+			case ID_FILE_MY_MOOG_NEW:
+			{
+				scriptWin->newMoogScript();
+				break;
+			}
+			case ID_FILE_MY_MOOG_OPEN:
+			{
+				scriptWin->openMoogScript(parent);
+				break;
+			}
+			case ID_FILE_MY_MOOG_SAVE:
+			{
+				scriptWin->saveMoogScript();
+				break;
+			}
+			case ID_FILE_MY_MOOG_SAVEAS:
+			{
+				scriptWin->saveMoogScriptAs(parent);
 				break;
 			}
 			case ID_FILE_MY_HORIZONTAL_NEW:
@@ -756,8 +780,9 @@ namespace commonFunctions
 		{
 			scriptInfo<std::string> scriptNames = scriptWin->getScriptNames();
 			// ordering matters here, make sure you get the correct script name.
+			std::string moogNameString(scriptNames.moog);
 			std::string horizontalNameString( scriptNames.horizontalNIAWG );
-			std::string verticalNameString( scriptNames.verticalNIAWG );
+			//std::string verticalNameString( scriptNames.verticalNIAWG );
 			std::string intensityNameString( scriptNames.intensityAgilent );
 			std::string sequenceInfo = "";
 			if (sequenceInfo != "")
@@ -767,8 +792,14 @@ namespace commonFunctions
 			else
 			{
 				scriptInfo<bool> scriptSavedStatus = scriptWin->getScriptSavedStatuses();
-				beginInfo += "Vertical Script Name:........ " + str( verticalNameString );
-				if (scriptSavedStatus.verticalNIAWG)
+				//beginInfo += "Vertical Script Name:........ " + str( verticalNameString );
+				//if (scriptSavedStatus.verticalNIAWG)
+				//{
+				//	beginInfo += " SAVED\r\n";
+				//}
+
+				beginInfo += "Moog Script Name:........ " + str(moogNameString);
+				if (scriptSavedStatus.moog)
 				{
 					beginInfo += " SAVED\r\n";
 				}

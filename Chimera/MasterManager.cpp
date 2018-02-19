@@ -155,25 +155,6 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 				input->moog->move();
 				input->moog->stop();
 
-				//input->moog.start(PORT, BAUD);
-
-				//input->moog.writefreqstep(10);
-				//input->moog.writeonoff(0xFF000000);
-
-
-				//for (unsigned i = 0; i < 32; i++) {
-				//	input->moog.writegain(0xFFFF, i);
-				//	input->moog.writestartfreq(90.0 + 5 * i, i);
-				//	input->moog.writestopfreq(10.0 + 5 * i, i);
-
-				//	input->moog.writeloadphase(5 * i, i);
-				//	input->moog.writemovephase(5 * i, i);
-				//}
-
-				//input->moog.load();
-				//input->moog.move();
-				//input->moog.stop();
-
 				// run a couple checks.
 				input->ttls->checkNotTooManyTimes( variationInc );
 				input->ttls->checkFinalFormatTimes( variationInc );
@@ -291,12 +272,12 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 			{
 				input->niawg->programNiawg( input, output, warnings, variationInc, variations, variedMixedSize,
 											userScriptSubmit );
-				if ( foundRearrangement )
-				{
-					input->niawg->turnOffRerng( );
-					input->conditionVariableForRearrangement->notify_all( );
-					input->niawg->handleStartingRerng( input, output );
-				}
+				//if ( foundRearrangement )
+				//{
+				//	input->niawg->turnOffRerng( );
+				//	input->conditionVariableForRearrangement->notify_all( );
+				//	input->niawg->handleStartingRerng( input, output );
+				//}
 			}
 			input->comm->sendError( warnings );
 			input->topBottomTek->programMachine( variationInc );

@@ -38,6 +38,10 @@ void Script::initialize( int width, int height, POINT& startingLocation, cToolTi
 	{
 		extension = str( "." ) + MASTER_SCRIPT_EXTENSION;
 	}
+	else if (deviceTypeInput == "Moog")
+	{
+		extension = str(".") + MOOG_SCRIPT_EXTENSION;
+	}
 	else
 	{
 		thrower( "ERROR: Device input type not recognized during construction of script control." );
@@ -204,6 +208,80 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 			}
 		}
 	}
+	// Check NIAWG-specific commands
+	if ( editType == "Horizontal NIAWG" || editType == "Vertical NIAWG" )
+	{
+		for ( auto num : range( 10 ) )
+		{
+			if ( word == "gen" + str( num + 1 ) + "const" || word == "gen" + str( num + 1 ) + "ampramp"
+				|| word == "gen" + str( num + 1 ) + "freqramp" || word == "gen" + str( num + 1 ) + "freq&ampramp"
+				 || word == "flash" || word == "rearrange")
+			{
+				return rgbs["Solarized Violet"];
+			}
+		}
+		// check logic
+		if ( word == "repeattiltrig" || word == "repeatSet#" || word == "repeattilsoftwaretrig" || word == "endrepeat" 
+			 || word == "repeatforever" )
+		{
+			return rgbs["Solarized Blue"];
+		}
+		// check options
+		if (word == "lin" || word == "nr" || word == "tanh")
+		{
+			return rgbs["Solarized Green"];
+		}
+		// check variable
+		else if (word == "{" || word == "}")
+		{
+			return rgbs["Solarized Cyan"];
+		}
+		if (word.size() > 8)
+		{
+			if (word.substr(word.size() - 8, 8) == ".nScript")
+			{
+				return rgbs["Solarized Yellow"];
+			}
+		}
+	}
+	// Check Moog-specific commands
+	//TODO: replace these with syntax relevant to actual moog.
+	if (editType == "Moog")
+	{
+		for (auto num : range(10))
+		{
+			if (word == "gen" + str(num + 1) + "const" || word == "gen" + str(num + 1) + "ampramp"
+				|| word == "gen" + str(num + 1) + "freqramp" || word == "gen" + str(num + 1) + "freq&ampramp"
+				|| word == "flash" || word == "rearrange")
+			{
+				return rgbs["Solarized Violet"];
+			}
+		}
+		// check logic
+		if (word == "repeattiltrig" || word == "repeatSet#" || word == "repeattilsoftwaretrig" || word == "endrepeat"
+			|| word == "repeatforever")
+		{
+			return rgbs["Solarized Blue"];
+		}
+		// check options
+		if (word == "lin" || word == "nr" || word == "tanh")
+		{
+			return rgbs["Solarized Green"];
+		}
+		// check variable
+		else if (word == "{" || word == "}")
+		{
+			return rgbs["Solarized Cyan"];
+		}
+		if (word.size() > 8)
+		{
+			if (word.substr(word.size() - 8, 8) == ".nScript")
+			{
+				return rgbs["Solarized Yellow"];
+			}
+		}
+	}
+
 	// Check Agilent-specific commands
 	else if (editType == "Agilent")
 	{
@@ -547,6 +625,10 @@ void Script::handleToolTip( NMHDR * pNMHDR, LRESULT * pResult )
 		{
 			pTTT->lpszText = (LPSTR)AGILENT_INFO_TEXT;
 		}
+		else if (deviceType == "Moog")
+		{
+			pTTT->lpszText = (LPSTR)MOOG_INFO_TEXT;
+		}
 		else
 		{
 			pTTT->lpszText = "No Help available";
@@ -627,7 +709,7 @@ void Script::saveScript(std::string categoryPath, RunInfo info)
 	}
 	if (isSaved && scriptName != "")
 	{
-		// shoudln't need to do anything
+		// shouldn't need to do anything
 		return;
 	}
 	int sel = availableFunctionsCombo.GetCurSel();
@@ -895,6 +977,10 @@ void Script::newScript()
 	{
 		tempName += "DEFAULT_MASTER_SCRIPT.mScript";
 	}	
+	else if (deviceType == "Moog")
+	{
+		tempName += "DEFAULT_MOOG_SCRIPT.moogScript";
+	}
 	reset();
 	loadFile(tempName);
 }
@@ -934,9 +1020,16 @@ void Script::openParentScript(std::string parentScriptFileAndPath, std::string c
 			thrower("ERROR: Attempted to open non-master script from master script control!");
 		}
 	}
+	else if (deviceType == "Moog")
+	{
+		if (extStr != str(".") + MOOG_SCRIPT_EXTENSION)
+		{
+			thrower("ERROR: Attempted to open non-moog script from moog script control!");
+		}
+	}
 	else
 	{
-		thrower("ERROR: Unrecognized device type inside script control! Ask Mark about Bugs.");
+		thrower("ERROR: Unrecognized device type inside script control!");
 	}
 	loadFile( parentScriptFileAndPath );
 	scriptName = str(fileChars);

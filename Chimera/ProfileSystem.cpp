@@ -323,7 +323,8 @@ void ProfileSystem::saveConfigurationAs(ScriptingWindow* scriptWindow, MainWindo
 	configurationSaveFile << "Version: "+ str(versionMain) + "." + str(versionSub) + "\n";
 	scriptInfo<std::string> addresses = scriptWindow->getScriptAddresses();
 	// order matters!
-	configurationSaveFile << addresses.verticalNIAWG << "\n";
+	//configurationSaveFile << addresses.verticalNIAWG << "\n";
+	configurationSaveFile << addresses.moog << "\n";
 	configurationSaveFile << addresses.horizontalNIAWG << "\n";
 	configurationSaveFile << addresses.intensityAgilent << "\n";
 	// Number of Variables

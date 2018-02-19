@@ -15,7 +15,7 @@
 #include "DataLogger.h"
 #include "NoteSystem.h"
 #include "profileSettings.h"
-#include "NiawgController.h"
+//#include "NiawgController.h"
 //#include "rerngControl.h"
 
 //megamoog controller

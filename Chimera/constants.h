@@ -241,8 +241,11 @@ const char * const SERVER_ADDRESS = "192.168.236.1";
 #define IDC_REPETITION_EDIT 10023
 #define IDC_ENTER_EMAIL_INFO 10024
 // Scripting Window
-#define IDC_VERTICAL_NIAWG_FUNCTION_COMBO 12001
-#define IDC_VERTICAL_NIAWG_EDIT 12002
+
+#define IDC_MOOG_FUNCTION_COMBO 12001
+#define IDC_MOOG_EDIT 12002
+//#define IDC_VERTICAL_NIAWG_FUNCTION_COMBO 12001
+//#define IDC_VERTICAL_NIAWG_EDIT 12002
 #define IDC_HORIZONTAL_NIAWG_FUNCTION_COMBO 12003
 #define IDC_HORIZONTAL_NIAWG_EDIT 12004
 
@@ -446,6 +449,8 @@ const agilentSettings INTENSITY_AGILENT_SETTINGS = { INTENSITY_SAFEMODE, INTENSI
 #define FUNCTION_EXTENSION "func"
 #define PLOTTING_EXTENSION "plot"
 
+#define MOOG_SCRIPT_EXTENSION "moogScript"
+
 #define OSCILLOSCOPE_TRIGGER "C11"
 
 #define NULL_SEQUENCE "NULL_SEQUENCE"
@@ -483,6 +488,39 @@ const char AGILENT_INFO_TEXT[] = ">>> Scripted Agilent Waveform Help <<<\n"
 "- gaussian, width = gaussian sigma\n"
 "- lorentzian, width = FWHM (curve is normalized)\n";
 
+//TODO: modify this text to be relevant to moog.
+const char MOOG_INFO_TEXT[] =
+">>> This is a script for programming the Megamoogs. <<<\n"
+"- the input format is referenced below using angled brackets <...>. Place the input on\n"
+" the line below the command in the format specified.\n"
+"- The ramping type options are currently \"lin\", \"tanh\" and \"nr\".\n"
+"- The associated c++ code has been designed to be flexible when it comes to trailing white spaces at the ends of\n"
+" lines and in between commands, so use whatever such formatting pleases your eyes.\n"
+"Accepted Commands:\n"
+"(a)Wait Commands\n"
+"\"waitTilTrig\"\n"
+"\"waitSet# <# of samples to wait>\"\n"
+"(b)Repeat Commands\n"
+"\"repeatSet# <# of times to repeat>\"\n"
+"\"repeatTilTrig\"\n"
+"\"repeatForever\"\n"
+"\"endRepeat\"\n"
+"(c)Logic Commands\n"
+"\"ifTrig\"\n"
+"\"else\"\n"
+"\"endIf\"\n"
+"(d)Constant Waveforms\n"
+"\"gen2const <freq1> <amp1> <phase1 (rad)>; <sim for 2nd>; <time> <t manage>\"\n"
+"(e)Amplitude Ramps\n"
+"\"gen2ampramp <freq1> <amp1 ramp type> <initial amp1> <final amp1> <phase1 (rad)>; <sim for 2nd>; <time> <t manage>\"\n"
+"(f)frequency Ramps\n"
+"\"gen2freq ramp <freq1 ramp type> <initial freq1> <final freq1> <amp1> <phase1 (rad)>; <sim for 2nd>; <time> <t manage>\"\n"
+"Etc.\n"
+"(g)Amplitude and Frequency Ramps\n"
+"\"gen2freq&ampramp <freq1 ramp type> <init freq1> <fin freq1> <amp ramp1 type> <init ramp1> <fin ramp1> <phase1 (rad)>;...\n"
+"...<similar for 2nd>; <time> <t manage>\"\n"
+"(j)Create marker event after last waveform\n"
+"\"markerEvent <samples after previous waveform to wait>\"\n";
 
 //
 const char SCRIPT_INFO_TEXT[] =

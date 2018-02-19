@@ -691,7 +691,7 @@ void MainWindow::fillMasterThreadInput(MasterThreadInput* input)
 	input->repetitionNumber = getRepNumber();
 	input->debugOptions = debugger.getOptions();
 	input->profile = profile.getProfileSettings();
-	input->niawg = &niawg;
+	//input->niawg = &niawg;
 	input->comm = &comm;
 	input->moog = &moog;
 

@@ -231,12 +231,12 @@ BEGIN
     END
     POPUP "&Scripts"
     BEGIN
-        POPUP "&Vertical Script"
+        POPUP "&Moog Script"
         BEGIN
-            MENUITEM "Ne&w Vertical Script",        ID_FILE_MY_VERTICAL_NEW
-            MENUITEM "Op&en Vertical Script",       ID_FILE_MY_VERTICAL_OPEN
-            MENUITEM "&Save Vertical Script",       ID_FILE_MY_VERTICAL_SAVE
-            MENUITEM "Save Vertical Script &As",    ID_FILE_MY_VERTICAL_SAVEAS
+            MENUITEM "Ne&w Moog Script",            ID_FILE_MY_MOOG_NEW
+            MENUITEM "Op&en Moog Script",           ID_FILE_MY_MOOG_OPEN
+            MENUITEM "&Save Moog Script",           ID_FILE_MY_MOOG_SAVE
+            MENUITEM "Save Moog Script &As",        ID_FILE_MY_MOOG_SAVEAS
         END
         POPUP "Hori&zontal Script"
         BEGIN

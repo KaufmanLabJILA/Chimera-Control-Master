@@ -13,8 +13,9 @@ class AuxiliaryWindow;
 // a convenient structure for containing one object for each script. For example, the address of each script.
 template <typename type> struct scriptInfo
 {
+	//type verticalNIAWG;
+	type moog;
 	type horizontalNIAWG;
-	type verticalNIAWG;
 	type intensityAgilent;
 	type master;
 };
@@ -63,12 +64,19 @@ class ScriptingWindow : public CDialog
 		void saveIntensityScriptAs(CWnd* parent);
 		void agilentEditChange();
 
-		void newVerticalScript();
-		void openVerticalScript(CWnd* parent);
-		void openVerticalScript(std::string name);
-		void saveVerticalScript();
-		void saveVerticalScriptAs(CWnd* parent);
-		void verticalEditChange();
+		void newMoogScript();
+		void openMoogScript(CWnd* parent);
+		void openMoogScript(std::string name);
+		void saveMoogScript();
+		void saveMoogScriptAs(CWnd* parent);
+		void moogEditChange();
+
+		//void newVerticalScript();
+		//void openVerticalScript(CWnd* parent);
+		//void openVerticalScript(std::string name);
+		//void saveVerticalScript();
+		//void saveVerticalScriptAs(CWnd* parent);
+		//void verticalEditChange();
 
 		void newHorizontalScript();
 		void openHorizontalScript(CWnd* parent);
@@ -95,8 +103,9 @@ class ScriptingWindow : public CDialog
 		void OnSize(UINT nType, int cx, int cy);
 
 		void handleIntensityButtons( UINT id );
+		void handleMoogScriptComboChange();
 		void handleHorizontalScriptComboChange();
-		void handleVerticalScriptComboChange();
+		//void handleVerticalScriptComboChange();
 		void handleAgilentScriptComboChange();
 		void handleMasterFunctionChange( );
 		void handleIntensityCombo();
@@ -113,7 +122,7 @@ class ScriptingWindow : public CDialog
 		//
 		cToolTips tooltips;
 
-		Script verticalNiawgScript, horizontalNiawgScript, masterScript;
+		Script horizontalNiawgScript, masterScript, moogScript /*verticalNiawgScript*/;
 		ColorBox statusBox;
 		ProfileIndicator profileDisplay;
 
