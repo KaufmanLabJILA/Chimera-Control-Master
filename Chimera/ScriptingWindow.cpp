@@ -807,7 +807,7 @@ void ScriptingWindow::handleOpenConfig(std::ifstream& configFile, int versionMaj
 		if ( answer == IDYES )
 		{
 			//openVerticalScript( openWithExplorer( NULL, "nScript" ) );
-			openMoogScript( openWithExplorer( NULL, "nScript" ) );
+			openMoogScript( openWithExplorer( NULL, "moogScript" ) );
 		}
 	}
 	try

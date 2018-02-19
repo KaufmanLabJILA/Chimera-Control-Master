@@ -35,6 +35,10 @@ std::string saveWithExplorer(CWnd* owner, std::string extension, profileSettings
 	{
 		txt = "Master Script\0*.mScript\0"s;
 	}
+	else if (extension == "moogScript")
+	{
+		txt = "Moog Script\0*.moogScript\0"s;
+	}
 	else if ( extension == "Config" )
 	{
 		txt = "Configuraiton\0*.Config\0"s;

@@ -28,10 +28,10 @@
 #define IDD_TEXT_PROMPT_DIALOG          10314
 #define IDD_VIEW_AND_CHANGE_DAC_NAMES   10319
 #define MENU_ID_RANGE_BEGIN             40001
-//#define ID_FILE_MY_VERTICAL_SAVE        40001
-//#define ID_FILE_MY_VERTICAL_SAVEAS      40002
-//#define ID_FILE_MY_VERTICAL_OPEN        40003
-//#define ID_FILE_MY_VERTICAL_NEW         40004
+#define ID_FILE_MY_MOOG_SAVE			40001
+#define ID_FILE_MY_MOOG_SAVEAS			40002
+#define ID_FILE_MY_MOOG_OPEN			40003
+#define ID_FILE_MY_MOOG_NEW				40004
 #define ID_FILE_MY_HORIZONTAL_SAVE      40005
 #define ID_FILE_MY_HORIZONTAL_SAVEAS    40006
 #define ID_FILE_MY_HORIZONTAL_OPEN      40007
@@ -153,10 +153,6 @@
 #define ID_PLOTTING_STOPPLOTTER         40129
 #define MENU_ID_RANGE_END               40129
 #define ID_SCRIPTS_MOOGSCRIPT           40130
-#define ID_FILE_MY_MOOG_OPEN            40131
-#define ID_FILE_MY_MOOG_SAVE            40132
-#define ID_FILE_MY_MOOG_SAVEAS          40133
-#define ID_FILE_MY_MOOG_NEW             40134
 
 // Next default values for new objects
 // 

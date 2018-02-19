@@ -275,7 +275,7 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 		}
 		if (word.size() > 8)
 		{
-			if (word.substr(word.size() - 8, 8) == ".nScript")
+			if (word.substr(word.size() - 8, 8) == ".moogScript")
 			{
 				return rgbs["Solarized Yellow"];
 			}

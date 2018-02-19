@@ -37,6 +37,10 @@ std::string openWithExplorer(CWnd* parent, std::string extension)
 	{
 		txt = "Master Script\0*.mScript\0"s;
 	}
+	else if (extension == "moogScript")
+	{
+		txt = "Master Script\0*.moogScript\0"s;
+	}
 	else if ( extension == "Config" )
 	{
 		txt = "Configuraiton\0*.Config\0"s;
