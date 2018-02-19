@@ -22,7 +22,7 @@
 	#define ANDOR_SAFEMODE true
 	#define PYTHON_SAFEMODE true
 	#define DIO_SAFEMODE true
-	#define DAQMX_SAFEMODE true
+	#define DAQMX_SAFEMODE false
 	#define RSG_SAFEMODE true
 	#define TOP_BOTTOM_TEK_SAFEMODE true
 	#define TOP_BOTTOM_TEK_USB_ADDRESS "USB0::0x0699::0x0343::C021681::0::INSTR"
