@@ -211,6 +211,7 @@ unsigned __stdcall AndorCamera::cameraThread( void* voidPtr )
 				if (status == DRV_IDLE && armed)
 				{
 					// signal the end to the main thread.
+					input->comm->sendCameraProgress(-1);
 					input->comm->sendCameraFin();
 					armed = false;
 				}

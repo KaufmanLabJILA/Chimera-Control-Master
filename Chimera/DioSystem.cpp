@@ -79,7 +79,7 @@ ULONG DioSystem::countDacTriggers(UINT variation)
 {
 	ULONG triggerCount = 0;
 	// D14
-	std::pair<unsigned short, unsigned short> dacLine = { 3,15 };
+	std::pair<unsigned short, unsigned short> dacLine = { 3,14 };
 	for (auto command : ttlCommandList[variation])
 	{
 		// count each rising edge.
@@ -851,13 +851,17 @@ void DioSystem::forceTtl(int row, int number, int state)
 			}
 		}
 	}
+	
+	////FROM DIO64 legacy////
 	std::array<unsigned short, 4> tempCommand;
 	tempCommand[0] = static_cast <unsigned short>(ttlBits[0].to_ulong());
 	tempCommand[1] = static_cast <unsigned short>(ttlBits[1].to_ulong());
 	tempCommand[2] = static_cast <unsigned short>(ttlBits[2].to_ulong());
 	tempCommand[3] = static_cast <unsigned short>(ttlBits[3].to_ulong());
-	dioForceOutput( 0, tempCommand.data(), 15 );
-	fpgaForceOutput(tempCommand.data()); //Note, .data is a pointer to the first element in the array, hence this is just passing a pointer to the data in teh array. 
+	//dioForceOutput( 0, tempCommand.data(), 15 );
+    /////////// 
+
+	fpgaForceOutput(tempCommand); //Note, .data is a pointer to the first element in the array, hence this is just passing a pointer to the data in teh array. 
 }
 
 
@@ -1175,7 +1179,7 @@ void DioSystem::formatForFPGA(UINT variation)
 		//std::cout << "SnapIndex: " << snapIndex << " blah" << std::endl;
 		snapIndex = snapIndex + 1;
 	}
-
+	dioFPGA.setPoint(snapIndex, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 	//For each snapShot
 	//dioSetpoint(ii, .time, 0;;7, 8;;15, 16...)
 
@@ -1558,27 +1562,31 @@ void DioSystem::dioForceOutput(WORD board, WORD* buffer, DWORD mask)
 	}
 }
 
-void DioSystem::fpgaForceOutput(WORD* buffer) //UNTESTED
+void DioSystem::fpgaForceOutput(std::array<unsigned short, 4> buffer) //UNTESTED
 {
 	std::array<unsigned short, 4 > dataToForce;
 	std::array<int, 8> fpgaBanks;
 	uint8_t xlow, xhigh;
-	//dataToForce = *buffer; //Array of four words, each corresponding to a row of 16 ttls. FPGA takes 
+	int fpgaBankCtr, val1, val2;
 
-	//for (int i = 0; i < 4; i+=2)
-	//{
-	//	 xlow = dataToForce[i] & 0xff;
-	//	 xhigh = (dataToForce[i] >> 8);
-	//	 fpgaBanks[i] = (int)xlow;
-	//	 fpgaBanks[i + 1] = (int)xhigh;
-//	}
-	//dioFPGA.setPoint(1,1, fpgaBanks[0], fpgaBanks[1], fpgaBanks[2], fpgaBanks[3], fpgaBanks[4], fpgaBanks[5], fpgaBanks[6], fpgaBanks[7]);
+	dataToForce = buffer; //Array of four words, each corresponding to a row of 16 ttls. FPGA takes 
 
+	for (int i = 0; i < 8; i+=2)
+	{
+		 xlow = dataToForce[i/2] & 0xff;
+		 xhigh = (dataToForce[i/2] >> 8);
+		 fpgaBanks[i] = (int)xlow;
+		 fpgaBanks[i + 1] = (int)xhigh;
+	}
+
+ 
+	dioFPGA.setPoint(1,10000, fpgaBanks[0], fpgaBanks[1], fpgaBanks[2], fpgaBanks[3], fpgaBanks[4], fpgaBanks[5], fpgaBanks[6], fpgaBanks[7]);
+	dioFPGA.setPoint(2, 0, 0,0,0,0,0, 0,0,0);
 	//Could call the functions that contain these but this felt more appropriate since this isn't in a standard call  
-	//dioFPGA.connectasync("FT1VAHJPB"); 
-	//dioFPGA.write();
-	//dioFPGA.trigger();
-	//dioFPGA.disconnect();
+	dioFPGA.connectasync("FT1VAHJPB");
+	dioFPGA.write();
+	dioFPGA.trigger();
+	 dioFPGA.disconnect();
 }
 
 void DioSystem::dioOutGetInput(WORD board, WORD& buffer)

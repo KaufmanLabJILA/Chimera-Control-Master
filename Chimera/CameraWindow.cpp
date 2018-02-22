@@ -273,6 +273,12 @@ LRESULT CameraWindow::onCameraProgress( WPARAM wParam, LPARAM lParam )
 		// ???
 		return NULL;
 	}
+	AndorRunSettings currentSettings = Andor.getSettings();
+	if (lParam == -1)
+	{
+		pictureNumber = currentSettings.totalPicsInExperiment;
+	}
+
 	// need to call this before acquireImageData().
 	Andor.updatePictureNumber( pictureNumber );
 	std::vector<std::vector<long>> picData;
@@ -290,7 +296,6 @@ LRESULT CameraWindow::onCameraProgress( WPARAM wParam, LPARAM lParam )
 	{
 		imageGrabTimes.push_back( std::chrono::high_resolution_clock::now( ) );
 	}
-	AndorRunSettings currentSettings = Andor.getSettings();
 	//
 	{
 		std::lock_guard<std::mutex> locker( plotLock );

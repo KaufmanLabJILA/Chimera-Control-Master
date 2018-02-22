@@ -79,7 +79,7 @@ class DioSystem
 		void writeTtlDataToFPGA(UINT variation, bool loadSkip);
 		void startBoard();
 		void startDioFPGA();
-		void fpgaForceOutput(WORD* buffer);
+		void fpgaForceOutput(std::array<unsigned short, 4>  buffer);
 		void stopBoard();
 		double getClockStatus();
 		void wait(double time);
