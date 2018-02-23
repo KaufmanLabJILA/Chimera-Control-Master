@@ -34,7 +34,7 @@ namespace commonFunctions
 				try
 				{
 					prepareCamera( mainWin, camWin, input );
-					prepareMasterThread( msgID, scriptWin, mainWin, camWin, auxWin, input, true, true );
+					prepareMasterThread( msgID, scriptWin, mainWin, camWin, auxWin, input, true, true, true );
 					camWin->preparePlotter(input);
 					camWin->prepareAtomCruncher(input);
 
@@ -188,21 +188,50 @@ namespace commonFunctions
 				}
 				break;
 			}
-			case ID_RUNMENU_RUNNIAWG:
+			//case ID_RUNMENU_RUNNIAWG:
+			//{
+			//	ExperimentInput input;
+			//	try
+			//	{
+			//		commonFunctions::prepareMasterThread( ID_RUNMENU_RUNMASTER, scriptWin, mainWin, camWin, auxWin,
+			//											  input, false, true, false );
+			//		//
+			//		commonFunctions::logParameters( input, camWin, false );
+			//		//
+			//		commonFunctions::startMaster( mainWin, input );
+			//	}
+			//	catch (Error& except)
+			//	{
+			//		mainWin->getComm()->sendColorBox( Niawg, 'R' );
+			//		mainWin->getComm()->sendError("EXITED WITH ERROR! " + except.whatStr());
+			//		mainWin->getComm()->sendStatus("EXITED WITH ERROR!\r\nInitialized Default Waveform\r\n");
+			//	}
+			//	try
+			//	{
+			//		//???
+			//	}
+			//	catch (Error& err)
+			//	{
+			//		errBox( "Data Logging failed to start up correctly! " + err.whatStr() );
+			//		mainWin->getComm()->sendError( "EXITED WITH ERROR! " + err.whatStr() );
+			//	}
+			//	break;
+			//}
+			case ID_RUNMENU_RUNMOOG:
 			{
 				ExperimentInput input;
 				try
 				{
-					commonFunctions::prepareMasterThread( ID_RUNMENU_RUNMASTER, scriptWin, mainWin, camWin, auxWin,
-														  input, true, false );
+					commonFunctions::prepareMasterThread(ID_RUNMENU_RUNMASTER, scriptWin, mainWin, camWin, auxWin,
+						input, true, false, false);
 					//
-					commonFunctions::logParameters( input, camWin, false );
+					commonFunctions::logParameters(input, camWin, false);
 					//
-					commonFunctions::startMaster( mainWin, input );
+					commonFunctions::startMaster(mainWin, input);
 				}
 				catch (Error& except)
 				{
-					mainWin->getComm()->sendColorBox( Niawg, 'R' );
+					//mainWin->getComm()->sendColorBox(Moog, 'R');
 					mainWin->getComm()->sendError("EXITED WITH ERROR! " + except.whatStr());
 					mainWin->getComm()->sendStatus("EXITED WITH ERROR!\r\nInitialized Default Waveform\r\n");
 				}
@@ -212,8 +241,8 @@ namespace commonFunctions
 				}
 				catch (Error& err)
 				{
-					errBox( "Data Logging failed to start up correctly! " + err.whatStr() );
-					mainWin->getComm()->sendError( "EXITED WITH ERROR! " + err.whatStr() );
+					errBox("Data Logging failed to start up correctly! " + err.whatStr());
+					mainWin->getComm()->sendError("EXITED WITH ERROR! " + err.whatStr());
 				}
 				break;
 			}
@@ -223,7 +252,7 @@ namespace commonFunctions
 				try
 				{
 					commonFunctions::prepareMasterThread( ID_RUNMENU_RUNMASTER, scriptWin, mainWin, camWin, auxWin, 
-														  input, false, true );
+														  input, false, false, true );
 					commonFunctions::startMaster( mainWin, input );
 				}
 				catch (Error& err)
@@ -756,7 +785,7 @@ namespace commonFunctions
 
 
 	void prepareMasterThread( int msgID, ScriptingWindow* scriptWin, MainWindow* mainWin, CameraWindow* camWin,
-											   AuxiliaryWindow* auxWin, ExperimentInput& input, bool runNiawg, bool runTtls )
+											   AuxiliaryWindow* auxWin, ExperimentInput& input, bool runMoog, bool runNiawg, bool runTtls )
 	{
 		Communicator* comm = mainWin->getComm();
 		profileSettings profile = mainWin->getProfileSettings();
@@ -776,7 +805,7 @@ namespace commonFunctions
 		mainWin->checkProfileReady();
 		scriptWin->checkScriptSaves( );
 		std::string beginInfo = "Current Settings:\r\n=============================\r\n\r\n";
-		if (runNiawg)
+		if (runNiawg||runMoog)
 		{
 			scriptInfo<std::string> scriptNames = scriptWin->getScriptNames();
 			// ordering matters here, make sure you get the correct script name.
@@ -855,6 +884,11 @@ namespace commonFunctions
 				mainWin->getComm()->sendStatus( "Performing Initial Analysis and Writing and Loading Non-Varying Waveforms...\r\n" );
 				mainWin->getComm()->sendColorBox( Niawg, 'Y' );
 			}
+			if (runMoog)
+			{
+				mainWin->getComm()->sendStatus("Performing Initial Analysis and Writing and Loading Non-Varying Waveforms to Moog...\r\n");
+				//mainWin->getComm()->sendColorBox(Moog, 'Y');
+			}
 			// Set the thread structure.
 			input.masterInput = new MasterThreadInput();
 			input.masterInput->runMaster = runTtls;
@@ -877,6 +911,13 @@ namespace commonFunctions
 				scriptInfo<std::string> addresses = scriptWin->getScriptAddresses();
 				mainWin->setNiawgRunningState( true );
 			}
+
+			input.masterInput->runMoog = runMoog;
+			if (runMoog) {
+				scriptInfo<std::string> addresses = scriptWin->getScriptAddresses();
+				//mainWin->setMoogRunningState(true);
+			}
+
 			// Start the programming thread.
 			auxWin->fillMasterThreadInput( input.masterInput );
 			mainWin->fillMasterThreadInput( input.masterInput );

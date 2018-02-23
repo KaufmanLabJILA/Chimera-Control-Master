@@ -58,6 +58,9 @@
 	const std::string DEBUG_OUTPUT_LOCATION = PROJECT_LOCATION + "Debug-Output\\";
 	const std::string TIMING_OUTPUT_LOCATION = PROJECT_LOCATION + "\\Data\\";
 	const std::string NIAWG_WAVEFORM_OUTPUT_LOCATION = TIMING_OUTPUT_LOCATION;
+
+	//Test file for moog
+	const std::string MOOG_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_MOOG_SCRIPT.moogScript";
 #endif
 
 #ifdef SPECTRE_LAPTOP
@@ -150,6 +153,10 @@
 	// location where wave data can be outputted for analyzing with another computer.
 	const std::string NIAWG_WAVEFORM_OUTPUT_LOCATION = DATA_SAVE_LOCATION + "2017\\September\\September 7\\Raw Data\\";
 #endif
+
+//Moog constants
+#define MOOG_COM_PORT "COM3"
+#define MOOG_BAUD 77700
 
 // We calibrated this. // NIAWG_GAIN = 1.34.
 #define NIAWG_GAIN 1.34

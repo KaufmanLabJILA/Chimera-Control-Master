@@ -193,6 +193,7 @@ BEGIN
     BEGIN
         MENUITEM "&Run Everything \tF5",        ID_FILE_RUN_EVERYTHING
         MENUITEM "Run &Camera",                 ID_RUNMENU_RUNCAMERA
+        MENUITEM "Run M&oog",                   ID_RUNMENU_RUNMOOG
         MENUITEM "Run &NIAWG",                  ID_RUNMENU_RUNNIAWG
         MENUITEM "Run &Master",                 ID_RUNMENU_RUNMASTER
         MENUITEM "&Write Waveforms Only",       ID_FILE_MY_WRITE_WAVEFORMS

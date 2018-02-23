@@ -4,7 +4,6 @@
 #include <fstream>
 #include "DioSystem.h"
 #include "DacSystem.h"
-#include "constants.h"
 #include "AuxiliaryWindow.h"
 #include "NiawgWaiter.h"
 #include "Expression.h"
@@ -76,12 +75,17 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 			input->thisObj->analyzeMasterScript( input->ttls, input->dacs, ttlShadeLocs, dacShadeLocs, input->rsg,
 												 input->variables );
 		}
+		/// prep Moog
+		if (input->runMoog) {
+			input->moog->analyzeMoogScript(input->moog, input->variables);
+		}
 		/// prep NIAWG
 		if (input->runNiawg)
 		{
 			input->niawg->prepareNiawg(  input, output, niawgFiles, warnings, userScriptSubmit, foundRearrangement, 
 											input->rearrangeInfo, input->variables );
 			input->niawg->writeStaticNiawg( output, input->debugOptions, input->constants );
+
 		}
 		if ( input->thisObj->isAborting )
 		{
@@ -136,24 +140,6 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 				input->ttls->findLoadSkipSnapshots( currLoadSkipTime, input->variables, variationInc );
 				input->ttls->convertToFinalFormat( variationInc );
 				input->ttls->formatForFPGA(variationInc); //FPGA FORMATTING from TTLSNAPSHOTS
-
-				const char *PORT = "COM3";
-				serial_port_base::baud_rate BAUD(77700);
-				input->moog->start(PORT, BAUD);
-				input->moog->writefreqstep(10);
-				input->moog->writeonoff(0xFF000000);
-
-				for (unsigned i = 0; i < 32; i++) {
-					input->moog->writegain(0xFFFF, i);
-					input->moog->writestartfreq(90.0 + 5 * i, i);
-					input->moog->writestopfreq(10.0 + 5 * i, i);
-					input->moog->writeloadphase(5 * i, i);
-					input->moog->writemovephase(5 * i, i);
-				}
-
-				input->moog->load();
-				input->moog->move();
-				input->moog->stop();
 
 				// run a couple checks.
 				input->ttls->checkNotTooManyTimes( variationInc );
@@ -517,6 +503,10 @@ void MasterManager::startExperimentThread(MasterThreadInput* input)
 	if (input->runMaster)
 	{
 		loadMasterScript( input->masterScriptAddress );
+	}
+	if (input->runMoog)
+	{
+		input->moog->loadMoogScript(input->moogScriptAddress);
 	}
 	// start thread.
 	runningThread = AfxBeginThread(experimentThreadProcedure, input, THREAD_PRIORITY_HIGHEST);
@@ -1003,7 +993,6 @@ bool MasterManager::handleTimeCommands( std::string word, ScriptStream& stream, 
 	}
 	return true;
 }
-
 
 void MasterManager::analyzeMasterScript( DioSystem* ttls, DacSystem* dacs,
 										 std::vector<std::pair<UINT, UINT>>& ttlShades, std::vector<UINT>& dacShades, 

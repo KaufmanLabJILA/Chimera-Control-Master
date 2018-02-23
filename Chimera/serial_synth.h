@@ -1,5 +1,8 @@
 #pragma once
+#include "constants.h"
+#include "ScriptStream.h"
 #include <boost/asio.hpp>
+#include <stdio.h>
 
 using namespace::boost::asio;
 
@@ -16,23 +19,32 @@ private:
 	static const unsigned loadoffset;
 	static const unsigned moveoffset;
 
+	// the moog script file contents get dumped into this.
+	std::string currentMoogScriptText;
+	ScriptStream currentMoogScript;
+
 public:
 	serial_synth(void);
 	virtual ~serial_synth(void);
-	virtual bool start(const char *PORT, serial_port_base::baud_rate BAUD);
+	//simple way to set many channels at once.
+	void linloop(std::function<void(double, int)> funcToLoop, unsigned channels, double start, double step);
+	//Attempt to parse moog script
+	void loadMoogScript(std::string scriptAddress);
+	void analyzeMoogScript(serial_synth* moog, std::vector<variableType>& vars);
+	virtual bool start();
 	virtual void stop();
 	virtual void load();
 	virtual void move();
 
-	virtual void writestartfreq(float freq, unsigned channel);
-	virtual void writestopfreq(float freq, unsigned channel);
-	virtual void writegain(float gain, unsigned channel);
-	virtual void writeloadphase(float phase, unsigned channel);
-	virtual void writemovephase(float phase, unsigned channel);
+	virtual void writestartfreq(double freq, unsigned channel);
+	virtual void writestopfreq(double freq, unsigned channel);
+	virtual void writegain(double gain, unsigned channel);
+	virtual void writeloadphase(double phase, unsigned channel);
+	virtual void writemovephase(double phase, unsigned channel);
 	virtual void writeonoff(unsigned onoff);
 	virtual void writefreqstep(unsigned step);
 
-	unsigned getFTW(float freq);
+	unsigned getFTW(double freq);
 
 };
 
