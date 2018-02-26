@@ -193,7 +193,7 @@
     <ClCompile Include="rerngControl.cpp" />
     <ClCompile Include="RC028.cpp" />
     <ClCompile Include="TestWin.cpp" />
-    <ClCompile Include="serial_synth.cpp">
+    <ClCompile Include="SerialSynth.cpp">
       <Filter>Main Window</Filter>
     </ClCompile>
   </ItemGroup>
@@ -458,7 +458,7 @@
     <ClInclude Include="rerngthreadinput.h" />
     <ClInclude Include="RC028.h" />
     <ClInclude Include="TestWin.h" />
-    <ClInclude Include="serial_synth.h">
+    <ClInclude Include="SerialSynth.h">
       <Filter>Main Window</Filter>
     </ClInclude>
   </ItemGroup>

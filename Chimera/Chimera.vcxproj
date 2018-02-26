@@ -259,7 +259,7 @@
     <ClInclude Include="ScriptingWindow.h" />
     <ClInclude Include="ScriptStream.h" />
     <ClInclude Include="Segment.h" />
-    <ClInclude Include="serial_synth.h" />
+    <ClInclude Include="SerialSynth.h" />
     <ClInclude Include="SmsTextingControl.h" />
     <ClInclude Include="splashDialog.h" />
     <ClInclude Include="StatusControl.h" />
@@ -334,7 +334,7 @@
     <ClCompile Include="ScriptingWindow.cpp" />
     <ClCompile Include="ScriptStream.cpp" />
     <ClCompile Include="Segment.cpp" />
-    <ClCompile Include="serial_synth.cpp" />
+    <ClCompile Include="SerialSynth.cpp" />
     <ClCompile Include="SmsTextingControl.cpp" />
     <ClCompile Include="splashDialog.cpp" />
     <ClCompile Include="StatusControl.cpp" />

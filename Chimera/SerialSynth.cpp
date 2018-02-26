@@ -1,30 +1,55 @@
 #include "stdafx.h"
-#include "serial_synth.h"
+#include "SerialSynth.h"
 
 using namespace::boost::asio;
 using namespace::std;
+using namespace::std::placeholders;
 
-const unsigned serial_synth::freqstartoffset = 512;
-const unsigned serial_synth::freqstopoffset = 1024;
-const unsigned serial_synth::gainoffset = 1536;
-const unsigned serial_synth::loadoffset = 2048;
-const unsigned serial_synth::moveoffset = 2560;
+const unsigned SerialSynth::freqstartoffset = 512;
+const unsigned SerialSynth::freqstopoffset = 1024;
+const unsigned SerialSynth::gainoffset = 1536;
+const unsigned SerialSynth::loadoffset = 2048;
+const unsigned SerialSynth::moveoffset = 2560;
 
-serial_synth::serial_synth(void) {
+SerialSynth::SerialSynth(void) {
 }
 
-serial_synth::~serial_synth(void){
+SerialSynth::~SerialSynth(void){
 	stop();
 }
 
-//Loop over moog channels for arbitrary settings function with linear spacing in input parameter.
-void serial_synth::linloop(function<void(double, int)> funcToLoop, unsigned channels, double start, double step) {
-	for (unsigned i = 0; i < channels; i++) {
-		funcToLoop(start + i*step, i);
+//Parses string and returns relevant function object.
+//Remember: A non-static member function must be called with an object. That is, it always implicitly passes "this" pointer as its argument.
+auto SerialSynth::parseFunction(string funcstr) {
+	if (funcstr == "startfreq") {
+		return std::bind(&SerialSynth::writeStartFreq, this, _1, _2);
+	}
+	else if (funcstr == "stopfreq") {
+		return std::bind(&SerialSynth::writeStopFreq, this, _1, _2);
+	}
+	else if (funcstr == "gain") {
+		return std::bind(&SerialSynth::writeGain, this, _1, _2);
+	}
+	else if (funcstr == "loadphase") {
+		return std::bind(&SerialSynth::writeLoadPhase, this, _1, _2);
+	}
+	else if (funcstr == "movephase") {
+		return std::bind(&SerialSynth::writeMovePhase, this, _1, _2);
+	}
+	else {
+		thrower("ERROR: " + funcstr + " is not a recognized settings function that can be swept over");
 	}
 }
 
-void serial_synth::loadMoogScript(std::string scriptAddress)
+//Loop over moog channels for arbitrary settings function (input as string) with linear spacing in input parameter.
+void SerialSynth::linLoop(string funcstr, unsigned channels, double start, double step) {
+	function<void(double, unsigned)> func = parseFunction(funcstr);
+	for (unsigned i = 0; i < channels; i++) {
+		func(start + i*step, i);
+	}
+}
+
+void SerialSynth::loadMoogScript(std::string scriptAddress)
 {
 	std::ifstream scriptFile;
 	// check if file address is good.
@@ -59,7 +84,7 @@ void serial_synth::loadMoogScript(std::string scriptAddress)
 	scriptFile.close();
 }
 
-void serial_synth::analyzeMoogScript(serial_synth* moog, std::vector<variableType>& vars)
+void SerialSynth::analyzeMoogScript(SerialSynth* moog, std::vector<variableType>& vars)
 {
 	start();
 	currentMoogScriptText = currentMoogScript.str();
@@ -76,15 +101,15 @@ void serial_synth::analyzeMoogScript(serial_synth* moog, std::vector<variableTyp
 	{
 		if (word == "testsequence") {
 			start();
-			writefreqstep(10);
-			writeonoff(0xFF000000);
+			writeFreqStep(10);
+			writeOnOff(0xFF000000);
 
 			for (unsigned i = 0; i < 32; i++) {
-				writegain(0x0FFF, i);
-				writestartfreq(90.0 + 5 * i, i);
-				writestopfreq(10.0 + 5 * i, i);
-				writeloadphase(5 * i, i);
-				writemovephase(5 * i, i);
+				writeGain(0x0FFF, i);
+				writeStartFreq(90.0 + 5 * i, i);
+				writeStopFreq(10.0 + 5 * i, i);
+				writeLoadPhase(5 * i, i);
+				writeMovePhase(5 * i, i);
 			}
 
 			load();
@@ -92,76 +117,61 @@ void serial_synth::analyzeMoogScript(serial_synth* moog, std::vector<variableTyp
 			stop();
 			break;
 		}
+		else if (word == "linloop") {
+			std::string funcstr, channels;
+			Expression start, step;
+			currentMoogScript >> funcstr;
+			currentMoogScript >> channels;
+			currentMoogScript >> start;
+			currentMoogScript >> step;
+
+			linLoop(funcstr, stoul(channels, nullptr), start.evaluate(), step.evaluate());
+		}
 		else if (word == "onoff") {
 			std::string onoffstr;
 			currentMoogScript >> onoffstr;
-			writeonoff(stoul(onoffstr, nullptr, 0));
+			int tmp = stoul(onoffstr, nullptr, 0);
+			writeOnOff(stoul(onoffstr, nullptr, 0));
 		}
 		else if (word == "step") {
 			std::string step;
 			currentMoogScript >> step;
-			writefreqstep(stoul(step, nullptr, 0));
+			writeFreqStep(stoul(step, nullptr, 0));
 		}
 		else if (word == "startfreq") {
-			std::string in;
-			currentMoogScript >> in;
-			if (in == "linset") {
-				std::string channels;
-				Expression start;
-				Expression step;
-				currentMoogScript >> channels;
-				currentMoogScript >> start;
-				currentMoogScript >> step;
-				linloop(writestartfreq, stoul(channels, nullptr), start.evaluate(), step.evaluate());
-			}
-			else if (true) {
-				std::string channel;
-				Expression startfreq;
-				channel = in;
-				currentMoogScript >> startfreq;
-				writestartfreq(startfreq.evaluate(), stoi(channel, nullptr));
-			}
+			std::string channel;
+			Expression startfreq;
+			currentMoogScript >> channel;
+			currentMoogScript >> startfreq;
+			writeStartFreq(startfreq.evaluate(), stoi(channel, nullptr));
 		}
-		//else if (word == "stopfreq") {
-		//	std::string in;
-		//	currentMoogScript >> in;
-		//	if (in == "linset") {
-		//		std::string channels;
-		//		Expression start;
-		//		Expression step;
-		//		currentMoogScript >> channels;
-		//		currentMoogScript >> start;
-		//		currentMoogScript >> step;
-		//		linloop(writestopfreq, stoul(channels, nullptr), start.evaluate(), step.evaluate());
-		//	}
-		//	else {
-		//		std::string channel;
-		//		Expression stopfreq;
-		//		channel = in;
-		//		currentMoogScript >> stopfreq;
-		//		writestartfreq(stopfreq.evaluate(), stoi(channel, nullptr));
-		//	}
-		//}
+		else if (word == "stopfreq") {
+			std::string channel;
+			Expression stopfreq;
+			currentMoogScript >> channel;
+			currentMoogScript >> stopfreq;
+			writeStopFreq(stopfreq.evaluate(), stoi(channel, nullptr));
+		}
 		else if (word == "gain") {
 			std::string channel;
 			Expression gain;
 			currentMoogScript >> channel;
 			currentMoogScript >> gain;
-			writegain(gain.evaluate(), stoi(channel, nullptr));
+			writeGain(gain.evaluate(), stoi(channel, nullptr));
 		}
 		else if (word == "loadphase") {
 			std::string channel;
 			Expression lphase;
 			currentMoogScript >> channel;
 			currentMoogScript >> lphase;
-			writeloadphase(lphase.evaluate(), stoi(channel, nullptr));
+			writeLoadPhase(lphase.evaluate(), stoi(channel, nullptr));
 		}
 		else if (word == "movephase") {
 			std::string channel;
 			Expression mphase;
 			currentMoogScript >> channel;
 			currentMoogScript >> mphase;
-			writeloadphase(mphase.evaluate(), stoi(channel, nullptr));
+			writeLoadPhase(mphase.evaluate(), stoi(channel, nullptr));
 		}
 		else if (word == "move") {
 			move();
@@ -254,7 +264,7 @@ void serial_synth::analyzeMoogScript(serial_synth* moog, std::vector<variableTyp
 	stop();
 }
 
-bool serial_synth::start(){
+bool SerialSynth::start(){
 
 	// create the serial device, note it takes the io service and the port name
 	port_ = serial_port_ptr(new serial_port(io_service_));
@@ -270,7 +280,7 @@ bool serial_synth::start(){
 	return true;
 }
 
-void serial_synth::stop() {
+void SerialSynth::stop() {
 	if (port_) {
 		port_->cancel();
 		port_->close();
@@ -280,25 +290,25 @@ void serial_synth::stop() {
 	io_service_.reset();
 }
 
-void serial_synth::load(){
+void SerialSynth::load(){
 	unsigned char command[7] = {161,0,1,0,0,0,1};
 	write(*port_, buffer(command, 7));
 }
 
-void serial_synth::move(){
+void SerialSynth::move(){
 	unsigned char command[7] = {161,0,0,0,0,0,1};
 	write(*port_, buffer(command, 7));
 }
 
-unsigned serial_synth::getFTW(double freq) {
+unsigned SerialSynth::getFTW(double freq) {
 	unsigned FTW = (unsigned) round(freq * pow(2,28) / (800.0 / 3.0));
 	return(FTW);
 }
 
-void serial_synth::writestartfreq(double freq, unsigned channel) {
+void SerialSynth::writeStartFreq(double freq, unsigned channel) {
 
 	if (channel > 31 || channel < 0) {
-		throw string("Error: only channels 0 to 31 valid.");
+		thrower("Error: only channels 0 to 31 valid.");
 	}
 
 	unsigned addr = freqstartoffset + channel;
@@ -322,10 +332,10 @@ void serial_synth::writestartfreq(double freq, unsigned channel) {
 	write(*port_, buffer(command, 7));
 }
 
-void serial_synth::writestopfreq(double freq, unsigned channel) {
+void SerialSynth::writeStopFreq(double freq, unsigned channel) {
 
 	if (channel > 31 || channel < 0) {
-		throw string("Error: only channels 0 to 31 valid.");
+		thrower("Error: only channels 0 to 31 valid.");
 	}
 
 	unsigned addr = freqstopoffset + channel;
@@ -349,18 +359,17 @@ void serial_synth::writestopfreq(double freq, unsigned channel) {
 	write(*port_, buffer(command, 7));
 }
 
-void serial_synth::writegain(double gain, unsigned channel) {
-
+//Gain ranges from 0 to 1.
+void SerialSynth::writeGain(double gainin, unsigned channel) {
+	int gain = round(gainin * 65535);
 	if (channel > 31 || channel < 0) {
-		throw string("Error: only channels 0 to 31 valid.");
+		thrower("Error: only channels 0 to 31 valid.");
 	}
-
 	if (gain > 0xFFFF) {
-		throw string("Error: gain too high.");
+		thrower("Error: gain too high.");
 	}
-
 	if (gain < 0) {
-		throw string("Error: gain cannot be negative. Maybe try changing phase instead?");
+		thrower("Error: gain cannot be negative. Maybe try changing phase instead?");
 	}
 
 	unsigned addr = gainoffset + channel;
@@ -379,10 +388,10 @@ void serial_synth::writegain(double gain, unsigned channel) {
 	write(*port_, buffer(command, 7));
 }
 
-void serial_synth::writeloadphase(double phase, unsigned channel) {
+void SerialSynth::writeLoadPhase(double phase, unsigned channel) {
 
 	if (channel > 31 || channel < 0) {
-		throw string("Error: only channels 0 to 31 valid.");
+		thrower("Error: only channels 0 to 31 valid.");
 	}
 
 	unsigned addr = loadoffset + channel;
@@ -401,10 +410,10 @@ void serial_synth::writeloadphase(double phase, unsigned channel) {
 	write(*port_, buffer(command, 7));
 }
 
-void serial_synth::writemovephase(double phase, unsigned channel) {
+void SerialSynth::writeMovePhase(double phase, unsigned channel) {
 
 	if (channel > 31 || channel < 0) {
-		throw string("Error: only channels 0 to 31 valid.");
+		thrower("Error: only channels 0 to 31 valid.");
 	}
 
 	unsigned addr = moveoffset + channel;
@@ -423,10 +432,10 @@ void serial_synth::writemovephase(double phase, unsigned channel) {
 	write(*port_, buffer(command, 7));
 }
 
-void serial_synth::writeonoff(unsigned onoff) {
+void SerialSynth::writeOnOff(unsigned onoff) {
 
 	if (onoff > 0xFFFFFFFF || onoff < 0) {
-		throw string("Error: on off tuning word wrong size.");
+		thrower("Error: on off tuning word wrong size.");
 	}
 
 	unsigned onoff3 = (unsigned) floor(onoff / 256 / 256 / 256);
@@ -443,11 +452,11 @@ void serial_synth::writeonoff(unsigned onoff) {
 	write(*port_, buffer(command, 7));
 }
 
-void serial_synth::writefreqstep(unsigned step) {
+void SerialSynth::writeFreqStep(unsigned step) {
 	//1 LSB is ~8MHz per sec(800 / 96 MHz per sec), register is 10 bits
 
 	if (step > 0b1111111111 || step < 0) {
-		throw string("Error: step tuning word wrong size.");
+		thrower("Error: step tuning word wrong size.");
 	}
 
 	unsigned step3 = (unsigned)floor(step / 256 / 256 / 256);

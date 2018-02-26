@@ -19,7 +19,7 @@
 //#include "rerngControl.h"
 
 //megamoog controller
-#include "serial_synth.h"
+#include "SerialSynth.h"
 
 class ScriptingWindow;
 class CameraWindow;
@@ -125,7 +125,7 @@ class MainWindow : public CDialog
 		
 		//rerngControl rearrangeControl;
 		NiawgController niawg;
-		serial_synth moog;
+		SerialSynth moog;
 
 		ColorBox boxes;
 		// auxiliary members

@@ -13,7 +13,7 @@
 #include <atomic>
 
 //for moog test:
-#include "serial_synth.h"
+#include "SerialSynth.h"
 
 class MasterManager;
 
@@ -21,7 +21,7 @@ class MasterManager;
 struct MasterThreadInput
 {
 	//for moog test:
-	serial_synth* moog;
+	SerialSynth* moog;
 	std::string moogScriptAddress;
 
 	EmbeddedPythonHandler* python;

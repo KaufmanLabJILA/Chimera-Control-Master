@@ -208,63 +208,19 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 			}
 		}
 	}
-	// Check NIAWG-specific commands
-	if ( editType == "Horizontal NIAWG" || editType == "Vertical NIAWG" )
-	{
-		for ( auto num : range( 10 ) )
-		{
-			if ( word == "gen" + str( num + 1 ) + "const" || word == "gen" + str( num + 1 ) + "ampramp"
-				|| word == "gen" + str( num + 1 ) + "freqramp" || word == "gen" + str( num + 1 ) + "freq&ampramp"
-				 || word == "flash" || word == "rearrange")
-			{
-				return rgbs["Solarized Violet"];
-			}
-		}
-		// check logic
-		if ( word == "repeattiltrig" || word == "repeatSet#" || word == "repeattilsoftwaretrig" || word == "endrepeat" 
-			 || word == "repeatforever" )
-		{
-			return rgbs["Solarized Blue"];
-		}
-		// check options
-		if (word == "lin" || word == "nr" || word == "tanh")
-		{
-			return rgbs["Solarized Green"];
-		}
-		// check variable
-		else if (word == "{" || word == "}")
-		{
-			return rgbs["Solarized Cyan"];
-		}
-		if (word.size() > 8)
-		{
-			if (word.substr(word.size() - 8, 8) == ".nScript")
-			{
-				return rgbs["Solarized Yellow"];
-			}
-		}
-	}
 	// Check Moog-specific commands
-	//TODO: replace these with syntax relevant to actual moog.
-	if (editType == "Moog")
-	{
-		for (auto num : range(10))
+	if (editType == "Moog") {
+		if (word == "startfreq"|| word == "stopfreq"|| word == "gain"|| word == "loadphase"|| word == "movephase"|| word == "onoff"|| word == "step")
 		{
-			if (word == "gen" + str(num + 1) + "const" || word == "gen" + str(num + 1) + "ampramp"
-				|| word == "gen" + str(num + 1) + "freqramp" || word == "gen" + str(num + 1) + "freq&ampramp"
-				|| word == "flash" || word == "rearrange")
-			{
-				return rgbs["Solarized Violet"];
-			}
+			return rgbs["Solarized Violet"];
 		}
 		// check logic
-		if (word == "repeattiltrig" || word == "repeatSet#" || word == "repeattilsoftwaretrig" || word == "endrepeat"
-			|| word == "repeatforever")
+		if (word == "linloop")
 		{
 			return rgbs["Solarized Blue"];
 		}
-		// check options
-		if (word == "lin" || word == "nr" || word == "tanh")
+		// check software triggers
+		if (word == "load" || word == "move")
 		{
 			return rgbs["Solarized Green"];
 		}
@@ -283,8 +239,7 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 	}
 
 	// Check Agilent-specific commands
-	else if (editType == "Agilent")
-	{
+	else if (editType == "Agilent") {
 		std::transform(word.begin(), word.end(), word.begin(), ::tolower);
 		if (word == "ramp" || word == "hold" || word == "pulse" )
 		{
@@ -379,16 +334,36 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 	{
 		return rgbs["Light Grey"];
 	}
-	// see if it's a double.
-	try
-	{
-		// not sure why not just using std::stod.
-		boost::lexical_cast<double>(word);
+	//// see if it's a double.
+	//try {
+	//	// not sure why not just using std::stod.
+	//	boost::lexical_cast<double>(word);
+	//	return rgbs["White"];
+	//}
+	//catch (boost::bad_lexical_cast &) {
+	//	try {
+	//		boost::lexical_cast<int>(word);
+	//		return rgbs["White"];
+	//	}
+	//	catch (boost::bad_lexical_cast &)
+	//	{
+	//		return rgbs["Solarized Red"];
+	//	}
+	//}	
+	// see if it's an int or double.
+	try {
+		std::stoul(word, nullptr, 0);
 		return rgbs["White"];
 	}
-	catch (boost::bad_lexical_cast &)
-	{
-		return rgbs["Solarized Red"];
+	catch (...) {
+		try {
+			std::stod(word, nullptr);
+			return rgbs["White"];
+		}
+		catch (...)
+		{
+			return rgbs["Solarized Red"];
+		}
 	}
 }
 

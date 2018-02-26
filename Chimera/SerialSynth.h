@@ -8,7 +8,7 @@ using namespace::boost::asio;
 
 typedef boost::shared_ptr<boost::asio::serial_port> serial_port_ptr;
 
-class serial_synth {
+class SerialSynth {
 
 private:
 	io_service io_service_;
@@ -24,27 +24,28 @@ private:
 	ScriptStream currentMoogScript;
 
 public:
-	serial_synth(void);
-	virtual ~serial_synth(void);
+	SerialSynth(void);
+	virtual ~SerialSynth(void);
 	//simple way to set many channels at once.
-	void linloop(std::function<void(double, int)> funcToLoop, unsigned channels, double start, double step);
+	auto parseFunction(std::string funcstr);
+	void linLoop(std::string funcstr, unsigned channels, double start, double step);
 	//Attempt to parse moog script
 	void loadMoogScript(std::string scriptAddress);
-	void analyzeMoogScript(serial_synth* moog, std::vector<variableType>& vars);
+	void analyzeMoogScript(SerialSynth* moog, std::vector<variableType>& vars);
 	virtual bool start();
 	virtual void stop();
 	virtual void load();
 	virtual void move();
 
-	virtual void writestartfreq(double freq, unsigned channel);
-	virtual void writestopfreq(double freq, unsigned channel);
-	virtual void writegain(double gain, unsigned channel);
-	virtual void writeloadphase(double phase, unsigned channel);
-	virtual void writemovephase(double phase, unsigned channel);
-	virtual void writeonoff(unsigned onoff);
-	virtual void writefreqstep(unsigned step);
+	virtual void writeOnOff(unsigned onoff);
+	virtual void writeFreqStep(unsigned step);
+
+	virtual void writeStartFreq(double freq, unsigned channel);
+	virtual void writeStopFreq(double freq, unsigned channel);
+	virtual void writeGain(double gain, unsigned channel);
+	virtual void writeLoadPhase(double phase, unsigned channel);
+	virtual void writeMovePhase(double phase, unsigned channel);
 
 	unsigned getFTW(double freq);
-
 };
 
