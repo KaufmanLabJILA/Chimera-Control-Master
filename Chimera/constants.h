@@ -58,6 +58,9 @@
 	const std::string DEBUG_OUTPUT_LOCATION = PROJECT_LOCATION + "Debug-Output\\";
 	const std::string TIMING_OUTPUT_LOCATION = PROJECT_LOCATION + "\\Data\\";
 	const std::string NIAWG_WAVEFORM_OUTPUT_LOCATION = TIMING_OUTPUT_LOCATION;
+
+	//Test file for moog
+	const std::string MOOG_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_MOOG_SCRIPT.moogScript";
 #endif
 
 #ifdef SPECTRE_LAPTOP
@@ -151,6 +154,10 @@
 	const std::string NIAWG_WAVEFORM_OUTPUT_LOCATION = DATA_SAVE_LOCATION + "2017\\September\\September 7\\Raw Data\\";
 #endif
 
+//Moog constants
+#define MOOG_COM_PORT "COM3"
+#define MOOG_BAUD 77700
+
 // We calibrated this. // NIAWG_GAIN = 1.34.
 #define NIAWG_GAIN 1.34
 // NIAWG_GAIN = 1.34.
@@ -241,8 +248,11 @@ const char * const SERVER_ADDRESS = "192.168.236.1";
 #define IDC_REPETITION_EDIT 10023
 #define IDC_ENTER_EMAIL_INFO 10024
 // Scripting Window
-#define IDC_VERTICAL_NIAWG_FUNCTION_COMBO 12001
-#define IDC_VERTICAL_NIAWG_EDIT 12002
+
+#define IDC_MOOG_FUNCTION_COMBO 12001
+#define IDC_MOOG_EDIT 12002
+//#define IDC_VERTICAL_NIAWG_FUNCTION_COMBO 12001
+//#define IDC_VERTICAL_NIAWG_EDIT 12002
 #define IDC_HORIZONTAL_NIAWG_FUNCTION_COMBO 12003
 #define IDC_HORIZONTAL_NIAWG_EDIT 12004
 
@@ -446,6 +456,8 @@ const agilentSettings INTENSITY_AGILENT_SETTINGS = { INTENSITY_SAFEMODE, INTENSI
 #define FUNCTION_EXTENSION "func"
 #define PLOTTING_EXTENSION "plot"
 
+#define MOOG_SCRIPT_EXTENSION "moogScript"
+
 #define OSCILLOSCOPE_TRIGGER "C11"
 
 #define NULL_SEQUENCE "NULL_SEQUENCE"
@@ -483,6 +495,24 @@ const char AGILENT_INFO_TEXT[] = ">>> Scripted Agilent Waveform Help <<<\n"
 "- gaussian, width = gaussian sigma\n"
 "- lorentzian, width = FWHM (curve is normalized)\n";
 
+const char MOOG_INFO_TEXT[] =
+">>> This is a script for programming the Megamoogs. <<<\n"
+"- the input format is referenced below using angled brackets <...>. Place the input on\n"
+" the line below the command in the format specified.\n"
+"- The associated c++ code has been designed to be flexible when it comes to trailing white spaces at the ends of\n"
+" lines and in between commands, so use whatever such formatting pleases your eyes.\n"
+"Accepted Commands:\n"
+"(A) Loop types:"
+"linloop <setting (function from (B) ), # channels, start param, param step size> - sets various channel parameters with linear spacing"
+"(B) Set parameters:"
+"startfreq, stopfreq <channel #, frequency in MHz>"
+"loadphase, movephase <channel #, phase>"
+"gain <channel #, gain>, gain ranges from 0 to 1"
+"onoff <binary>, binary refers to a 32 bit unsigned #, with each bit representing the on off state of the relevant channel"
+"step <stepsize>, stepsize is a 10-bit unsigned number. LSB = 25MHz/sec."
+"(C) Software triggers:"
+"move, load, no inputs. Mostly just for debugging since actual experiment would use external TTL triggers"
+;
 
 //
 const char SCRIPT_INFO_TEXT[] =

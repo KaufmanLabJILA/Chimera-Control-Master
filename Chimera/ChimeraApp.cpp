@@ -59,7 +59,7 @@ BOOL ChimeraApp::PreTranslateMessage(MSG* pMsg)
 		if (pMsg->wParam == VK_ESCAPE)
 		{
 			theMainApplicationWindow.passCommonCommand(ID_ACCELERATOR_ESC);
-			// Do not process further
+			// Do not process furtherrr
 			return TRUE;
 		}
 	}

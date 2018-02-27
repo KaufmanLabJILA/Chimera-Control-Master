@@ -20,8 +20,9 @@ BEGIN_MESSAGE_MAP(ScriptingWindow, CDialog)
 	ON_WM_TIMER()
 	ON_WM_SIZE()
 
+	ON_EN_CHANGE(IDC_MOOG_EDIT, &ScriptingWindow::moogEditChange)
 	ON_EN_CHANGE(IDC_HORIZONTAL_NIAWG_EDIT, &ScriptingWindow::horizontalEditChange)
-	ON_EN_CHANGE(IDC_VERTICAL_NIAWG_EDIT, &ScriptingWindow::verticalEditChange)
+	//ON_EN_CHANGE(IDC_VERTICAL_NIAWG_EDIT, &ScriptingWindow::verticalEditChange)
 	ON_EN_CHANGE(IDC_INTENSITY_EDIT, &ScriptingWindow::agilentEditChange)
 	ON_EN_CHANGE(IDC_MASTER_EDIT, &ScriptingWindow::masterEditChange)
 
@@ -32,10 +33,10 @@ BEGIN_MESSAGE_MAP(ScriptingWindow, CDialog)
 
 	ON_COMMAND_RANGE(MENU_ID_RANGE_BEGIN, MENU_ID_RANGE_END, &ScriptingWindow::passCommonCommand)
 
-	ON_CBN_SELENDOK(IDC_VERTICAL_NIAWG_FUNCTION_COMBO, &ScriptingWindow::handleVerticalScriptComboChange)
+	ON_CBN_SELENDOK(IDC_MOOG_FUNCTION_COMBO, &ScriptingWindow::handleMoogScriptComboChange)
+	//ON_CBN_SELENDOK(IDC_VERTICAL_NIAWG_FUNCTION_COMBO, &ScriptingWindow::handleVerticalScriptComboChange)
 	ON_CBN_SELENDOK(IDC_HORIZONTAL_NIAWG_FUNCTION_COMBO, &ScriptingWindow::handleHorizontalScriptComboChange)
 	ON_CBN_SELENDOK(IDC_INTENSITY_FUNCTION_COMBO, &ScriptingWindow::handleAgilentScriptComboChange)
-	
 	ON_CBN_SELENDOK( IDC_MASTER_FUNCTION_COMBO, &ScriptingWindow::handleMasterFunctionChange )
 
 	ON_NOTIFY_EX_RANGE( TTN_NEEDTEXTA, 0, 0xFFFF, ScriptingWindow::OnToolTipText )
@@ -133,14 +134,17 @@ void ScriptingWindow::catchEnter()
 void ScriptingWindow::OnSize(UINT nType, int cx, int cy)
 {
 	SetRedraw( false );
-	verticalNiawgScript.rearrange(cx, cy, mainWindowFriend->getFonts());
+	moogScript.rearrange(cx, cy, mainWindowFriend->getFonts());
+	//verticalNiawgScript.rearrange(cx, cy, mainWindowFriend->getFonts());
 	horizontalNiawgScript.rearrange(cx, cy, mainWindowFriend->getFonts());
 	intensityAgilent.rearrange( cx, cy, mainWindowFriend->getFonts() );
 	masterScript.rearrange(cx, cy, mainWindowFriend->getFonts());
 	statusBox.rearrange( cx, cy, mainWindowFriend->getFonts());
 	profileDisplay.rearrange(cx, cy, mainWindowFriend->getFonts());
-	verticalNiawgScript.colorEntireScript(auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(), 
-										  auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames());
+	moogScript.colorEntireScript(auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(),
+											auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames());
+	//verticalNiawgScript.colorEntireScript(auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(), 
+										  //auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames());
 	horizontalNiawgScript.colorEntireScript(auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(),
 											auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames());
 	
@@ -157,7 +161,8 @@ BOOL ScriptingWindow::OnToolTipText( UINT id, NMHDR * pNMHDR, LRESULT * pResult 
 {
 	try
 	{
-		verticalNiawgScript.handleToolTip( pNMHDR , pResult);
+		moogScript.handleToolTip(pNMHDR, pResult);
+		//verticalNiawgScript.handleToolTip( pNMHDR , pResult);
 		horizontalNiawgScript.handleToolTip( pNMHDR, pResult );
 		intensityAgilent.agilentScript.handleToolTip( pNMHDR, pResult );
 		masterScript.handleToolTip( pNMHDR, pResult );
@@ -187,11 +192,15 @@ void ScriptingWindow::handleHorizontalScriptComboChange()
 }
 
 
-void ScriptingWindow::handleVerticalScriptComboChange()
+//void ScriptingWindow::handleVerticalScriptComboChange()
+//{
+//	//verticalNiawgScript.childComboChangeHandler( mainWindowFriend, auxWindowFriend );
+//}
+
+void ScriptingWindow::handleMoogScriptComboChange()
 {
 	//verticalNiawgScript.childComboChangeHandler( mainWindowFriend, auxWindowFriend );
 }
-
 
 void ScriptingWindow::handleAgilentScriptComboChange()
 {
@@ -215,10 +224,16 @@ BOOL ScriptingWindow::OnInitDialog()
 	int id = 2000;
 
 	POINT startLocation = { 0, 28 };
-	verticalNiawgScript.initialize( 480, 900, startLocation, tooltips, this, id, "Vertical NIAWG", 
-									"Vertical NIAWG Script",
-									{ IDC_VERTICAL_NIAWG_FUNCTION_COMBO, IDC_VERTICAL_NIAWG_EDIT }, 
-									mainWindowFriend->getRgbs()["Solarized Base04"] );
+	moogScript.initialize(480, 900, startLocation, tooltips, this, id, "Moog",
+		"Megamoog 1 Script",
+		{ IDC_MOOG_FUNCTION_COMBO, IDC_MOOG_EDIT },
+		mainWindowFriend->getRgbs()["Solarized Base04"]);
+
+	//POINT startLocation = { 0, 28 };
+	//verticalNiawgScript.initialize( 480, 900, startLocation, tooltips, this, id, "Vertical NIAWG", 
+	//								"Vertical NIAWG Script",
+	//								{ IDC_VERTICAL_NIAWG_FUNCTION_COMBO, IDC_VERTICAL_NIAWG_EDIT }, 
+	//								mainWindowFriend->getRgbs()["Solarized Base04"] );
 
 	startLocation = { 480, 28 };
 	horizontalNiawgScript.initialize( 480, 900, startLocation, tooltips, this,  id, "Horizontal NIAWG",
@@ -264,7 +279,9 @@ void ScriptingWindow::OnTimer(UINT_PTR eventID)
 										   auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames() );
 	intensityAgilent.agilentScript.handleTimerCall(auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(),
 										   auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames());
-	verticalNiawgScript.handleTimerCall(auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(),
+	//verticalNiawgScript.handleTimerCall(auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(),
+										//auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames());
+	moogScript.handleTimerCall(auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(),
 										auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames());
 	masterScript.handleTimerCall(auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(),
 								 auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames());
@@ -274,7 +291,8 @@ void ScriptingWindow::OnTimer(UINT_PTR eventID)
 void ScriptingWindow::checkScriptSaves()
 {
 	horizontalNiawgScript.checkSave(getProfile().categoryPath, mainWindowFriend->getRunInfo());
-	verticalNiawgScript.checkSave(getProfile().categoryPath, mainWindowFriend->getRunInfo());
+	//verticalNiawgScript.checkSave(getProfile().categoryPath, mainWindowFriend->getRunInfo());
+	moogScript.checkSave(getProfile().categoryPath, mainWindowFriend->getRunInfo());
 	intensityAgilent.checkSave( getProfile( ).categoryPath, mainWindowFriend->getRunInfo( ) );
 	masterScript.checkSave( getProfile( ).categoryPath, mainWindowFriend->getRunInfo( ) );
 }
@@ -301,8 +319,10 @@ scriptInfo<std::string> ScriptingWindow::getScriptNames()
 {
 	scriptInfo<std::string> names;
 	// Order matters!
+	//TODO: Ask why
+	names.moog = moogScript.getScriptName();
 	names.horizontalNIAWG = horizontalNiawgScript.getScriptName();
-	names.verticalNIAWG = verticalNiawgScript.getScriptName();
+	//names.verticalNIAWG = verticalNiawgScript.getScriptName();
 	names.intensityAgilent = intensityAgilent.agilentScript.getScriptName();
 	return names;
 }
@@ -314,7 +334,8 @@ scriptInfo<bool> ScriptingWindow::getScriptSavedStatuses()
 {
 	scriptInfo<bool> status;
 	status.horizontalNIAWG = horizontalNiawgScript.savedStatus();
-	status.verticalNIAWG = verticalNiawgScript.savedStatus();
+	//status.verticalNIAWG = verticalNiawgScript.savedStatus();
+	status.moog = moogScript.savedStatus();
 	status.intensityAgilent = intensityAgilent.agilentScript.savedStatus();
 	return status;
 }
@@ -326,7 +347,8 @@ scriptInfo<std::string> ScriptingWindow::getScriptAddresses()
 {
 	scriptInfo<std::string> addresses;
 	addresses.horizontalNIAWG = horizontalNiawgScript.getScriptPathAndName();
-	addresses.verticalNIAWG = verticalNiawgScript.getScriptPathAndName();
+	//addresses.verticalNIAWG = verticalNiawgScript.getScriptPathAndName();
+	addresses.moog = moogScript.getScriptPathAndName();
 	addresses.intensityAgilent = intensityAgilent.agilentScript.getScriptPathAndName();
 	addresses.master = masterScript.getScriptPathAndName();
 	return addresses;
@@ -395,12 +417,17 @@ void ScriptingWindow::agilentEditChange()
 	SetTimer(SYNTAX_TIMER_ID, SYNTAX_TIMER_LENGTH, NULL);
 }
 
-void ScriptingWindow::verticalEditChange()
+//void ScriptingWindow::verticalEditChange()
+//{
+//	verticalNiawgScript.handleEditChange();
+//	SetTimer(SYNTAX_TIMER_ID, SYNTAX_TIMER_LENGTH, NULL);
+//}
+
+void ScriptingWindow::moogEditChange()
 {
-	verticalNiawgScript.handleEditChange();
+	moogScript.handleEditChange();
 	SetTimer(SYNTAX_TIMER_ID, SYNTAX_TIMER_LENGTH, NULL);
 }
-
 
 /// Commonly Called Functions
 /*
@@ -485,20 +512,104 @@ void ScriptingWindow::saveIntensityScriptAs(CWnd* parent)
 }
 
 
-void ScriptingWindow::newVerticalScript()
+//void ScriptingWindow::newVerticalScript()
+//{
+//	try
+//	{
+//		verticalNiawgScript.checkSave( getProfile().categoryPath, mainWindowFriend->getRunInfo() );
+//		verticalNiawgScript.newScript( );
+//		updateConfigurationSavedStatus( false );
+//		verticalNiawgScript.updateScriptNameText( getProfile().categoryPath );
+//		verticalNiawgScript.colorEntireScript( auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(),
+//											   auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames() );
+//	}
+//	catch (Error& err)
+//	{
+//		comm()->sendError( err.what() );
+//	}
+//
+//}
+//
+//
+//// just a quick shortcut.
+//profileSettings ScriptingWindow::getProfile()
+//{
+//	return mainWindowFriend->getProfileSettings();
+//}
+//
+//
+//void ScriptingWindow::openVerticalScript(CWnd* parent)
+//{
+//	try
+//	{
+//		verticalNiawgScript.checkSave( getProfile().categoryPath, mainWindowFriend->getRunInfo() );
+//		std::string intensityOpenName = openWithExplorer( parent, NIAWG_SCRIPT_EXTENSION );
+//		verticalNiawgScript.openParentScript( intensityOpenName, getProfile().categoryPath, 
+//											  mainWindowFriend->getRunInfo() );
+//		updateConfigurationSavedStatus( false );
+//		verticalNiawgScript.updateScriptNameText( getProfile().categoryPath );
+//		verticalNiawgScript.colorEntireScript(auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(),
+//			auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames());
+//	}
+//	catch (Error& err)
+//	{
+//		comm()->sendError( err.what() );
+//	}
+//
+//}
+//
+//
+//void ScriptingWindow::saveVerticalScript()
+//{
+//	try
+//	{
+//		verticalNiawgScript.saveScript(getProfile().categoryPath, mainWindowFriend->getRunInfo());
+//		verticalNiawgScript.updateScriptNameText(getProfile().categoryPath);
+//	}
+//	catch (Error& err)
+//	{
+//		comm()->sendError( err.what() );
+//	}
+//
+//}
+//
+//
+//void ScriptingWindow::saveVerticalScriptAs(CWnd* parent)
+//{
+//	try
+//	{
+//		std::string extensionNoPeriod = verticalNiawgScript.getExtension();
+//		if (extensionNoPeriod.size() == 0)
+//		{
+//			return;
+//		}
+//		extensionNoPeriod = extensionNoPeriod.substr(1, extensionNoPeriod.size());
+//		std::string newScriptAddress = saveWithExplorer(parent, extensionNoPeriod, getProfileSettings());
+//		verticalNiawgScript.saveScriptAs(newScriptAddress, mainWindowFriend->getRunInfo() );
+//		updateConfigurationSavedStatus(false);
+//		verticalNiawgScript.updateScriptNameText(getProfile().categoryPath);
+//	}
+//	catch (Error& err)
+//	{
+//		comm()->sendError( err.what() );
+//	}
+//
+//}
+
+void ScriptingWindow::newMoogScript()
 {
 	try
 	{
-		verticalNiawgScript.checkSave( getProfile().categoryPath, mainWindowFriend->getRunInfo() );
-		verticalNiawgScript.newScript( );
-		updateConfigurationSavedStatus( false );
-		verticalNiawgScript.updateScriptNameText( getProfile().categoryPath );
-		verticalNiawgScript.colorEntireScript( auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(),
-											   auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames() );
+		moogScript.checkSave(getProfile().categoryPath, mainWindowFriend->getRunInfo());
+		moogScript.newScript();
+		updateConfigurationSavedStatus(false);
+		moogScript.updateScriptNameText(getProfile().categoryPath);
+		moogScript.colorEntireScript(auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(),
+			auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames());
 	}
 	catch (Error& err)
 	{
-		comm()->sendError( err.what() );
+		comm()->sendError(err.what());
 	}
 
 }
@@ -511,64 +622,63 @@ profileSettings ScriptingWindow::getProfile()
 }
 
 
-void ScriptingWindow::openVerticalScript(CWnd* parent)
+void ScriptingWindow::openMoogScript(CWnd* parent)
 {
 	try
 	{
-		verticalNiawgScript.checkSave( getProfile().categoryPath, mainWindowFriend->getRunInfo() );
-		std::string intensityOpenName = openWithExplorer( parent, NIAWG_SCRIPT_EXTENSION );
-		verticalNiawgScript.openParentScript( intensityOpenName, getProfile().categoryPath, 
-											  mainWindowFriend->getRunInfo() );
-		updateConfigurationSavedStatus( false );
-		verticalNiawgScript.updateScriptNameText( getProfile().categoryPath );
-		verticalNiawgScript.colorEntireScript(auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(),
+		moogScript.checkSave(getProfile().categoryPath, mainWindowFriend->getRunInfo());
+		std::string intensityOpenName = openWithExplorer(parent, MOOG_SCRIPT_EXTENSION);
+		moogScript.openParentScript(intensityOpenName, getProfile().categoryPath,
+			mainWindowFriend->getRunInfo());
+		updateConfigurationSavedStatus(false);
+		moogScript.updateScriptNameText(getProfile().categoryPath);
+		moogScript.colorEntireScript(auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(),
 			auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames());
 	}
 	catch (Error& err)
 	{
-		comm()->sendError( err.what() );
+		comm()->sendError(err.what());
 	}
 
 }
 
 
-void ScriptingWindow::saveVerticalScript()
+void ScriptingWindow::saveMoogScript()
 {
 	try
 	{
-		verticalNiawgScript.saveScript(getProfile().categoryPath, mainWindowFriend->getRunInfo());
-		verticalNiawgScript.updateScriptNameText(getProfile().categoryPath);
+		moogScript.saveScript(getProfile().categoryPath, mainWindowFriend->getRunInfo());
+		moogScript.updateScriptNameText(getProfile().categoryPath);
 	}
 	catch (Error& err)
 	{
-		comm()->sendError( err.what() );
+		comm()->sendError(err.what());
 	}
 
 }
 
 
-void ScriptingWindow::saveVerticalScriptAs(CWnd* parent)
+void ScriptingWindow::saveMoogScriptAs(CWnd* parent)
 {
 	try
 	{
-		std::string extensionNoPeriod = verticalNiawgScript.getExtension();
+		std::string extensionNoPeriod = moogScript.getExtension();
 		if (extensionNoPeriod.size() == 0)
 		{
 			return;
 		}
 		extensionNoPeriod = extensionNoPeriod.substr(1, extensionNoPeriod.size());
 		std::string newScriptAddress = saveWithExplorer(parent, extensionNoPeriod, getProfileSettings());
-		verticalNiawgScript.saveScriptAs(newScriptAddress, mainWindowFriend->getRunInfo() );
+		moogScript.saveScriptAs(newScriptAddress, mainWindowFriend->getRunInfo());
 		updateConfigurationSavedStatus(false);
-		verticalNiawgScript.updateScriptNameText(getProfile().categoryPath);
+		moogScript.updateScriptNameText(getProfile().categoryPath);
 	}
 	catch (Error& err)
 	{
-		comm()->sendError( err.what() );
+		comm()->sendError(err.what());
 	}
 
 }
-
 
 void ScriptingWindow::newHorizontalScript()
 {
@@ -641,15 +751,18 @@ void ScriptingWindow::saveHorizontalScriptAs(CWnd* parent)
 void ScriptingWindow::updateScriptNamesOnScreen()
 {
 	horizontalNiawgScript.updateScriptNameText(getProfile().categoryPath);
-	verticalNiawgScript.updateScriptNameText(getProfile().categoryPath);
+	//verticalNiawgScript.updateScriptNameText(getProfile().categoryPath);
+	moogScript.updateScriptNameText(getProfile().categoryPath);
 	intensityAgilent.agilentScript.updateScriptNameText(getProfile().categoryPath);
 }
 
 
 void ScriptingWindow::recolorScripts()
 {
-	verticalNiawgScript.colorEntireScript( auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(),
-										   auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames());
+	//verticalNiawgScript.colorEntireScript( auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(),
+	//									   auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames());
+	moogScript.colorEntireScript(auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(),
+											auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames());
 	horizontalNiawgScript.colorEntireScript(auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(),
 											auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames());
 	intensityAgilent.agilentScript.colorEntireScript(auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(),
@@ -670,8 +783,9 @@ void ScriptingWindow::handleOpenConfig(std::ifstream& configFile, int versionMaj
 	ProfileSystem::checkDelimiterLine(configFile, "SCRIPTS");
 	// the reading for the scripts is simple enough at the moment that I just read everything here.
 	configFile.get();
-	std::string vertName, horName, masterName;
-	getline(configFile, vertName);
+	std::string /*vertName,*/moogName, horName, masterName;
+	//getline(configFile, vertName);
+	getline(configFile, moogName);
 	getline(configFile, horName);
 	getline(configFile, masterName);
 	ProfileSystem::checkDelimiterLine(configFile, "END_SCRIPTS");
@@ -681,15 +795,19 @@ void ScriptingWindow::handleOpenConfig(std::ifstream& configFile, int versionMaj
 											mainWindowFriend->getRunInfo());
 	try
 	{
-		openVerticalScript( vertName );
+		//openVerticalScript( vertName );
+		openMoogScript(moogName);
 	}
 	catch ( Error& err )
 	{
-		int answer = promptBox( "ERROR: Failed to open vertical script file: " + vertName + ", with error \r\n" 
-								+ err.whatStr( ) + "\r\nAttempt to find file yourself?", MB_YESNO );
+		/*int answer = promptBox( "ERROR: Failed to open vertical script file: " + vertName + ", with error \r\n" 
+								+ err.whatStr( ) + "\r\nAttempt to find file yourself?", MB_YESNO );*/
+		int answer = promptBox("ERROR: Failed to open moog script file: " + moogName + ", with error \r\n"
+			+ err.whatStr() + "\r\nAttempt to find file yourself?", MB_YESNO);
 		if ( answer == IDYES )
 		{
-			openVerticalScript( openWithExplorer( NULL, "nScript" ) );
+			//openVerticalScript( openWithExplorer( NULL, "nScript" ) );
+			openMoogScript( openWithExplorer( NULL, "moogScript" ) );
 		}
 	}
 	try
@@ -823,7 +941,8 @@ void ScriptingWindow::handleSavingConfig(std::ofstream& saveFile)
 	scriptInfo<std::string> addresses = getScriptAddresses();
 	// order matters!
 	saveFile << "SCRIPTS\n";
-	saveFile << addresses.verticalNIAWG << "\n";
+	//saveFile << addresses.verticalNIAWG << "\n";
+	saveFile << addresses.moog << "\n";
 	saveFile << addresses.horizontalNIAWG << "\n";
 	saveFile << addresses.master << "\n";
 	saveFile << "END_SCRIPTS\n";
@@ -844,11 +963,15 @@ void ScriptingWindow::openMasterScript(std::string name)
 }
 
 
-void ScriptingWindow::openVerticalScript(std::string name)
-{
-	verticalNiawgScript.openParentScript( name, getProfile( ).categoryPath, mainWindowFriend->getRunInfo( ) );
-}
+//void ScriptingWindow::openVerticalScript(std::string name)
+//{
+//	verticalNiawgScript.openParentScript( name, getProfile( ).categoryPath, mainWindowFriend->getRunInfo( ) );
+//}
 
+void ScriptingWindow::openMoogScript(std::string name)
+{
+	moogScript.openParentScript(name, getProfile().categoryPath, mainWindowFriend->getRunInfo());
+}
 
 void ScriptingWindow::openHorizontalScript(std::string name)
 {
@@ -858,7 +981,8 @@ void ScriptingWindow::openHorizontalScript(std::string name)
 
 void ScriptingWindow::considerScriptLocations()
 {
-	verticalNiawgScript.considerCurrentLocation(getProfile().categoryPath, mainWindowFriend->getRunInfo());
+	//verticalNiawgScript.considerCurrentLocation(getProfile().categoryPath, mainWindowFriend->getRunInfo());
+	moogScript.considerCurrentLocation(getProfile().categoryPath, mainWindowFriend->getRunInfo());
 	horizontalNiawgScript.considerCurrentLocation(getProfile().categoryPath, mainWindowFriend->getRunInfo());
 	intensityAgilent.agilentScript.considerCurrentLocation(getProfile().categoryPath, mainWindowFriend->getRunInfo());
 }

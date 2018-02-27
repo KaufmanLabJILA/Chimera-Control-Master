@@ -4,7 +4,6 @@
 #include <fstream>
 #include "DioSystem.h"
 #include "DacSystem.h"
-#include "constants.h"
 #include "AuxiliaryWindow.h"
 #include "NiawgWaiter.h"
 #include "Expression.h"
@@ -76,12 +75,17 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 			input->thisObj->analyzeMasterScript( input->ttls, input->dacs, ttlShadeLocs, dacShadeLocs, input->rsg,
 												 input->variables );
 		}
+		/// prep Moog
+		if (input->runMoog) {
+			input->moog->analyzeMoogScript(input->moog, input->variables);
+		}
 		/// prep NIAWG
 		if (input->runNiawg)
 		{
 			input->niawg->prepareNiawg(  input, output, niawgFiles, warnings, userScriptSubmit, foundRearrangement, 
 											input->rearrangeInfo, input->variables );
 			input->niawg->writeStaticNiawg( output, input->debugOptions, input->constants );
+
 		}
 		if ( input->thisObj->isAborting )
 		{
@@ -136,6 +140,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 				input->ttls->findLoadSkipSnapshots( currLoadSkipTime, input->variables, variationInc );
 				input->ttls->convertToFinalFormat( variationInc );
 				input->ttls->formatForFPGA(variationInc); //FPGA FORMATTING from TTLSNAPSHOTS
+
 				// run a couple checks.
 				input->ttls->checkNotTooManyTimes( variationInc );
 				input->ttls->checkFinalFormatTimes( variationInc );
@@ -253,12 +258,12 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 			{
 				input->niawg->programNiawg( input, output, warnings, variationInc, variations, variedMixedSize,
 											userScriptSubmit );
-				if ( foundRearrangement )
-				{
-					input->niawg->turnOffRerng( );
-					input->conditionVariableForRearrangement->notify_all( );
-					input->niawg->handleStartingRerng( input, output );
-				}
+				//if ( foundRearrangement )
+				//{
+				//	input->niawg->turnOffRerng( );
+				//	input->conditionVariableForRearrangement->notify_all( );
+				//	input->niawg->handleStartingRerng( input, output );
+				//}
 			}
 			input->comm->sendError( warnings );
 			input->topBottomTek->programMachine( variationInc );
@@ -499,6 +504,10 @@ void MasterManager::startExperimentThread(MasterThreadInput* input)
 	{
 		loadMasterScript( input->masterScriptAddress );
 	}
+	if (input->runMoog)
+	{
+		input->moog->loadMoogScript(input->moogScriptAddress);
+	}
 	// start thread.
 	runningThread = AfxBeginThread(experimentThreadProcedure, input, THREAD_PRIORITY_HIGHEST);
 }
@@ -573,7 +582,7 @@ void MasterManager::loadMasterScript(std::string scriptAddress)
 }
 
 
-// makes sure formatting is correct, returns the arguments and the function name from reading the firs real line of a function file.
+// makes sure formatting is correct, returns the arguments and the function name from reading the first real line of a function file.
 void MasterManager::analyzeFunctionDefinition(std::string defLine, std::string& functionName, std::vector<std::string>& args)
 {
 	args.clear();
@@ -984,7 +993,6 @@ bool MasterManager::handleTimeCommands( std::string word, ScriptStream& stream, 
 	}
 	return true;
 }
-
 
 void MasterManager::analyzeMasterScript( DioSystem* ttls, DacSystem* dacs,
 										 std::vector<std::pair<UINT, UINT>>& ttlShades, std::vector<UINT>& dacShades, 

@@ -16,6 +16,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -139,7 +140,7 @@ BEGIN
 END
 
 IDD_LARGE_TEMPLATE DIALOGEX 0, 0, 310, 176
-STYLE DS_SETFONT | DS_FIXEDSYS | DS_CENTER | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+STYLE DS_SETFONT | DS_FIXEDSYS | DS_CENTER | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_VISIBLE | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
 EXSTYLE WS_EX_OVERLAPPEDWINDOW | WS_EX_APPWINDOW
 CAPTION "Quantum Gas Assembly"
 MENU IDR_MAIN_MENU
@@ -192,6 +193,7 @@ BEGIN
     BEGIN
         MENUITEM "&Run Everything \tF5",        ID_FILE_RUN_EVERYTHING
         MENUITEM "Run &Camera",                 ID_RUNMENU_RUNCAMERA
+        MENUITEM "Run M&oog",                   ID_RUNMENU_RUNMOOG
         MENUITEM "Run &NIAWG",                  ID_RUNMENU_RUNNIAWG
         MENUITEM "Run &Master",                 ID_RUNMENU_RUNMASTER
         MENUITEM "&Write Waveforms Only",       ID_FILE_MY_WRITE_WAVEFORMS
@@ -230,12 +232,12 @@ BEGIN
     END
     POPUP "&Scripts"
     BEGIN
-        POPUP "&Vertical Script"
+        POPUP "&Moog Script"
         BEGIN
-            MENUITEM "Ne&w Vertical Script",        ID_FILE_MY_VERTICAL_NEW
-            MENUITEM "Op&en Vertical Script",       ID_FILE_MY_VERTICAL_OPEN
-            MENUITEM "&Save Vertical Script",       ID_FILE_MY_VERTICAL_SAVE
-            MENUITEM "Save Vertical Script &As",    ID_FILE_MY_VERTICAL_SAVEAS
+            MENUITEM "Ne&w Moog Script",            ID_FILE_MY_MOOG_NEW
+            MENUITEM "Op&en Moog Script",           ID_FILE_MY_MOOG_OPEN
+            MENUITEM "&Save Moog Script",           ID_FILE_MY_MOOG_SAVE
+            MENUITEM "Save Moog Script &As",        ID_FILE_MY_MOOG_SAVEAS
         END
         POPUP "Hori&zontal Script"
         BEGIN

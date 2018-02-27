@@ -42,8 +42,7 @@ class MasterManager
 		void analyzeMasterScript( DioSystem* ttls, DacSystem* dacs, 
 								  std::vector<std::pair<UINT, UINT>>& ttlShades, std::vector<UINT>& dacShades, 
 								  RhodeSchwarz* rsg, std::vector<variableType>& vars);
-
-		// this function needs the mastewindow in order to gather the relevant parameters for the experiment.
+		// this function needs the master window in order to gather the relevant parameters for the experiment.
 		void startExperimentThread(MasterThreadInput* input);
 		void loadMotSettings(MasterThreadInput* input);
 		bool runningStatus();

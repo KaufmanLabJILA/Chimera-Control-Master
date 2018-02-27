@@ -27,6 +27,7 @@ class ProfileSystem
 		void allSettingsReadyCheck(ScriptingWindow* scriptWindow, MainWindow* mainWin, AuxiliaryWindow* auxWin, 
 								   CameraWindow* camWin);
 		std::string getMasterAddressFromConfig();
+		std::string getMoogAddressFromConfig();
 		void saveSequence();
 		void saveSequenceAs();
 		void renameSequence();

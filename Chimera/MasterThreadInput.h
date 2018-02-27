@@ -12,10 +12,18 @@
 #include <vector>
 #include <atomic>
 
+//for moog test:
+#include "SerialSynth.h"
+
 class MasterManager;
 
+//Useful structure for containing relevant parameters for master thread.
 struct MasterThreadInput
 {
+	//for moog test:
+	SerialSynth* moog;
+	std::string moogScriptAddress;
+
 	EmbeddedPythonHandler* python;
 	DataLogger* logger;
 	profileSettings profile;
@@ -39,6 +47,7 @@ struct MasterThreadInput
 	mainOptions settings;
 	bool runNiawg;
 	bool runMaster;
+	bool runMoog;
 	// only for rearrangement.
 	std::mutex* rearrangerLock;
 	std::vector<std::vector<bool>>* atomQueueForRearrangement;

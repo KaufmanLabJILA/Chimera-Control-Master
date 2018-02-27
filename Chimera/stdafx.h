@@ -38,7 +38,6 @@
 #include <tchar.h>
 // My stuff
 #include "externals.h"
-#include "constants.h"
 #include "resource.h"
 
 #include <fstream>
@@ -48,3 +47,4 @@
 #include <vector>
 #include <array>
 
+#include <cmath>

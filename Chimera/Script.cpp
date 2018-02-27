@@ -38,6 +38,10 @@ void Script::initialize( int width, int height, POINT& startingLocation, cToolTi
 	{
 		extension = str( "." ) + MASTER_SCRIPT_EXTENSION;
 	}
+	else if (deviceTypeInput == "Moog")
+	{
+		extension = str(".") + MOOG_SCRIPT_EXTENSION;
+	}
 	else
 	{
 		thrower( "ERROR: Device input type not recognized during construction of script control." );
@@ -204,9 +208,38 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 			}
 		}
 	}
+	// Check Moog-specific commands
+	if (editType == "Moog") {
+		if (word == "startfreq"|| word == "stopfreq"|| word == "gain"|| word == "loadphase"|| word == "movephase"|| word == "onoff"|| word == "step")
+		{
+			return rgbs["Solarized Violet"];
+		}
+		// check logic
+		if (word == "linloop")
+		{
+			return rgbs["Solarized Blue"];
+		}
+		// check software triggers
+		if (word == "load" || word == "move")
+		{
+			return rgbs["Solarized Green"];
+		}
+		// check variable
+		else if (word == "{" || word == "}")
+		{
+			return rgbs["Solarized Cyan"];
+		}
+		if (word.size() > 8)
+		{
+			if (word.substr(word.size() - 8, 8) == ".moogScript")
+			{
+				return rgbs["Solarized Yellow"];
+			}
+		}
+	}
+
 	// Check Agilent-specific commands
-	else if (editType == "Agilent")
-	{
+	else if (editType == "Agilent") {
 		std::transform(word.begin(), word.end(), word.begin(), ::tolower);
 		if (word == "ramp" || word == "hold" || word == "pulse" )
 		{
@@ -301,16 +334,36 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 	{
 		return rgbs["Light Grey"];
 	}
-	// see if it's a double.
-	try
-	{
-		// not sure why not just using std::stod.
-		boost::lexical_cast<double>(word);
+	//// see if it's a double.
+	//try {
+	//	// not sure why not just using std::stod.
+	//	boost::lexical_cast<double>(word);
+	//	return rgbs["White"];
+	//}
+	//catch (boost::bad_lexical_cast &) {
+	//	try {
+	//		boost::lexical_cast<int>(word);
+	//		return rgbs["White"];
+	//	}
+	//	catch (boost::bad_lexical_cast &)
+	//	{
+	//		return rgbs["Solarized Red"];
+	//	}
+	//}	
+	// see if it's an int or double.
+	try {
+		std::stoul(word, nullptr, 0);
 		return rgbs["White"];
 	}
-	catch (boost::bad_lexical_cast &)
-	{
-		return rgbs["Solarized Red"];
+	catch (...) {
+		try {
+			std::stod(word, nullptr);
+			return rgbs["White"];
+		}
+		catch (...)
+		{
+			return rgbs["Solarized Red"];
+		}
 	}
 }
 
@@ -547,6 +600,10 @@ void Script::handleToolTip( NMHDR * pNMHDR, LRESULT * pResult )
 		{
 			pTTT->lpszText = (LPSTR)AGILENT_INFO_TEXT;
 		}
+		else if (deviceType == "Moog")
+		{
+			pTTT->lpszText = (LPSTR)MOOG_INFO_TEXT;
+		}
 		else
 		{
 			pTTT->lpszText = "No Help available";
@@ -627,7 +684,7 @@ void Script::saveScript(std::string categoryPath, RunInfo info)
 	}
 	if (isSaved && scriptName != "")
 	{
-		// shoudln't need to do anything
+		// shouldn't need to do anything
 		return;
 	}
 	int sel = availableFunctionsCombo.GetCurSel();
@@ -895,6 +952,10 @@ void Script::newScript()
 	{
 		tempName += "DEFAULT_MASTER_SCRIPT.mScript";
 	}	
+	else if (deviceType == "Moog")
+	{
+		tempName += "DEFAULT_MOOG_SCRIPT.moogScript";
+	}
 	reset();
 	loadFile(tempName);
 }
@@ -934,9 +995,16 @@ void Script::openParentScript(std::string parentScriptFileAndPath, std::string c
 			thrower("ERROR: Attempted to open non-master script from master script control!");
 		}
 	}
+	else if (deviceType == "Moog")
+	{
+		if (extStr != str(".") + MOOG_SCRIPT_EXTENSION)
+		{
+			thrower("ERROR: Attempted to open non-moog script from moog script control!");
+		}
+	}
 	else
 	{
-		thrower("ERROR: Unrecognized device type inside script control! Ask Mark about Bugs.");
+		thrower("ERROR: Unrecognized device type inside script control!");
 	}
 	loadFile( parentScriptFileAndPath );
 	scriptName = str(fileChars);

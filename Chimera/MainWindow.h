@@ -15,8 +15,11 @@
 #include "DataLogger.h"
 #include "NoteSystem.h"
 #include "profileSettings.h"
-#include "NiawgController.h"
-#include "rerngControl.h"
+//#include "NiawgController.h"
+//#include "rerngControl.h"
+
+//megamoog controller
+#include "SerialSynth.h"
 
 class ScriptingWindow;
 class CameraWindow;
@@ -119,8 +122,11 @@ class MainWindow : public CDialog
 		StatusControl errorStatus;
 		SmsTextingControl texter;
 		StatusIndicator shortStatus;
-		rerngControl rearrangeControl;
+		
+		//rerngControl rearrangeControl;
 		NiawgController niawg;
+		SerialSynth moog;
+
 		ColorBox boxes;
 		// auxiliary members
 		Communicator comm;

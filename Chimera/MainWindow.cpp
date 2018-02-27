@@ -324,7 +324,7 @@ BOOL MainWindow::OnInitDialog( )
 	controlLocation = { 1440, 50 };
 	repetitionControl.initialize( controlLocation, tooltips, this, id );
 	settings.initialize( id, controlLocation, this, tooltips );
-	rearrangeControl.initialize( id, controlLocation, this, tooltips );
+	//rearrangeControl.initialize( id, controlLocation, this, tooltips );
 	debugger.initialize( id, controlLocation, this, tooltips );
 	texter.initialize( controlLocation, this, id, tooltips, mainRGBs );
 	controlLocation = { 960, 910 };
@@ -443,7 +443,7 @@ void MainWindow::handleNewConfig( std::ofstream& newFile )
 	settings.handleNewConfig( newFile );
 	debugger.handleNewConfig( newFile );
 	repetitionControl.handleNewConfig( newFile );
-	rearrangeControl.handleNewConfig( newFile );
+	//rearrangeControl.handleNewConfig( newFile );
 }
 
 
@@ -453,7 +453,7 @@ void MainWindow::handleSaveConfig(std::ofstream& saveFile)
 	settings.handleSaveConfig(saveFile);
 	debugger.handleSaveConfig(saveFile);
 	repetitionControl.handleSaveConfig(saveFile);
-	rearrangeControl.handleSaveConfig( saveFile );
+	//rearrangeControl.handleSaveConfig( saveFile );
 }
 
 
@@ -463,7 +463,7 @@ void MainWindow::handleOpeningConfig(std::ifstream& configFile, int versionMajor
 	settings.handleOpenConfig( configFile, versionMajor, versionMinor );
 	debugger.handleOpenConfig( configFile, versionMajor, versionMinor );
 	repetitionControl.handleOpenConfig(configFile, versionMajor, versionMinor );
-	rearrangeControl.handleOpenConfig( configFile, versionMajor, versionMinor );
+	//rearrangeControl.handleOpenConfig( configFile, versionMajor, versionMinor );
 }
 
 
@@ -481,7 +481,7 @@ void MainWindow::OnSize(UINT nType, int cx, int cy)
 	shortStatus.rearrange(cx, cy, getFonts());
 	boxes.rearrange( cx, cy, getFonts());
 	repetitionControl.rearrange(cx, cy, getFonts());
-	rearrangeControl.rearrange( cx, cy, getFonts( ) );
+	//rearrangeControl.rearrange( cx, cy, getFonts( ) );
 	SetRedraw();
 	RedrawWindow();
 }
@@ -677,8 +677,8 @@ void MainWindow::fillMotInput( MasterThreadInput* input )
 	// the mot procedure doesn't need the NIAWG at all.
 	input->runNiawg = false;
 	input->skipNext = NULL;
-	input->rearrangeInfo = rearrangeControl.getParams( );
-	input->rearrangeInfo.active = false;
+	//input->rearrangeInfo = rearrangeControl.getParams( );
+	//input->rearrangeInfo.active = false;
 
 }
 
@@ -687,12 +687,15 @@ void MainWindow::fillMasterThreadInput(MasterThreadInput* input)
 {
 	input->python = &this->python;
 	input->masterScriptAddress = profile.getMasterAddressFromConfig();
+	input->moogScriptAddress = profile.getMoogAddressFromConfig();
 	input->settings = settings.getOptions();
 	input->repetitionNumber = getRepNumber();
 	input->debugOptions = debugger.getOptions();
 	input->profile = profile.getProfileSettings();
-	input->niawg = &niawg;
+	//input->niawg = &niawg;
 	input->comm = &comm;
+	input->moog = &moog;
+
 	VariableSystem::generateKey( input->variables, input->settings.randomizeVariations );
 	// it's important to do this after the key is generated so that the constants have their values.
 	for ( auto& variable : input->variables )
@@ -702,7 +705,7 @@ void MainWindow::fillMasterThreadInput(MasterThreadInput* input)
 			input->constants.push_back( variable );
 		}
 	}
-	input->rearrangeInfo = rearrangeControl.getParams( );
+	//input->rearrangeInfo = rearrangeControl.getParams( );
 }
 
 

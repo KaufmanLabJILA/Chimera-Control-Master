@@ -178,7 +178,7 @@ void NiawgController::prepareNiawg( MasterThreadInput* input, NiawgOutput& outpu
 	{
 		niawgPair<ScriptStream> scripts;
 		output.niawgLanguageScript = "";
-		input->comm->sendStatus( "Working with configuraiton # " + str( sequenceInc + 1 ) + " in Sequence...\r\n" );
+		input->comm->sendStatus( "Working with configuration # " + str( sequenceInc + 1 ) + " in Sequence...\r\n" );
 		/// Create Script and Write Waveforms ////////////////////////////////////////////////////////////////////
 		scripts[Vertical] << niawgFiles[Vertical][sequenceInc].rdbuf( );
 		scripts[Horizontal] << niawgFiles[Horizontal][sequenceInc].rdbuf( );

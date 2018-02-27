@@ -193,6 +193,9 @@
     <ClCompile Include="rerngControl.cpp" />
     <ClCompile Include="RC028.cpp" />
     <ClCompile Include="TestWin.cpp" />
+    <ClCompile Include="SerialSynth.cpp">
+      <Filter>Main Window</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -455,6 +458,9 @@
     <ClInclude Include="rerngthreadinput.h" />
     <ClInclude Include="RC028.h" />
     <ClInclude Include="TestWin.h" />
+    <ClInclude Include="SerialSynth.h">
+      <Filter>Main Window</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Icon2.ico">
