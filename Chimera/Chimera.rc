@@ -171,7 +171,7 @@ IDD_SPLASH DIALOGEX 5, 5, 691, 367
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_SYSMENU
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "Chimera Control System\nCreated by Mark Brown",IDC_STATIC,587,28,82,20
+    LTEXT           "Chimera Control System\nCreated by Mark Brown\n",IDC_STATIC,587,28,82,20
     LTEXT           "Loading..................",IDC_STATIC,587,50,64,8
     CONTROL         IDB_BITMAP1,IDC_STATIC,"Static",SS_BITMAP,7,7,576,353
 END
@@ -195,7 +195,7 @@ BEGIN
         MENUITEM "Run &Camera",                 ID_RUNMENU_RUNCAMERA
         MENUITEM "Run M&oog",                   ID_RUNMENU_RUNMOOG
         MENUITEM "Run &NIAWG",                  ID_RUNMENU_RUNNIAWG
-        MENUITEM "Run &Master",                 ID_RUNMENU_RUNMASTER
+        MENUITEM "Run &Master\tF4",             ID_RUNMENU_RUNMASTER
         MENUITEM "&Write Waveforms Only",       ID_FILE_MY_WRITE_WAVEFORMS
         MENUITEM "&Abort All\tESC",             ID_FILE_ABORT_GENERATION
         MENUITEM "A&bort Camera",               ID_RUNMENU_ABORTCAMERA
@@ -353,6 +353,7 @@ BEGIN
     VK_ESCAPE,      ID_ACCELERATOR_ESC,     VIRTKEY, NOINVERT
     VK_F1,          ID_ACCELERATOR_F1,      VIRTKEY, NOINVERT
     VK_F2,          ID_ACCELERATOR_F2,      VIRTKEY, NOINVERT
+    VK_F4,          ID_ACCELERATOR_F4,      VIRTKEY, NOINVERT
     VK_F5,          ID_ACCELERATOR_F5,      VIRTKEY, NOINVERT
 END
 

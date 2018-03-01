@@ -153,14 +153,15 @@
 #define ID_PLOTTING_STOPPLOTTER         40129
 #define ID_SCRIPTS_MOOGSCRIPT           40130
 #define ID_RUNMENU_RUNNIAWG             40131
-#define MENU_ID_RANGE_END               40131
+#define ID_ACCELERATOR_F4               40132
+#define MENU_ID_RANGE_END               40133
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        127
-#define _APS_NEXT_COMMAND_VALUE         40136
+#define _APS_NEXT_COMMAND_VALUE         40138
 #define _APS_NEXT_CONTROL_VALUE         1032
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

@@ -246,9 +246,10 @@ namespace commonFunctions
 				}
 				break;
 			}
+			case ID_ACCELERATOR_F4:
 			case ID_RUNMENU_RUNMASTER:
 			{
-				ExperimentInput input;
+				ExperimentInput input;  
 				try
 				{
 					commonFunctions::prepareMasterThread( ID_RUNMENU_RUNMASTER, scriptWin, mainWin, camWin, auxWin, 

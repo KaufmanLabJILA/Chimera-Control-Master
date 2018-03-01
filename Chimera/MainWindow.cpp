@@ -5,6 +5,7 @@
 #include "CameraWindow.h"
 #include "AuxiliaryWindow.h"
 #include <future>
+#include "resource.h"
 //#include "TestWin.cpp"
 
 MainWindow::MainWindow(UINT id, CDialog* splash) : CDialog(id), profile(PROFILES_PATH), 
@@ -166,6 +167,7 @@ BEGIN_MESSAGE_MAP( MainWindow, CDialog )
 	ON_REGISTERED_MESSAGE( eNoAtomsAlertMessageID, &MainWindow::onNoAtomsAlertMessage )
 	ON_COMMAND_RANGE( ID_ACCELERATOR_ESC, ID_ACCELERATOR_ESC, &MainWindow::passCommonCommand )
 	ON_COMMAND_RANGE( ID_ACCELERATOR_F5, ID_ACCELERATOR_F5, &MainWindow::passCommonCommand )
+	ON_COMMAND_RANGE( ID_ACCELERATOR_F4, ID_ACCELERATOR_F4, &MainWindow::passCommonCommand )
 	ON_COMMAND_RANGE( ID_ACCELERATOR_F2, ID_ACCELERATOR_F2, &MainWindow::passCommonCommand )
 	ON_COMMAND_RANGE( ID_ACCELERATOR_F1, ID_ACCELERATOR_F1, &MainWindow::passCommonCommand )
 	ON_COMMAND_RANGE( MENU_ID_RANGE_BEGIN, MENU_ID_RANGE_END, &MainWindow::passCommonCommand )

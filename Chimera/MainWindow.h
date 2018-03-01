@@ -1,4 +1,5 @@
 #pragma once
+
 #include "stdafx.h"
 #include "ProfileSystem.h"
 #include "DebugOptionsControl.h"

@@ -1,11 +1,11 @@
 Version 2.0
-diagmotrf
+blue3d
 0
-repumprf
+rp707
 0
-botramanrf
+rp679
 0
-sigmarepumprf
+red3d
 0
 sigmaoprf
 0
@@ -13,7 +13,7 @@ sidemotrf
 0
 tweezerrf
 0
-repumpflash
+trigger
 0
 eoramanrf
 0
@@ -29,9 +29,9 @@ radialgaussianpulsetrig
 0
 oscilloscopetrig
 0
-a15
+mako1
 0
-scouttrig
+b0
 0
 repumpshutter
 0
@@ -127,28 +127,28 @@ d14
 0
 testport
 0
-rightcoilcurrent
+x1coil
 -10 - 10
 0
-leftcoilcurrent
+x2coil
 -10 - 10
 0
-frontcoilcurrent
+y1coil
 -10 - 10
 0
-backcoilcurrent
+y2coil
 -10 - 10
 0
-bottomcoilcurrent
+z1coil
 -10 - 10
 0
-topcoilcurrent
+z2coil
 -10 - 10
 0
-motgradientcurrent
+lowermotcoil
 -10 - 10
 0
-dac7
+uppermotcoil
 -10 - 10
 0
 depumppower
