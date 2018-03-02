@@ -310,7 +310,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 					input->dacs->startDacs();
 					//input->ttls->writeTtlData( variationInc, skipOption );
 					input->ttls->writeTtlDataToFPGA(variationInc, skipOption);
-					input->ttls->startDioFPGA();
+					input->ttls->startDioFPGA(variationInc);
 					input->ttls->startBoard();
 					input->ttls->waitTillFinished( variationInc, skipOption );
 				}

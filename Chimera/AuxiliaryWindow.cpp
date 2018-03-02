@@ -619,7 +619,7 @@ void AuxiliaryWindow::zeroDacs()
 		ttlBoard.formatForFPGA(0);
 		ttlBoard.writeTtlData(0, false);
 		ttlBoard.writeTtlDataToFPGA(0, false);
-		ttlBoard.startDioFPGA();
+		ttlBoard.startDioFPGA(0);
 		/////
 
 		ttlBoard.writeTtlData(0, false);
@@ -943,7 +943,7 @@ void AuxiliaryWindow::SetDacs()
 		//DIO FPGA commands//
 		ttlBoard.formatForFPGA(0);
 		ttlBoard.writeTtlDataToFPGA(0, false);
-		ttlBoard.startDioFPGA();
+		ttlBoard.startDioFPGA(0);
 		/////
 
 		ttlBoard.writeTtlData(0, false);

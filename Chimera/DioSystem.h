@@ -78,7 +78,7 @@ class DioSystem
 		void writeTtlData( UINT variation, bool loadSkip );
 		void writeTtlDataToFPGA(UINT variation, bool loadSkip);
 		void startBoard();
-		void startDioFPGA();
+		void startDioFPGA(UINT variation);
 		void fpgaForceOutput(std::array<unsigned short, 4>  buffer);
 		void stopBoard();
 		double getClockStatus();
@@ -111,8 +111,9 @@ class DioSystem
 		// tells whether the hold button is down or not.
 		bool holdStatus;
 
-		RC028 dioFPGA; //FPGA object 
-
+		//RC028 dioFPGA; //FPGA object 
+		
+		std::vector<RC028> dioFPGA;
 		std::vector<DioCommandForm> ttlCommandFormList;
 		// Each element of first vector is for each variation.
 		std::vector<std::vector<DioCommand>> ttlCommandList;

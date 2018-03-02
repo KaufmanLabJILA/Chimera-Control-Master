@@ -53,7 +53,7 @@ std::vector<std::vector<long>> convolveDumb( std::vector<std::vector<bool>> atom
 	{
 		for ( auto startColInc : range( result[0].size( ) ) )
 		{
-			// calcualte product
+			// calculate product
 			long conv = 0;
 			for ( auto rowInc : range( target.size( ) ) )
 			{

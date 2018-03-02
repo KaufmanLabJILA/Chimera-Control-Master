@@ -275,11 +275,11 @@ std::array<std::array<std::string, 16>, 4> DioSystem::getAllNames()
 }
 
 
-void DioSystem::startDioFPGA()
+void DioSystem::startDioFPGA(UINT variation)
 {
 	
-	dioFPGA.trigger();
-	dioFPGA.disconnect();
+	dioFPGA[variation].trigger();
+	dioFPGA[variation].disconnect();
 }
 
 void DioSystem::startBoard()
@@ -648,6 +648,7 @@ void DioSystem::handleHoldPress()
 void DioSystem::prepareForce( )
 {
 	ttlSnapshots.resize( 1 );
+	dioFPGA.resize( 1 );
 	loadSkipTtlSnapshots.resize( 1 );
 	ttlCommandList.resize( 1 );
 	formattedTtlSnapshots.resize( 1 );
@@ -917,9 +918,9 @@ void DioSystem::writeTtlDataToFPGA(UINT variation, bool loadSkip) //arguments un
 {
 
 	//d
-	dioFPGA.connectasync("FT1VAHJPB"); //This is the serial number of the FTDI chip "FT1VAHJP" - B is added to select channel B
+	dioFPGA[variation].connectasync("FT1VAHJPB"); //This is the serial number of the FTDI chip "FT1VAHJP" - B is added to select channel B
 
-	dioFPGA.write();
+	dioFPGA[variation].write();
 
 }
 
@@ -1025,6 +1026,7 @@ void DioSystem::interpretKey( std::vector<variableType>& variables )
 	/// imporantly, this sizes the relevant structures.
 	ttlCommandList = std::vector<std::vector<DioCommand>>( variations );
 	ttlSnapshots = std::vector<std::vector<DioSnapshot>>( variations );
+	dioFPGA = std::vector<RC028>( variations );
 	loadSkipTtlSnapshots = std::vector<std::vector<DioSnapshot>>( variations );
 	formattedTtlSnapshots = std::vector<std::vector<std::array<WORD, 6>>>( variations );
 	loadSkipFormattedTtlSnapshots = std::vector<std::vector<std::array<WORD, 6>>>( variations );
@@ -1174,12 +1176,12 @@ void DioSystem::formatForFPGA(UINT variation)
 			fpgaBanks[fpgaBankCtr +1] = val2;
 			fpgaBankCtr = fpgaBankCtr + 2;
 		}
-		dioFPGA.setPoint(snapIndex, snapshot.time*timeConv, fpgaBanks[0], fpgaBanks[1], fpgaBanks[2], fpgaBanks[3], fpgaBanks[4], fpgaBanks[5], fpgaBanks[6], fpgaBanks[7]);
+		dioFPGA[variation].setPoint(snapIndex, snapshot.time*timeConv, fpgaBanks[0], fpgaBanks[1], fpgaBanks[2], fpgaBanks[3], fpgaBanks[4], fpgaBanks[5], fpgaBanks[6], fpgaBanks[7]);
 		//errBox("Snapindex: " + str(fpgaBankCtr));
 		//std::cout << "SnapIndex: " << snapIndex << " blah" << std::endl;
 		snapIndex = snapIndex + 1;
 	}
-	dioFPGA.setPoint(snapIndex, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+	dioFPGA[variation].setPoint(snapIndex, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 	//For each snapShot
 	//dioSetpoint(ii, .time, 0;;7, 8;;15, 16...)
 
@@ -1580,13 +1582,13 @@ void DioSystem::fpgaForceOutput(std::array<unsigned short, 4> buffer) //UNTESTED
 	}
 
  
-	dioFPGA.setPoint(1,10000, fpgaBanks[0], fpgaBanks[1], fpgaBanks[2], fpgaBanks[3], fpgaBanks[4], fpgaBanks[5], fpgaBanks[6], fpgaBanks[7]);
-	dioFPGA.setPoint(2, 0, 0,0,0,0,0, 0,0,0);
+	dioFPGA[0].setPoint(1,10000, fpgaBanks[0], fpgaBanks[1], fpgaBanks[2], fpgaBanks[3], fpgaBanks[4], fpgaBanks[5], fpgaBanks[6], fpgaBanks[7]);
+	dioFPGA[0].setPoint(2, 0, 0,0,0,0,0, 0,0,0);
 	//Could call the functions that contain these but this felt more appropriate since this isn't in a standard call  
-	dioFPGA.connectasync("FT1VAHJPB");
-	dioFPGA.write();
-	dioFPGA.trigger();
-	 dioFPGA.disconnect();
+	dioFPGA[0].connectasync("FT1VAHJPB");
+	dioFPGA[0].write();
+	dioFPGA[0].trigger();
+	dioFPGA[0].disconnect();
 }
 
 void DioSystem::dioOutGetInput(WORD board, WORD& buffer)
