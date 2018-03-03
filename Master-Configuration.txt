@@ -33,11 +33,11 @@ mako1
 0
 b0
 0
-repumpshutter
+b1
 0
-motshutter
+b2
 0
-lsshutter
+b3
 0
 b4
 0
