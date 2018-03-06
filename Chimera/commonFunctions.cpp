@@ -26,7 +26,7 @@ namespace commonFunctions
 		switch (msgID)
 		{
 			case ID_FILE_RUN_EVERYTHING:
-			case ID_ACCELERATOR_F5:
+			//case ID_ACCELERATOR_F5:
 			case ID_FILE_MY_WRITE_WAVEFORMS:
 			{
 				ExperimentInput input;
