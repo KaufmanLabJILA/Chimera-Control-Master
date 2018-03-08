@@ -276,9 +276,11 @@ std::array<std::array<std::string, 16>, 4> DioSystem::getAllNames()
 
 
 void DioSystem::startDioFPGA(UINT variation)
-{
-	
+{	
 	dioFPGA[variation].trigger();
+}
+
+void DioSystem::disconnectDioFPGA(UINT variation) {
 	dioFPGA[variation].disconnect();
 }
 
@@ -914,11 +916,13 @@ int DioSystem::getNameIdentifier(std::string name, UINT& row, UINT& number)
 	return -1;
 }
 
+void DioSystem::connectDioFPGA(UINT variation) {
+	//This is the serial number of the FTDI chip "FT1VAHJP" - B is added to select channel B
+	dioFPGA[variation].connectasync("FT1VAHJPB");
+}
+
 void DioSystem::writeTtlDataToFPGA(UINT variation, bool loadSkip) //arguments unused, just paralleling original DIO structure
 {
-
-	//d
-	dioFPGA[variation].connectasync("FT1VAHJPB"); //This is the serial number of the FTDI chip "FT1VAHJP" - B is added to select channel B
 
 	dioFPGA[variation].write();
 

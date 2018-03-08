@@ -140,7 +140,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 				input->ttls->findLoadSkipSnapshots( currLoadSkipTime, input->variables, variationInc );
 				input->ttls->convertToFinalFormat( variationInc );
 				input->ttls->formatForFPGA(variationInc); //FPGA FORMATTING from TTLSNAPSHOTS
-
+				input->ttls->connectDioFPGA(variationInc); //open connection at each variation
 				// run a couple checks.
 				input->ttls->checkNotTooManyTimes( variationInc );
 				input->ttls->checkFinalFormatTimes( variationInc );
@@ -222,7 +222,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 			for (auto& agilent : input->agilents)
 			{
 				input->comm->sendColorBox( Intensity, 'Y' );
-				agilent->setAgilent( variationInc, input->variables ); //TIMING PROBLEM
+				agilent->setAgilent( variationInc, input->variables ); //TODO: Runs slow, and not actually in use.
 				input->comm->sendColorBox( Intensity, 'G' );
 			}
 			// check right number of triggers (currently must be done after agilent is set.
@@ -309,9 +309,11 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 					input->dacs->writeDacs( variationInc, skipOption );
 					input->dacs->startDacs();
 					//input->ttls->writeTtlData( variationInc, skipOption );
+					//input->ttls->startBoard();
+					//input->ttls->connectDioFPGA(variationInc);
 					input->ttls->writeTtlDataToFPGA(variationInc, skipOption);
 					input->ttls->startDioFPGA(variationInc);
-					input->ttls->startBoard();
+					input->ttls->disconnectDioFPGA(variationInc);
 					input->ttls->waitTillFinished( variationInc, skipOption );
 				}
 			}
