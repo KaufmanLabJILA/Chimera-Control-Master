@@ -140,7 +140,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 				input->ttls->findLoadSkipSnapshots( currLoadSkipTime, input->variables, variationInc );
 				input->ttls->convertToFinalFormat( variationInc );
 				input->ttls->formatForFPGA(variationInc); //FPGA FORMATTING from TTLSNAPSHOTS
-				input->ttls->connectDioFPGA(variationInc); //open connection at each variation
+				//input->ttls->connectDioFPGA(variationInc); //open connection at each variation
 				// run a couple checks.
 				input->ttls->checkNotTooManyTimes( variationInc );
 				input->ttls->checkFinalFormatTimes( variationInc );
@@ -200,6 +200,8 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 		// loop for variations
 		for (const UINT& variationInc : range( variations ))
 		{
+			input->ttls->connectDioFPGA(variationInc);
+
 			expUpdate( "Variation #" + str( variationInc + 1 ) + "\r\n", input->comm, input->quiet );
 			Sleep( input->debugOptions.sleepTime );
 			for (auto tempVariable : input->variables)
@@ -317,6 +319,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 					input->ttls->waitTillFinished( variationInc, skipOption );
 				}
 			}
+			input->ttls->disconnectDioFPGA(variationInc);
 			expUpdate( "\r\n", input->comm, input->quiet );
 		}
 		/// conclude.

@@ -1030,7 +1030,7 @@ void DioSystem::interpretKey( std::vector<variableType>& variables )
 	/// imporantly, this sizes the relevant structures.
 	ttlCommandList = std::vector<std::vector<DioCommand>>( variations );
 	ttlSnapshots = std::vector<std::vector<DioSnapshot>>( variations );
-	dioFPGA = std::vector<RC028>( variations );
+	dioFPGA = std::vector<RC028>( variations ); //TODO: fix this
 	loadSkipTtlSnapshots = std::vector<std::vector<DioSnapshot>>( variations );
 	formattedTtlSnapshots = std::vector<std::vector<std::array<WORD, 6>>>( variations );
 	loadSkipFormattedTtlSnapshots = std::vector<std::vector<std::array<WORD, 6>>>( variations );
