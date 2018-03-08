@@ -1,14 +1,32 @@
-def blue_mot():
-  dac: x1coil 1
-  dac: x2coil 1
-  dac: y1coil 0
-  dac: y2coil 0
-  dac: z1coil 1
-  dac: z2coil 1
+def blue_mot(loadTime):
+  dac: x1coil bluecoilx
+  dac: x2coil bluecoilx
+  dac: y1coil bluecoily
+  dac: y2coil bluecoily
+  dac: z1coil bluecoilz
+  dac: z2coil bluecoilz
   dac: lowermotcoil 7
   dac: uppermotcoil 7
   dac: blue3dpow 0.5
   on: blue3d
   on: rp707
   on: rp679
-  
+
+  t += loadTime
+
+  dac: x1coil .74
+  dac: x2coil .74
+  dac: y1coil 0
+  dac: y2coil 0
+  dac: z1coil 0
+  dac: z2coil 0
+  dac: lowermotcoil 7
+  dac: uppermotcoil 7
+  t += 20
+  dac: blue3dpow .18
+  t += 2
+  dac: blue3dpow 0.5
+  off: blue3d
+  off: rp707
+  off: rp679
+  t += 0.01

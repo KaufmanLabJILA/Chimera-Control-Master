@@ -528,6 +528,12 @@ void DacSystem::organizeDacCommands(UINT variation)
 void DacSystem::findLoadSkipSnapshots( double time, std::vector<variableType>& variables, UINT variation )
 {
 	// find the splitting time and set the loadSkip snapshots to have everything after that time.
+	//TODO: add error handling for no DAC commands here (if size dacsnapshots ==0 throw)
+
+	if (dacSnapshots[variation].size()==0)
+	{
+		thrower("DAC snapshots not initialized. Try adding a dummy DAC setting to the master script.");
+	}
 	for ( auto snapshotInc : range( dacSnapshots[variation].size( ) - 1 ) )
 	{
 		if ( dacSnapshots[variation][snapshotInc].time < time && dacSnapshots[variation][snapshotInc + 1].time >= time )

@@ -34,7 +34,7 @@ int RC028::connectasync(const char devSerial[])
 
 	if (numDevs > 0)
 	{
-		ftStatus = FT_OpenEx((PVOID)devSerial, FT_OPEN_BY_SERIAL_NUMBER, &this->ftHandle);
+		ftStatus = FT_OpenEx((PVOID)devSerial, FT_OPEN_BY_SERIAL_NUMBER, &this->ftHandle); //TODO: THIS IS KILLING STARTUP TIME
 		if (ftStatus != FT_OK) {
 			cout << "Error opening device" << endl;
 			return 1;

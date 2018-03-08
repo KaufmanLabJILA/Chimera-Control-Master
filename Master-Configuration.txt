@@ -95,7 +95,7 @@ c14
 0
 c15
 0
-d0
+nulltest
 0
 d1
 0
@@ -202,8 +202,8 @@ piezomirror
 6
 xcoilval 0.162
 ycoilval 0.025
-zcoilval 0.64
-random 0
- 0
- 0
+zcoilval 0.68
+bluecoilx 1
+bluecoily 0
+bluecoilz 1
 1 512 1 1 512 1

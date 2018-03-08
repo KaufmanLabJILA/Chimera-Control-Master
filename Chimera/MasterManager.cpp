@@ -222,7 +222,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 			for (auto& agilent : input->agilents)
 			{
 				input->comm->sendColorBox( Intensity, 'Y' );
-				agilent->setAgilent( variationInc, input->variables );
+				agilent->setAgilent( variationInc, input->variables ); //TODO: Runs slow, and not actually in use.
 				input->comm->sendColorBox( Intensity, 'G' );
 			}
 			// check right number of triggers (currently must be done after agilent is set.

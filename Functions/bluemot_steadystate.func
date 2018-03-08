@@ -1,0 +1,15 @@
+% Master-Script See the "?" for info on commands.
+def bluemot_steadystate():
+  dac: x1coil bluecoilx
+  dac: x2coil bluecoilx
+  dac: y1coil bluecoily
+  dac: y2coil bluecoily
+  dac: z1coil bluecoilz
+  dac: z2coil bluecoilz
+  dac: lowermotcoil 7
+  dac: uppermotcoil 7
+  dac: blue3dpow 0.5
+  on: blue3d
+  on: rp707
+  on: rp679
+	

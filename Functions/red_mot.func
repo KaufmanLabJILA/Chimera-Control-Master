@@ -1,14 +1,17 @@
 def red_mot():
-  dac: x1coil 0
-  dac: x2coil 0
-  dac: y1coil 0
-  dac: y2coil 0
-  dac: z1coil 0
-  dac: z2coil 0
-  dac: lowermotcoil .6
-  dac: uppermotcoil .6
-  off: blue3d
-  off: rp707
-  off: rp679
   on: red3d
-  
+  dac: red3dpow .4
+  dac: z2coil zcoilval
+  dac: z1coil zcoilval
+  dac: x2coil xcoilval
+  dac: x1coil xcoilval
+  dac: y2coil ycoilval
+  dac: y1coil ycoilval
+  dac: lowermotcoil .7
+  dac: uppermotcoil .7
+  t += 100
+  dac: red3dpow .15
+  t += 30
+  off: red3d 
+  dac: red3dpow .4
+  t += .01
