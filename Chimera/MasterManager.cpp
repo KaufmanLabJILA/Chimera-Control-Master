@@ -55,15 +55,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 	/// start analysis & experiment
 	try
 	{
-		UINT variations;
-		if (input->runSingle)
-		{
-			variations = 1;
-			input->repetitionNumber = 1;
-		}
-		else {
-			variations = determineVariationNumber(input->variables);
-		}
+		UINT variations = determineVariationNumber(input->variables);
 		// finishing sentence from before start I think...
 		expUpdate( "Done.\r\n", input->comm, input->quiet );
 		/// Prep agilents
@@ -209,6 +201,11 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 		}
 		// loop for variations
 		
+		if (input->runSingle)
+		{
+			variations = 1;
+			input->repetitionNumber = 1;
+		}
 
 		for (const UINT& variationInc : range( variations ))
 		{
