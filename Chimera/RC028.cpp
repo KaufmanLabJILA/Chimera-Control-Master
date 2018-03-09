@@ -10,6 +10,12 @@ RC028::RC028() {
 	this->connType = NONE;
 }
 
+void RC028::init(int connType_in, FT_HANDLE ftHandle_in, HANDLE m_hSerialComm_in) {
+	this->connType = connType_in;
+	this->ftHandle = ftHandle_in;
+	this->m_hSerialComm = m_hSerialComm_in;
+}
+
 int RC028::setPoint(short number, unsigned int Time, unsigned char P1, unsigned char P2, unsigned char P3, unsigned char P4, unsigned char P5, unsigned char P6, unsigned char P7, unsigned char P8)
 {
 	RC028_POINT point;
@@ -26,36 +32,36 @@ int RC028::setPoint(short number, unsigned int Time, unsigned char P1, unsigned 
 	return 0;
 }
 
-int RC028::connectasync(const char devSerial[])
-{
-	FT_STATUS ftStatus;
-	DWORD numDevs;
-	ftStatus = FT_ListDevices(&numDevs, NULL, FT_LIST_NUMBER_ONLY);
-
-	if (numDevs > 0)
-	{
-		ftStatus = FT_OpenEx((PVOID)devSerial, FT_OPEN_BY_SERIAL_NUMBER, &this->ftHandle); //TODO: THIS IS KILLING STARTUP TIME
-		if (ftStatus != FT_OK) {
-			cout << "Error opening device" << endl;
-			return 1;
-		}
-		ftStatus = FT_SetUSBParameters(this->ftHandle, 65536, 65536);
-		if (ftStatus != FT_OK) {
-			cout << "Error opening device" << endl;
-			return 1;
-		}
-		cout << "Connected..." << endl;
-		this->connType = ASYNC;
-		return 0;
-	}
-	else
-	{
-		cout << "No devices found." << endl;
-		return 1;
-	}
-
-	
-}
+//int RC028::connectasync(const char devSerial[])
+//{
+//	FT_STATUS ftStatus;
+//	DWORD numDevs;
+//	ftStatus = FT_ListDevices(&numDevs, NULL, FT_LIST_NUMBER_ONLY);
+//
+//	if (numDevs > 0)
+//	{
+//		ftStatus = FT_OpenEx((PVOID)devSerial, FT_OPEN_BY_SERIAL_NUMBER, &this->ftHandle); //TODO: THIS IS KILLING STARTUP TIME
+//		if (ftStatus != FT_OK) {
+//			cout << "Error opening device" << endl;
+//			return 1;
+//		}
+//		ftStatus = FT_SetUSBParameters(this->ftHandle, 65536, 65536);
+//		if (ftStatus != FT_OK) {
+//			cout << "Error opening device" << endl;
+//			return 1;
+//		}
+//		cout << "Connected..." << endl;
+//		this->connType = ASYNC;
+//		return 0;
+//	}
+//	else
+//	{
+//		cout << "No devices found." << endl;
+//		return 1;
+//	}
+//
+//	
+//}
 
 //int RC028::connectRS232(LPCWSTR Port) //Removed this function since it appears to be unused; confirmed demo runs without it. 
 
@@ -135,42 +141,42 @@ int RC028::trigger()
 	return 1;
 }
 
-int RC028::disconnect()
-{
-	if (this->connType == SERIAL)
-	{
-		if (this->m_hSerialComm != INVALID_HANDLE_VALUE)
-		{
-			CloseHandle(this->m_hSerialComm);
-			m_hSerialComm = INVALID_HANDLE_VALUE;
-			cout << "Serial connection closed..." << endl;
-			this->connType = NONE;
-			return 0;
-		}
-		return 1;
-	}
-	else if (this->connType == ASYNC)
-	{
-		FT_STATUS ftStatus;
-		ftStatus = FT_Close(this->ftHandle);
-		if (ftStatus == FT_OK) {
-			// FT_Write OK
-			cout << "Async connection closed" << endl;
-			return 0;
-		}
-		else {
-			// FT_Write Failed
-			cout << "Error closing async connection" << endl;
-			return 1;
-		}
-	}
-	else
-	{
-		cout << "No connection to close..." << endl;
-		return 1;
-	}
-	
-}
+//int RC028::disconnect()
+//{
+//	if (this->connType == SERIAL)
+//	{
+//		if (this->m_hSerialComm != INVALID_HANDLE_VALUE)
+//		{
+//			CloseHandle(this->m_hSerialComm);
+//			m_hSerialComm = INVALID_HANDLE_VALUE;
+//			cout << "Serial connection closed..." << endl;
+//			this->connType = NONE;
+//			return 0;
+//		}
+//		return 1;
+//	}
+//	else if (this->connType == ASYNC)
+//	{
+//		FT_STATUS ftStatus;
+//		ftStatus = FT_Close(this->ftHandle);
+//		if (ftStatus == FT_OK) {
+//			// FT_Write OK
+//			cout << "Async connection closed" << endl;
+//			return 0;
+//		}
+//		else {
+//			// FT_Write Failed
+//			cout << "Error closing async connection" << endl;
+//			return 1;
+//		}
+//	}
+//	else
+//	{
+//		cout << "No connection to close..." << endl;
+//		return 1;
+//	}
+//	
+//}
 
 unsigned long RC028::write()
 {

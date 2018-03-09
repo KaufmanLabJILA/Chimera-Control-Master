@@ -77,10 +77,10 @@ class DioSystem
 		void convertToFinalFormat(UINT variation );
 		void writeTtlData( UINT variation, bool loadSkip );
 		void writeTtlDataToFPGA(UINT variation, bool loadSkip);
-		void disconnectDioFPGA(UINT variation);
+		int disconnectDioFPGA();
 		void startBoard();
 		void startDioFPGA(UINT variation);
-		void connectDioFPGA(UINT variation);
+		int connectDioFPGA();
 		void fpgaForceOutput(std::array<unsigned short, 4>  buffer);
 		void stopBoard();
 		double getClockStatus();
@@ -113,8 +113,11 @@ class DioSystem
 		// tells whether the hold button is down or not.
 		bool holdStatus;
 
-		//RC028 dioFPGA; //FPGA object 
-		
+		//for DioFPGA connection
+		int connType;
+		FT_HANDLE ftHandle;
+		HANDLE m_hSerialComm;
+
 		std::vector<RC028> dioFPGA;
 		std::vector<DioCommandForm> ttlCommandFormList;
 		// Each element of first vector is for each variation.

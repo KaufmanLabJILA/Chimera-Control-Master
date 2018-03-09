@@ -737,6 +737,7 @@ void AuxiliaryWindow::changeBoxColor(systemInfo<char> colors)
 
 void AuxiliaryWindow::handleAbort()
 {
+	ttlBoard.disconnectDioFPGA();
 	ttlBoard.unshadeTtls();
 	dacBoards.unshadeDacs();
 }
@@ -808,6 +809,7 @@ void AuxiliaryWindow::handleMasterConfigOpen(std::stringstream& configStream, do
 {
 	ttlBoard.resetTtlEvents();
 	ttlBoard.prepareForce();
+	ttlBoard.connectDioFPGA();
 	dacBoards.resetDacEvents();
 	dacBoards.prepareForce();
 	// save info
@@ -835,6 +837,8 @@ void AuxiliaryWindow::handleMasterConfigOpen(std::stringstream& configStream, do
 			ttlBoard.updateDefaultTtl(ttlRowInc, ttlNumberInc, status);
 		}
 	}
+
+	ttlBoard.disconnectDioFPGA();
 	// getting dacs.
 	for (UINT dacInc : range(dacBoards.getNumberOfDacs()))
 	{

@@ -36,8 +36,8 @@ private:
 	int connType;
 public:
 	//int connectRS232(LPCWSTR Port);
-	int disconnect();
-	int connectasync(const char devSerial[]);
+	//int disconnect();
+	//int connectasync(const char devSerial[]);
 	unsigned long write();
 	int trigger();
 	int setPoint(short number, unsigned int Time, unsigned char P1, unsigned char P2, unsigned char P3, unsigned char P4, unsigned char P5, unsigned char P6, unsigned char P7, unsigned char P8);
@@ -46,6 +46,7 @@ public:
 	};
 	mem mem;
 	RC028();
+	void init(int connType_in, FT_HANDLE ftHandle_in, HANDLE m_hSerialComm_in);
 };
 
 

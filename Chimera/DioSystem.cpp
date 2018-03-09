@@ -9,10 +9,13 @@
 #include "constants.h"
 #include "AuxiliaryWindow.h"
 
+//for DioFPGA connect:
+#include "ftd2xx.h"
+#include <windows.h>
+#include <sstream>
 
 // I don't use this because I manually import dll functions.
 // #include "Dio64.h"
-
 
 void DioSystem::handleNewConfig( std::ofstream& newFile )
 {
@@ -46,6 +49,7 @@ void DioSystem::handleSaveConfig(std::ofstream& saveFile)
 
 void DioSystem::handleOpenConfig(std::ifstream& openFile, int versionMajor, int versionMinor )
 {
+	connectDioFPGA();
 	ProfileSystem::checkDelimiterLine(openFile, "TTLS");
 	std::vector<std::vector<bool>> ttlStates;
 	ttlStates.resize(getTtlBoardSize().first);
@@ -71,6 +75,7 @@ void DioSystem::handleOpenConfig(std::ifstream& openFile, int versionMajor, int 
 		}
 		rowInc++;
 	}
+	disconnectDioFPGA();
 	ProfileSystem::checkDelimiterLine(openFile, "END_TTLS");
 }
 
@@ -280,10 +285,6 @@ void DioSystem::startDioFPGA(UINT variation)
 	dioFPGA[variation].trigger();
 }
 
-void DioSystem::disconnectDioFPGA(UINT variation) {
-	dioFPGA[variation].disconnect();
-}
-
 void DioSystem::startBoard()
 {
 	DIO64STAT status;
@@ -365,6 +366,7 @@ void DioSystem::rearrange(UINT width, UINT height, fontMap fonts)
 
 void DioSystem::handleInvert()
 {
+	connectDioFPGA();
 	for (UINT row = 0; row < ttlStatus.size(); row++)
 	{
 		for (UINT number = 0; number < ttlStatus[row].size(); number++)
@@ -379,6 +381,7 @@ void DioSystem::handleInvert()
 			}
 		}
 	}
+	disconnectDioFPGA();
 
 }
 
@@ -581,6 +584,7 @@ void DioSystem::handleTTLPress(int id)
 		}
 		if (holdStatus == false)
 		{
+			connectDioFPGA();
 			if (ttlStatus[row][number])
 			{
 				forceTtl(row, number, 0);
@@ -589,6 +593,7 @@ void DioSystem::handleTTLPress(int id)
 			{
 				forceTtl(row, number, 1);
 			}
+			disconnectDioFPGA();
 		}
 		else
 		{
@@ -615,6 +620,7 @@ void DioSystem::handleHoldPress()
 	{
 		holdStatus = false;
 		// make changes
+		connectDioFPGA();
 		for (UINT rowInc = 0; rowInc < ttlHoldStatus.size(); rowInc++)
 		{
 			for (UINT numberInc = 0; numberInc < ttlHoldStatus[0].size(); numberInc++)
@@ -637,6 +643,7 @@ void DioSystem::handleHoldPress()
 				ttlPushControls[rowInc][numberInc].RedrawWindow();
 			}
 		}
+		disconnectDioFPGA();
 	}
 	else
 	{
@@ -916,9 +923,82 @@ int DioSystem::getNameIdentifier(std::string name, UINT& row, UINT& number)
 	return -1;
 }
 
-void DioSystem::connectDioFPGA(UINT variation) {
-	//This is the serial number of the FTDI chip "FT1VAHJP" - B is added to select channel B
-	dioFPGA[variation].connectasync("FT1VAHJPB");
+//void DioSystem::connectDioFPGA(UINT variation) {
+//	//This is the serial number of the FTDI chip "FT1VAHJP" - B is added to select channel B
+//	dioFPGA[variation].connectasync("FT1VAHJPB");
+//}
+
+int DioSystem::connectDioFPGA()
+{
+	const char devSerial[] = "FT1VAHJPB"; //This is the serial number of the FTDI chip "FT1VAHJP" - B is added to select channel B
+	FT_STATUS ftStatus;
+	DWORD numDevs;
+	ftStatus = FT_ListDevices(&numDevs, NULL, FT_LIST_NUMBER_ONLY);
+
+	if (numDevs > 0)
+	{
+		ftStatus = FT_OpenEx((PVOID)devSerial, FT_OPEN_BY_SERIAL_NUMBER, &this->ftHandle); //TODO: THIS IS KILLING STARTUP TIME
+		if (ftStatus != FT_OK) {
+			thrower("Error opening Dio FPGA");
+			return 1;
+		}
+		ftStatus = FT_SetUSBParameters(this->ftHandle, 65536, 65536);
+		if (ftStatus != FT_OK) {
+			thrower("Error opening Dio FPGA");
+			return 1;
+		}
+		this->connType = ASYNC;
+		return 0;
+	}
+	else
+	{
+		thrower("Dio FPGA not found.");;
+		return 1;
+	}
+
+
+}
+
+//void DioSystem::disconnectDioFPGA(UINT variation) {
+//	dioFPGA[variation].disconnect();
+//}
+
+
+int DioSystem::disconnectDioFPGA()
+{
+	if (this->connType == SERIAL)
+	{
+		if (this->m_hSerialComm != INVALID_HANDLE_VALUE)
+		{
+			CloseHandle(this->m_hSerialComm);
+			m_hSerialComm = INVALID_HANDLE_VALUE;
+			//cout << "Serial connection closed..." << endl;
+			this->connType = NONE;
+			return 0;
+		}
+		return 1;
+	}
+	else if (this->connType == ASYNC)
+	{
+		FT_STATUS ftStatus;
+		ftStatus = FT_Close(this->ftHandle);
+		if (ftStatus == FT_OK) {
+			// FT_Write OK
+			//cout << "Async connection closed" << endl;
+			return 0;
+		}
+		else {
+			// FT_Write Failed
+			thrower("Error closing async DIO FPGA connection");
+			return 1;
+		}
+	}
+	else
+	{
+		thrower("No DIO FPGA connection to close...");
+		return 1;
+	}
+
 }
 
 void DioSystem::writeTtlDataToFPGA(UINT variation, bool loadSkip) //arguments unused, just paralleling original DIO structure
@@ -1036,10 +1116,11 @@ void DioSystem::interpretKey( std::vector<variableType>& variables )
 	loadSkipFormattedTtlSnapshots = std::vector<std::vector<std::array<WORD, 6>>>( variations );
 	finalFormatTtlData = std::vector<std::vector<WORD>>( variations );
 	loadSkipFinalFormatTtlData = std::vector<std::vector<WORD>>( variations );
-	
+
 	// and interpret the command list for each variation.
 	for (UINT variationNum = 0; variationNum < variations; variationNum++)
 	{
+		dioFPGA[variationNum].init(connType, ftHandle, m_hSerialComm);
 		for (UINT commandInc = 0; commandInc < ttlCommandFormList.size(); commandInc++)
 		{
 			DioCommand tempCommand;
@@ -1397,6 +1478,7 @@ std::string DioSystem::getErrorMessage(int errorCode)
 
 void DioSystem::zeroBoard()
 {
+	connectDioFPGA();
 	for (UINT row = 0; row < ttlStatus.size(); row++)
 	{
 		for (UINT number = 0; number < ttlStatus[row].size(); number++)
@@ -1404,6 +1486,7 @@ void DioSystem::zeroBoard()
 			forceTtl( row, number, 0 );
 		}
 	}
+	disconnectDioFPGA();
 }
 
 
@@ -1589,10 +1672,10 @@ void DioSystem::fpgaForceOutput(std::array<unsigned short, 4> buffer) //UNTESTED
 	dioFPGA[0].setPoint(1,10000, fpgaBanks[0], fpgaBanks[1], fpgaBanks[2], fpgaBanks[3], fpgaBanks[4], fpgaBanks[5], fpgaBanks[6], fpgaBanks[7]);
 	dioFPGA[0].setPoint(2, 0, 0,0,0,0,0, 0,0,0);
 	//Could call the functions that contain these but this felt more appropriate since this isn't in a standard call  
-	dioFPGA[0].connectasync("FT1VAHJPB");
+	//connectDioFPGA();
 	dioFPGA[0].write();
 	dioFPGA[0].trigger();
-	dioFPGA[0].disconnect();
+	//disconnectDioFPGA();
 }
 
 void DioSystem::dioOutGetInput(WORD board, WORD& buffer)

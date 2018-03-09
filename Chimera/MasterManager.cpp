@@ -96,6 +96,8 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 		{
 			input->ttls->shadeTTLs( ttlShadeLocs );
 			input->dacs->shadeDacs( dacShadeLocs );
+
+			input->ttls->connectDioFPGA(); //This generates addresses that the "interpretKey" step uses, and so much be run first.
 		}
 		// go ahead and check if abort was pressed real fast...
 		if (input->thisObj->isAborting)
@@ -200,7 +202,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 		// loop for variations
 		for (const UINT& variationInc : range( variations ))
 		{
-			input->ttls->connectDioFPGA(variationInc);
+			//input->ttls->connectDioFPGA(variationInc);
 
 			expUpdate( "Variation #" + str( variationInc + 1 ) + "\r\n", input->comm, input->quiet );
 			Sleep( input->debugOptions.sleepTime );
@@ -312,14 +314,12 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 					input->dacs->startDacs();
 					//input->ttls->writeTtlData( variationInc, skipOption );
 					//input->ttls->startBoard();
-					//input->ttls->connectDioFPGA(variationInc);
 					input->ttls->writeTtlDataToFPGA(variationInc, skipOption);
 					input->ttls->startDioFPGA(variationInc);
-					//input->ttls->disconnectDioFPGA(variationInc);
 					input->ttls->waitTillFinished( variationInc, skipOption );
 				}
 			}
-			input->ttls->disconnectDioFPGA(variationInc);
+			//input->ttls->disconnectDioFPGA(variationInc);
 			expUpdate( "\r\n", input->comm, input->quiet );
 		}
 		/// conclude.
@@ -331,6 +331,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 			// means.
 			input->dacs->stopDacs();
 			input->dacs->unshadeDacs();
+			input->ttls->disconnectDioFPGA();
 		}
 		if ( input->runMaster )
 		{
