@@ -34,7 +34,7 @@ namespace commonFunctions
 				try
 				{
 					prepareCamera( mainWin, camWin, input );
-					prepareMasterThread( msgID, scriptWin, mainWin, camWin, auxWin, input, true, true, true );
+					prepareMasterThread( msgID, scriptWin, mainWin, camWin, auxWin, input, false, true, true, true );
 					camWin->preparePlotter(input);
 					camWin->prepareAtomCruncher(input);
 
@@ -223,7 +223,7 @@ namespace commonFunctions
 				try
 				{
 					commonFunctions::prepareMasterThread(ID_RUNMENU_RUNMASTER, scriptWin, mainWin, camWin, auxWin,
-						input, true, false, false);
+						input, false, true, false, false);
 					//
 					commonFunctions::logParameters(input, camWin, false);
 					//
@@ -235,9 +235,31 @@ namespace commonFunctions
 					mainWin->getComm()->sendError("EXITED WITH ERROR! " + except.whatStr());
 					mainWin->getComm()->sendStatus("EXITED WITH ERROR!\r\nInitialized Default Waveform\r\n");
 				}
+				break;
+			}
+			case ID_ACCELERATOR_SINGLESHOT:
+			case ID_RUNMENU_RUNSINGLESHOT:
+			{
+				ExperimentInput input;
 				try
 				{
-					//???
+					commonFunctions::prepareMasterThread(ID_RUNMENU_RUNMASTER, scriptWin, mainWin, camWin, auxWin,
+						input, true, false, false, true);
+					commonFunctions::startMaster(mainWin, input);
+				}
+				catch (Error& err)
+				{
+					if (err.whatBare() == "Canceled!")
+					{
+						break;
+					}
+					mainWin->getComm()->sendColorBox(Master, 'R');
+					mainWin->getComm()->sendError("EXITED WITH ERROR! " + err.whatStr());
+					mainWin->getComm()->sendStatus("EXITED WITH ERROR!\r\n");
+				}
+				try
+				{
+					commonFunctions::logParameters(input, camWin, false);
 				}
 				catch (Error& err)
 				{
@@ -253,7 +275,7 @@ namespace commonFunctions
 				try
 				{
 					commonFunctions::prepareMasterThread( ID_RUNMENU_RUNMASTER, scriptWin, mainWin, camWin, auxWin, 
-														  input, false, false, true );
+														  input, false, false, false, true );
 					commonFunctions::startMaster( mainWin, input );
 				}
 				catch (Error& err)
@@ -785,8 +807,9 @@ namespace commonFunctions
 	}
 
 
-	void prepareMasterThread( int msgID, ScriptingWindow* scriptWin, MainWindow* mainWin, CameraWindow* camWin,
-											   AuxiliaryWindow* auxWin, ExperimentInput& input, bool runMoog, bool runNiawg, bool runTtls )
+	void prepareMasterThread( int msgID, ScriptingWindow* scriptWin, MainWindow* mainWin, CameraWindow* camWin, 
+		AuxiliaryWindow* auxWin, ExperimentInput& input,
+		bool single, bool runMoog, bool runNiawg, bool runTtls )
 	{
 		Communicator* comm = mainWin->getComm();
 		profileSettings profile = mainWin->getProfileSettings();
@@ -876,8 +899,13 @@ namespace commonFunctions
 		
 		mainOptions settings = mainWin->getMainOptions();
 		std::string beginQuestion = "\r\n\r\nBegin Waveform Generation with these Settings?";
-		INT_PTR areYouSure = DialogBoxParam( NULL, MAKEINTRESOURCE( IDD_BEGINNING_SETTINGS ), 0,
-											 beginningSettingsDialogProc, (LPARAM)cstr( beginInfo + beginQuestion ) );
+
+		INT_PTR areYouSure = 0;
+		if (!single)
+		{
+			areYouSure = DialogBoxParam(NULL, MAKEINTRESOURCE(IDD_BEGINNING_SETTINGS), 0,
+				beginningSettingsDialogProc, (LPARAM)cstr(beginInfo + beginQuestion));
+		}
 		if (areYouSure == 0)
 		{
 			if (runNiawg)
@@ -892,6 +920,7 @@ namespace commonFunctions
 			}
 			// Set the thread structure.
 			input.masterInput = new MasterThreadInput();
+			input.masterInput->runSingle = single;
 			input.masterInput->runMaster = runTtls;
 			input.masterInput->skipNext = camWin->getSkipNextAtomic( );
 			// force accumulations to zero. This shouldn't affect anything, this should always get set by the master or be infinite.

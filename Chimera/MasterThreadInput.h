@@ -45,6 +45,7 @@ struct MasterThreadInput
 	UINT intensityAgilentNumber;
 	bool quiet;
 	mainOptions settings;
+	bool runSingle;
 	bool runNiawg;
 	bool runMaster;
 	bool runMoog;
