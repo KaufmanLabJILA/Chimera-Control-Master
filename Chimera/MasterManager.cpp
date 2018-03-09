@@ -97,7 +97,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 			input->ttls->shadeTTLs( ttlShadeLocs );
 			input->dacs->shadeDacs( dacShadeLocs );
 
-			input->ttls->connectDioFPGA(); //This generates addresses that the "interpretKey" step uses, and so much be run first.
+			//input->ttls->connectDioFPGA(); //This generates addresses that the "interpretKey" step uses, and so much be run first.
 		}
 		// go ahead and check if abort was pressed real fast...
 		if (input->thisObj->isAborting)
@@ -331,7 +331,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 			// means.
 			input->dacs->stopDacs();
 			input->dacs->unshadeDacs();
-			input->ttls->disconnectDioFPGA();
+			//input->ttls->disconnectDioFPGA();
 		}
 		if ( input->runMaster )
 		{
@@ -383,6 +383,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 		if (input->runMaster)
 		{
 			input->ttls->unshadeTtls();
+			//input->ttls->disconnectDioFPGA();
 			input->dacs->unshadeDacs();
 		}
 		if ( input->thisObj->isAborting )

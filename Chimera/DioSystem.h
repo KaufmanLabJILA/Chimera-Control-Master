@@ -27,6 +27,7 @@ class DioSystem
 {
 	public:
 	    DioSystem();
+		~DioSystem();
 		void handleNewConfig( std::ofstream& saveFile );
 		void handleSaveConfig(std::ofstream& saveFile);
 		void handleOpenConfig(std::ifstream& openFile, int versionMajor, int versionMinor );

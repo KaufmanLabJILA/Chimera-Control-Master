@@ -22,6 +22,7 @@
 	#define ANDOR_SAFEMODE true
 	#define PYTHON_SAFEMODE true
 	#define DIO_SAFEMODE true
+	#define DIO_FPGA_SAFEMODE false
 	#define DAQMX_SAFEMODE false
 	#define RSG_SAFEMODE true
 	#define TOP_BOTTOM_TEK_SAFEMODE true

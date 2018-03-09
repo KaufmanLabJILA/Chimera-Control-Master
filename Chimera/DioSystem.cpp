@@ -49,7 +49,7 @@ void DioSystem::handleSaveConfig(std::ofstream& saveFile)
 
 void DioSystem::handleOpenConfig(std::ifstream& openFile, int versionMajor, int versionMinor )
 {
-	connectDioFPGA();
+	//connectDioFPGA();
 	ProfileSystem::checkDelimiterLine(openFile, "TTLS");
 	std::vector<std::vector<bool>> ttlStates;
 	ttlStates.resize(getTtlBoardSize().first);
@@ -75,7 +75,7 @@ void DioSystem::handleOpenConfig(std::ifstream& openFile, int versionMajor, int 
 		}
 		rowInc++;
 	}
-	disconnectDioFPGA();
+	//disconnectDioFPGA();
 	ProfileSystem::checkDelimiterLine(openFile, "END_TTLS");
 }
 
@@ -125,9 +125,24 @@ void DioSystem::setTtlStatusNoForceOut(std::array< std::array<bool, 16>, 4 > sta
 	}
 }
 
+DioSystem::~DioSystem() {
+	disconnectDioFPGA();
+}
 
 DioSystem::DioSystem()
 {
+	if (DIO_FPGA_SAFEMODE) {
+		return;
+	}
+	try
+	{
+		connectDioFPGA();
+	}
+	catch (Error& exception)
+	{
+		errBox(exception.what());
+	}
+
 	if (DIO_SAFEMODE)
 	{
 		// don't try to load.
@@ -141,7 +156,6 @@ DioSystem::DioSystem()
 		int err = GetLastError();
 		errBox( "Failed to load dio64_32.dll! Windows Error Code: " + str( err ) );
 	}
-	
 	// initialize function pointers. This only requires the DLLs to be loaded (which requires them to be present on the machine...) 
 	// so it's not in a safemode block.
 	raw_DIO64_OpenResource = (DIO64_OpenResource)GetProcAddress(dio, "DIO64_OpenResource");
@@ -366,7 +380,7 @@ void DioSystem::rearrange(UINT width, UINT height, fontMap fonts)
 
 void DioSystem::handleInvert()
 {
-	connectDioFPGA();
+	//connectDioFPGA();
 	for (UINT row = 0; row < ttlStatus.size(); row++)
 	{
 		for (UINT number = 0; number < ttlStatus[row].size(); number++)
@@ -381,7 +395,7 @@ void DioSystem::handleInvert()
 			}
 		}
 	}
-	disconnectDioFPGA();
+	//disconnectDioFPGA();
 
 }
 
@@ -584,7 +598,7 @@ void DioSystem::handleTTLPress(int id)
 		}
 		if (holdStatus == false)
 		{
-			connectDioFPGA();
+			//connectDioFPGA();
 			if (ttlStatus[row][number])
 			{
 				forceTtl(row, number, 0);
@@ -593,7 +607,7 @@ void DioSystem::handleTTLPress(int id)
 			{
 				forceTtl(row, number, 1);
 			}
-			disconnectDioFPGA();
+			//disconnectDioFPGA();
 		}
 		else
 		{
@@ -620,7 +634,7 @@ void DioSystem::handleHoldPress()
 	{
 		holdStatus = false;
 		// make changes
-		connectDioFPGA();
+		//connectDioFPGA();
 		for (UINT rowInc = 0; rowInc < ttlHoldStatus.size(); rowInc++)
 		{
 			for (UINT numberInc = 0; numberInc < ttlHoldStatus[0].size(); numberInc++)
@@ -643,7 +657,7 @@ void DioSystem::handleHoldPress()
 				ttlPushControls[rowInc][numberInc].RedrawWindow();
 			}
 		}
-		disconnectDioFPGA();
+		//disconnectDioFPGA();
 	}
 	else
 	{
@@ -1478,7 +1492,7 @@ std::string DioSystem::getErrorMessage(int errorCode)
 
 void DioSystem::zeroBoard()
 {
-	connectDioFPGA();
+	//connectDioFPGA();
 	for (UINT row = 0; row < ttlStatus.size(); row++)
 	{
 		for (UINT number = 0; number < ttlStatus[row].size(); number++)
@@ -1486,7 +1500,7 @@ void DioSystem::zeroBoard()
 			forceTtl( row, number, 0 );
 		}
 	}
-	disconnectDioFPGA();
+	//disconnectDioFPGA();
 }
 
 

@@ -102,7 +102,7 @@ int RC028::trigger()
 				else
 				{
 					//Handle Error Condition
-					std::cout << "ERROR: WriteFile" << endl;
+					thrower("ERROR: WriteFile");
 					return 1;
 				}
 			}
@@ -340,7 +340,7 @@ unsigned long RC028::write()
 			}
 			else {
 				// FT_Write Failed
-				cout << "error writing" << endl;
+				thrower("error writing");
 			}
 
 			std::cout << "Bytes sent in iteration: " << BytesWritten << endl;
