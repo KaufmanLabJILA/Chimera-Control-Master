@@ -110,6 +110,9 @@ public:
 	Agilent& whichAgilent(UINT id);
 	void handleAgilentCombo(UINT id);
 
+	VariableSystem configVariables;
+	VariableSystem globalVariables;
+
 private:
 	DECLARE_MESSAGE_MAP();
 
@@ -133,8 +136,6 @@ private:
 	TektronicsControl topBottomTek, eoAxialTek;
 
 	ColorBox boxes;
-	VariableSystem configVariables;
-	VariableSystem globalVariables;
 
 	ColorBox statusBox;
 };

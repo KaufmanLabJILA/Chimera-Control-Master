@@ -7,11 +7,11 @@ def red_mot():
   dac: x1coil xcoilval
   dac: y2coil ycoilval
   dac: y1coil ycoilval
-  dac: lowermotcoil .7
-  dac: uppermotcoil .7
+  dac: lowermotcoil 1
+  dac: uppermotcoil 1
   t += 100
   dac: red3dpow .15
   t += 30
   off: red3d 
   dac: red3dpow .4
-  t += .01
+  t += .01

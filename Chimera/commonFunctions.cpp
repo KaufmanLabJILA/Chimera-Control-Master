@@ -240,6 +240,8 @@ namespace commonFunctions
 			case ID_ACCELERATOR_SINGLESHOT:
 			case ID_RUNMENU_RUNSINGLESHOT:
 			{
+				//auxWin->configVariables.dialog.close();
+				mainWin->profile.saveConfigurationOnly(scriptWin, mainWin, auxWin, camWin);
 				ExperimentInput input;
 				try
 				{

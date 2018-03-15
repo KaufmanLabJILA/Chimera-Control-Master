@@ -9,7 +9,8 @@ BEGIN_MESSAGE_MAP(TextPromptDialog, CDialog)
 	ON_WM_SIZE()
 	ON_COMMAND(IDOK, &TextPromptDialog::catchOk)
 	ON_COMMAND(IDCANCEL, &TextPromptDialog::catchCancel)
-	// 
+	//ON_COMMAND(ID_ACCELERATOR_SINGLESHOT, &TextPromptDialog::catchOk)
+	//TODO: add handling for shift enter here.
 END_MESSAGE_MAP()
 
 BOOL TextPromptDialog::OnInitDialog()
@@ -21,6 +22,12 @@ BOOL TextPromptDialog::OnInitDialog()
 	}
 	description.Create(cstr(descriptionText), WS_CHILD | WS_VISIBLE | ES_READONLY | WS_BORDER, { 0,0,1000,75 }, this, 0);
 	prompt.Create( options, { 0,75,1000,150 }, this, 0 );
+
+	//Move focus to text input box:
+	HWND hWnd;
+	GetDlgItem(prompt.GetDlgCtrlID(), &hWnd);
+	::PostMessage(GetSafeHwnd(), WM_NEXTDLGCTL, (WPARAM)hWnd, TRUE);
+
 	return TRUE;
 }
 
