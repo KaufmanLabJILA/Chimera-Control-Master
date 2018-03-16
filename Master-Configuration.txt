@@ -203,7 +203,7 @@ piezomirror
 xcoilval 0.162
 ycoilval 0.025
 zcoilval 0.68
-bluecoilx 1
-bluecoily -0.25
-bluecoilz -1
+bluecoilx 0.125
+bluecoily 0.9
+bluecoilz 1
 1 512 1 1 512 1

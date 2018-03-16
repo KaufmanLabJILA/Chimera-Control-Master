@@ -92,6 +92,7 @@ class ScriptingWindow : public CDialog
 		void saveMasterScriptAs(CWnd* parent);
 		void newMasterFunction();
 		void saveMasterFunction();
+		void saveMasterFunction_nocatch();
 		void deleteMasterFunction();
 		void masterEditChange();
 		Communicator* comm();

@@ -1,8 +1,8 @@
 def blue_mot(loadTime):
-  dac: x1coil bluecoilx
-  dac: x2coil bluecoilx
   dac: y1coil bluecoily
   dac: y2coil bluecoily
+  dac: x1coil bluecoilx
+  dac: x2coil bluecoilx
   dac: z1coil bluecoilz
   dac: z2coil bluecoilz
   dac: lowermotcoil 7

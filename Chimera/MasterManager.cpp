@@ -209,8 +209,6 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 
 		for (const UINT& variationInc : range( variations ))
 		{
-			//input->ttls->connectDioFPGA(variationInc);
-
 			expUpdate( "Variation #" + str( variationInc + 1 ) + "\r\n", input->comm, input->quiet );
 			Sleep( input->debugOptions.sleepTime );
 			for (auto tempVariable : input->variables)

@@ -143,7 +143,7 @@
 #define ID_MASTERSCRIPT_OPENSCRIPT      40118
 #define ID_ACCELERATOR_F2               40119
 #define ID_ACCELERATOR_F1               40120
-#define ID_ACCELERATOR40121             40121
+#define ID_ACCELERATOR_CTRL_S             40121
 #define ID_OTHERAGILENTS_MICROWAVE      40123
 #define ID_UWAVE_NEW_SCRIPT             40124
 #define ID_UWAVE_OPEN_SCRIPT            40125
@@ -157,13 +157,14 @@
 #define ID_ACCELERATOR_SINGLESHOT       40133
 #define ID_RUNMENU_RUNSINGLESHOT        40134
 #define MENU_ID_RANGE_END               40134
+#define ID_SCRIPTS_FUNCTIONS            40142
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        127
-#define _APS_NEXT_COMMAND_VALUE         40142
+#define _APS_NEXT_COMMAND_VALUE         40143
 #define _APS_NEXT_CONTROL_VALUE         1032
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

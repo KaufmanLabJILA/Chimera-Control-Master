@@ -1135,13 +1135,13 @@ BOOL AuxiliaryWindow::OnInitDialog()
 		RhodeSchwarzGenerator.initialize(controlLocation, toolTips, this, id);
 		controlLocation = POINT{ 480, 0 };
 
-		agilents[TopBottom].initialize(controlLocation, toolTips, this, id, "Top-Bottom-Agilent", 100,
+		agilents[TopBottom].initialize(480, controlLocation, toolTips, this, id, "Top-Bottom-Agilent", 100,
 			mainWindowFriend->getRgbs()["Solarized Base03"]);
-		agilents[Axial].initialize(controlLocation, toolTips, this, id, "Microwave-Axial-Agilent", 100,
+		agilents[Axial].initialize(480, controlLocation, toolTips, this, id, "Microwave-Axial-Agilent", 100,
 			mainWindowFriend->getRgbs()["Solarized Base03"]);
-		agilents[Flashing].initialize(controlLocation, toolTips, this, id,
+		agilents[Flashing].initialize(480, controlLocation, toolTips, this, id,
 			"Flashing-Agilent", 100, mainWindowFriend->getRgbs()["Solarized Base03"]);
-		agilents[Microwave].initialize(controlLocation, toolTips, this, id, "Microwave-Agilent", 100,
+		agilents[Microwave].initialize(480, controlLocation, toolTips, this, id, "Microwave-Agilent", 100,
 			mainWindowFriend->getRgbs()["Solarized Base03"]);
 
 		controlLocation = POINT{ 1440, 0 };

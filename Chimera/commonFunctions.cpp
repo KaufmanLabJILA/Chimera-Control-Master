@@ -259,15 +259,15 @@ namespace commonFunctions
 					mainWin->getComm()->sendError("EXITED WITH ERROR! " + err.whatStr());
 					mainWin->getComm()->sendStatus("EXITED WITH ERROR!\r\n");
 				}
-				try
-				{
-					commonFunctions::logParameters(input, camWin, false);
-				}
-				catch (Error& err)
-				{
-					errBox("Data Logging failed to start up correctly! " + err.whatStr());
-					mainWin->getComm()->sendError("EXITED WITH ERROR! " + err.whatStr());
-				}
+				//try
+				//{
+				//	commonFunctions::logParameters(input, camWin, false);
+				//}
+				//catch (Error& err)
+				//{
+				//	errBox("Data Logging failed to start up correctly! " + err.whatStr());
+				//	mainWin->getComm()->sendError("EXITED WITH ERROR! " + err.whatStr());
+				//}
 				break;
 			}
 			case ID_ACCELERATOR_F4:
@@ -312,7 +312,7 @@ namespace commonFunctions
 				break;
 			}
 			/// File Management 
-			case ID_ACCELERATOR40121:
+			case ID_ACCELERATOR_CTRL_S:
 			case ID_FILE_SAVEALL:
 			{
 				try
@@ -321,7 +321,14 @@ namespace commonFunctions
 					//scriptWin->saveVerticalScript( );
 					scriptWin->saveMoogScript();
 					scriptWin->saveIntensityScript( );
-					scriptWin->saveMasterScript( );
+
+					try {
+						scriptWin->saveMasterFunction_nocatch();
+					}
+					catch (Error& err) {
+						scriptWin->saveMasterScript();
+					}
+
 					auxWin->updateAgilent( TopBottom );
 					auxWin->updateAgilent( Axial );
 					auxWin->updateAgilent( Flashing );

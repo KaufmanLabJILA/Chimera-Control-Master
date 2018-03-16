@@ -240,7 +240,7 @@ BOOL ScriptingWindow::OnInitDialog()
 									  "Horizontal NIAWG Script", { IDC_HORIZONTAL_NIAWG_FUNCTION_COMBO, 
 									  IDC_HORIZONTAL_NIAWG_EDIT }, mainWindowFriend->getRgbs()["Solarized Base03"]);
 	startLocation = { 960, 28 };
-	intensityAgilent.initialize( startLocation, tooltips, this, id, "Intensity Agilent", 865, 
+	intensityAgilent.initialize(480, startLocation, tooltips, this, id, "Intensity Agilent", 865, 
 								 mainWindowFriend->getRgbs()["Solarized Base03"] );
 	startLocation = { 1440, 28 };
 	masterScript.initialize( 480, 900, startLocation, tooltips, this, id, "Master", "Master Script",
@@ -918,6 +918,10 @@ void ScriptingWindow::saveMasterFunction()
 
 }
 
+void ScriptingWindow::saveMasterFunction_nocatch()
+{
+	masterScript.saveAsFunction();
+}
 
 void ScriptingWindow::deleteMasterFunction()
 {

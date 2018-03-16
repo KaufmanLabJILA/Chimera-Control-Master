@@ -35,7 +35,7 @@ Agilent::~Agilent()
 
 
 
-void Agilent::initialize( POINT& loc, cToolTips& toolTips, CWnd* parent, int& id, std::string headerText,
+void Agilent::initialize(int width, POINT& loc, cToolTips& toolTips, CWnd* parent, int& id, std::string headerText,
 						  UINT editHeight, COLORREF color )
 {
 	name = headerText;
@@ -51,41 +51,41 @@ void Agilent::initialize( POINT& loc, cToolTips& toolTips, CWnd* parent, int& id
 		isConnected = false;
 	}
 
-	header.sPos = { loc.x, loc.y, loc.x + 480, loc.y += 25 };
+	header.sPos = { loc.x, loc.y, loc.x + width, loc.y += 25 };
 	header.Create( cstr( headerText ), WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER, header.sPos, parent, id++ );
 	header.fontType = HeadingFont;
 
-	deviceInfoDisplay.sPos = { loc.x, loc.y, loc.x + 480, loc.y += 20 };
+	deviceInfoDisplay.sPos = { loc.x, loc.y, loc.x + width, loc.y += 20 };
 	deviceInfoDisplay.Create( cstr( deviceInfo ), WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER, deviceInfoDisplay.sPos,
 							  parent, id++ );
 	deviceInfoDisplay.fontType = SmallFont;
 
-	channel1Button.sPos = { loc.x, loc.y, loc.x += 240, loc.y + 20 };
+	channel1Button.sPos = { loc.x, loc.y, loc.x += width/2, loc.y + 20 };
 	channel1Button.Create( "Channel 1 - No Control", BS_AUTORADIOBUTTON | WS_GROUP | WS_VISIBLE | WS_CHILD, 
 						   channel1Button.sPos, parent, initSettings.chan1ButtonId );
 	channel1Button.SetCheck( true );
 
-	channel2Button.sPos = { loc.x, loc.y, loc.x += 240, loc.y += 20 };
+	channel2Button.sPos = { loc.x, loc.y, loc.x += width/2, loc.y += 20 };
 	channel2Button.Create( "Channel 2 - No Control", BS_AUTORADIOBUTTON | WS_VISIBLE | WS_CHILD, channel2Button.sPos, 
 						   parent, initSettings.chan2ButtonId );
-	loc.x -= 480;
+	loc.x -= width;
 
-	syncedButton.sPos = { loc.x, loc.y, loc.x += 160, loc.y + 20 };
+	syncedButton.sPos = { loc.x, loc.y, loc.x += width/3, loc.y + 20 };
 	syncedButton.Create( "Synced?", BS_AUTOCHECKBOX | WS_VISIBLE | WS_CHILD, syncedButton.sPos, parent,
 						 initSettings.syncButtonId );
 
-	calibratedButton.sPos = { loc.x, loc.y, loc.x += 160, loc.y + 20 };
+	calibratedButton.sPos = { loc.x, loc.y, loc.x += width/3, loc.y + 20 };
 	calibratedButton.Create( "Use Cal?", BS_AUTOCHECKBOX | WS_VISIBLE | WS_CHILD, calibratedButton.sPos, 
 							 parent, initSettings.calibrationButtonId );
 	calibratedButton.SetCheck( true );
 	
-	programNow.sPos = { loc.x, loc.y, loc.x += 160, loc.y += 20 };
+	programNow.sPos = { loc.x, loc.y, loc.x += width/3, loc.y += 20 };
 	programNow.Create( "Program", WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON, programNow.sPos, parent, 
 					   initSettings.programButtonId );
 
-	loc.x -= 480;
+	loc.x -= width;
 
-	settingCombo.sPos = { loc.x, loc.y, loc.x += 120, loc.y + 200 };
+	settingCombo.sPos = { loc.x, loc.y, loc.x += width/4, loc.y + 200 };
 	settingCombo.Create( CBS_DROPDOWNLIST | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE, settingCombo.sPos,
 						 parent, initSettings.agilentComboId );
 	settingCombo.AddString( "No Control" );
@@ -97,11 +97,11 @@ void Agilent::initialize( POINT& loc, cToolTips& toolTips, CWnd* parent, int& id
 	settingCombo.AddString( "Scripted" );
 	settingCombo.SetCurSel( 0 );
 
-	optionsFormat.sPos = { loc.x, loc.y, loc.x += 360, loc.y += 25 };
+	optionsFormat.sPos = { loc.x, loc.y, loc.x += 3*width/4, loc.y += 25 };
 	optionsFormat.Create( "---", WS_CHILD | WS_VISIBLE | SS_SUNKEN, optionsFormat.sPos, parent, id++ );
-	loc.x -= 480;
+	loc.x -= width;
 
-	agilentScript.initialize( 480, editHeight, loc, toolTips, parent, id, "Agilent", "",
+	agilentScript.initialize(width, editHeight, loc, toolTips, parent, id, "Agilent", "",
 							  { initSettings.functionComboId, initSettings.editId }, color );
 
 	settings.channel[0].option = -2;
