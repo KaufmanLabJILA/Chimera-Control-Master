@@ -580,7 +580,7 @@ void MasterManager::loadMasterScript(std::string scriptAddress)
 	buf << scriptFile.rdbuf();
 	// IMPORTANT!
 	// always pulses the oscilloscope trigger at the end!
-	buf << "\r\n t += 0.1 \r\n pulseon: " + str(OSCILLOSCOPE_TRIGGER) + " 0.5";
+	//buf << "\r\n t += 0.1 \r\n pulseon: " + str(OSCILLOSCOPE_TRIGGER) + " 0.5";
 	// this is used to more easily deal some of the analysis of the script.
 	buf << "\r\n\r\n__END__";
 	// for whatever reason, after loading rdbuf into a stringstream, the stream seems to not 

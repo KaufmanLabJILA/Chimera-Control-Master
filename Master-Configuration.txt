@@ -7,33 +7,33 @@ rp679
 0
 red3d
 0
-sigmaoprf
+andortrig
 0
-sidemotrf
+imag461
 0
-tweezerrf
+red3dnarrow
 0
 trigger
 0
-eoramanrf
+a8
 0
 a9
 0
-topramanrf
+a10
 0
-axialramanrf
+a11
 0
 a12
 0
-radialgaussianpulsetrig
+a13
 0
-oscilloscopetrig
+a14
 0
 mako1
 0
-b0
+tweezerao
 0
-b1
+slower
 0
 b2
 0
@@ -43,15 +43,15 @@ b4
 0
 b5
 0
-tweezerintensitytrig
+b6
 0
 b7
 0
 b8
 0
-ropshutter
+b9
 0
-shutter795
+b10
 0
 b11
 0
@@ -59,7 +59,7 @@ b12
 0
 b13
 0
-niawgtrig
+b14
 0
 b15
 0
@@ -79,7 +79,7 @@ c6
 0
 c7
 0
-c8
+andorshut
 0
 c9
 0
@@ -95,7 +95,7 @@ c14
 0
 c15
 0
-nulltest
+testport
 0
 d1
 0
@@ -125,7 +125,7 @@ d13
 0
 d14
 0
-testport
+d15
 0
 x1coil
 -10 - 10
@@ -166,8 +166,8 @@ repumppower
 sigmaopfreq
 -10 - 10
 0
-sigmaoppower
--10 - 10
+tweezerpow
+0 - 0.5
 0
 red3dpow
 0 - 0.4
@@ -199,11 +199,13 @@ sidemotpower
 piezomirror
 -10 - 10
 0
-6
-xcoilval 0.162
-ycoilval 0.025
-zcoilval 0.68
-bluecoilx 0.125
-bluecoily 0.9
-bluecoilz 1
+8
+xcoilval -0.029
+ycoilval -0.01
+zcoilval 1.85
+bluecoilx 2.25
+bluecoily -0.5
+bluecoilz 2.388
+motcoils 4
+ 0
 1 512 1 1 512 1

@@ -1100,7 +1100,7 @@ void DioSystem::waitTillFinished(UINT variation, bool skipOption)
 	else 
 	{
 		totalTime = (formattedTtlSnapshots[variation].back( )[0]
-					  + 65535 * formattedTtlSnapshots[variation].back( )[1]) / 10000.0 + 1;
+					  + 65535 * formattedTtlSnapshots[variation].back( )[1]) / 10000.0 + 1;//TODO: remove +10
 	}
 	 
 	wait(totalTime);
