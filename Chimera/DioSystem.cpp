@@ -296,6 +296,7 @@ std::array<std::array<std::string, 16>, 4> DioSystem::getAllNames()
 
 void DioSystem::startDioFPGA(UINT variation)
 {	
+	dioFPGA[variation].arm_trigger();
 	dioFPGA[variation].trigger();
 }
 
@@ -951,7 +952,7 @@ int DioSystem::connectDioFPGA()
 
 	if (numDevs > 0)
 	{
-		ftStatus = FT_OpenEx((PVOID)devSerial, FT_OPEN_BY_SERIAL_NUMBER, &this->ftHandle); //TODO: THIS IS KILLING STARTUP TIME
+		ftStatus = FT_OpenEx((PVOID)devSerial, FT_OPEN_BY_SERIAL_NUMBER, &this->ftHandle);
 		if (ftStatus != FT_OK) {
 			thrower("Error opening Dio FPGA");
 			return 1;
@@ -1688,6 +1689,7 @@ void DioSystem::fpgaForceOutput(std::array<unsigned short, 4> buffer) //UNTESTED
 	//Could call the functions that contain these but this felt more appropriate since this isn't in a standard call  
 	//connectDioFPGA();
 	dioFPGA[0].write();
+	dioFPGA[0].arm_trigger();
 	dioFPGA[0].trigger();
 	//disconnectDioFPGA();
 }

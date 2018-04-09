@@ -12,9 +12,12 @@
 #define BUFFERSIZESER     100
 #define BUFFERSIZEASYNC   2048
 
-#define NONE            0
-#define SERIAL          1
-#define ASYNC           2
+#define NONE              0
+#define SERIAL            1
+#define ASYNC             2
+
+#define NO_ARM_MODE       0
+#define SINGLE_SHOT_MODE  1
 
 struct RC028_POINT {
 	unsigned int Time;
@@ -34,6 +37,7 @@ private:
 	HANDLE m_hSerialComm;
 	FT_HANDLE ftHandle;
 	int connType;
+	int triggermode;
 public:
 	//int connectRS232(LPCWSTR Port);
 	//int disconnect();
@@ -41,6 +45,8 @@ public:
 	unsigned long write();
 	int trigger();
 	int setPoint(short number, unsigned int Time, unsigned char P1, unsigned char P2, unsigned char P3, unsigned char P4, unsigned char P5, unsigned char P6, unsigned char P7, unsigned char P8);
+	int arm_trigger();
+	int set_trigger_mode(int trigger_mode);
 	struct mem {
 		RC028_POINT Points[NUMPOINTS];
 	};

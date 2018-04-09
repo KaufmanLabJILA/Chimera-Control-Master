@@ -1,21 +1,21 @@
-def red_mot():
+def red_mot(loadTime):
   on: red3d
   dac: red3dpow .4
-  dac: z2coil zcoilval
-  dac: z1coil zcoilval
   dac: x2coil xcoilval
   dac: x1coil xcoilval
   dac: y2coil ycoilval
   dac: y1coil ycoilval
+  dac: z2coil zcoilval
+  dac: z1coil zcoilval
   dac: lowermotcoil 1
   dac: uppermotcoil 1
   
 
-  t += 50
-  off: red3d
-  on: red3dnarrow
-  t += 30
-  off: red3dnarrow
+  t += loadTime
+  %off: red3d
+  %on: red3dnarrow
+  %t += 30
+  %off: red3dnarrow
 
   
   %dac: red3dpow .15

@@ -14,6 +14,13 @@ void RC028::init(int connType_in, FT_HANDLE ftHandle_in, HANDLE m_hSerialComm_in
 	this->connType = connType_in;
 	this->ftHandle = ftHandle_in;
 	this->m_hSerialComm = m_hSerialComm_in;
+	
+	//configure trigger mode
+	int dio_trigger_mode = NO_ARM_MODE;
+	if (DIO_ARM_MODE) {
+		dio_trigger_mode = SINGLE_SHOT_MODE;
+	}
+	set_trigger_mode(dio_trigger_mode);
 }
 
 int RC028::setPoint(short number, unsigned int Time, unsigned char P1, unsigned char P2, unsigned char P3, unsigned char P4, unsigned char P5, unsigned char P6, unsigned char P7, unsigned char P8)
@@ -120,6 +127,156 @@ int RC028::trigger()
 		dataBuffer[0] = 161;
 		dataBuffer[1] = 0;
 		dataBuffer[2] = 0;
+		dataBuffer[3] = 0;
+		dataBuffer[4] = 0;
+		dataBuffer[5] = 0;
+		dataBuffer[6] = 1;
+
+		ftStatus = FT_Write(this->ftHandle, dataBuffer, sizeof(dataBuffer), &BytesWritten);
+		if (ftStatus == FT_OK) {
+			// FT_Write OK
+			std::cout << "Bytes sent for trigger: " << dwNumberOfBytesSent << endl;
+			return 0;
+		}
+		else {
+			// FT_Write Failed
+			cout << "error writing" << endl;
+			return 1;
+		}
+	}
+
+	return 1;
+}
+
+int RC028::set_trigger_mode(int trigger_mode)
+{
+	if (this->connType == SERIAL)
+	{
+		if (this->m_hSerialComm != INVALID_HANDLE_VALUE)
+		{
+			unsigned char dataBuffer[7];
+			unsigned long dwNumberOfBytesSent = 0;
+
+			dataBuffer[0] = 161;
+			dataBuffer[1] = 0;
+			dataBuffer[2] = 2;
+			dataBuffer[3] = 0;
+			dataBuffer[4] = 0;
+			dataBuffer[5] = 0;
+			dataBuffer[6] = trigger_mode;
+
+			while (dwNumberOfBytesSent < 7)
+			{
+				unsigned long dwNumberOfBytesWritten;
+
+				if (WriteFile(m_hSerialComm, &dataBuffer[dwNumberOfBytesSent], 1,
+					&dwNumberOfBytesWritten, NULL) != 0)
+				{
+					if (dwNumberOfBytesWritten > 0)
+						++dwNumberOfBytesSent;
+					else
+					{
+						//Handle Error Condition
+						std::cout << "ERROR: dwNumberOfBytesWritten " << dwNumberOfBytesWritten << endl;
+						return 1;
+					}
+				}
+				else
+				{
+					//Handle Error Condition
+					thrower("ERROR: WriteFile");
+					return 1;
+				}
+			}
+
+			std::cout << "Bytes sent for trigger: " << dwNumberOfBytesSent << endl;
+		}
+	}
+	else if (this->connType == ASYNC)
+	{
+		FT_STATUS ftStatus;
+		DWORD BytesWritten;
+		unsigned char dataBuffer[7];
+		unsigned long dwNumberOfBytesSent = 0;
+
+		dataBuffer[0] = 161;
+		dataBuffer[1] = 0;
+		dataBuffer[2] = 2;
+		dataBuffer[3] = 0;
+		dataBuffer[4] = 0;
+		dataBuffer[5] = 0;
+		dataBuffer[6] = trigger_mode;
+
+		ftStatus = FT_Write(this->ftHandle, dataBuffer, sizeof(dataBuffer), &BytesWritten);
+		if (ftStatus == FT_OK) {
+			// FT_Write OK
+			std::cout << "Bytes sent for trigger: " << dwNumberOfBytesSent << endl;
+			return 0;
+		}
+		else {
+			// FT_Write Failed
+			cout << "error writing" << endl;
+			return 1;
+		}
+	}
+
+	return 1;
+}
+
+int RC028::arm_trigger()
+{
+	if (this->connType == SERIAL)
+	{
+		if (this->m_hSerialComm != INVALID_HANDLE_VALUE)
+		{
+			unsigned char dataBuffer[7];
+			unsigned long dwNumberOfBytesSent = 0;
+
+			dataBuffer[0] = 161;
+			dataBuffer[1] = 0;
+			dataBuffer[2] = 1;
+			dataBuffer[3] = 0;
+			dataBuffer[4] = 0;
+			dataBuffer[5] = 0;
+			dataBuffer[6] = 1;
+
+			while (dwNumberOfBytesSent < 7)
+			{
+				unsigned long dwNumberOfBytesWritten;
+
+				if (WriteFile(m_hSerialComm, &dataBuffer[dwNumberOfBytesSent], 1,
+					&dwNumberOfBytesWritten, NULL) != 0)
+				{
+					if (dwNumberOfBytesWritten > 0)
+						++dwNumberOfBytesSent;
+					else
+					{
+						//Handle Error Condition
+						std::cout << "ERROR: dwNumberOfBytesWritten " << dwNumberOfBytesWritten << endl;
+						return 1;
+					}
+				}
+				else
+				{
+					//Handle Error Condition
+					thrower("ERROR: WriteFile");
+					return 1;
+				}
+			}
+
+			std::cout << "Bytes sent for trigger: " << dwNumberOfBytesSent << endl;
+		}
+	}
+	else if (this->connType == ASYNC)
+	{
+		FT_STATUS ftStatus;
+		DWORD BytesWritten;
+		unsigned char dataBuffer[7];
+		unsigned long dwNumberOfBytesSent = 0;
+
+		dataBuffer[0] = 161;
+		dataBuffer[1] = 0;
+		dataBuffer[2] = 1;
 		dataBuffer[3] = 0;
 		dataBuffer[4] = 0;
 		dataBuffer[5] = 0;

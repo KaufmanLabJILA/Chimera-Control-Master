@@ -167,7 +167,7 @@ sigmaopfreq
 -10 - 10
 0
 tweezerpow
-0 - 0.5
+0 - 2
 0
 red3dpow
 0 - 0.4
@@ -199,13 +199,12 @@ sidemotpower
 piezomirror
 -10 - 10
 0
-8
-xcoilval -0.029
-ycoilval -0.01
-zcoilval 1.85
+7
+xcoilval 0.1
+ycoilval 0.1
+zcoilval 1.5
 bluecoilx 2.25
 bluecoily -0.5
 bluecoilz 2.388
 motcoils 4
- 0
 1 512 1 1 512 1

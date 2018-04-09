@@ -42,6 +42,8 @@
 	#define AXIAL_AGILENT_USB_ADDRESS ""
 	#define UWAVE_SAFEMODE true
 	#define UWAVE_AGILENT_USB_ADDRESS ""
+	#define DIO_ARM_MODE true
+
 
 	const std::string PROJECT_LOCATION = "C:\\Users\\KLab\\Desktop\\Chimera-Control-Master\\";
 	const std::string PYTHON_CODE_LOCATION = "C:/Users/KLab/Desktop/Chimera-Control-Master/";
@@ -57,7 +59,7 @@
 	const std::string MASTER_CONFIGURATION_FILE_ADDRESS = PROJECT_LOCATION + "Master-Configuration.txt";
 	const std::string MOT_ROUTINE_ADDRESS = PROJECT_LOCATION + "Master Profiles\\Hotkey Experiments\\MOT\\turnOnMot.mScript";
 	const std::string DEBUG_OUTPUT_LOCATION = PROJECT_LOCATION + "Debug-Output\\";
-	const std::string TIMING_OUTPUT_LOCATION = PROJECT_LOCATION + "\\Data\\";
+	const std::string TIMING_OUTPUT_LOCATION = PROJECT_LOCATION + "Data\\";
 	const std::string NIAWG_WAVEFORM_OUTPUT_LOCATION = TIMING_OUTPUT_LOCATION;
 
 	//Test file for moog
