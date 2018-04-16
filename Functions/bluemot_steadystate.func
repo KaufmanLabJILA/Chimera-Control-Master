@@ -7,8 +7,8 @@ def bluemot_steadystate():
   dac: y2coil bluecoily
   dac: z1coil bluecoilz
   dac: z2coil bluecoilz
-  dac: lowermotcoil 7
-  dac: uppermotcoil 5.5
+  dac: lowermotcoil 6
+  dac: uppermotcoil 6
   dac: blue3dpow 0.5
   on: blue3d
   on: red3d

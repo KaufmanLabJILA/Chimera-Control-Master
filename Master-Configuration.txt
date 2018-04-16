@@ -151,7 +151,7 @@ lowermotcoil
 uppermotcoil
 -10 - 10
 0
-depumppower
+imagingpow
 -10 - 10
 0
 diagmotpower
@@ -200,11 +200,11 @@ piezomirror
 -10 - 10
 0
 7
-xcoilval 0.1
-ycoilval 0.1
-zcoilval 1.5
-bluecoilx 2.25
-bluecoily -0.5
-bluecoilz 2.388
+xcoilval -0.05
+ycoilval -0.015
+zcoilval 1.57
+bluecoilx 1.6
+bluecoily -0.2
+bluecoilz 0
 motcoils 4
 1 512 1 1 512 1
