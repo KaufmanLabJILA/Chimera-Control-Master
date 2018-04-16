@@ -127,6 +127,7 @@ class MainWindow : public CDialog
 		//rerngControl rearrangeControl;
 		NiawgController niawg;
 		SerialSynth moog;
+		DDS_SYNTH dds;
 
 		ColorBox boxes;
 		// auxiliary members

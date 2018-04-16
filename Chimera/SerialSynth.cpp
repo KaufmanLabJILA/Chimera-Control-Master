@@ -12,6 +12,9 @@ const unsigned SerialSynth::loadoffset = 2048;
 const unsigned SerialSynth::moveoffset = 2560;
 
 SerialSynth::SerialSynth(void) {
+	if (!MOOG_SAFEMODE) {
+		start();
+	}
 }
 
 SerialSynth::~SerialSynth(void){
@@ -86,7 +89,6 @@ void SerialSynth::loadMoogScript(std::string scriptAddress)
 
 void SerialSynth::analyzeMoogScript(SerialSynth* moog, std::vector<variableType>& vars)
 {
-	start();
 	currentMoogScriptText = currentMoogScript.str();
 	if (currentMoogScript.str() == "")
 	{
@@ -261,7 +263,6 @@ void SerialSynth::analyzeMoogScript(SerialSynth* moog, std::vector<variableType>
 		word = "";
 		currentMoogScript >> word;
 	}
-	stop();
 }
 
 bool SerialSynth::start(){
