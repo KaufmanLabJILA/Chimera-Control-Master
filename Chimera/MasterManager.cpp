@@ -274,6 +274,10 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 				//	input->niawg->handleStartingRerng( input, output );
 				//}
 			}
+			if (!DDS_SAFEMODE) {
+				input->dds->loadDDSScript(input->DDSScriptAddress);
+				input->dds->programDDS(input->dds, input->variables, variationInc);
+			}
 			input->comm->sendError( warnings );
 			input->topBottomTek->programMachine( variationInc );
 			input->eoAxialTek->programMachine( variationInc );
@@ -519,6 +523,9 @@ void MasterManager::startExperimentThread(MasterThreadInput* input)
 	if (input->runMoog)
 	{
 		input->moog->loadMoogScript(input->moogScriptAddress);
+	}
+	if (!DDS_SAFEMODE) {
+		input->dds->loadDDSScript(input->DDSScriptAddress);
 	}
 	// start thread.
 	runningThread = AfxBeginThread(experimentThreadProcedure, input, THREAD_PRIORITY_HIGHEST);

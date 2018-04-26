@@ -3,23 +3,20 @@ def red_mot(loadTime):
   dac: red3dpow .4
   dac: x1coil xcoilval
   dac: y1coil ycoilval
-  dac: z1coil 1.65
+  dac: z1coil zcoilval
 
 
-  dac: lowermotcoil 1
-  dac: uppermotcoil 1
+  dac: lowermotcoil .3
+  dac: uppermotcoil .3
   
 
   t += loadTime
   off: red3d
+  
+
+  % Additional cooling with narrow-line red MOT
   on: red3dnarrow
-  on: trigger 
-  t += .1
-  off: trigger
-
   t += 30
-
-
   off: red3dnarrow
 
   

@@ -196,6 +196,9 @@
     <ClCompile Include="SerialSynth.cpp">
       <Filter>Main Window</Filter>
     </ClCompile>
+    <ClCompile Include="DDS_SYNTH.cpp">
+      <Filter>Main Window</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -459,6 +462,9 @@
     <ClInclude Include="RC028.h" />
     <ClInclude Include="TestWin.h" />
     <ClInclude Include="SerialSynth.h">
+      <Filter>Main Window</Filter>
+    </ClInclude>
+    <ClInclude Include="DDS_SYNTH.h">
       <Filter>Main Window</Filter>
     </ClInclude>
   </ItemGroup>

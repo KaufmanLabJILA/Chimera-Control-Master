@@ -40,10 +40,10 @@
 #define ID_FILE_MY_CONFIG_OPEN          40011
 #define ID_HELP_SCRIPT                  40012
 #define ID_HELP_GENERALINFORMATION      40013
-#define ID_FILE_MY_INTENSITY_NEW        40014
-#define ID_FILE_MY_INTENSITY_OPEN       40015
-#define ID_FILE_MY_INTENSITY_SAVE       40016
-#define ID_FILE_MY_INTENSITY_SAVEAS     40017
+#define ID_FILE_MY_DDS_OPEN             40014
+#define ID_FILE_MY_DDS_SAVE             40015
+#define ID_FILE_MY_DDS_SAVEAS           40016
+#define ID_FILE_MY_DDS_NEW              40017
 #define ID_FILE_RUN_EVERYTHING          40018
 #define ID_FILE_MY_WRITE_WAVEFORMS      40019
 #define ID_FILE_MY_EXIT                 40020
@@ -143,7 +143,7 @@
 #define ID_MASTERSCRIPT_OPENSCRIPT      40118
 #define ID_ACCELERATOR_F2               40119
 #define ID_ACCELERATOR_F1               40120
-#define ID_ACCELERATOR_CTRL_S             40121
+#define ID_ACCELERATOR_CTRL_S           40121
 #define ID_OTHERAGILENTS_MICROWAVE      40123
 #define ID_UWAVE_NEW_SCRIPT             40124
 #define ID_UWAVE_OPEN_SCRIPT            40125
@@ -159,12 +159,13 @@
 #define MENU_ID_RANGE_END               40134
 #define ID_SCRIPTS_FUNCTIONS            40142
 
+
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        127
-#define _APS_NEXT_COMMAND_VALUE         40143
+#define _APS_NEXT_COMMAND_VALUE         40148
 #define _APS_NEXT_CONTROL_VALUE         1032
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

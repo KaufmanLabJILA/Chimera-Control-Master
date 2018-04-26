@@ -14,17 +14,22 @@
 //#define SPECTRE_LAPTOP
 #define ADAMS_LAB
 // #define DESKTOP_COMPUTER
+//#define SALAMIS_TABLET
 /// File Locations
 
 #ifdef ADAMS_LAB
 	#define PYTHON_HOME L"C:\\ProgramData\\Anaconda3\\"
+	#define MOOG_SAFEMODE true
 	#define NIAWG_SAFEMODE true
 	#define ANDOR_SAFEMODE true
 	#define PYTHON_SAFEMODE true
 	#define DIO_SAFEMODE true
 	#define DIO_FPGA_SAFEMODE false
+	#define DIO_ARM_MODE true
+	#define DDS_SAFEMODE false
 	#define DAQMX_SAFEMODE false
 	#define RSG_SAFEMODE true
+	#define DDS_FPGA_ADDRESS "FT1I6IBSB" //Device Serial: FT1I6IBS, Use FT1I6IBSB in C++ to select Channel B
 	#define TOP_BOTTOM_TEK_SAFEMODE true
 	#define TOP_BOTTOM_TEK_USB_ADDRESS "USB0::0x0699::0x0343::C021681::0::INSTR"
 	#define EO_AXIAL_TEK_SAFEMODE true
@@ -42,8 +47,6 @@
 	#define AXIAL_AGILENT_USB_ADDRESS ""
 	#define UWAVE_SAFEMODE true
 	#define UWAVE_AGILENT_USB_ADDRESS ""
-	#define DIO_ARM_MODE true
-
 
 	const std::string PROJECT_LOCATION = "C:\\Users\\KLab\\Desktop\\Chimera-Control-Master\\";
 	const std::string PYTHON_CODE_LOCATION = "C:/Users/KLab/Desktop/Chimera-Control-Master/";
@@ -64,6 +67,60 @@
 
 	//Test file for moog
 	const std::string MOOG_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_MOOG_SCRIPT.moogScript";
+	const std::string DDS_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_DDS_SCRIPT.ddsScript";
+#endif
+
+#ifdef SALAMIS_TABLET
+	#define PYTHON_HOME L"C:\\ProgramData\\Anaconda3\\"
+	#define MOOG_SAFEMODE true
+	#define NIAWG_SAFEMODE true
+	#define ANDOR_SAFEMODE true
+	#define PYTHON_SAFEMODE true
+	#define DIO_SAFEMODE true
+	#define DIO_FPGA_SAFEMODE true
+	#define DIO_ARM_MODE true
+	#define DDS_SAFEMODE true
+	#define DAQMX_SAFEMODE true
+	#define RSG_SAFEMODE true
+	#define DDS_FPGA_ADDRESS "FT1I6IBSB" //Device Serial: FT1I6IBS Use FT1I6IBSB in C++ to select Channel B.
+	#define TOP_BOTTOM_TEK_SAFEMODE true
+	#define TOP_BOTTOM_TEK_USB_ADDRESS "USB0::0x0699::0x0343::C021681::0::INSTR"
+	#define EO_AXIAL_TEK_SAFEMODE true
+	#define EO_AXIAL_TEK_USB_ADDRESS "USB0::0x0699::0x034C::C010386::0::INSTR"
+	#define TOP_BOTTOM_AGILENT_SAFEMODE true
+	#define TOP_BOTTOM_AGILENT_USB_ADDRESS "USB0::0x0957::0x2307::MY50002574::0::INSTR"
+	#define UWAVE_AXIAL_AGILENT_SAFEMODE true
+	#define UWAVE_AXIAL_AGILENT_USB_ADDRESS "USB0::0x0957::0x2C07::MY52810615::0::INSTR"
+	#define INTENSITY_SAFEMODE true
+	#define INTENSITY_AGILENT_USB_ADDRESS "USB0::0x0957::0x2307::MY50004500::0::INSTR"
+	#define FLASHING_SAFEMODE true
+	#define FLASHING_AGILENT_USB_ADDRESS "USB0::0x0957::0x2307::MY50003003::0::INSTR"
+	#define TESTING_AGILENT_USB_ADDRESS "USB0::0x0957::0x2C07::MY52801397::0::INSTR"
+	#define AXIAL_AGILENT_SAFEMODE true
+	#define AXIAL_AGILENT_USB_ADDRESS ""
+	#define UWAVE_SAFEMODE true
+	#define UWAVE_AGILENT_USB_ADDRESS ""
+
+	const std::string PROJECT_LOCATION = "C:\\Users\\ayoung\\Documents\\Chimera_Control_AY\\Chimera-Control-Master\\";
+	const std::string PYTHON_CODE_LOCATION = "C:/Users/ayoung/Documents/Chimera_Control_AY/Chimera-Control-Master/";
+	// same as debug output location but with forward slashes for ease of use in python
+	const std::string PYTHON_INPUT_LOCATION = "C:/Users/ayoung/Documents/Chimera_Control_AY/Chimera-Control-Master/Debug-Output";
+	const std::string PLOT_FILES_SAVE_LOCATION = PROJECT_LOCATION + "Plotting";
+	const std::string LIB_PATH = PROJECT_LOCATION + "Waveforms-Library\\dummyLib\\";
+	const std::string DEFAULT_SCRIPT_FOLDER_PATH = PROJECT_LOCATION + "Default Scripts\\";
+	const std::string PROFILES_PATH = PROJECT_LOCATION + "Profiles\\";
+	const std::string DATA_SAVE_LOCATION = PROJECT_LOCATION + "Data\\";
+	const std::string MUSIC_LOCATION = PROJECT_LOCATION + "Camerawg\\Final Fantasy VII - Victory Fanfare [HQ].mp3";
+	const std::string FUNCTIONS_FOLDER_LOCATION = PROJECT_LOCATION + "Functions\\";
+	const std::string MASTER_CONFIGURATION_FILE_ADDRESS = PROJECT_LOCATION + "Master-Configuration.txt";
+	const std::string MOT_ROUTINE_ADDRESS = PROJECT_LOCATION + "Master Profiles\\Hotkey Experiments\\MOT\\turnOnMot.mScript";
+	const std::string DEBUG_OUTPUT_LOCATION = PROJECT_LOCATION + "Debug-Output\\";
+	const std::string TIMING_OUTPUT_LOCATION = PROJECT_LOCATION + "Data\\";
+	const std::string NIAWG_WAVEFORM_OUTPUT_LOCATION = TIMING_OUTPUT_LOCATION;
+
+	//Test file for moog
+	const std::string MOOG_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_MOOG_SCRIPT.moogScript";
+	const std::string DDS_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_DDS_SCRIPT.ddsScript";
 #endif
 
 #ifdef SPECTRE_LAPTOP
@@ -259,13 +316,16 @@ const char * const SERVER_ADDRESS = "192.168.236.1";
 #define IDC_HORIZONTAL_NIAWG_FUNCTION_COMBO 12003
 #define IDC_HORIZONTAL_NIAWG_EDIT 12004
 
-#define IDC_INTENSITY_CHANNEL1_BUTTON 12005
-#define IDC_INTENSITY_CHANNEL2_BUTTON 12006
-#define IDC_INTENSITY_SYNC_BUTTON 12007
-#define IDC_INTENSITY_AGILENT_COMBO 12008
-#define IDC_INTENSITY_FUNCTION_COMBO 12009
-#define IDC_INTENSITY_EDIT 12010
-#define IDC_INTENSITY_PROGRAM 12011
+#define IDC_DDS_FUNCTION_COMBO 12005
+#define IDC_DDS_EDIT 12006
+
+//#define IDC_INTENSITY_CHANNEL1_BUTTON 12005
+//#define IDC_INTENSITY_CHANNEL2_BUTTON 12006
+//#define IDC_INTENSITY_SYNC_BUTTON 12007
+//#define IDC_INTENSITY_AGILENT_COMBO 12008
+//#define IDC_INTENSITY_FUNCTION_COMBO 12009
+//#define IDC_INTENSITY_EDIT 12010
+//#define IDC_INTENSITY_PROGRAM 12011
 
 #define IDC_MASTER_FUNCTION_COMBO 12012
 #define IDC_MASTER_EDIT 12013
@@ -418,13 +478,13 @@ const agilentSettings FLASHING_AGILENT_SETTINGS = { FLASHING_SAFEMODE, FLASHING_
 													IDC_FLASHING_PROGRAM, IDC_FLASHING_CALIBRATION_BUTTON,
 													FLASHING_AGILENT_TRIGGER_ROW, FLASHING_AGILENT_TRIGGER_NUM };
 
-const agilentSettings INTENSITY_AGILENT_SETTINGS = { INTENSITY_SAFEMODE, INTENSITY_AGILENT_USB_ADDRESS,
-													 1e6, "INF", "NORMal", "USB",
-													 IDC_INTENSITY_CHANNEL1_BUTTON, IDC_INTENSITY_CHANNEL2_BUTTON,
-													 IDC_INTENSITY_SYNC_BUTTON, IDC_INTENSITY_AGILENT_COMBO,
-													 IDC_INTENSITY_FUNCTION_COMBO, IDC_INTENSITY_EDIT,
-													 IDC_INTENSITY_PROGRAM, IDC_INTENSITY_CALIBRATION_BUTTON,
-													 INTENSITY_AGILENT_TRIGGER_ROW, INTENSITY_AGILENT_TRIGGER_NUM };
+//const agilentSettings INTENSITY_AGILENT_SETTINGS = { INTENSITY_SAFEMODE, INTENSITY_AGILENT_USB_ADDRESS,
+//													 1e6, "INF", "NORMal", "USB",
+//													 IDC_INTENSITY_CHANNEL1_BUTTON, IDC_INTENSITY_CHANNEL2_BUTTON,
+//													 IDC_INTENSITY_SYNC_BUTTON, IDC_INTENSITY_AGILENT_COMBO,
+//													 IDC_INTENSITY_FUNCTION_COMBO, IDC_INTENSITY_EDIT,
+//													 IDC_INTENSITY_PROGRAM, IDC_INTENSITY_CALIBRATION_BUTTON,
+//													 INTENSITY_AGILENT_TRIGGER_ROW, INTENSITY_AGILENT_TRIGGER_NUM };
 
 // plot designer
 #define IDC_GENERAL_PLOT_TYPE 15008
@@ -460,6 +520,7 @@ const agilentSettings INTENSITY_AGILENT_SETTINGS = { INTENSITY_SAFEMODE, INTENSI
 #define PLOTTING_EXTENSION "plot"
 
 #define MOOG_SCRIPT_EXTENSION "moogScript"
+#define DDS_SCRIPT_EXTENSION "ddsScript"
 
 #define OSCILLOSCOPE_TRIGGER "A7"
 
@@ -505,16 +566,26 @@ const char MOOG_INFO_TEXT[] =
 "- The associated c++ code has been designed to be flexible when it comes to trailing white spaces at the ends of\n"
 " lines and in between commands, so use whatever such formatting pleases your eyes.\n"
 "Accepted Commands:\n"
-"(A) Loop types:"
-"linloop <setting (function from (B) ), # channels, start param, param step size> - sets various channel parameters with linear spacing"
-"(B) Set parameters:"
-"startfreq, stopfreq <channel #, frequency in MHz>"
-"loadphase, movephase <channel #, phase>"
-"gain <channel #, gain>, gain ranges from 0 to 1"
-"onoff <binary>, binary refers to a 32 bit unsigned #, with each bit representing the on off state of the relevant channel"
-"step <stepsize>, stepsize is a 10-bit unsigned number. LSB = 25MHz/sec."
-"(C) Software triggers:"
-"move, load, no inputs. Mostly just for debugging since actual experiment would use external TTL triggers"
+"(A) Loop types:\n"
+"linloop <setting (function from (B) ), # channels, start param, param step size> - sets various channel parameters with linear spacing\n"
+"(B) Set parameters:\n"
+"startfreq, stopfreq <channel #, frequency in MHz>\n"
+"loadphase, movephase <channel #, phase>\n"
+"gain <channel #, gain>, gain ranges from 0 to 1\n"
+"onoff <binary>, binary refers to a 32 bit unsigned #, with each bit representing the on off state of the relevant channel\n"
+"step <stepsize>, stepsize is a 10-bit unsigned number. LSB = 25MHz/sec.\n"
+"(C) Software triggers:\n"
+"move, load, no inputs. Mostly just for debugging since actual experiment would use external TTL triggers\n"
+;
+
+const char DDS_INFO_TEXT[] =
+">>> This is a script for programming the minimoogs (FPGA controlled DDS boards). <<<\n"
+"- the input format is referenced below using angled brackets <...>. Place the input on\n"
+" the line below the command in the format specified.\n"
+"- The associated c++ code has been designed to be flexible when it comes to trailing white spaces at the ends of\n"
+" lines and in between commands, so use whatever such formatting pleases your eyes.\n"
+"Accepted Commands:\n"
+"set <device #> <channel #> <frequency in MHz> <amplitude from 1-100>\n"
 ;
 
 //

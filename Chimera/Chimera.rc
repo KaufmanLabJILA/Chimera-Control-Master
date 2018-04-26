@@ -256,12 +256,12 @@ BEGIN
             MENUITEM "&Save Horizontal Script",     ID_FILE_MY_HORIZONTAL_SAVE
             MENUITEM "Save Horizontal Script &As",  ID_FILE_MY_HORIZONTAL_SAVEAS
         END
-        POPUP "Int&ensity Script"
+        POPUP "&DDS Script"
         BEGIN
-            MENUITEM "Ne&w Intensity Script",       ID_FILE_MY_INTENSITY_NEW
-            MENUITEM "Op&en Intensity Script",      ID_FILE_MY_INTENSITY_OPEN
-            MENUITEM "&Save Intensity Script",      ID_FILE_MY_INTENSITY_SAVE
-            MENUITEM "Save Intensity Script &As",   ID_FILE_MY_INTENSITY_SAVEAS
+            MENUITEM "Ne&w DDS Script",             ID_FILE_MY_DDS_NEW
+            MENUITEM "Op&en DDS Script",            ID_FILE_MY_DDS_OPEN
+            MENUITEM "&Save DDS Script",            ID_FILE_MY_DDS_SAVE
+            MENUITEM "Save DDS Script &As",         ID_FILE_MY_DDS_SAVEAS
         END
         POPUP "&Other Agilents"
         BEGIN
@@ -353,7 +353,7 @@ IDI_APPLICATION_ICON    ICON                    "Atom.ico"
 
 IDR_ACCELERATOR1 ACCELERATORS
 BEGIN
-    "^S",           ID_ACCELERATOR_CTRL_S,    ASCII,  NOINVERT
+    "^S",           ID_ACCELERATOR_CTRL_S,  ASCII,  NOINVERT
     VK_ESCAPE,      ID_ACCELERATOR_ESC,     VIRTKEY, NOINVERT
     VK_F1,          ID_ACCELERATOR_F1,      VIRTKEY, NOINVERT
     VK_F2,          ID_ACCELERATOR_F2,      VIRTKEY, NOINVERT

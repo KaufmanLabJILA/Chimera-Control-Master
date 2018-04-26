@@ -81,7 +81,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\ProgramData\Anaconda3\include;C:\Program Files\IVI Foundation\VISA\WinNt\include;C:\Program Files\IVI Foundation\IVI\Include;C:\Program Files\Agilent\IO Libraries Suite\lib_x64;C:\Program Files\Agilent\IO Libraries Suite\include;$(VXIPNPPATH)WinNT\include;$(IncludePath);C:\Anaconda3\include;$(ProjectDir)\Packages\64-Bit-Libs\boost_1_64_0;$(ProjectDir)\Packages\64-Bit-Libs\Debug\HDF5-1.10.1-win64\include</IncludePath>
+    <IncludePath>C:\ProgramData\Anaconda3\include;C:\Program Files\IVI Foundation\VISA\WinNt\include;C:\Program Files\IVI Foundation\IVI\Include;C:\Program Files\Agilent\IO Libraries Suite\lib_x64;C:\Program Files\Agilent\IO Libraries Suite\include;$(VXIPNPPATH)WinNT\include;$(IncludePath);$(ProjectDir)\Packages\64-Bit-Libs\boost_1_64_0;$(ProjectDir)\Packages\64-Bit-Libs\Debug\HDF5-1.10.1-win64\include</IncludePath>
     <LibraryPath>C:\Program Files\Andor SOLIS\Drivers;C:\Program Files\Agilent\IO Libraries Suite\lib_x64;C:\Program Files\IVI Foundation\VISA\Win64\Lib_x64\msc;$(ProjectDir)\Packages\64-Bit-Libs\boost_1_64_0\lib-64bit;$(ProjectDir)\Packages\64-Bit-Libs\Debug\HDF5-1.10.1-win64\lib;$(ProjectDir)\Packages\64-Bit-Libs\Debug\Python;C:\Program Files (x86)\National Instruments\Shared\ExternalCompilerSupport\C\lib64\msvc;$(ProjectDir)\Packages\64-Bit-Libs\Release\Python;$(LibraryPath)</LibraryPath>
     <ExecutablePath>$(VC_ExecutablePath_x64);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(FxCopDir);$(PATH)</ExecutablePath>
   </PropertyGroup>
@@ -92,9 +92,9 @@
     <LibraryPath>C:\Program Files\Andor SOLIS\Drivers;C:\Users\Mark\Documents\Quantum Gas Assembly Control\Chimera;C:\Program Files (x86)\National Instruments\NI-DAQ\DAQmx ANSI C Dev\lib\msvc;C:\Program Files (x86)\IVI Foundation\VISA\WinNT\lib\msc;C:\Program Files (x86)\IVI Foundation\IVI\Lib\msc;C:\Program Files (x86)\HDF_Group\HDF5\Release\HDF5-1.10.1-win32\lib;$(ProjectDir)\Packages\boost_1_64_0\lib-32bit;$(ProjectDir)\Packages\32-Bit-Libs\Release\HDF5-1.10.1-win32-Release\lib;$(ProjectDir)\Packages\32-Bit-Libs\Release\Python;$(ProjectDir)\Packages\32-Bit-Libs\DIO64;$(ProjectDir)\Packages\32-Bit-Libs\Release\Andor;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\ProgramData\Anaconda3\include;C:\Program Files\IVI Foundation\VISA\WinNt\include;C:\Program Files\IVI Foundation\IVI\Include;C:\Program Files\Agilent\IO Libraries Suite\lib_x64;C:\Program Files\Agilent\IO Libraries Suite\include;$(VXIPNPPATH)WinNT\include;$(IncludePath);C:\Users\Mark\Anaconda3\include;$(ProjectDir)\Packages\64-Bit-Libs\boost_1_64_0;$(ProjectDir)\Packages\64-Bit-Libs\Release\HDF5-1.10.1-win64\include</IncludePath>
+    <IncludePath>C:\ProgramData\Anaconda3\include;C:\Program Files\IVI Foundation\VISA\WinNt\include;C:\Program Files\IVI Foundation\IVI\Include;C:\Program Files\Agilent\IO Libraries Suite\lib_x64;C:\Program Files\Agilent\IO Libraries Suite\include;$(VXIPNPPATH)WinNT\include;$(IncludePath);$(ProjectDir)\Packages\64-Bit-Libs\boost_1_64_0;$(ProjectDir)\Packages\64-Bit-Libs\Release\HDF5-1.10.1-win64\include</IncludePath>
     <LinkIncremental>false</LinkIncremental>
-    <LibraryPath>C:\Program Files\Andor SOLIS\Drivers;C:\Users\Mark\Documents\Quantum Gas Assembly Control\Chimera;C:\Program Files\Agilent\IO Libraries Suite\lib_x64;C:\Program Files\IVI Foundation\VISA\Win64\Lib_x64\msc;$(ProjectDir)\Packages\64-Bit-Libs\boost_1_64_0\lib-64bit;$(ProjectDir)\Packages\64-Bit-Libs\Release\HDF5-1.10.1-win64\lib;$(ProjectDir)\Packages\64-Bit-Libs\Release\Python;C:\Program Files (x86)\National Instruments\Shared\ExternalCompilerSupport\C\lib64\msvc;$(LibraryPath)</LibraryPath>
+    <LibraryPath>C:\Program Files\Andor SOLIS\Drivers;C:\Program Files\Agilent\IO Libraries Suite\lib_x64;C:\Program Files\IVI Foundation\VISA\Win64\Lib_x64\msc;$(ProjectDir)\Packages\64-Bit-Libs\boost_1_64_0\lib-64bit;$(ProjectDir)\Packages\64-Bit-Libs\Release\HDF5-1.10.1-win64\lib;$(ProjectDir)\Packages\64-Bit-Libs\Release\Python;C:\Program Files (x86)\National Instruments\Shared\ExternalCompilerSupport\C\lib64\msvc;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -203,6 +203,7 @@
     <ClInclude Include="commonTypes.h" />
     <ClInclude Include="Communicator.h" />
     <ClInclude Include="DacStructures.h" />
+    <ClInclude Include="DDS_SYNTH.h" />
     <ClInclude Include="DebugOptionsControl.h" />
     <ClInclude Include="Expression.h" />
     <ClInclude Include="profileSettings.h" />
@@ -294,6 +295,7 @@
     <ClCompile Include="cleanString.cpp" />
     <ClCompile Include="ColorBox.cpp" />
     <ClCompile Include="Communicator.cpp" />
+    <ClCompile Include="DDS_SYNTH.cpp" />
     <ClCompile Include="DebugOptionsControl.cpp" />
     <ClCompile Include="Expression.cpp" />
     <ClCompile Include="openWithExplorer.cpp" />

@@ -320,7 +320,8 @@ namespace commonFunctions
 					scriptWin->saveHorizontalScript( );
 					//scriptWin->saveVerticalScript( );
 					scriptWin->saveMoogScript();
-					scriptWin->saveIntensityScript( );
+					//scriptWin->saveIntensityScript( );
+					scriptWin->saveDdsScript();
 
 					try {
 						scriptWin->saveMasterFunction_nocatch();
@@ -365,7 +366,7 @@ namespace commonFunctions
 				camWin->stopPlotter( );
 				break;
 			}
-			case ID_FILE_MY_INTENSITY_NEW:
+			/*case ID_FILE_MY_INTENSITY_NEW:
 			{
 				scriptWin->newIntensityScript();
 				break;
@@ -384,7 +385,7 @@ namespace commonFunctions
 			{
 				scriptWin->saveIntensityScriptAs(parent);
 				break;
-			}
+			}*/
 			case ID_TOP_BOTTOM_NEW_SCRIPT:
 			{
 				auxWin->newAgilentScript(TopBottom);
@@ -503,6 +504,26 @@ namespace commonFunctions
 			case ID_FILE_MY_MOOG_SAVEAS:
 			{
 				scriptWin->saveMoogScriptAs(parent);
+				break;
+			}
+			case ID_FILE_MY_DDS_NEW:
+			{
+				scriptWin->newDdsScript();
+				break;
+			}
+			case ID_FILE_MY_DDS_OPEN:
+			{
+				scriptWin->openDdsScript(parent);
+				break;
+			}
+			case ID_FILE_MY_DDS_SAVE:
+			{
+				scriptWin->saveDdsScript();
+				break;
+			}
+			case ID_FILE_MY_DDS_SAVEAS:
+			{
+				scriptWin->saveDdsScriptAs(parent);
 				break;
 			}
 			case ID_FILE_MY_HORIZONTAL_NEW:
@@ -845,7 +866,8 @@ namespace commonFunctions
 			std::string moogNameString(scriptNames.moog);
 			std::string horizontalNameString( scriptNames.horizontalNIAWG );
 			//std::string verticalNameString( scriptNames.verticalNIAWG );
-			std::string intensityNameString( scriptNames.intensityAgilent );
+			//std::string intensityNameString( scriptNames.intensityAgilent );
+			std::string DDSNameString(scriptNames.DDS);
 			std::string sequenceInfo = "";
 			if (sequenceInfo != "")
 			{
@@ -859,7 +881,6 @@ namespace commonFunctions
 				//{
 				//	beginInfo += " SAVED\r\n";
 				//}
-
 				beginInfo += "Moog Script Name:........ " + str(moogNameString);
 				if (scriptSavedStatus.moog)
 				{
@@ -878,8 +899,18 @@ namespace commonFunctions
 				{
 					beginInfo += " NOT SAVED\r\n";
 				}
-				beginInfo += "Intensity Script Name:....... " + str( intensityNameString );
+				/*beginInfo += "Intensity Script Name:....... " + str( intensityNameString );
 				if (scriptSavedStatus.intensityAgilent)
+				{
+					beginInfo += " SAVED\r\n";
+				}
+				else
+				{
+					beginInfo += " NOT SAVED\r\n";
+				}*/
+				beginInfo += "DDS Script Name:........ " + str(DDSNameString);
+				
+				if (scriptSavedStatus.DDS)
 				{
 					beginInfo += " SAVED\r\n";
 				}
@@ -1017,7 +1048,7 @@ namespace commonFunctions
 		}
 		eAbortNiawgFlag = false;
 		// abort the generation on the NIAWG.
-		scriptWin->setIntensityDefault();
+		//scriptWin->setIntensityDefault();
 		comm->sendStatus( "Aborted NIAWG Operation. Passively Outputting Default Waveform.\r\n" );
 		comm->sendColorBox( Niawg, 'B' );
 		mainWin->restartNiawgDefaults();

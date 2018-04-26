@@ -14,6 +14,7 @@
 
 //for moog test:
 #include "SerialSynth.h"
+#include "DDS_SYNTH.h"
 
 class MasterManager;
 
@@ -23,6 +24,8 @@ struct MasterThreadInput
 	//for moog test:
 	SerialSynth* moog;
 	std::string moogScriptAddress;
+	DDS_SYNTH* dds;
+	std::string DDSScriptAddress;
 
 	EmbeddedPythonHandler* python;
 	DataLogger* logger;

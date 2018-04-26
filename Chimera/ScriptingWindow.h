@@ -16,8 +16,9 @@ template <typename type> struct scriptInfo
 	//type verticalNIAWG;
 	type moog;
 	type horizontalNIAWG;
-	type intensityAgilent;
+	//type intensityAgilent;
 	type master;
+	type DDS;
 };
 
 
@@ -57,12 +58,12 @@ class ScriptingWindow : public CDialog
 		void considerScriptLocations();
 		void recolorScripts();
 
-		void newIntensityScript();
-		void openIntensityScript(CWnd* parent);
-		void openIntensityScript(std::string name);
-		void saveIntensityScript();
-		void saveIntensityScriptAs(CWnd* parent);
-		void agilentEditChange();
+		//void newIntensityScript();
+		//void openIntensityScript(CWnd* parent);
+		//void openIntensityScript(std::string name);
+		//void saveIntensityScript();
+		//void saveIntensityScriptAs(CWnd* parent);
+		//void agilentEditChange();
 
 		void newMoogScript();
 		void openMoogScript(CWnd* parent);
@@ -70,6 +71,13 @@ class ScriptingWindow : public CDialog
 		void saveMoogScript();
 		void saveMoogScriptAs(CWnd* parent);
 		void moogEditChange();
+
+		void newDdsScript();
+		void openDdsScript(CWnd* parent);
+		void openDdsScript(std::string name);
+		void saveDdsScript();
+		void saveDdsScriptAs(CWnd* parent);
+		void ddsEditChange();
 
 		//void newVerticalScript();
 		//void openVerticalScript(CWnd* parent);
@@ -103,17 +111,17 @@ class ScriptingWindow : public CDialog
 		void OnCancel() override;
 		void OnSize(UINT nType, int cx, int cy);
 
-		void handleIntensityButtons( UINT id );
+		//void handleIntensityButtons( UINT id );
 		void handleMoogScriptComboChange();
 		void handleHorizontalScriptComboChange();
 		//void handleVerticalScriptComboChange();
 		void handleAgilentScriptComboChange();
 		void handleMasterFunctionChange( );
-		void handleIntensityCombo();
+		//void handleIntensityCombo();
 		void handleOpenConfig(std::ifstream& configFile, int versionMajor, int versionMinor );
 		void catchEnter();
 		profileSettings getProfile();
-		void setIntensityDefault();
+		//void setIntensityDefault();
 	private:
 		DECLARE_MESSAGE_MAP();
 		
@@ -123,9 +131,9 @@ class ScriptingWindow : public CDialog
 		//
 		cToolTips tooltips;
 
-		Script horizontalNiawgScript, masterScript, moogScript /*verticalNiawgScript*/;
+		Script horizontalNiawgScript, masterScript, moogScript, ddsScript /*verticalNiawgScript*/;
 		ColorBox statusBox;
 		ProfileIndicator profileDisplay;
 
-		Agilent intensityAgilent;
+		//Agilent intensityAgilent;
 };

@@ -42,6 +42,10 @@ void Script::initialize( int width, int height, POINT& startingLocation, cToolTi
 	{
 		extension = str(".") + MOOG_SCRIPT_EXTENSION;
 	}
+	else if (deviceTypeInput == "DDS")
+	{
+		extension = str(".") + DDS_SCRIPT_EXTENSION;
+	}
 	else
 	{
 		thrower( "ERROR: Device input type not recognized during construction of script control." );
@@ -73,10 +77,10 @@ void Script::initialize( int width, int height, POINT& startingLocation, cToolTi
 	help.Create( NORM_STATIC_OPTIONS, help.sPos, parent, id++ );
 	help.SetWindowTextA( "?" );
 	// don't want this for the scripting window, hence the extra check.
-	if (deviceType == "Agilent" && ids[0] != IDC_INTENSITY_FUNCTION_COMBO)
-	{
-		help.setToolTip( AGILENT_INFO_TEXT, toolTips, parent );
-	}
+	//if (deviceType == "Agilent" && ids[0] != IDC_INTENSITY_FUNCTION_COMBO)
+	//{
+	//	help.setToolTip( AGILENT_INFO_TEXT, toolTips, parent );
+	//}
 	//help.setToolTip( "", toolTips, parent );
 	startingLocation.y += 20;
 	// available functions combo
@@ -237,7 +241,25 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 			}
 		}
 	}
-
+	// Check DDS-specific commands
+	if (editType == "DDS") {
+		if (word == "set")
+		{
+			return rgbs["Solarized Violet"];
+		}
+		// check variable
+		else if (word == "{" || word == "}")
+		{
+			return rgbs["Solarized Cyan"];
+		}
+		if (word.size() > 8)
+		{
+			if (word.substr(word.size() - 8, 8) == ".ddsScript")
+			{
+				return rgbs["Solarized Yellow"];
+			}
+		}
+	}
 	// Check Agilent-specific commands
 	else if (editType == "Agilent") {
 		std::transform(word.begin(), word.end(), word.begin(), ::tolower);
@@ -604,6 +626,10 @@ void Script::handleToolTip( NMHDR * pNMHDR, LRESULT * pResult )
 		{
 			pTTT->lpszText = (LPSTR)MOOG_INFO_TEXT;
 		}
+		else if (deviceType == "DDS")
+		{
+			pTTT->lpszText = (LPSTR)DDS_INFO_TEXT;
+		}
 		else
 		{
 			pTTT->lpszText = "No Help available";
@@ -956,6 +982,10 @@ void Script::newScript()
 	{
 		tempName += "DEFAULT_MOOG_SCRIPT.moogScript";
 	}
+	else if (deviceType == "DDS")
+	{
+		tempName += "DEFAULT_DDS_SCRIPT.ddsScript";
+	}
 	reset();
 	loadFile(tempName);
 }
@@ -998,6 +1028,13 @@ void Script::openParentScript(std::string parentScriptFileAndPath, std::string c
 	else if (deviceType == "Moog")
 	{
 		if (extStr != str(".") + MOOG_SCRIPT_EXTENSION)
+		{
+			thrower("ERROR: Attempted to open non-moog script from moog script control!");
+		}
+	}
+	else if (deviceType == "DDS")
+	{
+		if (extStr != str(".") + DDS_SCRIPT_EXTENSION)
 		{
 			thrower("ERROR: Attempted to open non-moog script from moog script control!");
 		}

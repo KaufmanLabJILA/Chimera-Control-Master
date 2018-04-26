@@ -15,7 +15,7 @@ red3dnarrow
 0
 trigger
 0
-a8
+tweezermod
 0
 a9
 0
@@ -160,14 +160,14 @@ diagmotpower
 depumpfreq
 -10 - 10
 0
-repumppower
+tweezermod
 -10 - 10
 0
-sigmaopfreq
--10 - 10
+imagingdelta
+-4 - 4
 0
 tweezerpow
-0 - 2
+-10 - 0
 0
 red3dpow
 0 - 0.4
@@ -201,10 +201,10 @@ piezomirror
 0
 7
 xcoilval -0.05
-ycoilval -0.015
-zcoilval 1.57
+ycoilval -0.0041
+zcoilval 0.474
 bluecoilx 1.6
-bluecoily -0.2
-bluecoilz 0
+bluecoily -0.6
+bluecoilz -0.6
 motcoils 4
 1 512 1 1 512 1

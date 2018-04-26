@@ -11,7 +11,8 @@
 MainWindow::MainWindow(UINT id, CDialog* splash) : CDialog(id), profile(PROFILES_PATH), 
     masterConfig( MASTER_CONFIGURATION_FILE_ADDRESS ), 
 	appSplash( splash ),
-	niawg( 1,14 )
+	niawg( 1,14 ),
+	dds(DDS_FPGA_ADDRESS)
 {
 	// create all the main rgbs and brushes. I want to make sure this happens before other windows are created.
 	mainRGBs["Light Green"]			= RGB( 163,	190, 140);
@@ -690,6 +691,7 @@ void MainWindow::fillMasterThreadInput(MasterThreadInput* input)
 	input->python = &this->python;
 	input->masterScriptAddress = profile.getMasterAddressFromConfig();
 	input->moogScriptAddress = profile.getMoogAddressFromConfig();
+	input->DDSScriptAddress = profile.getDdsAddressFromConfig();
 	input->settings = settings.getOptions();
 	input->repetitionNumber = getRepNumber();
 	input->debugOptions = debugger.getOptions();
@@ -697,6 +699,7 @@ void MainWindow::fillMasterThreadInput(MasterThreadInput* input)
 	//input->niawg = &niawg;
 	input->comm = &comm;
 	input->moog = &moog;
+	input->dds = &dds;
 
 	VariableSystem::generateKey( input->variables, input->settings.randomizeVariations );
 	// it's important to do this after the key is generated so that the constants have their values.
@@ -943,7 +946,7 @@ LRESULT MainWindow::onFatalErrorMessage(WPARAM wParam, LPARAM lParam)
 	delete[] pointerToMessage;
 	errorStatus.addStatusText(statusMessage);
 	// resseting things.
-	TheScriptingWindow->setIntensityDefault();
+	//TheScriptingWindow->setIntensityDefault();
 	std::string msgText = "Exited with Error!\r\nPassively Outputting Default Waveform.";
 	changeShortStatusColor("R");
 	comm.sendColorBox( Niawg, 'R' );
@@ -981,7 +984,7 @@ void MainWindow::waitForRearranger( )
 // I think I can delete this...
 LRESULT MainWindow::onNormalFinishMessage(WPARAM wParam, LPARAM lParam)
 {
-	TheScriptingWindow->setIntensityDefault();
+	//TheScriptingWindow->setIntensityDefault();
 	std::string msgText = "Passively Outputting Default Waveform";
 	setShortStatus(msgText);
 	changeShortStatusColor("B");
