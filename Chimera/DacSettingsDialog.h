@@ -3,14 +3,12 @@
 #include "DacSystem.h"
 #include <unordered_map>
 
-
 struct dacInputStruct
 {
 	DacSystem* dacs;
 	cToolTips toolTips;
 	AuxiliaryWindow* master;
 };
-
 
 class DacSettingsDialog : public CDialog
 {

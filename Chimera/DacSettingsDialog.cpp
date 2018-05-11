@@ -1,12 +1,14 @@
+#pragma once
+
 #include "stdafx.h"
 #include "DacSettingsDialog.h"
 #include "DacSystem.h"
 
 IMPLEMENT_DYNAMIC(DacSettingsDialog, CDialog)
 
-
 BEGIN_MESSAGE_MAP(DacSettingsDialog, CDialog)
 	ON_COMMAND(IDOK, &DacSettingsDialog::handleOk)
+	ON_COMMAND(IDCANCEL, &DacSettingsDialog::handleCancel)
 END_MESSAGE_MAP()
 
 

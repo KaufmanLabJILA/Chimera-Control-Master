@@ -19,7 +19,7 @@
 
 #ifdef ADAMS_LAB
 	#define PYTHON_HOME L"C:\\ProgramData\\Anaconda3\\"
-	#define MOOG_SAFEMODE true
+	#define MOOG_SAFEMODE false
 	#define NIAWG_SAFEMODE true
 	#define ANDOR_SAFEMODE true
 	#define PYTHON_SAFEMODE true
@@ -49,6 +49,7 @@
 	#define UWAVE_AGILENT_USB_ADDRESS ""
 
 	const std::string PROJECT_LOCATION = "C:\\Users\\KLab\\Desktop\\Chimera-Control-Master\\";
+	const std::string DATABASE_LOCATION = "A:\\";
 	const std::string PYTHON_CODE_LOCATION = "C:/Users/KLab/Desktop/Chimera-Control-Master/";
 	// same as debug output location but with forward slashes for ease of use in python
 	const std::string PYTHON_INPUT_LOCATION = "C:/Users/KLab/Desktop/Chimera-Control-Master/Debug-Output";
@@ -56,7 +57,7 @@
 	const std::string LIB_PATH = PROJECT_LOCATION + "Waveforms-Library\\dummyLib\\";
 	const std::string DEFAULT_SCRIPT_FOLDER_PATH = PROJECT_LOCATION + "Default Scripts\\";
 	const std::string PROFILES_PATH = PROJECT_LOCATION + "Profiles\\";
-	const std::string DATA_SAVE_LOCATION = PROJECT_LOCATION + "Data\\";
+	const std::string DATA_SAVE_LOCATION = DATABASE_LOCATION;
 	const std::string MUSIC_LOCATION = PROJECT_LOCATION + "Camerawg\\Final Fantasy VII - Victory Fanfare [HQ].mp3";
 	const std::string FUNCTIONS_FOLDER_LOCATION = PROJECT_LOCATION + "Functions\\";
 	const std::string MASTER_CONFIGURATION_FILE_ADDRESS = PROJECT_LOCATION + "Master-Configuration.txt";

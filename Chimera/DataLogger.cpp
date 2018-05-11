@@ -47,53 +47,21 @@ void DataLogger::initializeDataFiles()
 	time_t timeInt = time(0);
 	struct tm timeStruct;
 	localtime_s(&timeStruct, &timeInt);
-	std::string tempStr = str(timeStruct.tm_year + 1900);
+
+	char buffer[3];
+
+	std::string yearStr = str(timeStruct.tm_year - 100);
+
+	sprintf_s(buffer, sizeof(buffer), "%02d", timeStruct.tm_mon + 1);
+	std::string monthStr = str(buffer);
+
+	sprintf_s(buffer, sizeof(buffer), "%02d", timeStruct.tm_mday);
+	std::string dayStr = str(buffer);
+
 	// Create the string of the date.
 	std::string finalSaveFolder;
-	finalSaveFolder += tempStr + "\\";
-	std::string month;
-	switch (timeStruct.tm_mon + 1)
-	{
-		case 1:
-			month = "January";
-			break;
-		case 2:
-			month = "February";
-			break;
-		case 3:
-			month = "March";
-			break;
-		case 4:
-			month = "April";
-			break;
-		case 5:
-			month = "May";
-			break;
-		case 6:
-			month = "June";
-			break;
-		case 7:
-			month = "July";
-			break;
-		case 8:
-			month = "August";
-			break;
-		case 9:
-			month = "September";
-			break;
-		case 10:
-			month = "October";
-			break;
-		case 11:
-			month = "November";
-			break;
-		case 12:
-			month = "December";
-			break;
-	}
-	
-	finalSaveFolder += month + "\\";
-	finalSaveFolder += month + " " + str(timeStruct.tm_mday);
+	finalSaveFolder = yearStr + monthStr + dayStr + "\\";
+
 	// right now the save folder IS the date...
 	currentSaveFolder = finalSaveFolder;
 	// create date's folder.

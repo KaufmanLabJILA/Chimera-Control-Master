@@ -297,7 +297,7 @@ std::array<std::array<std::string, 16>, 4> DioSystem::getAllNames()
 void DioSystem::startDioFPGA(UINT variation)
 {	
 	dioFPGA[variation].arm_trigger();
-	dioFPGA[variation].trigger();
+	//dioFPGA[variation].trigger();
 }
 
 void DioSystem::startBoard()
