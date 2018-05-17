@@ -284,6 +284,27 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 			//
 			input->comm->sendRepProgress( 0 );
 			expUpdate( "Running Experiment.\r\n", input->comm, input->quiet );
+			
+			//These were moved out of the repetition loop for speed. Can put back in if necessay.
+
+			//input->dacs->stopDacs();
+			// it's important to grab the skipoption from input->skipNext only once because in principle
+			// if the cruncher thread was running behind, it could change between writing and configuring the 
+			// dacs and configuring the TTLs;
+			bool skipOption;
+			if (input->skipNext == NULL)
+			{
+				skipOption = false;
+			}
+			else
+			{
+				skipOption = input->skipNext->load();
+			}
+			input->dacs->configureClocks(variationInc, skipOption);
+			input->dacs->writeDacs(variationInc, skipOption);
+			input->ttls->writeTtlDataToFPGA(variationInc, skipOption);
+			//input->dacs->startDacs();
+
 			for (UINT repInc = 0; repInc < input->repetitionNumber; repInc++)
 			{
 				if (input->thisObj->isAborting)
@@ -305,27 +326,15 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 				// this was re-written each time from looking at the VB6 code.
 				if (input->runMaster)
 				{
-					input->dacs->stopDacs();
-					// it's important to grab the skipoption from input->skipNext only once because in principle
-					// if the cruncher thread was running behind, it could change between writing and configuring the 
-					// dacs and configuring the TTLs;
-					bool skipOption;
-					if ( input->skipNext == NULL )
-					{
-						skipOption = false;
-					}
-					else
-					{
-						skipOption = input->skipNext->load( );
-					}
-					input->dacs->configureClocks( variationInc, skipOption );
-					input->dacs->writeDacs( variationInc, skipOption );
-					input->dacs->startDacs();
 					//input->ttls->writeTtlData( variationInc, skipOption );
 					//input->ttls->startBoard();
-					input->ttls->writeTtlDataToFPGA(variationInc, skipOption);
+					//input->dacs->stopDacs();
+					//input->dacs->configureClocks(variationInc, skipOption);
+					//input->dacs->writeDacs(variationInc, skipOption);
+					input->dacs->startDacs();
 					input->ttls->startDioFPGA(variationInc);
 					input->ttls->waitTillFinished( variationInc, skipOption );
+					input->dacs->stopDacs();
 				}
 			}
 			//input->ttls->disconnectDioFPGA(variationInc);

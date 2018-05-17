@@ -18,7 +18,7 @@ def red_mot(loadTime):
   
   %dac: red3dpow .15
   %t += 30
- 
-  dac: red3dpow .4
+  %dac: red3dpow .4
+
   t += .01
   

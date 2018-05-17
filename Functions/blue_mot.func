@@ -22,9 +22,10 @@ def blue_mot(loadTime):
   %dac: z2coil 1
   %dac: lowermotcoil 7
   %dac: uppermotcoil 7
- % t += 20
-  dac: blue3dpow .025
+  % t += 20
 
+  %Drop power for additional cooling
+  dac: blue3dpow .025
   t += 2
   dac: blue3dpow 0.3
   off: blue3d

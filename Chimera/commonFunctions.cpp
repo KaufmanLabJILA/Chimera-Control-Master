@@ -1146,6 +1146,7 @@ namespace commonFunctions
 		logger->logAndorSettings( input.camSettings, takeAndorPictures );
 		logger->logMasterParameters( input.masterInput );
 		logger->logMiscellaneous();
+		logger->closeFile(); //TODO: May have to remove this once andor is integrated.
 	}
 
 	void abortRearrangement( MainWindow* mainWin, CameraWindow* camWin )

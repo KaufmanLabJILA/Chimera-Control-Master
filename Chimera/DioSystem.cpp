@@ -298,6 +298,7 @@ void DioSystem::startDioFPGA(UINT variation)
 {	
 	dioFPGA[variation].arm_trigger();
 	//dioFPGA[variation].trigger();
+	//TODO: make a toggle that sets this in the code.
 }
 
 void DioSystem::startBoard()
@@ -1101,7 +1102,8 @@ void DioSystem::waitTillFinished(UINT variation, bool skipOption)
 	else 
 	{
 		totalTime = (formattedTtlSnapshots[variation].back( )[0]
-					  + 65535 * formattedTtlSnapshots[variation].back( )[1]) / 10000.0 + 1;//TODO: remove +10
+					  + 65535 * formattedTtlSnapshots[variation].back( )[1]) / 10000.0 + 17;
+		//TODO: remove +17 by reading message from DIO box.
 	}
 	 
 	wait(totalTime);

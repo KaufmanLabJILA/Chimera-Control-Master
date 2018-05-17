@@ -1,7 +1,2 @@
 % Default DDS Script
-set 1 0 fscan 1
-
-
-
-  
-
+set 0 0 fscan 10
