@@ -13,11 +13,11 @@ class SerialSynth {
 private:
 	io_service io_service_;
 	serial_port_ptr port_;
-	static const unsigned freqstartoffset;
-	static const unsigned freqstopoffset;
-	static const unsigned gainoffset;
-	static const unsigned loadoffset;
-	static const unsigned moveoffset;
+	static const UINT8 freqstartoffset;
+	static const UINT8 freqstopoffset;
+	static const UINT8 gainoffset;
+	static const UINT8 loadoffset;
+	static const UINT8 moveoffset;
 
 	// the moog script file contents get dumped into this.
 	std::string currentMoogScriptText;
@@ -28,7 +28,7 @@ public:
 	virtual ~SerialSynth(void);
 	//simple way to set many channels at once.
 	auto parseFunction(std::string funcstr);
-	void linLoop(std::string funcstr, unsigned channels, double start, double step);
+	void linLoop(std::string funcstr, UINT channels, double start, double step);
 	//Attempt to parse moog script
 	void loadMoogScript(std::string scriptAddress);
 	void analyzeMoogScript(SerialSynth* moog, std::vector<variableType>& vars);
@@ -37,15 +37,15 @@ public:
 	virtual void load();
 	virtual void move();
 
-	virtual void writeOnOff(unsigned onoff);
-	virtual void writeFreqStep(unsigned step);
+	virtual void writeOnOff(UINT8 onoff);
+	virtual void writeFreqStep(UINT8 step);
 
-	virtual void writeStartFreq(double freq, unsigned channel);
-	virtual void writeStopFreq(double freq, unsigned channel);
-	virtual void writeGain(double gain, unsigned channel);
-	virtual void writeLoadPhase(double phase, unsigned channel);
-	virtual void writeMovePhase(double phase, unsigned channel);
+	virtual void writeStartFreq(double freq, UINT channel);
+	virtual void writeStopFreq(double freq, UINT channel);
+	virtual void writeGain(double gain, UINT channel);
+	virtual void writeLoadPhase(double phase, UINT channel);
+	virtual void writeMovePhase(double phase, UINT channel);
 
-	unsigned getFTW(double freq);
+	UINT8 getFTW(double freq);
 };
 

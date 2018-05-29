@@ -17,7 +17,7 @@ trigger
 0
 tweezermod
 0
-a9
+blowawayshutter
 0
 a10
 0
@@ -39,7 +39,7 @@ blowawayttl
 0
 redprobe
 0
-b4
+redcool
 0
 b5
 0

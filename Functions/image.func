@@ -1,0 +1,38 @@
+% Master-Script See the "?" for info on commands.
+def image(imagetime):
+ t += 1
+ dac: blue3dpow 0.3
+ dac: imagingDelta -.3
+ dac: imagingPow 0.2
+
+ %%%%%%Image 1%%%%%
+ dac: y1coil -2
+ dac: z1coil 0
+ dac: x1coil .5
+
+ t += 1
+ off: blueshut
+ on: andorshut
+ t += 3
+
+%%%%%
+ on: andortrig
+ on: mako1
+ t += .2 
+ %off: tweezerAO
+ off: rp707
+ off: rp679
+ %on: blue3d
+ %on: red3dnarrow 
+
+ on: imag461
+ t += imagetime
+ off: imag461
+
+ off: andortrig
+ off: mako1
+ %%%%%
+ dac: red3dpow .4
+ t += 20
+
+ off: andorshut

@@ -5,11 +5,11 @@ using namespace::boost::asio;
 using namespace::std;
 using namespace::std::placeholders;
 
-const unsigned SerialSynth::freqstartoffset = 512;
-const unsigned SerialSynth::freqstopoffset = 1024;
-const unsigned SerialSynth::gainoffset = 1536;
-const unsigned SerialSynth::loadoffset = 2048;
-const unsigned SerialSynth::moveoffset = 2560;
+const UINT8 SerialSynth::freqstartoffset = 512;
+const UINT8 SerialSynth::freqstopoffset = 1024;
+const UINT8 SerialSynth::gainoffset = 1536;
+const UINT8 SerialSynth::loadoffset = 2048;
+const UINT8 SerialSynth::moveoffset = 2560;
 
 SerialSynth::SerialSynth(void) {
 	if (!MOOG_SAFEMODE) {
@@ -45,9 +45,9 @@ auto SerialSynth::parseFunction(string funcstr) {
 }
 
 //Loop over moog channels for arbitrary settings function (input as string) with linear spacing in input parameter.
-void SerialSynth::linLoop(string funcstr, unsigned channels, double start, double step) {
-	function<void(double, unsigned)> func = parseFunction(funcstr);
-	for (unsigned i = 0; i < channels; i++) {
+void SerialSynth::linLoop(string funcstr, UINT channels, double start, double step) {
+	function<void(double, UINT8)> func = parseFunction(funcstr);
+	for (UINT8 i = 0; i < channels; i++) {
 		func(start + i*step, i);
 	}
 }
@@ -106,7 +106,7 @@ void SerialSynth::analyzeMoogScript(SerialSynth* moog, std::vector<variableType>
 			writeFreqStep(10);
 			writeOnOff(0xFF000000);
 
-			for (unsigned i = 0; i < 32; i++) {
+			for (UINT8 i = 0; i < 32; i++) {
 				writeGain(0x0FFF, i);
 				writeStartFreq(90.0 + 5 * i, i);
 				writeStopFreq(10.0 + 5 * i, i);
@@ -301,59 +301,59 @@ void SerialSynth::move(){
 	write(*port_, buffer(command, 7));
 }
 
-unsigned SerialSynth::getFTW(double freq) {
-	unsigned FTW = (unsigned) round(freq * pow(2,28) / (800.0 / 3.0));
+UINT8 SerialSynth::getFTW(double freq) {
+	UINT8 FTW = (UINT8) round(freq * pow(2,28) / (800.0 / 3.0));
 	return(FTW);
 }
 
-void SerialSynth::writeStartFreq(double freq, unsigned channel) {
+void SerialSynth::writeStartFreq(double freq, UINT channel) {
 
 	if (channel > 31 || channel < 0) {
 		thrower("Error: only channels 0 to 31 valid.");
 	}
 
-	unsigned addr = freqstartoffset + channel;
-	unsigned FTW = getFTW(freq*2.0);
+	UINT8 addr = freqstartoffset + channel;
+	UINT8 FTW = getFTW(freq*2.0);
 
 	cout << "FTW: " << FTW << endl;
 
-	unsigned addr_hi = (unsigned)floor(addr / 256.0);
-	unsigned addr_lo = addr - addr_hi * 256;
+	UINT8 addr_hi = (UINT8)floor(addr / 256.0);
+	UINT8 addr_lo = addr - addr_hi * 256;
 
-	unsigned FTW3 = (unsigned) floor(FTW / 256 / 256 / 256);
+	UINT8 FTW3 = (UINT8) floor(FTW / 256 / 256 / 256);
 	FTW = FTW - FTW3 * 256 * 256 * 256;
-	unsigned FTW2 = (unsigned) floor(FTW / 256 / 256);
+	UINT8 FTW2 = (UINT8) floor(FTW / 256 / 256);
 	FTW = FTW - FTW2 * 256 * 256;
-	unsigned FTW1 = (unsigned) floor(FTW / 256);
+	UINT8 FTW1 = (UINT8) floor(FTW / 256);
 	FTW = FTW - FTW1 * 256;
-	unsigned FTW0 = (unsigned) floor(FTW);
+	UINT8 FTW0 = (UINT8) floor(FTW);
 
 	cout << "hi " << addr_hi << " - lo " << addr_lo << " -- FTW " << FTW3 << FTW2 << FTW1 << FTW0 << endl;
 	char command[7] = { 161, addr_hi, addr_lo, FTW3, FTW2, FTW1, FTW0 };
 	write(*port_, buffer(command, 7));
 }
 
-void SerialSynth::writeStopFreq(double freq, unsigned channel) {
+void SerialSynth::writeStopFreq(double freq, UINT channel) {
 
 	if (channel > 31 || channel < 0) {
 		thrower("Error: only channels 0 to 31 valid.");
 	}
 
-	unsigned addr = freqstopoffset + channel;
-	unsigned FTW = getFTW(freq*2.0);
+	UINT8 addr = freqstopoffset + channel;
+	UINT8 FTW = getFTW(freq*2.0);
 
 	cout << "FTW: " << FTW << endl;
 
-	unsigned addr_hi = (unsigned)floor(addr / 256.0);
-	unsigned addr_lo = addr - addr_hi * 256;
+	UINT8 addr_hi = (UINT8)floor(addr / 256.0);
+	UINT8 addr_lo = addr - addr_hi * 256;
 
-	unsigned FTW3 = (unsigned)floor(FTW / 256 / 256 / 256);
+	UINT8 FTW3 = (UINT8)floor(FTW / 256 / 256 / 256);
 	FTW = FTW - FTW3 * 256 * 256 * 256;
-	unsigned FTW2 = (unsigned)floor(FTW / 256 / 256);
+	UINT8 FTW2 = (UINT8)floor(FTW / 256 / 256);
 	FTW = FTW - FTW2 * 256 * 256;
-	unsigned FTW1 = (unsigned)floor(FTW / 256);
+	UINT8 FTW1 = (UINT8)floor(FTW / 256);
 	FTW = FTW - FTW1 * 256;
-	unsigned FTW0 = (unsigned)floor(FTW);
+	UINT8 FTW0 = (UINT8)floor(FTW);
 
 	cout << "hi " << addr_hi << " - lo " << addr_lo << " -- FTW " << FTW3 << FTW2 << FTW1 << FTW0 << endl;
 	char command[7] = { 161, addr_hi, addr_lo, FTW3, FTW2, FTW1, FTW0 };
@@ -361,8 +361,8 @@ void SerialSynth::writeStopFreq(double freq, unsigned channel) {
 }
 
 //Gain ranges from 0 to 1.
-void SerialSynth::writeGain(double gainin, unsigned channel) {
-	int gain = round(gainin * 65535);
+void SerialSynth::writeGain(double gainin, UINT channel) {
+	UINT16 gain = round(gainin * 65535);
 	if (channel > 31 || channel < 0) {
 		thrower("Error: only channels 0 to 31 valid.");
 	}
@@ -373,79 +373,79 @@ void SerialSynth::writeGain(double gainin, unsigned channel) {
 		thrower("Error: gain cannot be negative. Maybe try changing phase instead?");
 	}
 
-	unsigned addr = gainoffset + channel;
+	UINT8 addr = gainoffset + channel;
 
-	unsigned addr_hi = (unsigned)floor(addr / 256.0);
-	unsigned addr_lo = addr - addr_hi * 256;
+	UINT8 addr_hi = (UINT8)floor(addr / 256.0);
+	UINT8 addr_lo = addr - addr_hi * 256;
 
-	unsigned GW3 = 0;
-	unsigned GW2 = 0;
-	unsigned GW1 = (unsigned)floor(gain / 256.0);
+	UINT8 GW3 = 0;
+	UINT8 GW2 = 0;
+	UINT8 GW1 = (UINT8)floor(gain / 256.0);
 	gain = gain - GW1 * 256;
-	unsigned GW0 = (unsigned)floor(gain);
+	UINT8 GW0 = (UINT8)floor(gain);
 
 	cout << "hi " << addr_hi << " - lo " << addr_lo << " -- gain " << GW3 << GW2 << GW1 << GW0 << endl;
 	char command[7] = { 161, addr_hi, addr_lo, GW3, GW2, GW1, GW0 };
 	write(*port_, buffer(command, 7));
 }
 
-void SerialSynth::writeLoadPhase(double phase, unsigned channel) {
+void SerialSynth::writeLoadPhase(double phase, UINT channel) {
 
 	if (channel > 31 || channel < 0) {
 		thrower("Error: only channels 0 to 31 valid.");
 	}
 
-	unsigned addr = loadoffset + channel;
+	UINT8 addr = loadoffset + channel;
 
-	unsigned addr_hi = (unsigned)floor(addr / 256.0);
-	unsigned addr_lo = addr - addr_hi * 256;
+	UINT8 addr_hi = (UINT8)floor(addr / 256.0);
+	UINT8 addr_lo = addr - addr_hi * 256;
 
-	unsigned LPW3 = 0;
-	unsigned LPW2 = 0;
-	unsigned LPW1 = (unsigned)floor(phase / 256.0);
+	UINT8 LPW3 = 0;
+	UINT8 LPW2 = 0;
+	UINT8 LPW1 = (UINT8)floor(phase / 256.0);
 	phase = phase - LPW1 * 256;
-	unsigned LPW0 = (unsigned)floor(phase);
+	UINT8 LPW0 = (UINT8)floor(phase);
 
 	cout << "hi " << addr_hi << " - lo " << addr_lo << " -- load phase " << LPW3 << LPW2 << LPW1 << LPW0 << endl;
 	char command[7] = { 161, addr_hi, addr_lo, LPW3, LPW2, LPW1, LPW0 };
 	write(*port_, buffer(command, 7));
 }
 
-void SerialSynth::writeMovePhase(double phase, unsigned channel) {
+void SerialSynth::writeMovePhase(double phase, UINT channel) {
 
 	if (channel > 31 || channel < 0) {
 		thrower("Error: only channels 0 to 31 valid.");
 	}
 
-	unsigned addr = moveoffset + channel;
+	UINT8 addr = moveoffset + channel;
 
-	unsigned addr_hi = (unsigned)floor(addr / 256.0);
-	unsigned addr_lo = addr - addr_hi * 256;
+	UINT8 addr_hi = (UINT8)floor(addr / 256.0);
+	UINT8 addr_lo = addr - addr_hi * 256;
 
-	unsigned MPW3 = 0;
-	unsigned MPW2 = 0;
-	unsigned MPW1 = (unsigned)floor(phase / 256.0);
+	UINT8 MPW3 = 0;
+	UINT8 MPW2 = 0;
+	UINT8 MPW1 = (UINT8)floor(phase / 256.0);
 	phase = phase - MPW1 * 256;
-	unsigned MPW0 = (unsigned)floor(phase);
+	UINT8 MPW0 = (UINT8)floor(phase);
 
 	cout << "hi " << addr_hi << " - lo " << addr_lo << " -- load phase " << MPW3 << MPW2 << MPW1 << MPW0 << endl;
 	char command[7] = { 161, addr_hi, addr_lo, MPW3, MPW2, MPW1, MPW0 };
 	write(*port_, buffer(command, 7));
 }
 
-void SerialSynth::writeOnOff(unsigned onoff) {
+void SerialSynth::writeOnOff(UINT8 onoff) {
 
 	if (onoff > 0xFFFFFFFF || onoff < 0) {
 		thrower("Error: on off tuning word wrong size.");
 	}
 
-	unsigned onoff3 = (unsigned) floor(onoff / 256 / 256 / 256);
+	UINT8 onoff3 = (UINT8) floor(onoff / 256 / 256 / 256);
 	onoff = onoff - onoff3 * 256 * 256 * 256;
-	unsigned onoff2 = (unsigned) floor(onoff / 256 / 256);
+	UINT8 onoff2 = (UINT8) floor(onoff / 256 / 256);
 	onoff = onoff - onoff2 * 256 * 256;
-	unsigned onoff1 = (unsigned) floor(onoff / 256);
+	UINT8 onoff1 = (UINT8) floor(onoff / 256);
 	onoff = onoff - onoff1 * 256;
-	unsigned onoff0 = (unsigned) floor(onoff);
+	UINT8 onoff0 = (UINT8) floor(onoff);
 
 	//Note that the onoff register is stored at address 3 and is 32 bits long.
 	cout << "hi " << 0 << " - lo " << 3 << " -- onoff " << onoff3 << onoff2 << onoff1 << onoff0 << endl;
@@ -453,20 +453,20 @@ void SerialSynth::writeOnOff(unsigned onoff) {
 	write(*port_, buffer(command, 7));
 }
 
-void SerialSynth::writeFreqStep(unsigned step) {
+void SerialSynth::writeFreqStep(UINT8 step) {
 	//1 LSB is ~8MHz per sec(800 / 96 MHz per sec), register is 10 bits
 
 	if (step > 0b1111111111 || step < 0) {
 		thrower("Error: step tuning word wrong size.");
 	}
 
-	unsigned step3 = (unsigned)floor(step / 256 / 256 / 256);
+	UINT8 step3 = (UINT8)floor(step / 256 / 256 / 256);
 	step = step - step3 * 256 * 256 * 256;
-	unsigned step2 = (unsigned)floor(step / 256 / 256);
+	UINT8 step2 = (UINT8)floor(step / 256 / 256);
 	step = step - step2 * 256 * 256;
-	unsigned step1 = (unsigned)floor(step / 256);
+	UINT8 step1 = (UINT8)floor(step / 256);
 	step = step - step1 * 256;
-	unsigned step0 = (unsigned)floor(step);
+	UINT8 step0 = (UINT8)floor(step);
 
 	cout << "hi " << 0 << " - lo " << 3 << " -- step " << step3 << step2 << step1 << step0 << endl;
 	char command[7] = { 161, 0, 2, step3, step2, step1, step0 };
