@@ -1,8 +1,4 @@
-% Test Moog Script
-onoff 0x1
-
-startfreq 0 30
-stopfreq 0 80
-gain 0 1
+onoff 0b11111
+linloop 5 gain 100 0
+linloop 5 startfreq 30 10
 load
-move

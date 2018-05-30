@@ -5,11 +5,11 @@ using namespace::boost::asio;
 using namespace::std;
 using namespace::std::placeholders;
 
-const UINT8 SerialSynth::freqstartoffset = 512;
-const UINT8 SerialSynth::freqstopoffset = 1024;
-const UINT8 SerialSynth::gainoffset = 1536;
-const UINT8 SerialSynth::loadoffset = 2048;
-const UINT8 SerialSynth::moveoffset = 2560;
+const UINT SerialSynth::freqstartoffset = 512;
+const UINT SerialSynth::freqstopoffset = 1024;
+const UINT SerialSynth::gainoffset = 1536;
+const UINT SerialSynth::loadoffset = 2048;
+const UINT SerialSynth::moveoffset = 2560;
 
 SerialSynth::SerialSynth(void) {
 	if (!MOOG_SAFEMODE) {
@@ -46,8 +46,8 @@ auto SerialSynth::parseFunction(string funcstr) {
 
 //Loop over moog channels for arbitrary settings function (input as string) with linear spacing in input parameter.
 void SerialSynth::linLoop(string funcstr, UINT channels, double start, double step) {
-	function<void(double, UINT8)> func = parseFunction(funcstr);
-	for (UINT8 i = 0; i < channels; i++) {
+	function<void(double, UINT)> func = parseFunction(funcstr);
+	for (UINT i = 0; i < channels; i++) {
 		func(start + i*step, i);
 	}
 }
@@ -101,12 +101,11 @@ void SerialSynth::analyzeMoogScript(SerialSynth* moog, std::vector<variableType>
 	// the analysis loop.
 	while (!(currentMoogScript.peek() == EOF) || word != "__end__")
 	{
-		if (word == "testsequence") {
-			start();
+		if (word == "customsequence") {
 			writeFreqStep(10);
-			writeOnOff(0xFF000000);
+			writeOnOff(0xFFFFFFFF);
 
-			for (UINT8 i = 0; i < 32; i++) {
+			for (UINT i = 0; i < 32; i++) {
 				writeGain(0x0FFF, i);
 				writeStartFreq(90.0 + 5 * i, i);
 				writeStopFreq(10.0 + 5 * i, i);
@@ -116,14 +115,13 @@ void SerialSynth::analyzeMoogScript(SerialSynth* moog, std::vector<variableType>
 
 			load();
 			move();
-			stop();
 			break;
 		}
 		else if (word == "linloop") {
 			std::string funcstr, channels;
 			Expression start, step;
-			currentMoogScript >> funcstr;
 			currentMoogScript >> channels;
+			currentMoogScript >> funcstr;
 			currentMoogScript >> start;
 			currentMoogScript >> step;
 
@@ -132,8 +130,16 @@ void SerialSynth::analyzeMoogScript(SerialSynth* moog, std::vector<variableType>
 		else if (word == "onoff") {
 			std::string onoffstr;
 			currentMoogScript >> onoffstr;
-			int tmp = stoul(onoffstr, nullptr, 0);
-			writeOnOff(stoul(onoffstr, nullptr, 0));
+			UINT OTW;
+			if (onoffstr.find("0b")==0) {
+				//std::string tmp = onoffstr.erase(0, 2);
+				OTW = stoul(onoffstr.erase(0,2), nullptr, 2);
+			}
+			else
+			{
+				OTW = stoul(onoffstr, nullptr, 0);
+			}
+			writeOnOff(OTW);
 		}
 		else if (word == "step") {
 			std::string step;
@@ -221,41 +227,41 @@ void SerialSynth::analyzeMoogScript(SerialSynth* moog, std::vector<variableType>
 		//		thrower(err.whatStr() + "... In Function call to function " + functionName);
 		//	}
 		//}
-		else if (word == "repeat:")
-		{
-			Expression repeatStr;
-			currentMoogScript >> repeatStr;
-			try
-			{
-				totalRepeatNum.push_back(repeatStr.evaluate());
-			}
-			catch (Error&)
-			{
-				thrower("ERROR: the repeat number failed to convert to an integer! Note that the repeat number can not"
-					" currently be a variable.");
-			}
-			repeatPos.push_back(currentMoogScript.tellg());
-			currentRepeatNum.push_back(1);
-		}
-		// (look for end of repeat)
-		else if (word == "end")
-		{
-			if (currentRepeatNum.size() == 0)
-			{
-				thrower("ERROR! Tried to end repeat, but you weren't repeating!");
-			}
-			if (currentRepeatNum.back() < totalRepeatNum.back())
-			{
-				currentMoogScript.seekg(repeatPos.back());
-				currentRepeatNum.back()++;
-			}
-			else
-			{
-				currentRepeatNum.pop_back();
-				repeatPos.pop_back();
-				totalRepeatNum.pop_back();
-			}
-		}
+		//else if (word == "repeat:")
+		//{
+		//	Expression repeatStr;
+		//	currentMoogScript >> repeatStr;
+		//	try
+		//	{
+		//		totalRepeatNum.push_back(repeatStr.evaluate());
+		//	}
+		//	catch (Error&)
+		//	{
+		//		thrower("ERROR: the repeat number failed to convert to an integer! Note that the repeat number can not"
+		//			" currently be a variable.");
+		//	}
+		//	repeatPos.push_back(currentMoogScript.tellg());
+		//	currentRepeatNum.push_back(1);
+		//}
+		//// (look for end of repeat)
+		//else if (word == "end")
+		//{
+		//	if (currentRepeatNum.size() == 0)
+		//	{
+		//		thrower("ERROR! Tried to end repeat, but you weren't repeating!");
+		//	}
+		//	if (currentRepeatNum.back() < totalRepeatNum.back())
+		//	{
+		//		currentMoogScript.seekg(repeatPos.back());
+		//		currentRepeatNum.back()++;
+		//	}
+		//	else
+		//	{
+		//		currentRepeatNum.pop_back();
+		//		repeatPos.pop_back();
+		//		totalRepeatNum.pop_back();
+		//	}
+		//}
 		else
 		{
 			thrower("ERROR: unrecognized moog script command: \"" + word + "\"");
@@ -301,8 +307,8 @@ void SerialSynth::move(){
 	write(*port_, buffer(command, 7));
 }
 
-UINT8 SerialSynth::getFTW(double freq) {
-	UINT8 FTW = (UINT8) round(freq * pow(2,28) / (800.0 / 3.0));
+UINT SerialSynth::getFTW(double freq) {
+	UINT FTW = (UINT) round(freq * pow(2,28) / (800.0 / 3.0));
 	return(FTW);
 }
 
@@ -312,21 +318,21 @@ void SerialSynth::writeStartFreq(double freq, UINT channel) {
 		thrower("Error: only channels 0 to 31 valid.");
 	}
 
-	UINT8 addr = freqstartoffset + channel;
-	UINT8 FTW = getFTW(freq*2.0);
+	UINT addr = freqstartoffset + channel;
+	UINT FTW = getFTW(freq*2.0);
 
 	cout << "FTW: " << FTW << endl;
 
-	UINT8 addr_hi = (UINT8)floor(addr / 256.0);
-	UINT8 addr_lo = addr - addr_hi * 256;
+	UINT addr_hi = (UINT)floor(addr / 256.0);
+	UINT addr_lo = addr - addr_hi * 256;
 
-	UINT8 FTW3 = (UINT8) floor(FTW / 256 / 256 / 256);
+	UINT FTW3 = (UINT) floor(FTW / 256 / 256 / 256);
 	FTW = FTW - FTW3 * 256 * 256 * 256;
-	UINT8 FTW2 = (UINT8) floor(FTW / 256 / 256);
+	UINT FTW2 = (UINT) floor(FTW / 256 / 256);
 	FTW = FTW - FTW2 * 256 * 256;
-	UINT8 FTW1 = (UINT8) floor(FTW / 256);
+	UINT FTW1 = (UINT) floor(FTW / 256);
 	FTW = FTW - FTW1 * 256;
-	UINT8 FTW0 = (UINT8) floor(FTW);
+	UINT FTW0 = (UINT) floor(FTW);
 
 	cout << "hi " << addr_hi << " - lo " << addr_lo << " -- FTW " << FTW3 << FTW2 << FTW1 << FTW0 << endl;
 	char command[7] = { 161, addr_hi, addr_lo, FTW3, FTW2, FTW1, FTW0 };
@@ -339,30 +345,30 @@ void SerialSynth::writeStopFreq(double freq, UINT channel) {
 		thrower("Error: only channels 0 to 31 valid.");
 	}
 
-	UINT8 addr = freqstopoffset + channel;
-	UINT8 FTW = getFTW(freq*2.0);
+	UINT addr = freqstopoffset + channel;
+	UINT FTW = getFTW(freq*2.0);
 
 	cout << "FTW: " << FTW << endl;
 
-	UINT8 addr_hi = (UINT8)floor(addr / 256.0);
-	UINT8 addr_lo = addr - addr_hi * 256;
+	UINT addr_hi = (UINT)floor(addr / 256.0);
+	UINT addr_lo = addr - addr_hi * 256;
 
-	UINT8 FTW3 = (UINT8)floor(FTW / 256 / 256 / 256);
+	UINT FTW3 = (UINT)floor(FTW / 256 / 256 / 256);
 	FTW = FTW - FTW3 * 256 * 256 * 256;
-	UINT8 FTW2 = (UINT8)floor(FTW / 256 / 256);
+	UINT FTW2 = (UINT)floor(FTW / 256 / 256);
 	FTW = FTW - FTW2 * 256 * 256;
-	UINT8 FTW1 = (UINT8)floor(FTW / 256);
+	UINT FTW1 = (UINT)floor(FTW / 256);
 	FTW = FTW - FTW1 * 256;
-	UINT8 FTW0 = (UINT8)floor(FTW);
+	UINT FTW0 = (UINT)floor(FTW);
 
 	cout << "hi " << addr_hi << " - lo " << addr_lo << " -- FTW " << FTW3 << FTW2 << FTW1 << FTW0 << endl;
 	char command[7] = { 161, addr_hi, addr_lo, FTW3, FTW2, FTW1, FTW0 };
 	write(*port_, buffer(command, 7));
 }
 
-//Gain ranges from 0 to 1.
+//Gain ranges from 0 to 100.
 void SerialSynth::writeGain(double gainin, UINT channel) {
-	UINT16 gain = round(gainin * 65535);
+	UINT gain = round(gainin/100 * 65535);
 	if (channel > 31 || channel < 0) {
 		thrower("Error: only channels 0 to 31 valid.");
 	}
@@ -373,16 +379,15 @@ void SerialSynth::writeGain(double gainin, UINT channel) {
 		thrower("Error: gain cannot be negative. Maybe try changing phase instead?");
 	}
 
-	UINT8 addr = gainoffset + channel;
+	UINT addr = gainoffset + channel;
 
-	UINT8 addr_hi = (UINT8)floor(addr / 256.0);
-	UINT8 addr_lo = addr - addr_hi * 256;
+	UINT addr_hi = (UINT)floor(addr / 256.0);
+	UINT addr_lo = addr - addr_hi * 256;
 
-	UINT8 GW3 = 0;
-	UINT8 GW2 = 0;
-	UINT8 GW1 = (UINT8)floor(gain / 256.0);
-	gain = gain - GW1 * 256;
-	UINT8 GW0 = (UINT8)floor(gain);
+	UINT GW3 = 0;
+	UINT GW2 = 0;
+	UINT GW1 = gain >> 8;
+	UINT GW0 = gain & 0x000000ffUL;
 
 	cout << "hi " << addr_hi << " - lo " << addr_lo << " -- gain " << GW3 << GW2 << GW1 << GW0 << endl;
 	char command[7] = { 161, addr_hi, addr_lo, GW3, GW2, GW1, GW0 };
@@ -395,16 +400,16 @@ void SerialSynth::writeLoadPhase(double phase, UINT channel) {
 		thrower("Error: only channels 0 to 31 valid.");
 	}
 
-	UINT8 addr = loadoffset + channel;
+	UINT addr = loadoffset + channel;
 
-	UINT8 addr_hi = (UINT8)floor(addr / 256.0);
-	UINT8 addr_lo = addr - addr_hi * 256;
+	UINT addr_hi = (UINT)floor(addr / 256.0);
+	UINT addr_lo = addr - addr_hi * 256;
 
-	UINT8 LPW3 = 0;
-	UINT8 LPW2 = 0;
-	UINT8 LPW1 = (UINT8)floor(phase / 256.0);
+	UINT LPW3 = 0;
+	UINT LPW2 = 0;
+	UINT LPW1 = (UINT)floor(phase / 256.0);
 	phase = phase - LPW1 * 256;
-	UINT8 LPW0 = (UINT8)floor(phase);
+	UINT LPW0 = (UINT)floor(phase);
 
 	cout << "hi " << addr_hi << " - lo " << addr_lo << " -- load phase " << LPW3 << LPW2 << LPW1 << LPW0 << endl;
 	char command[7] = { 161, addr_hi, addr_lo, LPW3, LPW2, LPW1, LPW0 };
@@ -417,35 +422,35 @@ void SerialSynth::writeMovePhase(double phase, UINT channel) {
 		thrower("Error: only channels 0 to 31 valid.");
 	}
 
-	UINT8 addr = moveoffset + channel;
+	UINT addr = moveoffset + channel;
 
-	UINT8 addr_hi = (UINT8)floor(addr / 256.0);
-	UINT8 addr_lo = addr - addr_hi * 256;
+	UINT addr_hi = (UINT)floor(addr / 256.0);
+	UINT addr_lo = addr - addr_hi * 256;
 
-	UINT8 MPW3 = 0;
-	UINT8 MPW2 = 0;
-	UINT8 MPW1 = (UINT8)floor(phase / 256.0);
+	UINT MPW3 = 0;
+	UINT MPW2 = 0;
+	UINT MPW1 = (UINT)floor(phase / 256.0);
 	phase = phase - MPW1 * 256;
-	UINT8 MPW0 = (UINT8)floor(phase);
+	UINT MPW0 = (UINT)floor(phase);
 
 	cout << "hi " << addr_hi << " - lo " << addr_lo << " -- load phase " << MPW3 << MPW2 << MPW1 << MPW0 << endl;
 	char command[7] = { 161, addr_hi, addr_lo, MPW3, MPW2, MPW1, MPW0 };
 	write(*port_, buffer(command, 7));
 }
 
-void SerialSynth::writeOnOff(UINT8 onoff) {
+void SerialSynth::writeOnOff(UINT onoff) {
 
 	if (onoff > 0xFFFFFFFF || onoff < 0) {
 		thrower("Error: on off tuning word wrong size.");
 	}
 
-	UINT8 onoff3 = (UINT8) floor(onoff / 256 / 256 / 256);
+	UINT onoff3 = (UINT) floor(onoff / 256 / 256 / 256);
 	onoff = onoff - onoff3 * 256 * 256 * 256;
-	UINT8 onoff2 = (UINT8) floor(onoff / 256 / 256);
+	UINT onoff2 = (UINT) floor(onoff / 256 / 256);
 	onoff = onoff - onoff2 * 256 * 256;
-	UINT8 onoff1 = (UINT8) floor(onoff / 256);
+	UINT onoff1 = (UINT) floor(onoff / 256);
 	onoff = onoff - onoff1 * 256;
-	UINT8 onoff0 = (UINT8) floor(onoff);
+	UINT onoff0 = (UINT) floor(onoff);
 
 	//Note that the onoff register is stored at address 3 and is 32 bits long.
 	cout << "hi " << 0 << " - lo " << 3 << " -- onoff " << onoff3 << onoff2 << onoff1 << onoff0 << endl;
@@ -453,20 +458,20 @@ void SerialSynth::writeOnOff(UINT8 onoff) {
 	write(*port_, buffer(command, 7));
 }
 
-void SerialSynth::writeFreqStep(UINT8 step) {
+void SerialSynth::writeFreqStep(UINT step) {
 	//1 LSB is ~8MHz per sec(800 / 96 MHz per sec), register is 10 bits
 
 	if (step > 0b1111111111 || step < 0) {
 		thrower("Error: step tuning word wrong size.");
 	}
 
-	UINT8 step3 = (UINT8)floor(step / 256 / 256 / 256);
+	UINT step3 = (UINT)floor(step / 256 / 256 / 256);
 	step = step - step3 * 256 * 256 * 256;
-	UINT8 step2 = (UINT8)floor(step / 256 / 256);
+	UINT step2 = (UINT)floor(step / 256 / 256);
 	step = step - step2 * 256 * 256;
-	UINT8 step1 = (UINT8)floor(step / 256);
+	UINT step1 = (UINT)floor(step / 256);
 	step = step - step1 * 256;
-	UINT8 step0 = (UINT8)floor(step);
+	UINT step0 = (UINT)floor(step);
 
 	cout << "hi " << 0 << " - lo " << 3 << " -- step " << step3 << step2 << step1 << step0 << endl;
 	char command[7] = { 161, 0, 2, step3, step2, step1, step0 };

@@ -13,11 +13,11 @@ class SerialSynth {
 private:
 	io_service io_service_;
 	serial_port_ptr port_;
-	static const UINT8 freqstartoffset;
-	static const UINT8 freqstopoffset;
-	static const UINT8 gainoffset;
-	static const UINT8 loadoffset;
-	static const UINT8 moveoffset;
+	static const UINT freqstartoffset;
+	static const UINT freqstopoffset;
+	static const UINT gainoffset;
+	static const UINT loadoffset;
+	static const UINT moveoffset;
 
 	// the moog script file contents get dumped into this.
 	std::string currentMoogScriptText;
@@ -37,8 +37,8 @@ public:
 	virtual void load();
 	virtual void move();
 
-	virtual void writeOnOff(UINT8 onoff);
-	virtual void writeFreqStep(UINT8 step);
+	virtual void writeOnOff(UINT onoff);
+	virtual void writeFreqStep(UINT step);
 
 	virtual void writeStartFreq(double freq, UINT channel);
 	virtual void writeStopFreq(double freq, UINT channel);
@@ -46,6 +46,6 @@ public:
 	virtual void writeLoadPhase(double phase, UINT channel);
 	virtual void writeMovePhase(double phase, UINT channel);
 
-	UINT8 getFTW(double freq);
+	UINT getFTW(double freq);
 };
 

@@ -1,0 +1,4 @@
+onoff 0b11111
+linloop 5 gain 20 0
+linloop 5 startfreq 70 5
+load

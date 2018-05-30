@@ -219,7 +219,7 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 			return rgbs["Solarized Violet"];
 		}
 		// check logic
-		if (word == "linloop")
+		if (word == "linloop"|| word=="customsequence")
 		{
 			return rgbs["Solarized Blue"];
 		}

@@ -225,7 +225,7 @@ namespace commonFunctions
 					commonFunctions::prepareMasterThread(ID_RUNMENU_RUNMASTER, scriptWin, mainWin, camWin, auxWin,
 						input, false, true, false, false);
 					//
-					commonFunctions::logParameters(input, camWin, false);
+					//commonFunctions::logParameters(input, camWin, false);
 					//
 					commonFunctions::startMaster(mainWin, input);
 				}
@@ -246,7 +246,7 @@ namespace commonFunctions
 				try
 				{
 					commonFunctions::prepareMasterThread(ID_RUNMENU_RUNMASTER, scriptWin, mainWin, camWin, auxWin,
-						input, true, false, false, true);
+						input, true, true, false, true);
 					commonFunctions::startMaster(mainWin, input);
 				}
 				catch (Error& err)
