@@ -68,7 +68,7 @@ void DataLogger::initializeDataFiles()
 	int result = 1;
 	struct stat info;
 	int resultStat = stat( cstr( dataFilesBaseLocation + finalSaveFolder ), &info );
-	if (resultStat != 0)//TODO: fix issue with cstr->createdir
+	if (resultStat != 0)
 	{
 		result = CreateDirectory( cstr( dataFilesBaseLocation + finalSaveFolder ), 0 );
 	}

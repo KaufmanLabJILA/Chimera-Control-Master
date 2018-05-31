@@ -39,6 +39,7 @@ void PictureSettingsControl::initialize( cameraPositions& pos, CWnd* parent, int
 	totalPicNumberLabel.videoPos = { pos.videoPos.x, pos.videoPos.y, pos.videoPos.x + 100, pos.videoPos.y + 20 };
 	totalPicNumberLabel.Create( "Total Picture #", NORM_STATIC_OPTIONS, totalPicNumberLabel.seriesPos, parent,
 								PICTURE_SETTINGS_ID_START + count++ );
+	totalPicNumberLabel.fontType = SmallFont;
 	for ( int picInc = 0; picInc < 4; picInc++ )
 	{
 		totalNumberChoice[picInc].seriesPos = { pos.seriesPos.x + 100 + 95 * picInc, pos.seriesPos.y,
@@ -71,6 +72,7 @@ void PictureSettingsControl::initialize( cameraPositions& pos, CWnd* parent, int
 	exposureLabel.videoPos = { pos.videoPos.x, pos.videoPos.y, pos.videoPos.x + 100, pos.videoPos.y + 20 };
 	exposureLabel.Create( "Exposure (ms):", NORM_STATIC_OPTIONS, exposureLabel.seriesPos, parent,
 						  PICTURE_SETTINGS_ID_START + count++ );
+	exposureLabel.fontType = SmallFont;
 	exposureTimesUnofficial.resize( 4 );
 
 	for ( int picInc = 0; picInc < 4; picInc++ )
@@ -97,6 +99,7 @@ void PictureSettingsControl::initialize( cameraPositions& pos, CWnd* parent, int
 	thresholdLabel.videoPos = { pos.videoPos.x, pos.videoPos.y, pos.videoPos.x + 100, pos.videoPos.y + 20 };
 	thresholdLabel.Create( "Threshold (cts)", NORM_STATIC_OPTIONS, thresholdLabel.seriesPos, parent,
 						   PICTURE_SETTINGS_ID_START + count++ );
+	thresholdLabel.fontType = SmallFont;
 	for ( int picInc = 0; picInc < 4; picInc++ )
 	{
 		thresholdEdits[picInc].seriesPos = { pos.seriesPos.x + 100 + 95 * picInc, pos.seriesPos.y,
@@ -433,7 +436,7 @@ void PictureSettingsControl::setExposureTimes(std::vector<float>& times, AndorCa
 
 	if (exposureTimesUnofficial.size() <= 0)
 	{
-		// this shouldn't happend
+		// this shouldn't happen
 		thrower("ERROR: reached bad location where exposure times was of zero size, but this should have been detected earlier in the "
 				 "code.");
 	}

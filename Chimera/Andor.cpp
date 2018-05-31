@@ -34,7 +34,7 @@ AndorCamera::AndorCamera()
 	{
 		initialize();
 		setBaselineClamp(1);
-		setBaselineOffset(0);
+		//setBaselineOffset(0); //TODO: put this back?
 		setDMAParameters(1, 0.0001f);
 	}
 	catch (Error& err)
@@ -300,7 +300,7 @@ void AndorCamera::armCamera(CameraWindow* camWin, double& minKineticCycleTime)
 {
 	/// Set a bunch of parameters.
 	// Set to 1 MHz readout rate in both cases
-	setADChannel(1);
+	setADChannel(0); //changed to 0
 	if (runSettings.emGainModeIsOn)
 	{
 		setHSSpeed(0, 0);
@@ -540,7 +540,14 @@ void AndorCamera::setExposures()
 {
 	if (runSettings.exposureTimes.size() > 0 && runSettings.exposureTimes.size() <= 16)
 	{
-		setRingExposureTimes(runSettings.exposureTimes.size(), runSettings.exposureTimes.data());
+		try {
+			setRingExposureTimes(runSettings.exposureTimes.size(), runSettings.exposureTimes.data());
+		}
+		catch (Error& err)
+		{
+			errBox("ERROR: " + err.whatStr());
+		}
+		//setRingExposureTimes(runSettings.exposureTimes.size(), runSettings.exposureTimes.data());
 	}
 	else
 	{

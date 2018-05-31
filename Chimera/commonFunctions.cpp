@@ -26,7 +26,7 @@ namespace commonFunctions
 		switch (msgID)
 		{
 			case ID_FILE_RUN_EVERYTHING:
-			//case ID_ACCELERATOR_F5:
+			case ID_ACCELERATOR_F5:
 			case ID_FILE_MY_WRITE_WAVEFORMS:
 			{
 				ExperimentInput input;
@@ -34,7 +34,7 @@ namespace commonFunctions
 				try
 				{
 					prepareCamera( mainWin, camWin, input );
-					prepareMasterThread( msgID, scriptWin, mainWin, camWin, auxWin, input, false, true, true, true );
+					prepareMasterThread( msgID, scriptWin, mainWin, camWin, auxWin, input, false, true, false, true );
 					camWin->preparePlotter(input);
 					camWin->prepareAtomCruncher(input);
 
@@ -1146,7 +1146,7 @@ namespace commonFunctions
 		logger->logAndorSettings( input.camSettings, takeAndorPictures );
 		logger->logMasterParameters( input.masterInput );
 		logger->logMiscellaneous();
-		logger->closeFile(); //TODO: May have to remove this once andor is integrated.
+		//logger->closeFile(); //TODO: May have to remove this once andor is integrated.
 	}
 
 	void abortRearrangement( MainWindow* mainWin, CameraWindow* camWin )
