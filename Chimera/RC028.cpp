@@ -14,7 +14,8 @@ void RC028::init(int connType_in, FT_HANDLE ftHandle_in, HANDLE m_hSerialComm_in
 	this->connType = connType_in;
 	this->ftHandle = ftHandle_in;
 	this->m_hSerialComm = m_hSerialComm_in;
-	
+	//Set read timeout
+	FT_SetTimeouts(this->ftHandle, 1, 0);
 	//configure trigger mode
 	int dio_trigger_mode = NO_ARM_MODE;
 	if (DIO_ARM_MODE) {
@@ -514,4 +515,69 @@ unsigned long RC028::write()
 	}
 	
 	
+}
+
+
+bool RC028::runstatus()
+{
+	//variables for write
+	FT_STATUS ftStatus;
+	DWORD BytesWritten;
+	unsigned char dataBuffer[7];
+	unsigned long dwNumberOfBytesSent = 0;
+	//variables for read
+	DWORD bytestoread = 7;
+	DWORD BytesRead = 1;
+	DWORD TotalBytesRead = 0;
+
+	//Clear buffer
+	while (BytesRead != 0)
+	{
+		ftStatus = FT_Read(this->ftHandle, dataBuffer, sizeof(dataBuffer), &BytesRead);
+		if (ftStatus != FT_OK) {
+			// FT_Write Failed
+			thrower("error reading");
+		}
+	}
+
+	//letting fpga know we want it to send us value in address 0x0003
+	dataBuffer[0] = 129;
+	dataBuffer[1] = 0;
+	dataBuffer[2] = 3;
+	dataBuffer[3] = 0;
+	dataBuffer[4] = 0;
+	dataBuffer[5] = 0;
+	dataBuffer[6] = 0;
+
+	ftStatus = FT_Write(this->ftHandle, dataBuffer, sizeof(dataBuffer), &BytesWritten);
+	if (ftStatus == FT_OK) {
+		// FT_Write OK
+		std::cout << "Bytes sent for read request: " << dwNumberOfBytesSent << endl;
+	}
+	else {
+		// FT_Write Failed
+		cout << "error writing" << endl;
+		return 1;
+	}
+
+	while (TotalBytesRead < bytestoread)
+	{
+		ftStatus = FT_Read(this->ftHandle, dataBuffer, bytestoread, &BytesRead);
+		if (ftStatus == FT_OK) {
+			// FT_Write OK
+			std::cout << "Bytes sent for read request: " << dwNumberOfBytesSent << endl;
+			if (dataBuffer[6] == 0) {
+				return false;
+			}
+			else {
+				return true;
+			}
+		}
+		else {
+			// FT_Read Failed
+			cout << "error reading" << endl;
+			return 1;
+		}
+		TotalBytesRead += BytesRead;
+	}	
 }

@@ -1102,11 +1102,16 @@ void DioSystem::waitTillFinished(UINT variation, bool skipOption)
 	else 
 	{
 		totalTime = (formattedTtlSnapshots[variation].back( )[0]
-					  + 65535 * formattedTtlSnapshots[variation].back( )[1]) / 10000.0 + 17;
-		//TODO: remove +17 by reading message from DIO box.
+					  + 65535 * formattedTtlSnapshots[variation].back( )[1]) / 10000.0 + 1;
 	}
 	 
 	wait(totalTime);
+	
+	bool running = true;
+	while (running != false) {
+		running = dioFPGA[variation].runstatus();
+		wait(1);
+	}
 }
 
 

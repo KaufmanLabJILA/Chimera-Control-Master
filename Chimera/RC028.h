@@ -43,6 +43,7 @@ public:
 	//int disconnect();
 	//int connectasync(const char devSerial[]);
 	unsigned long write();
+	bool runstatus();
 	int trigger();
 	int setPoint(short number, unsigned int Time, unsigned char P1, unsigned char P2, unsigned char P3, unsigned char P4, unsigned char P5, unsigned char P6, unsigned char P7, unsigned char P8);
 	int arm_trigger();
