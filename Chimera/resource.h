@@ -10,9 +10,10 @@
 #define IDI_ICON1                       117
 #define IDD_LARGE_TEMPLATE              120
 #define IDD_SPLASH                      124
-#define IDB_BITMAP1                     126
 #define IDB_JILA                        126
 #define IDR_MAINFRAME                   128
+#define IDB_BITMAP1                     131
+#define IDB_KLAB                        131
 #define IDC_FOLDER_DIALOG_CANCEL        1002
 #define IDC_FOLDER_DIALOG_OK            1003
 #define IDC_FOLDER_DIALOG_INPUT         1007
@@ -159,12 +160,11 @@
 #define MENU_ID_RANGE_END               40134
 #define ID_SCRIPTS_FUNCTIONS            40142
 
-
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        127
+#define _APS_NEXT_RESOURCE_VALUE        132
 #define _APS_NEXT_COMMAND_VALUE         40148
 #define _APS_NEXT_CONTROL_VALUE         1032
 #define _APS_NEXT_SYMED_VALUE           101

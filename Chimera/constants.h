@@ -21,7 +21,7 @@
 	#define PYTHON_HOME L"C:\\ProgramData\\Anaconda3\\"
 	#define MOOG_SAFEMODE false
 	#define NIAWG_SAFEMODE true
-	#define ANDOR_SAFEMODE true
+	#define ANDOR_SAFEMODE false
 	#define PYTHON_SAFEMODE true
 	#define DIO_SAFEMODE true
 	#define DIO_FPGA_SAFEMODE false

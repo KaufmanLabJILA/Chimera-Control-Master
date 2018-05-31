@@ -1097,12 +1097,12 @@ void DioSystem::waitTillFinished(UINT variation, bool skipOption)
 	if ( skipOption )
 	{
 		totalTime = (loadSkipFormattedTtlSnapshots[variation].back( )[0]
-					  + 65535 * loadSkipFormattedTtlSnapshots[variation].back( )[1]) / 10000.0 + 1;
+					  + 65535 * loadSkipFormattedTtlSnapshots[variation].back( )[1]) / 10000.0;
 	}
 	else 
 	{
 		totalTime = (formattedTtlSnapshots[variation].back( )[0]
-					  + 65535 * formattedTtlSnapshots[variation].back( )[1]) / 10000.0 + 1;
+					  + 65535 * formattedTtlSnapshots[variation].back( )[1]) / 10000.0;
 	}
 	 
 	wait(totalTime);

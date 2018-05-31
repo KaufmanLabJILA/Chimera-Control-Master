@@ -488,6 +488,9 @@
       <Filter>Resources</Filter>
     </Image>
     <Image Include="JILA.bmp" />
+    <Image Include="bitmap2.bmp" />
+    <Image Include="bitmap3.bmp" />
+    <Image Include="klab.bmp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resources">

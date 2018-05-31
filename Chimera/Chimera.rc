@@ -167,13 +167,12 @@ BEGIN
     PUSHBUTTON      "CANCEL",IDCANCEL,721,319,50,14
 END
 
-IDD_SPLASH DIALOGEX 5, 5, 691, 367
-STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_SYSMENU
+IDD_SPLASH DIALOGEX 0, 0, 380, 200
+STYLE DS_SETFONT | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_SYSMENU
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "Chimera Control System\nCreated by Mark Brown\n",IDC_STATIC,587,28,82,20
-    LTEXT           "Loading..................",IDC_STATIC,587,50,64,8
-    CONTROL         IDB_BITMAP1,IDC_STATIC,"Static",SS_BITMAP,7,7,576,353
+    LTEXT           "Chimera Control System\nCreated by Mark Brown\n\nModified by Aaron Young\nfor use in Kaufman Lab\n\n\nLoading..................",IDC_STATIC,285,28,82,100
+    CONTROL         IDB_KLAB,IDC_STATIC,"Static",SS_BITMAP,0,0,399,332
 END
 
 
@@ -415,6 +414,8 @@ END
 //
 
 IDB_JILA                BITMAP                  "JILA.bmp"
+
+IDB_KLAB                BITMAP                  "klab.bmp"
 
 #endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
