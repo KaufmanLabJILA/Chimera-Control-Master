@@ -52,9 +52,9 @@ void SmsTextingControl::initialize( POINT& pos, CWnd* parent, int& id, cToolTips
 	peopleListView.SetItem( &listViewDefaultItem );
 	listViewDefaultItem.iSubItem = 4;
 	peopleListView.SetItem( &listViewDefaultItem );
-	peopleListView.SetBkColor( rgbs["Solarized Base02"] );
-	peopleListView.SetTextBkColor( rgbs["Solarized Base02"] );
-	peopleListView.SetTextColor( rgbs["Solarized Base2"] );
+	peopleListView.SetBkColor( rgbs["theme BG1"] );
+	peopleListView.SetTextBkColor( rgbs["theme BG1"] );
+	peopleListView.SetTextColor( rgbs["theme foreground"] );
 	pos.y += 120;
 	// initialize myself;
 	personInfo me;

@@ -33,7 +33,7 @@ CBrush* StatusIndicator::handleColor(CWnd* window, CDC* pDC, rgbMap rgbs, brushM
 	DWORD controlID = GetDlgCtrlID(window->GetSafeHwnd());
 	if (controlID == status.GetDlgCtrlID())
 	{
-		pDC->SetTextColor(rgbs["White"]);
+		pDC->SetTextColor(rgbs["theme foreground"]);
 		if (this->currentColor == "G")
 		{
 			pDC->SetBkColor(rgbs["Green"]);

@@ -54,9 +54,9 @@ void VariableSystem::initialize( POINT& pos, cToolTips& toolTips, AuxiliaryWindo
 							  master, listviewId );
 	
 	variablesListview.fontType = SmallFont;
-	variablesListview.SetBkColor( RGB( 15, 15, 15 ) );
-	variablesListview.SetTextBkColor( RGB( 15, 15, 15 ) );
-	variablesListview.SetTextColor( RGB( 255, 255, 255 ) );
+	variablesListview.SetBkColor( rgbs["theme input"] );
+	variablesListview.SetTextBkColor(rgbs["theme input"]);
+	variablesListview.SetTextColor( rgbs["theme foreground"] );
 	LV_COLUMN listViewDefaultCollumn;
 	// Zero Members
 	memset( &listViewDefaultCollumn, 0, sizeof( listViewDefaultCollumn ) );
@@ -118,7 +118,7 @@ void VariableSystem::initialize( POINT& pos, cToolTips& toolTips, AuxiliaryWindo
 			variablesListview.SetItem( &listViewDefaultItem );
 		}
 	}
-	variablesListview.SetBkColor( rgbs["Solarized Base02"] );
+	variablesListview.SetBkColor( rgbs["theme BG1"] );
 
 	pos.y += listViewSize;
 }
@@ -581,27 +581,27 @@ void VariableSystem::handleDraw(NMHDR* pNMHDR, LRESULT* pResult, rgbMap rgbs)
 		{
 			if (item == currentVariables.size())
 			{
-				pLVCD->clrText = RGB(255, 255, 255);
-				pLVCD->clrTextBk = rgbs["Solarized Base02"];
+				pLVCD->clrText = rgbs["theme foreground"];
+				pLVCD->clrTextBk = rgbs["theme BG1"];
 			}
 			else
 			{
 				if (currentVariables[item].active)
 				{
-					pLVCD->clrTextBk = rgbs["Solarized Blue"];
+					pLVCD->clrTextBk = rgbs["theme green"];
 				}
 				else
 				{
-					pLVCD->clrTextBk = rgbs["Solarized Base04"];
+					pLVCD->clrTextBk = rgbs["theme input"];
 				}
 
 				if (currentVariables[item].overwritten)
 				{
-					pLVCD->clrText = rgbs["Solarized Red"];
+					pLVCD->clrText = rgbs["theme red"];
 				}
 				else
 				{
-					pLVCD->clrText = rgbs["Solarized Base2"];
+					pLVCD->clrText = rgbs["theme foreground"];
 				}
 			}
 		}

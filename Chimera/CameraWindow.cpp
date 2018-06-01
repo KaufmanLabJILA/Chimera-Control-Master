@@ -1206,26 +1206,26 @@ HBRUSH CameraWindow::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 			}
 			else
 			{
-				pDC->SetTextColor( rgbs["White"] );
-				pDC->SetBkColor( rgbs["Medium Grey"] );
-				return *brushes["Medium Grey"];
+				pDC->SetTextColor( rgbs["theme foreground"] );
+				pDC->SetBkColor( rgbs["theme BG1"] );
+				return *brushes["theme BG1"];
 			}
 		}
 		case CTLCOLOR_EDIT:
 		{
-			pDC->SetTextColor(rgbs["Solarized Green"]);
-			pDC->SetBkColor(rgbs["Solarized Base02"]);
-			return *brushes["Solarized Base02"];
+			pDC->SetTextColor(rgbs["theme blue"]);
+			pDC->SetBkColor(rgbs["theme input"]);
+			return *brushes["theme input"];
 		}
 		case CTLCOLOR_LISTBOX:
 		{
-			pDC->SetTextColor(rgbs["White"]);
-			pDC->SetBkColor(rgbs["Dark Grey"]);
-			return *brushes["Dark Grey"];
+			pDC->SetTextColor(rgbs["theme foreground"]);
+			pDC->SetBkColor(rgbs["theme input"]);
+			return *brushes["theme input"];
 		}
 		default:
 		{
-			return *brushes["Solarized Base04"];
+			return *brushes["theme BG2"];
 		}
 	}
 }

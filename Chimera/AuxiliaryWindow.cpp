@@ -1082,24 +1082,24 @@ HBRUSH AuxiliaryWindow::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	{
 	case CTLCOLOR_STATIC:
 	{
-		pDC->SetTextColor(rgbs["Solarized Yellow"]);
-		pDC->SetBkColor(rgbs["Medium Grey"]);
-		return *brushes["Medium Grey"];
+		pDC->SetTextColor(rgbs["theme foreground"]);
+		pDC->SetBkColor(rgbs["theme BG0"]);
+		return *brushes["theme BG0"];
 	}
 	case CTLCOLOR_EDIT:
 	{
-		pDC->SetTextColor(rgbs["White"]);
-		pDC->SetBkColor(rgbs["Dark Grey"]);
-		return *brushes["Dark Grey"];
+		pDC->SetTextColor(rgbs["theme foreground"]);
+		pDC->SetBkColor(rgbs["theme input"]);
+		return *brushes["theme input"];
 	}
 	case CTLCOLOR_LISTBOX:
 	{
-		pDC->SetTextColor(rgbs["White"]);
-		pDC->SetBkColor(rgbs["Dark Grey"]);
-		return *brushes["Dark Grey"];
+		pDC->SetTextColor(rgbs["theme foreground"]);
+		pDC->SetBkColor(rgbs["theme BG1"]);
+		return *brushes["theme BG1"];
 	}
 	default:
-		return *brushes["Solarized Base04"];
+		return *brushes["theme BG1"];
 	}
 }
 
@@ -1136,13 +1136,13 @@ BOOL AuxiliaryWindow::OnInitDialog()
 		controlLocation = POINT{ 480, 0 };
 
 		agilents[TopBottom].initialize(480, controlLocation, toolTips, this, id, "Top-Bottom-Agilent", 100,
-			mainWindowFriend->getRgbs()["Solarized Base03"]);
+			mainWindowFriend->getRgbs()["theme BG1"]);
 		agilents[Axial].initialize(480, controlLocation, toolTips, this, id, "Microwave-Axial-Agilent", 100,
-			mainWindowFriend->getRgbs()["Solarized Base03"]);
+			mainWindowFriend->getRgbs()["theme BG1"]);
 		agilents[Flashing].initialize(480, controlLocation, toolTips, this, id,
-			"Flashing-Agilent", 100, mainWindowFriend->getRgbs()["Solarized Base03"]);
+			"Flashing-Agilent", 100, mainWindowFriend->getRgbs()["theme BG1"]);
 		agilents[Microwave].initialize(480, controlLocation, toolTips, this, id, "Microwave-Agilent", 100,
-			mainWindowFriend->getRgbs()["Solarized Base03"]);
+			mainWindowFriend->getRgbs()["theme BG1"]);
 
 		controlLocation = POINT{ 1440, 0 };
 		globalVariables.initialize(controlLocation, toolTips, this, id, "GLOBAL VARIABLES",

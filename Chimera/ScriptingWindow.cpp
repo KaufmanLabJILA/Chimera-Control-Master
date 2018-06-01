@@ -232,26 +232,26 @@ BOOL ScriptingWindow::OnInitDialog()
 	moogScript.initialize(480, 900, startLocation, tooltips, this, id, "Moog",
 		"Megamoog 1 Script",
 		{ IDC_MOOG_FUNCTION_COMBO, IDC_MOOG_EDIT },
-		mainWindowFriend->getRgbs()["Solarized Base04"]);
+		mainWindowFriend->getRgbs()["theme BG2"]);
 
 	//POINT startLocation = { 0, 28 };
 	//verticalNiawgScript.initialize( 480, 900, startLocation, tooltips, this, id, "Vertical NIAWG", 
 	//								"Vertical NIAWG Script",
 	//								{ IDC_VERTICAL_NIAWG_FUNCTION_COMBO, IDC_VERTICAL_NIAWG_EDIT }, 
-	//								mainWindowFriend->getRgbs()["Solarized Base04"] );
+	//								mainWindowFriend->getRgbs()["theme BG2"] );
 
 	startLocation = { 480, 28 };
 	horizontalNiawgScript.initialize( 480, 900, startLocation, tooltips, this,  id, "Horizontal NIAWG",
 									  "Horizontal NIAWG Script", { IDC_HORIZONTAL_NIAWG_FUNCTION_COMBO, 
-									  IDC_HORIZONTAL_NIAWG_EDIT }, mainWindowFriend->getRgbs()["Solarized Base03"]);
+									  IDC_HORIZONTAL_NIAWG_EDIT }, mainWindowFriend->getRgbs()["theme BG1"]);
 	startLocation = { 960, 28 };
 	//intensityAgilent.initialize(480, startLocation, tooltips, this, id, "Intensity Agilent", 865, 
-	//							 mainWindowFriend->getRgbs()["Solarized Base03"] );
+	//							 mainWindowFriend->getRgbs()["theme BG0"] );
 	ddsScript.initialize(480, 900, startLocation, tooltips, this, id, "DDS",
-		"DDS Script", { IDC_DDS_FUNCTION_COMBO, IDC_DDS_EDIT }, mainWindowFriend->getRgbs()["Solarized Base04"]);
+		"DDS Script", { IDC_DDS_FUNCTION_COMBO, IDC_DDS_EDIT }, mainWindowFriend->getRgbs()["theme BG2"]);
 	startLocation = { 1440, 28 };
 	masterScript.initialize( 480, 900, startLocation, tooltips, this, id, "Master", "Master Script",
-	                         { IDC_MASTER_FUNCTION_COMBO, IDC_MASTER_EDIT }, mainWindowFriend->getRgbs()["Solarized Base03"] );
+	                         { IDC_MASTER_FUNCTION_COMBO, IDC_MASTER_EDIT }, mainWindowFriend->getRgbs()["theme BG1"] );
 	startLocation = { 1700, 3 };
 	statusBox.initialize(startLocation, id, this, 300, tooltips);
 	profileDisplay.initialize({ 0,3 }, id, this, tooltips);
@@ -387,20 +387,20 @@ HBRUSH ScriptingWindow::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 			}
 			else
 			{
-				pDC->SetTextColor(rgbs["Solarized Orange"]);
-				pDC->SetBkColor( rgbs["Dark Grey"] );
-				return *brushes["Dark Grey"];
+				pDC->SetTextColor(rgbs["theme foreground"]);
+				pDC->SetBkColor( rgbs["theme BG0"] );
+				return *brushes["theme BG0"];
 			}
 		}
 		case CTLCOLOR_LISTBOX:
 		{
-			pDC->SetTextColor(rgbs["Solarized Orange"]);
-			pDC->SetBkColor(rgbs["Solarized Base02"]);
-			return *brushes["Solarized Base02"];
+			pDC->SetTextColor(rgbs["theme orange"]);
+			pDC->SetBkColor(rgbs["theme selection"]);
+			return *brushes["theme selection"];
 		}
 		default:
 		{
-			return *brushes["LigSolarized Base02"];
+			return *brushes["theme BG1"];
 		}
 	}
 }

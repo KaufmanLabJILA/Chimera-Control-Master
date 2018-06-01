@@ -19,25 +19,22 @@ MainWindow::MainWindow(UINT id, CDialog* splash) : CDialog(id), profile(PROFILES
 	mainRGBs["Slate Grey"]			= RGB( 101,	115, 126);
 	mainRGBs["Pale Pink"]			= RGB( 180,	142, 173);
 	mainRGBs["Musky Red"]			= RGB( 191,	97,	 106);
-	// Using 
-	// this "base04", while not listed on the solarized web site, is used by the visual studio solarized for edit area.
-	mainRGBs["Solarized Base04"]	= RGB( 0,	30,  38 );
-	mainRGBs["Solarized Base03"]	= RGB( 0,	43,  54 );
-	mainRGBs["Solarized Base02"]	= RGB( 7,	54,  66 );
-	mainRGBs["Solarized Base01"]	= RGB( 88,	110, 117 );
-	mainRGBs["Solarized Base00"]	= RGB( 101, 123, 131 );
-	mainRGBs["Solarized Base0"]		= RGB( 131, 148, 150 );
-	mainRGBs["Solarized Base1"]		= RGB( 101, 123, 131 );
-	mainRGBs["Solarized Base2"]		= RGB( 238, 232, 213 );
-	mainRGBs["Solarized Base3"]		= RGB( 253, 246, 227 );
-	mainRGBs["Solarized Red"]		= RGB( 220, 50,  47);
-	mainRGBs["Solarized Violet"]	= RGB( 108, 113, 196);
-	mainRGBs["Solarized Cyan"]		= RGB( 42,	161, 152);
-	mainRGBs["Solarized Green"]		= RGB( 133, 153, 0);
-	mainRGBs["Solarized Blue"]		= RGB( 38,	139, 210);
-	mainRGBs["Solarized Magenta"]	= RGB( 211, 54,  130);
-	mainRGBs["Solarized Orange"]	= RGB( 203, 75,  22);
-	mainRGBs["Solarized Yellow"]	= RGB( 181, 137, 0);
+
+	mainRGBs["theme BG0"]			= RGB(15, 15, 15);
+	mainRGBs["theme BG1"]			= RGB(29, 31, 33);
+	mainRGBs["theme BG2"]			= RGB(45, 45, 45);
+	mainRGBs["theme input"]		= RGB(40, 42, 46);
+	mainRGBs["theme comment"]		= RGB(150, 152, 150);
+	mainRGBs["theme selection"]		= RGB(55, 59, 65);
+	mainRGBs["theme foreground"]	= RGB(197, 200, 198);
+	mainRGBs["theme red"]			= RGB(204, 102, 102);
+	mainRGBs["theme purple"]		= RGB(178, 148, 187);
+	mainRGBs["theme aqua"]			= RGB(138, 190, 183);
+	mainRGBs["theme green"]			= RGB(181, 189, 104);
+	mainRGBs["theme blue"]			= RGB(129, 162, 190);
+	mainRGBs["theme orange"]		= RGB(222, 147, 95);
+	mainRGBs["theme yellow"]		= RGB(240, 198, 116);
+	mainRGBs["Solarized Magenta"]	= RGB(211, 54, 130);
 	mainRGBs["Slate Green"]			= RGB( 23,	84,  81);
 	mainRGBs["Dark Grey"]			= RGB( 15,	15,  15);
 	mainRGBs["Dark Grey Red"]		= RGB( 20,	12,  12);
@@ -47,7 +44,7 @@ MainWindow::MainWindow(UINT id, CDialog* splash) : CDialog(id), profile(PROFILES
 	mainRGBs["Red"]					= RGB( 200,	50,  50);
 	mainRGBs["Blue"]				= RGB( 50,	50,  200);
 	mainRGBs["Gold"]				= RGB( 218,	165, 32);
-	mainRGBs["White"]				= RGB( 255, 255, 255);
+	mainRGBs["theme foreground"]				= RGB( 255, 255, 255);
 	mainRGBs["Light Red"]			= RGB( 255, 100, 100);
 	mainRGBs["Dark Red"]			= RGB( 150, 0,   0);
 	mainRGBs["Light Blue"]			= RGB( 100, 100, 255);
@@ -74,15 +71,15 @@ MainWindow::MainWindow(UINT id, CDialog* splash) : CDialog(id), profile(PROFILES
 	(mainBrushes["Light Grey"]			= new CBrush)->CreateSolidBrush(mainRGBs["Light Grey"]);
 	(mainBrushes["Green"]				= new CBrush)->CreateSolidBrush(mainRGBs["Green"]);
 	(mainBrushes["Red"]					= new CBrush)->CreateSolidBrush(mainRGBs["Red"]);
-	(mainBrushes["White"]				= new CBrush)->CreateSolidBrush(mainRGBs["White"]);
+	(mainBrushes["theme foreground"]				= new CBrush)->CreateSolidBrush(mainRGBs["theme foreground"]);
 	(mainBrushes["Dull Red"]			= new CBrush)->CreateSolidBrush(mainRGBs["Dull Red"]);
 	(mainBrushes["Dark Blue"]			= new CBrush)->CreateSolidBrush(mainRGBs["Dark Blue"]);
 	(mainBrushes["Dark Green"]			= new CBrush)->CreateSolidBrush(mainRGBs["Dark Green"]);
-	(mainBrushes["Solarized Blue"]		= new CBrush)->CreateSolidBrush( mainRGBs["Solarized Blue"] );
-	(mainBrushes["Solarized Base03"]	= new CBrush)->CreateSolidBrush( mainRGBs["Solarized Base03"] );
-	(mainBrushes["Solarized Base02"]	= new CBrush)->CreateSolidBrush( mainRGBs["Solarized Base02"] );
-	(mainBrushes["Solarized Base01"]	= new CBrush)->CreateSolidBrush( mainRGBs["Solarized Base01"] );
-	(mainBrushes["Solarized Base04"]	= new CBrush)->CreateSolidBrush( mainRGBs["Solarized Base04"] );
+	(mainBrushes["theme blue"]		= new CBrush)->CreateSolidBrush( mainRGBs["theme blue"] );
+	(mainBrushes["theme BG0"]	= new CBrush)->CreateSolidBrush( mainRGBs["theme BG0"] );
+	(mainBrushes["theme BG1"]	= new CBrush)->CreateSolidBrush( mainRGBs["theme BG1"] );
+	(mainBrushes["theme input"]	= new CBrush)->CreateSolidBrush( mainRGBs["theme input"] );
+	(mainBrushes["theme BG2"]	= new CBrush)->CreateSolidBrush( mainRGBs["theme BG2"] );
 	/// the following are all equivalent to:
 	// mainFonts["Font name"] = new CFont;
 	// mainFonts["Font name"].CreateFontA(...);
@@ -316,10 +313,10 @@ BOOL MainWindow::OnInitDialog( )
 	comm.initialize( this, TheScriptingWindow, TheCameraWindow, TheAuxiliaryWindow );
 	int id = 1000;
 	POINT controlLocation = { 0,0 };
-	mainStatus.initialize( controlLocation, this, id, 975, "EXPERIMENT STATUS", RGB( 100, 100, 250 ), tooltips, IDC_MAIN_STATUS_BUTTON );
+	mainStatus.initialize( controlLocation, this, id, 975, "EXPERIMENT STATUS", mainRGBs["theme blue"], tooltips, IDC_MAIN_STATUS_BUTTON );
 	controlLocation = { 480, 0 };
-	errorStatus.initialize( controlLocation, this, id, 480, "ERROR STATUS", RGB( 200, 0, 0 ), tooltips, IDC_ERROR_STATUS_BUTTON );
-	debugStatus.initialize( controlLocation, this, id, 480, "DEBUG STATUS", RGB( 13, 152, 186 ), tooltips, IDC_DEBUG_STATUS_BUTTON );
+	errorStatus.initialize( controlLocation, this, id, 480, "ERROR STATUS", mainRGBs["theme red"], tooltips, IDC_ERROR_STATUS_BUTTON );
+	debugStatus.initialize( controlLocation, this, id, 480, "DEBUG STATUS", mainRGBs["theme aqua"], tooltips, IDC_DEBUG_STATUS_BUTTON );
 	controlLocation = { 960, 0 };
 	profile.initialize( controlLocation, this, id, tooltips );
 	controlLocation = { 960, 175};
@@ -620,26 +617,26 @@ HBRUSH MainWindow::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 			}
 			else
 			{
-				pDC->SetTextColor(mainRGBs["White"]);
-				pDC->SetBkColor(mainRGBs["Medium Grey"]);
-				return *mainBrushes["Medium Grey"];
+				pDC->SetTextColor(mainRGBs["theme foreground"]);
+				pDC->SetBkColor(mainRGBs["theme BG1"]);
+				return *mainBrushes["theme BG1"];
 			}
 		}
 		case CTLCOLOR_EDIT:
 		{
-			pDC->SetTextColor(mainRGBs["Solarized Blue"]);
-			pDC->SetBkColor(mainRGBs["Solarized Base03"]);
-			return *mainBrushes["Solarized Base03"];
+			pDC->SetTextColor(mainRGBs["theme blue"]);
+			pDC->SetBkColor(mainRGBs["theme input"]);
+			return *mainBrushes["theme input"];
 		}
 		case CTLCOLOR_LISTBOX:
 		{
-			pDC->SetTextColor(mainRGBs["Solarized Base2"]);
-			pDC->SetBkColor(mainRGBs["Solarized Base02"]);
-			return *mainBrushes["Solarized Base02"];
+			pDC->SetTextColor(mainRGBs["theme foreground"]);
+			pDC->SetBkColor(mainRGBs["theme input"]);
+			return *mainBrushes["theme input"];
 		}
 		default:
 		{
-			return *mainBrushes["Solarized Base04"];
+			return *mainBrushes["theme BG1"];
 		}
 	}
 	return NULL;

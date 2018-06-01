@@ -84,9 +84,9 @@ HBRUSH TektronicsControl::handleColorMessage(CWnd* window, brushMap brushes, rgb
 		|| controlID == mainPowerLabel.GetDlgCtrlID() || controlID == mainFreqLabel.GetDlgCtrlID() 
 		|| controlID == fskFreqLabel.GetDlgCtrlID())
 	{
-		cDC->SetBkColor(rGBs["Medium Grey"]);
-		cDC->SetTextColor(rGBs["Solarized Base2"]);
-		return *brushes["Medium Grey"];
+		cDC->SetBkColor(rGBs["theme BG1"]);
+		cDC->SetTextColor(rGBs["theme foreground"]);
+		return *brushes["theme BG1"];
 	}
 	else
 	{

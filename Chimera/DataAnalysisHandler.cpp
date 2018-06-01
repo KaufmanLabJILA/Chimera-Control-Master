@@ -149,9 +149,9 @@ void DataAnalysisControl::initialize( cameraPositions& pos, int& id, CWnd* paren
 	listViewDefaultCollumn.pszText = "Edit?";
 	plotListview.InsertColumn(1, &listViewDefaultCollumn);
 
-	plotListview.SetBkColor( rgbs["Solarized Base02"]);
-	plotListview.SetTextBkColor( rgbs["Solarized Base02"] );
-	plotListview.SetTextColor( rgbs["Solarized Green"] );
+	plotListview.SetBkColor( rgbs["theme BG1"]);
+	plotListview.SetTextBkColor( rgbs["theme BG1"] );
+	plotListview.SetTextColor( rgbs["theme green"] );
 	//
 	reloadListView();
 }

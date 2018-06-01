@@ -343,7 +343,7 @@ HBRUSH ImageDimsControl::colorEdits( HWND window, UINT message, WPARAM wParam, L
 
 	if (controlID == topEdit.GetDlgCtrlID())
 	{
-		SetTextColor( hdcStatic, RGB( 255, 255, 255 ) );
+		SetTextColor( hdcStatic, rgbs["theme foreground"] );
 		CString textEdit;
 		topEdit.GetWindowTextA( textEdit );
 		int bottom;
@@ -353,7 +353,7 @@ HBRUSH ImageDimsControl::colorEdits( HWND window, UINT message, WPARAM wParam, L
 			if (bottom == currentImageParameters.top)
 			{
 				// good.
-				SetTextColor( hdcStatic, RGB( 255, 255, 255 ) );
+				SetTextColor( hdcStatic, rgbs["theme foreground"]);
 				SetBkColor( hdcStatic, RGB( 100, 110, 100 ) );
 				// catch change of color and redraw window.
 				if (topEdit.colorState != 0)
@@ -368,7 +368,7 @@ HBRUSH ImageDimsControl::colorEdits( HWND window, UINT message, WPARAM wParam, L
 		{
 			// don't do anything with it.
 		}
-		SetTextColor( hdcStatic, RGB( 255, 255, 255 ) );
+		SetTextColor( hdcStatic, rgbs["theme foreground"]);
 		SetBkColor( hdcStatic, RGB( 150, 100, 100 ) );
 		// catch change of color and redraw window.
 		if (topEdit.colorState != 1)
@@ -380,7 +380,7 @@ HBRUSH ImageDimsControl::colorEdits( HWND window, UINT message, WPARAM wParam, L
 	}
 	else if (controlID == bottomEdit.GetDlgCtrlID())
 	{
-		SetTextColor( hdcStatic, RGB( 255, 255, 255 ) );
+		SetTextColor( hdcStatic, rgbs["theme foreground"]);
 		CString textEdit;
 		bottomEdit.GetWindowTextA( textEdit );
 		int top;
@@ -390,7 +390,7 @@ HBRUSH ImageDimsControl::colorEdits( HWND window, UINT message, WPARAM wParam, L
 			if (top == currentImageParameters.bottom)
 			{
 				// good.
-				SetTextColor( hdcStatic, RGB( 255, 255, 255 ) );
+				SetTextColor( hdcStatic, rgbs["theme foreground"]);
 				SetBkColor( hdcStatic, RGB( 100, 110, 100 ) );
 				// catch change of color and redraw window.
 				if (bottomEdit.colorState != 0)
@@ -405,7 +405,7 @@ HBRUSH ImageDimsControl::colorEdits( HWND window, UINT message, WPARAM wParam, L
 		{
 			// don't do anything with it.
 		}
-		SetTextColor( hdcStatic, RGB( 255, 255, 255 ) );
+		SetTextColor( hdcStatic, rgbs["theme foreground"]);
 		SetBkColor( hdcStatic, RGB( 150, 100, 100 ) );
 		// catch change of color and redraw window.
 		if (bottomEdit.colorState != 1)
@@ -417,7 +417,7 @@ HBRUSH ImageDimsControl::colorEdits( HWND window, UINT message, WPARAM wParam, L
 	}
 	else if (controlID == vertBinningEdit.GetDlgCtrlID())
 	{
-		SetTextColor( hdcStatic, RGB( 255, 255, 255 ) );
+		SetTextColor( hdcStatic, rgbs["theme foreground"]);
 		CString textEdit;
 		vertBinningEdit.GetWindowTextA( textEdit );
 		int verticalBin;
@@ -427,7 +427,7 @@ HBRUSH ImageDimsControl::colorEdits( HWND window, UINT message, WPARAM wParam, L
 			if (verticalBin == currentImageParameters.verticalBinning)
 			{
 				// good.
-				SetTextColor( hdcStatic, RGB( 255, 255, 255 ) );
+				SetTextColor( hdcStatic, rgbs["theme foreground"]);
 				SetBkColor( hdcStatic, RGB( 100, 110, 100 ) );
 				// catch change of color and redraw window.
 				if (vertBinningEdit.colorState != 0)
@@ -442,7 +442,7 @@ HBRUSH ImageDimsControl::colorEdits( HWND window, UINT message, WPARAM wParam, L
 		{
 			// don't do anything with it.
 		}
-		SetTextColor( hdcStatic, RGB( 255, 255, 255 ) );
+		SetTextColor( hdcStatic, rgbs["theme foreground"]);
 		SetBkColor( hdcStatic, RGB( 150, 100, 100 ) );
 		// catch change of color and redraw window.
 		if (vertBinningEdit.colorState != 1)
@@ -454,7 +454,7 @@ HBRUSH ImageDimsControl::colorEdits( HWND window, UINT message, WPARAM wParam, L
 	}
 	else if (controlID == leftEdit.GetDlgCtrlID())
 	{
-		SetTextColor( hdcStatic, RGB( 255, 255, 255 ) );
+		SetTextColor( hdcStatic, rgbs["theme foreground"]);
 		CString textEdit;
 		leftEdit.GetWindowTextA( textEdit );
 		int leftSide;
@@ -464,7 +464,7 @@ HBRUSH ImageDimsControl::colorEdits( HWND window, UINT message, WPARAM wParam, L
 			if (leftSide == currentImageParameters.left)
 			{
 				// good.
-				SetTextColor( hdcStatic, RGB( 255, 255, 255 ) );
+				SetTextColor( hdcStatic, rgbs["theme foreground"]);
 				SetBkColor( hdcStatic, RGB( 100, 110, 100 ) );
 				// catch change of color and redraw window.
 				if (leftEdit.colorState != 0)
@@ -479,7 +479,7 @@ HBRUSH ImageDimsControl::colorEdits( HWND window, UINT message, WPARAM wParam, L
 		{
 			// don't do anything with it.
 		}
-		SetTextColor( hdcStatic, RGB( 255, 255, 255 ) );
+		SetTextColor( hdcStatic, rgbs["theme foreground"]);
 		SetBkColor( hdcStatic, RGB( 150, 100, 100 ) );
 		// catch change of color and redraw window.
 		if (leftEdit.colorState != 1)
@@ -491,7 +491,7 @@ HBRUSH ImageDimsControl::colorEdits( HWND window, UINT message, WPARAM wParam, L
 	}
 	else if (controlID == rightEdit.GetDlgCtrlID())
 	{
-		SetTextColor( hdcStatic, RGB( 255, 255, 255 ) );
+		SetTextColor( hdcStatic, rgbs["theme foreground"]);
 		CString textEdit;
 		rightEdit.GetWindowTextA( textEdit );
 		int rightSide;
@@ -501,7 +501,7 @@ HBRUSH ImageDimsControl::colorEdits( HWND window, UINT message, WPARAM wParam, L
 			if (rightSide == currentImageParameters.right)
 			{
 				// good.
-				SetTextColor( hdcStatic, RGB( 255, 255, 255 ) );
+				SetTextColor( hdcStatic, rgbs["theme foreground"]);
 				SetBkColor( hdcStatic, RGB( 100, 110, 100 ) );
 				// catch change of color and redraw window.
 				if (rightEdit.colorState != 0)
@@ -516,7 +516,7 @@ HBRUSH ImageDimsControl::colorEdits( HWND window, UINT message, WPARAM wParam, L
 		{
 			// don't do anything with it.
 		}
-		SetTextColor( hdcStatic, RGB( 255, 255, 255 ) );
+		SetTextColor( hdcStatic, rgbs["theme foreground"]);
 		SetBkColor( hdcStatic, RGB( 150, 100, 100 ) );
 		// catch change of color and redraw window.
 		if (rightEdit.colorState != 1)
@@ -528,7 +528,7 @@ HBRUSH ImageDimsControl::colorEdits( HWND window, UINT message, WPARAM wParam, L
 	}
 	else if (controlID == horBinningEdit.GetDlgCtrlID())
 	{
-		SetTextColor( hdcStatic, RGB( 255, 255, 255 ) );
+		SetTextColor( hdcStatic, rgbs["theme foreground"]);
 		CString textEdit;
 		horBinningEdit.GetWindowTextA( textEdit );
 		int horizontalBin;
@@ -538,7 +538,7 @@ HBRUSH ImageDimsControl::colorEdits( HWND window, UINT message, WPARAM wParam, L
 			if (horizontalBin == currentImageParameters.horizontalBinning)
 			{
 				// good.
-				SetTextColor( hdcStatic, RGB( 255, 255, 255 ) );
+				SetTextColor( hdcStatic, rgbs["theme foreground"]);
 				SetBkColor( hdcStatic, RGB( 100, 110, 100 ) );
 				// catch change of color and redraw window.
 				if (horBinningEdit.colorState != 0)
@@ -553,7 +553,7 @@ HBRUSH ImageDimsControl::colorEdits( HWND window, UINT message, WPARAM wParam, L
 		{
 			// don't do anything with it.
 		}
-		SetTextColor( hdcStatic, RGB( 255, 255, 255 ) );
+		SetTextColor( hdcStatic, rgbs["theme foreground"]);
 		SetBkColor( hdcStatic, RGB( 150, 100, 100 ) );
 		// catch change of color and redraw window.
 		if (horBinningEdit.colorState != 1)

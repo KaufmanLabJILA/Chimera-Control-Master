@@ -42,9 +42,9 @@ HBRUSH Repetitions::handleColorMessage(CWnd* window, brushMap brushes, rgbMap rG
 	DWORD controlID = window->GetDlgCtrlID();
 	if (controlID == repetitionDisp.GetDlgCtrlID() || controlID == repetitionEdit.GetDlgCtrlID())
 	{
-		cDC->SetBkColor(rGBs["Medium Grey"]);
-		cDC->SetTextColor(rGBs["White"]);
-		return *brushes["Medium Grey"];
+		cDC->SetBkColor(rGBs["theme BG1"]);
+		cDC->SetTextColor(rGBs["theme foreground"]);
+		return *brushes["theme BG1"];
 	}
 	else
 	{

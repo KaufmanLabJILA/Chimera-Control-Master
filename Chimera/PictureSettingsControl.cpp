@@ -263,7 +263,7 @@ CBrush* PictureSettingsControl::colorControls(int id, CDC* colorer, brushMap bru
 		{
 			return NULL;
 		}
-		colorer->SetTextColor(rgbs["White"]);
+		colorer->SetTextColor(rgbs["theme foreground"]);
 		//TCHAR textEdit[256];
 		CString text;
 		exposureEdits[picNum].GetWindowTextA(text);
@@ -275,14 +275,14 @@ CBrush* PictureSettingsControl::colorControls(int id, CDC* colorer, brushMap bru
 			if (dif < 0.000000001)
 			{
 				// good.
-				colorer->SetBkColor(rgbs["Solarized Green"]);
+				colorer->SetBkColor(rgbs["theme green"]);
 				// catch change of color and redraw window.
 				if (exposureEdits[picNum].colorState != 0)
 				{
 					exposureEdits[picNum].colorState = 0;
 					exposureEdits[picNum].RedrawWindow();
 				}
-				return brushes["Solarized Green"];
+				return brushes["theme green"];
 			}
 		}
 		catch (std::exception&)
@@ -317,14 +317,14 @@ CBrush* PictureSettingsControl::colorControls(int id, CDC* colorer, brushMap bru
 			if (dif < 0.000000001)
 			{
 				// good.
-				colorer->SetBkColor(rgbs["Solarized Green"]);
+				colorer->SetBkColor(rgbs["theme green"]);
 				// catch change of color and redraw window.
 				if (thresholdEdits[picNum].colorState != 0)
 				{
 					thresholdEdits[picNum].colorState = 0;
 					thresholdEdits[picNum].RedrawWindow();
 				}
-				return brushes["Solarized Green"];
+				return brushes["theme green"];
 			}
 		}
 		catch (std::exception&)

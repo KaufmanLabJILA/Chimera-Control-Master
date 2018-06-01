@@ -1126,9 +1126,9 @@ HBRUSH DacSystem::handleColorMessage( CWnd* window, brushMap brushes, rgbMap rgb
 	int controlID = GetDlgCtrlID(*window);
 	if (controlID >= dacLabels[0].GetDlgCtrlID() && controlID <= dacLabels.back().GetDlgCtrlID() )
 	{
-		cDC->SetBkColor(rgbs["Medium Grey"]);
-		cDC->SetTextColor(rgbs["Solarized Base1"]);
-		return *brushes["Medium Grey"];
+		cDC->SetBkColor(rgbs["theme BG1"]);
+		cDC->SetTextColor(rgbs["theme foreground"]);
+		return *brushes["theme BG1"];
 	}
 	else if (controlID >= breakoutBoardEdits[0].GetDlgCtrlID() && controlID <= breakoutBoardEdits.back().GetDlgCtrlID())
 	{
@@ -1136,14 +1136,14 @@ HBRUSH DacSystem::handleColorMessage( CWnd* window, brushMap brushes, rgbMap rgb
 		if (breakoutBoardEdits[editNum].colorState == 0)
 		{
 			// default.
-			cDC->SetTextColor(rgbs["Solarized Base2"]);
-			cDC->SetBkColor(rgbs["Dark Grey"]);
-			return *brushes["Dark Grey"];
+			cDC->SetTextColor(rgbs["theme foreground"]);
+			cDC->SetBkColor(rgbs["theme input"]);
+			return *brushes["theme input"];
 		}
 		else if (breakoutBoardEdits[editNum].colorState == 1)
 		{
 			// in this case, the actuall setting hasn't been changed despite the edit being updated.
-			cDC->SetTextColor(rgbs["White"]);
+			cDC->SetTextColor(rgbs["theme foreground"]);
 			cDC->SetBkColor(rgbs["Red"]);
 			return *brushes["Red"];
 		}
@@ -1151,8 +1151,8 @@ HBRUSH DacSystem::handleColorMessage( CWnd* window, brushMap brushes, rgbMap rgb
 		{
 			// in use during experiment.
 			cDC->SetTextColor(rgbs["Black"]);
-			cDC->SetBkColor(rgbs["White"]);
-			return *brushes["White"];
+			cDC->SetBkColor(rgbs["theme foreground"]);
+			return *brushes["theme foreground"];
 		}
 	}
 	return NULL;

@@ -161,7 +161,7 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 	if (word.size() == 0)
 	{
 		// nothing??
-		return rgbs["Solarized Red"];
+		return rgbs["theme red"];
 	}
 	else if (word[0] == '%')
 	{
@@ -174,7 +174,7 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 				return rgbs["Slate Green"];
 			}
 		}
-		return rgbs["Slate Grey"];
+		return rgbs["theme comment"];
 	}
 	// Check NIAWG-specific commands
 	if ( editType == "Horizontal NIAWG" || editType == "Vertical NIAWG" )
@@ -185,30 +185,30 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 				|| word == "gen" + str( num + 1 ) + "freqramp" || word == "gen" + str( num + 1 ) + "freq&ampramp"
 				 || word == "flash" || word == "rearrange")
 			{
-				return rgbs["Solarized Violet"];
+				return rgbs["theme purple"];
 			}
 		}
 		// check logic
 		if ( word == "repeattiltrig" || word == "repeatSet#" || word == "repeattilsoftwaretrig" || word == "endrepeat" 
 			 || word == "repeatforever" )
 		{
-			return rgbs["Solarized Blue"];
+			return rgbs["theme blue"];
 		}
 		// check options
 		if (word == "lin" || word == "nr" || word == "tanh")
 		{
-			return rgbs["Solarized Green"];
+			return rgbs["theme green"];
 		}
 		// check variable
 		else if (word == "{" || word == "}")
 		{
-			return rgbs["Solarized Cyan"];
+			return rgbs["theme aqua"];
 		}
 		if (word.size() > 8)
 		{
 			if (word.substr(word.size() - 8, 8) == ".nScript")
 			{
-				return rgbs["Solarized Yellow"];
+				return rgbs["theme yellow"];
 			}
 		}
 	}
@@ -216,28 +216,28 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 	if (editType == "Moog") {
 		if (word == "startfreq"|| word == "stopfreq"|| word == "gain"|| word == "loadphase"|| word == "movephase"|| word == "onoff"|| word == "step")
 		{
-			return rgbs["Solarized Violet"];
+			return rgbs["theme purple"];
 		}
 		// check logic
 		if (word == "linloop"|| word=="customsequence")
 		{
-			return rgbs["Solarized Blue"];
+			return rgbs["theme blue"];
 		}
 		// check software triggers
 		if (word == "load" || word == "move")
 		{
-			return rgbs["Solarized Green"];
+			return rgbs["theme green"];
 		}
 		// check variable
 		else if (word == "{" || word == "}")
 		{
-			return rgbs["Solarized Cyan"];
+			return rgbs["theme aqua"];
 		}
 		if (word.size() > 8)
 		{
 			if (word.substr(word.size() - 8, 8) == ".moogScript")
 			{
-				return rgbs["Solarized Yellow"];
+				return rgbs["theme yellow"];
 			}
 		}
 	}
@@ -245,18 +245,18 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 	if (editType == "DDS") {
 		if (word == "set")
 		{
-			return rgbs["Solarized Violet"];
+			return rgbs["theme purple"];
 		}
 		// check variable
 		else if (word == "{" || word == "}")
 		{
-			return rgbs["Solarized Cyan"];
+			return rgbs["theme aqua"];
 		}
 		if (word.size() > 8)
 		{
 			if (word.substr(word.size() - 8, 8) == ".ddsScript")
 			{
-				return rgbs["Solarized Yellow"];
+				return rgbs["theme yellow"];
 			}
 		}
 	}
@@ -265,42 +265,42 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 		std::transform(word.begin(), word.end(), word.begin(), ::tolower);
 		if (word == "ramp" || word == "hold" || word == "pulse" )
 		{
-			return rgbs["Solarized Violet"];
+			return rgbs["theme purple"];
 		}
 		else if ( word == "once" || word == "oncewaittrig" || word == "lin" || word == "tanh" 
 				  || word == "repeatuntiltrig" || word == "sech" || word == "gaussian" || word == "lorentzian" )
 		{
-			return rgbs["Solarized Yellow"];
+			return rgbs["theme yellow"];
 		}
 	}
 	else if (editType == "Master")
 	{
 		if (word == "on:" || word == "off:" || word == "pulseon:" || word == "pulseoff:")
 		{
-			return rgbs["Solarized Violet"];
+			return rgbs["theme purple"];
 		}
 		if (word == "dac:" || word == "dacarange:" || word == "daclinspace:")
 		{
-			return rgbs["Solarized Yellow"];
+			return rgbs["theme yellow"];
 		}
 		else if (word == "call")
 		{
 			colorLine = true;
-			return rgbs["Solarized Blue"];
+			return rgbs["theme blue"];
 		}
 		else if (word == "def")
 		{
 			colorLine = true;
-			return rgbs["Solarized Blue"];
+			return rgbs["theme blue"];
 		}
 		else if ( word == "rsg:" || word == "repeat:" || word == "end" || word == "callcppcode" 
 				  || word == "loadskipentrypoint!")
 		{
-			return rgbs["Solarized Green"];
+			return rgbs["theme green"];
 		}
 		else if (word == "t")
 		{
-			return rgbs["White"];
+			return rgbs["theme foreground"];
 		}
 		for (UINT rowInc = 0; rowInc < ttlNames.size(); rowInc++)
 		{
@@ -317,11 +317,11 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 				
 				if (word == ttlNames[rowInc][numberInc])
 				{
-					return rgbs["Solarized Magenta"];
+					return rgbs["theme green"];
 				}
 				if (word == row + str(numberInc))
 				{
-					return rgbs["Solarized Magenta"];
+					return rgbs["theme green"];
 				}
 			}
 		}
@@ -329,11 +329,11 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 		{
 			if (word == dacNames[dacInc])
 			{
-				return rgbs["Solarized Orange"];
+				return rgbs["theme green"];
 			}
 			if (word == "dac" + str(dacInc))
 			{
-				return rgbs["Solarized Orange"];
+				return rgbs["theme green"];
 			}
 		}
 	}
@@ -341,14 +341,14 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 	if ( word == "+" || word == "=" || word == "(" || word == ")" || word == "*" || word == "-" || word == "/" )
 	{
 		// all scripts now support math expressions.
-		return rgbs["Solarized Cyan"];
+		return rgbs["theme aqua"];
 	}
 
 	for (UINT varInc = 0; varInc < variables.size(); varInc++)
 	{
 		if (word == variables[varInc].name)
 		{
-			return rgbs["Solarized Blue"];
+			return rgbs["theme blue"];
 		}
 	}
 	// check delimiter
@@ -360,31 +360,31 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 	//try {
 	//	// not sure why not just using std::stod.
 	//	boost::lexical_cast<double>(word);
-	//	return rgbs["White"];
+	//	return rgbs["theme foreground"];
 	//}
 	//catch (boost::bad_lexical_cast &) {
 	//	try {
 	//		boost::lexical_cast<int>(word);
-	//		return rgbs["White"];
+	//		return rgbs["theme foreground"];
 	//	}
 	//	catch (boost::bad_lexical_cast &)
 	//	{
-	//		return rgbs["Solarized Red"];
+	//		return rgbs["theme red"];
 	//	}
 	//}	
 	// see if it's an int or double.
 	try {
 		std::stoul(word, nullptr, 0);
-		return rgbs["White"];
+		return rgbs["theme foreground"];
 	}
 	catch (...) {
 		try {
 			std::stod(word, nullptr);
-			return rgbs["White"];
+			return rgbs["theme foreground"];
 		}
 		catch (...)
 		{
-			return rgbs["Solarized Red"];
+			return rgbs["theme red"];
 		}
 	}
 }
@@ -1193,14 +1193,14 @@ INT_PTR Script::handleColorMessage(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lP
 	{
 		SetTextColor(hdcStatic, RGB(255, 255, 255));
 		SetBkColor(hdcStatic, RGB(15, 15, 15));
-		return (LRESULT)brushes["Dark Grey"];
+		return (LRESULT)brushes["theme BG1"];
 	}
 	else if (controlID == title.GetDlgCtrlID() || controlID == savedIndicator.GetDlgCtrlID() 
 			 || controlID == fileNameText.GetDlgCtrlID() || controlID == availableFunctionsCombo.GetDlgCtrlID())
 	{
 		SetTextColor(hdcStatic, RGB(218, 165, 32));
 		SetBkColor(hdcStatic, RGB(25, 25, 25));
-		return (LRESULT)brushes["Medium Grey"];
+		return (LRESULT)brushes["theme BG0"];
 	}
 	else
 	{

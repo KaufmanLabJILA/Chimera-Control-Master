@@ -718,8 +718,8 @@ HBRUSH DioSystem::handleColorMessage(CWnd* window, brushMap brushes, rgbMap rGBs
 		}
 		else if (ttlPushControls[row][number].colorState == 2)
 		{
-			cDC->SetBkColor(rGBs["White"]);
-			return *brushes["White"];
+			cDC->SetBkColor(rGBs["theme foreground"]);
+			return *brushes["theme foreground"];
 		}
 		else
 		{
@@ -729,15 +729,15 @@ HBRUSH DioSystem::handleColorMessage(CWnd* window, brushMap brushes, rgbMap rGBs
 	}
 	else if (controlID >= ttlRowLabels.front().GetDlgCtrlID() && controlID <= ttlRowLabels.back().GetDlgCtrlID())
 	{
-		cDC->SetBkColor(rGBs["Medium Grey"]);
-		cDC->SetTextColor(rGBs["Solarized Base1"]);
-		return *brushes["Medium Grey"];
+		cDC->SetBkColor(rGBs["theme BG1"]);
+		cDC->SetTextColor(rGBs["theme foreground"]);
+		return *brushes["theme BG1"];
 	}
 	else if (controlID >= ttlNumberLabels.front().GetDlgCtrlID() && controlID <= ttlNumberLabels.back().GetDlgCtrlID())
 	{
-		cDC->SetBkColor(rGBs["Medium Grey"]);
-		cDC->SetTextColor(rGBs["Solarized Base1"]);
-		return *brushes["Medium Grey"];
+		cDC->SetBkColor(rGBs["theme BG1"]);
+		cDC->SetTextColor(rGBs["theme foreground"]);
+		return *brushes["theme BG1"];
 	}
 	else
 	{
