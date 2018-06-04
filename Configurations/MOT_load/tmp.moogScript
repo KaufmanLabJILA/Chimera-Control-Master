@@ -1,4 +1,6 @@
-onoff 0b11111
-linloop 5 gain 100 0
-linloop 5 startfreq 30 10
+%Mixing down 260MHz signal, AOs 135-225MHz,
+%corresponds to 125-40MHz
+onoff 0b11
+linloop 0 1 gain 100 0
+linloop 0 1 startfreq 80 0
 load

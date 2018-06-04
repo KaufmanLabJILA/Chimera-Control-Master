@@ -26,7 +26,7 @@
 	#define DIO_SAFEMODE true
 	#define DIO_FPGA_SAFEMODE false
 	#define DIO_ARM_MODE true
-	#define DDS_SAFEMODE false
+	#define DDS_SAFEMODE true
 	#define DAQMX_SAFEMODE false
 	#define RSG_SAFEMODE true
 	#define DDS_FPGA_ADDRESS "FT1I6IBSB" //Device Serial: FT1I6IBS, Use FT1I6IBSB in C++ to select Channel B
@@ -568,7 +568,7 @@ const char MOOG_INFO_TEXT[] =
 " lines and in between commands, so use whatever such formatting pleases your eyes.\n"
 "Accepted Commands:\n"
 "(A) Loop types:\n"
-"linloop # channels, <setting (function from (B))>, start param, param step size> - sets various channel parameters with linear spacing\n"
+"linloop Start channel # (indexed from 0), stop channel #, <setting (function from (B))>, start param, param step size> - sets various channel parameters with linear spacing\n"
 "(B) Set parameters:\n"
 "startfreq, stopfreq <channel #, frequency in MHz>\n"
 "loadphase, movephase <channel #, phase>\n"

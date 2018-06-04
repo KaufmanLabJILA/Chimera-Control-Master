@@ -42,31 +42,33 @@ void DDS_SYNTH::connectasync(const char devSerial[])
 
 void DDS_SYNTH::disconnect()
 {
-	if (this->connType == SERIAL)
-	{
-		if (this->m_hSerialComm != INVALID_HANDLE_VALUE)
+	if (!DDS_SAFEMODE) {
+		if (this->connType == SERIAL)
 		{
-			CloseHandle(this->m_hSerialComm);
-			m_hSerialComm = INVALID_HANDLE_VALUE;
-			thrower("Serial connection closed...");
-			this->connType = NONE;
+			if (this->m_hSerialComm != INVALID_HANDLE_VALUE)
+			{
+				CloseHandle(this->m_hSerialComm);
+				m_hSerialComm = INVALID_HANDLE_VALUE;
+				thrower("Serial connection closed...");
+				this->connType = NONE;
+			}
 		}
-	}
-	else if (this->connType == ASYNC)
-	{
-		FT_STATUS ftStatus;
-		ftStatus = FT_Close(this->ftHandle);
-		if (ftStatus == FT_OK) {
-			// FT_Write OK
+		else if (this->connType == ASYNC)
+		{
+			FT_STATUS ftStatus;
+			ftStatus = FT_Close(this->ftHandle);
+			if (ftStatus == FT_OK) {
+				// FT_Write OK
+			}
+			else {
+				// FT_Write Failed
+				thrower("Error closing async connection");
+			}
 		}
-		else {
-			// FT_Write Failed
-			thrower("Error closing async connection");
+		else
+		{
+			thrower("No connection to close...");
 		}
-	}
-	else
-	{
-		thrower("No connection to close...");
 	}
 	
 }

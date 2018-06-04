@@ -8,7 +8,7 @@ class ExperimentTimer
 {
 	public:
 		void initialize( cameraPositions& inputLoc, CWnd* parent, bool isTriggerModeSensitive, int& id,  
-						 cToolTips& toolTips );
+						 cToolTips& toolTips, rgbMap rgbs);
 		void update( ULONGLONG currentRepNumber, ULONGLONG repsPerVariation, ULONGLONG numberOfVariations, 
 					 UINT picsPerRep );
 		void rearrange( std::string cameraMode, std::string triggerMode, int width, int height, fontMap fonts );

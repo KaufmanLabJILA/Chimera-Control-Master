@@ -35,6 +35,7 @@ AndorCamera::AndorCamera()
 		initialize();
 		setBaselineClamp(1);
 		//setBaselineOffset(0); //TODO: put this back?
+		setShutter(0, 5, 30, 30); //Shutter open for any series, 30ms open/close time.
 		setDMAParameters(1, 0.0001f);
 	}
 	catch (Error& err)
@@ -1187,6 +1188,14 @@ void AndorCamera::initialize()
 	if (!ANDOR_SAFEMODE)
 	{
 		andorErrorChecker(Initialize(aBuffer));
+	}
+}
+
+void AndorCamera::setShutter(int typ, int mode, int closingtime, int openingtime)
+{
+	if (!ANDOR_SAFEMODE)
+	{
+		andorErrorChecker(SetShutter(typ, mode, closingtime, openingtime));
 	}
 }
 

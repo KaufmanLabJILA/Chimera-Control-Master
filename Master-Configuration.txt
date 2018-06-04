@@ -207,4 +207,4 @@ bluecoilx 1.6
 bluecoily -0.6
 bluecoilz -0.6
 motcoils 4
-1 512 1 1 512 1
+162 262 1 230 330 1

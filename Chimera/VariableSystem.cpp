@@ -588,7 +588,7 @@ void VariableSystem::handleDraw(NMHDR* pNMHDR, LRESULT* pResult, rgbMap rgbs)
 			{
 				if (currentVariables[item].active)
 				{
-					pLVCD->clrTextBk = rgbs["theme green"];
+					pLVCD->clrTextBk = rgbs["Dark Green"];
 				}
 				else
 				{
@@ -597,7 +597,7 @@ void VariableSystem::handleDraw(NMHDR* pNMHDR, LRESULT* pResult, rgbMap rgbs)
 
 				if (currentVariables[item].overwritten)
 				{
-					pLVCD->clrText = rgbs["theme red"];
+					pLVCD->clrText = rgbs["Dark Red"];
 				}
 				else
 				{

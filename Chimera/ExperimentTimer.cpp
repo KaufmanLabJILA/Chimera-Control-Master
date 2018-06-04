@@ -7,7 +7,7 @@
 
 
 void ExperimentTimer::initialize( cameraPositions& inputLoc, CWnd* parent, bool isTriggerModeSensitive, int& id,
-								  cToolTips& toolTips )
+								  cToolTips& toolTips, rgbMap rgbs)
 {
 	timeDisplay.sPos = { inputLoc.sPos.x, inputLoc.sPos.y, inputLoc.sPos.x + 168, inputLoc.sPos.y + 40 };
 	timeDisplay.Create("", NORM_STATIC_OPTIONS, timeDisplay.sPos, parent, id++ );
@@ -15,14 +15,14 @@ void ExperimentTimer::initialize( cameraPositions& inputLoc, CWnd* parent, bool 
 	// subseries progress bar
 	variationProgress.sPos = { inputLoc.sPos.x + 168, inputLoc.sPos.y, inputLoc.sPos.x + 1168, inputLoc.sPos.y + 15 };
 	variationProgress.Create(NORM_CWND_OPTIONS | PBS_SMOOTH, variationProgress.sPos, parent, id++ );
-	variationProgress.SetBkColor(RGB(100, 110, 100));
-	variationProgress.SetBarColor(RGB(0, 200, 0));
+	variationProgress.SetBkColor(rgbs["theme BG1"]);
+	variationProgress.SetBarColor(rgbs["theme green"]);
 	variationProgress.SetRange32( 0, 10000 );
 	// series progress bar display
 	overallProgress.sPos = { inputLoc.sPos.x + 168, inputLoc.sPos.y + 15, inputLoc.sPos.x + 1168, inputLoc.sPos.y + 40 };
 	overallProgress.Create( NORM_CWND_OPTIONS | PBS_SMOOTH, overallProgress.sPos, parent, id++ );
-	overallProgress.SetBkColor(RGB(100, 110, 100));
-	overallProgress.SetBarColor(RGB(255, 255, 255));
+	overallProgress.SetBkColor(rgbs["theme BG1"]);
+	overallProgress.SetBarColor(rgbs["theme blue"]);
 	overallProgress.SetRange32( 0, 10000 );
 }
 

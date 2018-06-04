@@ -53,6 +53,7 @@ class AndorCamera
 		void getTemperatureRange(int& min, int& max);
 		void getTemperature(int& temp);
 
+		void setShutter(int typ, int mode, int closingtime, int openingtime);
 		void setAccumulationCycleTime();
 		void setAccumulationCycleTime(float time);
 		void setAccumulationNumber(int number);

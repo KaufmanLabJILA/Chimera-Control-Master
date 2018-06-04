@@ -45,10 +45,10 @@ auto SerialSynth::parseFunction(string funcstr) {
 }
 
 //Loop over moog channels for arbitrary settings function (input as string) with linear spacing in input parameter.
-void SerialSynth::linLoop(string funcstr, UINT channels, double start, double step) {
+void SerialSynth::linLoop(string funcstr, UINT channelstart, UINT channelstop, double start, double step) {
 	function<void(double, UINT)> func = parseFunction(funcstr);
-	for (UINT i = 0; i < channels; i++) {
-		func(start + i*step, i);
+	for (UINT i = channelstart; i < channelstop + 1; i++) {
+		func(start + (i-channelstart)*step, i);
 	}
 }
 
@@ -118,14 +118,15 @@ void SerialSynth::analyzeMoogScript(SerialSynth* moog, std::vector<variableType>
 			break;
 		}
 		else if (word == "linloop") {
-			std::string funcstr, channels;
+			std::string funcstr, channelstart, channelstop;
 			Expression start, step;
-			currentMoogScript >> channels;
+			currentMoogScript >> channelstart;
+			currentMoogScript >> channelstop;
 			currentMoogScript >> funcstr;
 			currentMoogScript >> start;
 			currentMoogScript >> step;
 
-			linLoop(funcstr, stoul(channels, nullptr), start.evaluate(), step.evaluate());
+			linLoop(funcstr, stoul(channelstart, nullptr), stoul(channelstop, nullptr), start.evaluate(), step.evaluate());
 		}
 		else if (word == "onoff") {
 			std::string onoffstr;

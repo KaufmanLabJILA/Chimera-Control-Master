@@ -28,7 +28,7 @@ public:
 	virtual ~SerialSynth(void);
 	//simple way to set many channels at once.
 	auto parseFunction(std::string funcstr);
-	void linLoop(std::string funcstr, UINT channels, double start, double step);
+	void linLoop(std::string funcstr, UINT channelstart, UINT channelstop, double start, double step);
 	//Attempt to parse moog script
 	void loadMoogScript(std::string scriptAddress);
 	void analyzeMoogScript(SerialSynth* moog, std::vector<variableType>& vars);

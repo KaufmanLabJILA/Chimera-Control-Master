@@ -1142,7 +1142,7 @@ BOOL CameraWindow::OnInitDialog()
 	POINT position = { 480, 0 };
 	stats.initialize( position, this, id, tooltips );
 	positions.sPos = { 757, 0 };
-	timer.initialize( positions, this, false, id, tooltips );
+	timer.initialize( positions, this, false, id, tooltips, mainWindowFriend->getRgbs());
 	position = { 757, 40 };
 	pics.initialize( position, this, id, tooltips, mainWindowFriend->getBrushes()["Dark Green"] );
 	//

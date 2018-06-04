@@ -15,6 +15,9 @@ def image(imagetime):
  on: andorshut
  t += 3
 
+%%%Red MOT cooling parameters
+on: red3d
+dac: red3dpow .3
 %%%%%
  on: andortrig
  on: mako1
