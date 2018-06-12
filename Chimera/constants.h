@@ -26,7 +26,7 @@
 	#define DIO_SAFEMODE true
 	#define DIO_FPGA_SAFEMODE false
 	#define DIO_ARM_MODE true
-	#define DDS_SAFEMODE true
+	#define DDS_SAFEMODE false
 	#define DAQMX_SAFEMODE false
 	#define RSG_SAFEMODE true
 	#define DDS_FPGA_ADDRESS "FT1I6IBSB" //Device Serial: FT1I6IBS, Use FT1I6IBSB in C++ to select Channel B
@@ -585,8 +585,19 @@ const char DDS_INFO_TEXT[] =
 " the line below the command in the format specified.\n"
 "- The associated c++ code has been designed to be flexible when it comes to trailing white spaces at the ends of\n"
 " lines and in between commands, so use whatever such formatting pleases your eyes.\n"
-"Accepted Commands:\n"
+"Single output commands:\n"
 "set <device #> <channel #> <frequency in MHz> <amplitude from 1-100>\n"
+"\n"
+"Toggling and sweeping commands:\n"
+"Set sequence of \"snapshot\" commands. Each snapshot must contain, in order:\n"
+"Number of steps in ramp \"reps\". This sets the ramp time by reps * DDS write cycle time, which is 8us.\n"
+"  For toggling, use a rep of 1. The end of the sequence of snapshots should be marked by a snapshot with 0 reps.\n"
+"Channel frequencies, \"freqs\", in MHz.\n"
+"  These should appear in order of device 0 channels 0-3, device 1 channels 0-3.\n"
+"Channel amplitudes, \"amps\", in percent of max amplitude, appearing in same order as freqs.\n"
+"TEMPORARY NOTE: Currently, snapshot 0 sets the initial frequency and amplitude of all channels.\n"
+"Subsequent snapshots set the DELTAS of these values, NOT absolute values.\n"
+"Eventually there will be better handling for this.\n"
 ;
 
 //

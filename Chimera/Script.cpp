@@ -247,6 +247,12 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 		{
 			return rgbs["theme purple"];
 		}
+		else if (word == "snapshot" || word == "reps" || word == "reset") {
+			return rgbs["theme green"];
+		}
+		else if (word == "freqs"|| word == "amps") {
+			return rgbs["theme blue"];
+		}
 		// check variable
 		else if (word == "{" || word == "}")
 		{

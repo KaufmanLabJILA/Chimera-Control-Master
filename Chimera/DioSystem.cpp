@@ -1112,6 +1112,7 @@ void DioSystem::waitTillFinished(UINT variation, bool skipOption)
 		running = dioFPGA[variation].runstatus();
 		wait(1);
 	}
+	wait(5);//TODO: Fix DAC system and get rid of this.
 }
 
 

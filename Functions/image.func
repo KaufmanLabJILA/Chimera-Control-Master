@@ -3,21 +3,21 @@ def image(imagetime):
  t += 1
  dac: blue3dpow 0.3
  dac: imagingDelta -.3
- dac: imagingPow 0.2
+ dac: imagingPow imagepow
 
  %%%%%%Image 1%%%%%
- dac: y1coil -2
+ dac: y1coil -5
  dac: z1coil 0
  dac: x1coil .5
 
  t += 1
  off: blueshut
  on: andorshut
- t += 3
+ t += 5
 
 %%%Red MOT cooling parameters
-on: red3d
-dac: red3dpow .3
+off: red3d
+dac: red3dpow .4
 %%%%%
  on: andortrig
  on: mako1
@@ -27,15 +27,28 @@ dac: red3dpow .3
  off: rp679
  %on: blue3d
  %on: red3dnarrow 
+ %on: redcool
+repeat: 12
+   on: imag461
+   t += .1
+   off: imag461
+   %repeat: 10
+   %on: axial
+   %t += .1
+   %off: axial
+   on: redcool
+   t += 4
+   off: redcool
+   %end
+end
 
- on: imag461
- t += imagetime
- off: imag461
-
+ 
+ off: redcool
  off: andortrig
  off: mako1
+ off: red3d
  %%%%%
  dac: red3dpow .4
- t += 20
+ t += 5
 
  off: andorshut

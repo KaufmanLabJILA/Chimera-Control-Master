@@ -19,9 +19,9 @@ tweezermod
 0
 blowawayshutter
 0
-a10
+resetdds
 0
-a11
+stepdds
 0
 a12
 0
@@ -41,7 +41,7 @@ redprobe
 0
 redcool
 0
-b5
+axial
 0
 b6
 0
@@ -207,4 +207,4 @@ bluecoilx 1.6
 bluecoily -0.6
 bluecoilz -0.6
 motcoils 4
-162 262 1 230 330 1
+150 250 1 250 350 1
