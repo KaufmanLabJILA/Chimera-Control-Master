@@ -200,11 +200,11 @@ piezomirror
 -10 - 10
 0
 7
-xcoilval -0.05
-ycoilval -0.0041
-zcoilval 0.44
+xcoilval -0.07
+ycoilval -0.02
+zcoilval 0.48
 bluecoilx 1.6
 bluecoily -0.6
 bluecoilz -0.6
 motcoils 4
-150 250 1 250 350 1
+225 325 1 250 350 1

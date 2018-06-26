@@ -400,6 +400,9 @@ void SerialSynth::writeLoadPhase(double phase, UINT channel) {
 	if (channel > 31 || channel < 0) {
 		thrower("Error: only channels 0 to 31 valid.");
 	}
+	//THIS IS WHERE I MADE CHANGES, ADDED THE DEFINITION OF THE LPW, INSTEAD OF FEEDING THE PHASE IN DIRECTLY.
+	//PHASE SHOULD BE DEFINED FROM 0 TO 2 PI, BUT SHOULD TEST TO MAKE SURE.
+	UINT LPW = (UINT)round(phase * pow(2, 12) / (2*PI));
 
 	UINT addr = loadoffset + channel;
 
@@ -408,9 +411,8 @@ void SerialSynth::writeLoadPhase(double phase, UINT channel) {
 
 	UINT LPW3 = 0;
 	UINT LPW2 = 0;
-	UINT LPW1 = (UINT)floor(phase / 256.0);
-	phase = phase - LPW1 * 256;
-	UINT LPW0 = (UINT)floor(phase);
+	UINT LPW1 = LPW >> 8;
+	UINT LPW0 = LPW & 0xffUL;
 
 	cout << "hi " << addr_hi << " - lo " << addr_lo << " -- load phase " << LPW3 << LPW2 << LPW1 << LPW0 << endl;
 	char command[7] = { 161, addr_hi, addr_lo, LPW3, LPW2, LPW1, LPW0 };

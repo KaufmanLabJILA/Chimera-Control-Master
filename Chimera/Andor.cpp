@@ -310,7 +310,7 @@ void AndorCamera::armCamera(CameraWindow* camWin, double& minKineticCycleTime)
 	{
 		setHSSpeed(1, 0);
 	}
-	setVSSpeed(1); //TODO: change "1" to meaningful value.
+	setVSSpeed(2); //TODO: change "1" to meaningful value.
 	setAcquisitionMode();
 	setReadMode();
 	setExposures();
