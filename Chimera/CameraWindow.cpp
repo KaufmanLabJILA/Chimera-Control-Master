@@ -37,10 +37,11 @@ BEGIN_MESSAGE_MAP(CameraWindow, CDialog)
 	ON_WM_TIMER()
 	ON_WM_VSCROLL()
 
-	ON_COMMAND_RANGE( MENU_ID_RANGE_BEGIN, MENU_ID_RANGE_END, &CameraWindow::passCommonCommand )
+	ON_COMMAND_RANGE( MENU_ID_RANGE_BEGIN, MENU_ID_RANGE_END, &CameraWindow::passCommandsAndSettings)
+	//ON_COMMAND(ID_RUNMENU_RUNCAMERA, &CameraWindow::passPictureSettings)
 	ON_COMMAND_RANGE( PICTURE_SETTINGS_ID_START, PICTURE_SETTINGS_ID_END, &CameraWindow::passPictureSettings )
-	ON_CONTROL_RANGE( CBN_SELENDOK, PICTURE_SETTINGS_ID_START, PICTURE_SETTINGS_ID_END, 
-					  &CameraWindow::passPictureSettings )
+	//ON_CONTROL_RANGE( CBN_SELENDOK, PICTURE_SETTINGS_ID_START, PICTURE_SETTINGS_ID_END, 
+					  //&CameraWindow::passPictureSettings )
 	// these ids all go to the same function.
 	ON_CONTROL_RANGE( EN_CHANGE, IDC_PICTURE_1_MIN_EDIT, IDC_PICTURE_1_MIN_EDIT, &CameraWindow::handlePictureEditChange )
 	ON_CONTROL_RANGE( EN_CHANGE, IDC_PICTURE_1_MAX_EDIT, IDC_PICTURE_1_MAX_EDIT, &CameraWindow::handlePictureEditChange )
@@ -216,8 +217,10 @@ void CameraWindow::abortCameraRun()
 			mainWindowFriend->getComm()->sendError(err.what());
 		}
 		
+		if (!mainWindowFriend->masterIsRunning()) {
 
-		if (Andor.getSettings().cameraMode != "Continuous Single Scans Mode")
+		}
+		else if (Andor.getSettings().cameraMode != "Continuous Single Scans Mode")
 		{
 			int answer = promptBox("Acquisition Aborted. Delete Data file (data_" + str(dataHandler.getDataFileNumber())
 									  + ".h5) for this run?",MB_YESNO );
@@ -300,7 +303,11 @@ LRESULT CameraWindow::onCameraProgress( WPARAM wParam, LPARAM lParam )
 	{
 		std::lock_guard<std::mutex> locker( plotLock );
 		// TODO: add check to check if this is needed.
-		imageQueue.push_back( picData[(pictureNumber - 1) % currentSettings.picsPerRepetition] );
+		if (imageQueue.size() == 0) {
+		}
+		else {
+			imageQueue.push_back(picData[(pictureNumber - 1) % currentSettings.picsPerRepetition]);
+		}
 	}
 
 	CDC* drawer = GetDC( );
@@ -348,7 +355,7 @@ LRESULT CameraWindow::onCameraProgress( WPARAM wParam, LPARAM lParam )
 	ReleaseDC( drawer );
 
 	// write the data to the file.
-	if (currentSettings.cameraMode != "Continuous Single Scans Mode")
+	if (currentSettings.cameraMode != "Continuous Single Scans Mode" && picData.size()!=0)
 	{
 		try
 		{
@@ -1242,6 +1249,10 @@ void CameraWindow::stopPlotter( )
 	plotThreadAborting = true;
 }
 
+void CameraWindow::passCommandsAndSettings(UINT id) {
+	passPictureSettings(id);
+	passCommonCommand(id);
+}
 
 void CameraWindow::passCommonCommand(UINT id)
 {

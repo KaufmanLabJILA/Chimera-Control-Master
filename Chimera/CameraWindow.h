@@ -45,6 +45,7 @@ class CameraWindow : public CDialog
 		void handleSpecialGreaterThanMaxSelection();
 		void handleSpecialLessThanMinSelection();
 		void readImageParameters();
+		void passCommandsAndSettings(UINT id);
 		void passCommonCommand( UINT id );
 		void passTrigger();
 		void passCameraMode();

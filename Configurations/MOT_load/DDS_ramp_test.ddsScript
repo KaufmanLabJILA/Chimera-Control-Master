@@ -13,28 +13,28 @@ set 1 3 20 20
 % Setting initial state, what happens after reset.
 reset
 % null null null null red3dnarrow redcool axial null
-freqs 80 80 80 80 80.275 80.1 80.06 80 %freqs in MHz
-amps 100 20 20 20 16 99 40 100 %amps in percent
+freqs 80 80 80 80 80.275 80.1 80.025 80 %freqs in MHz
+amps  100 20 20 20 16 10 2 100 %amps in percent
 
 % this is before the blue MOT
 snapshot 0 reps 1
 freqs 0 1 2 3 0 0 0 7 %Freq step in MHz
-amps 0 0 0 0 0 0 0 0 %amp step in percent
+amps  0 0 0 0 0 0 0 0 %amp step in percent
 
 % after red MOT, before further cooling
 snapshot 1 reps 1
 freqs 0 1 2 3 -.1 0 0 7 %Freq step in MHz
-amps 0 0 0 0 15 0 0 0 %amp step in percent
+amps  0 0 0 0 15 0 0 0 %amp step in percent
 
-% after additional cooling step
+% after additional cooling step (spect)
 snapshot 2 reps 1
 freqs 0 1 2 3 0 fscan 0 7 %Freq step in MHz
-amps 0 0 0 0 0 0 0 0 %amp step in percent
+amps  0 0 0 0 0 -5 0 0 %amp step in percent
 
 % right before imaging
 snapshot 3 reps 1
 freqs 0 1 2 3 .25 0 0 7 %Freq step in MHz
-amps 0 0 0 0 0 27 0 0 %amp step in percent
+amps  0 0 0 0 0 27 0 0 %amp step in percent
 
 
 %Example sweep: 10000*8us = 80ms sweep time,
