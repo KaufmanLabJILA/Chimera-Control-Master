@@ -1,27 +1,29 @@
+% Silly step currently necessary to initialize
+% amplitude multiplier. DO NOT WRITE 0 freq.
+set 0 0 20 20
+set 0 1 20 20
+set 0 2 20 20
+set 0 3 20 20
+
+set 1 0 20 20
+set 1 1 20 20
+set 1 2 20 20
+set 1 3 20 20
+
 % Setting initial state, what happens after reset.
 reset
-% null null null null red3dnarrow radial axial radial2
-freqs 2 80 80 80 80.25 80.175 80.08 50 %freqs in MHz
-amps  0 20 20 20 16 10 20 10 %amps in percent
-
-% this is before the blue MOT
-snapshot 0 reps 1
-freqs 0 10 2 3 0 0 0 0 %Freq step in MHz
-amps  0 0 0 0 0 0 0 0 %amp step in percent
+% tweezermod null null null red3dnarrow redcool axial null
+freqs 0.15 80 80 80 80.275 80.1 80.025 80 %freqs in MHz
+amps  50 20 20 20 16 10 2 100 %amps in percent
 
 % after red MOT, before further cooling
-snapshot 1 reps 1
-freqs 0 10 2 3 fscan 0 0 0 %Freq step in MHz
+snapshot 0 reps 1
+freqs 0 0 0 0 -.1 0 0 0 %Freq step in MHz
 amps  0 0 0 0 15 0 0 0 %amp step in percent
 
-% after additional cooling step (spect)
-snapshot 2 reps 1
-freqs 0 10 2 3 0.075 0 0 0 %Freq step in MHz
-amps  0 0 0 0 0 0 0 0 %amp step in percent
-
 % right before imaging
-snapshot 3 reps 1
-freqs 0 10 2 3 -fscan 0 0 0 %Freq step in MHz
+snapshot 1 reps 1
+freqs 0 0 0 0 .25 0 0 0 %Freq step in MHz
 amps  0 0 0 0 0 27 0 0 %amp step in percent
 
 
@@ -34,6 +36,6 @@ amps  0 0 0 0 0 27 0 0 %amp step in percent
 
 %Marking end of sequence.
 %Additional TTLs don't change output.
-snapshot 4 reps 0
+snapshot 2 reps 0
 freqs 0 0 0 0 0 0 0 0
 amps 0 0 0 0 0 0 0 0 

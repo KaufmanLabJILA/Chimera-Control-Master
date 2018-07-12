@@ -24,6 +24,7 @@ def blue_mot(loadTime):
   %dac: uppermotcoil 7
   % t += 20
 
+
   %Drop power for additional cooling
   dac: blue3dpow .025
   t += 2
@@ -32,3 +33,4 @@ def blue_mot(loadTime):
   off: rp707
   off: rp679
   t += 0.01
+

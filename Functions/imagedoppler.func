@@ -3,7 +3,7 @@ def imagedoppler():
    t += 1
    dac: blue3dpow 0.3
    dac: imagingDelta -.3
-   dac: imagingPow .12
+   dac: imagingPow .04
    off: red3d
    dac: red3dpow .4
 
@@ -40,12 +40,12 @@ def imagedoppler():
  %on: red3dnarrow 
  %on: redcool
 
-repeat: 90
+repeat: 45
   on: red3dnarrow
-  t += 1.2
+  t += 2.4
   off: red3dnarrow
   on: imag461
-  t += 0.5
+  t += 1
   off: imag461
 end
 
@@ -56,7 +56,7 @@ end
 %off: imag461
 
  
- off: redcool
+
  off: andortrig
  off: mako1
  off: red3d

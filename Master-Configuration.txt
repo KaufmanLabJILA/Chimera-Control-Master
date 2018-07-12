@@ -37,9 +37,9 @@ slower
 0
 blowawayttl
 0
-redprobe
+radial2
 0
-redcool
+radial
 0
 axial
 0
@@ -202,7 +202,7 @@ piezomirror
 7
 xcoilval -0.07
 ycoilval -0.02
-zcoilval 0.48
+zcoilval 0.49
 bluecoilx 1.6
 bluecoily -0.6
 bluecoilz -0.6

@@ -62,6 +62,7 @@ class AndorCamera
 		void setADChannel(int channel); 
 		void setEmCcdGain(int gain);
 		void setEmGainSettingsAdvanced(int state);
+		void setFanMode(int mode);
 		void setFrameTransferMode();
 		void setFrameTransferMode(int mode);
 		void setHSSpeed(int type, int index);

@@ -314,6 +314,17 @@ void DDS_SYNTH::programDDS(DDS_SYNTH* dds, std::vector<variableType>& variables,
 			Expression freq, amp;
 			std::string subWord;
 			currentDDSScript >> subWord;
+
+			for (UINT8 device = 0; device < 2; device++)
+			{
+
+				write(device, 0, 0, 0, 0, 0xF0); //select all channels on device.
+				UINT8 byte1 = 1 << 4; //Necessary to turn on amplitude multiplier.
+				write(device, 6, 0, 0, 0, 0); //TODO: Fix this. Currently sets Mult to off and then back to force a rewrite, solving issue with inactive channels.
+				write(device, 6, 0, 0, byte1, 0);
+			}
+			longupdate();
+
 			if (subWord == "freqs") {
 				for (UINT8 device = 0; device < 2; device++)
 				{

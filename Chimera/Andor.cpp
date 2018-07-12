@@ -37,6 +37,7 @@ AndorCamera::AndorCamera()
 		//setBaselineOffset(0); //TODO: put this back?
 		setShutter(0, 5, 30, 30); //Shutter open for any series, 30ms open/close time.
 		setDMAParameters(1, 0.0001f);
+		setFanMode(2); //Internal fan off.
 	}
 	catch (Error& err)
 	{
@@ -1197,6 +1198,14 @@ void AndorCamera::setShutter(int typ, int mode, int closingtime, int openingtime
 	if (!ANDOR_SAFEMODE)
 	{
 		andorErrorChecker(SetShutter(typ, mode, closingtime, openingtime));
+	}
+}
+
+void AndorCamera::setFanMode(int mode)
+{
+	if (!ANDOR_SAFEMODE)
+	{
+		andorErrorChecker(SetFanMode(mode));
 	}
 }
 
