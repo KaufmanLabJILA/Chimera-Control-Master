@@ -331,7 +331,8 @@ void DDS_SYNTH::programDDS(DDS_SYNTH* dds, std::vector<variableType>& variables,
 					for (UINT8 channel = 0; channel < 4; channel++)
 					{
 						currentDDSScript >> freq;
-						writeArrResetFreq(device, channel, freq.evaluate(variables, variation));	
+						writeArrResetFreq(device, channel, freq.evaluate(variables, variation));
+						currentState.freqs[device][channel] = freq.evaluate(variables, variation);
 					}
 				}
 			}
@@ -346,6 +347,7 @@ void DDS_SYNTH::programDDS(DDS_SYNTH* dds, std::vector<variableType>& variables,
 					{
 						currentDDSScript >> amp;
 						writeArrResetAmp(device, channel, amp.evaluate(variables, variation));
+						currentState.amps[device][channel] = amp.evaluate(variables, variation);
 					}
 				}
 			}
@@ -355,12 +357,18 @@ void DDS_SYNTH::programDDS(DDS_SYNTH* dds, std::vector<variableType>& variables,
 		}
 		else if (word == "snapshot") {
 			Expression index, freq, amp, rep;
+			UINT8 indexVal;
+			UINT16 repVal;
+			double freqstep, ampstep;
 			std::string subWord;
 			currentDDSScript >> index;
 			currentDDSScript >> subWord;
+			indexVal = index.evaluate(variables, variation);
+			currentState.index = indexVal;
 			if (subWord == "reps") {
 				currentDDSScript >> rep;
-				writeArrReps(index.evaluate(variables, variation), rep.evaluate(variables, variation));
+				repVal = rep.evaluate(variables, variation);
+				writeArrReps(indexVal, repVal);
 			}
 			else {
 				thrower("Incorrect snapshot sequence. Must set repetitions, then frequencies, then amplitudes");
@@ -372,7 +380,9 @@ void DDS_SYNTH::programDDS(DDS_SYNTH* dds, std::vector<variableType>& variables,
 					for (UINT8 channel = 0; channel < 4; channel++)
 					{
 						currentDDSScript >> freq;
-						writeArrDeltaFreq(device, channel, index.evaluate(variables, variation), freq.evaluate(variables, variation));
+						freqstep = (freq.evaluate(variables, variation) - currentState.freqs[device][channel]) / static_cast<double>(repVal);
+						writeArrDeltaFreq(device, channel, indexVal, freqstep);
+						currentState.freqs[device][channel] = freq.evaluate(variables, variation);
 					}
 				}
 			}
@@ -386,12 +396,26 @@ void DDS_SYNTH::programDDS(DDS_SYNTH* dds, std::vector<variableType>& variables,
 					for (UINT8 channel = 0; channel < 4; channel++)
 					{
 						currentDDSScript >> amp;
-						writeArrDeltaAmp(device, channel, index.evaluate(variables, variation), amp.evaluate(variables, variation));
+						ampstep = (amp.evaluate(variables, variation) - currentState.amps[device][channel]) / static_cast<double>(repVal);
+						writeArrDeltaAmp(device, channel, indexVal, ampstep);
+						currentState.amps[device][channel] = amp.evaluate(variables, variation);
 					}
 				}
 			}
 			else {
 				thrower("Incorrect snapshot sequence. Must set repetitions, then frequencies, then amplitudes");
+			}
+		}
+		else if (word == "end") {
+			UINT8 indexVal = currentState.index + 1;
+			writeArrReps(indexVal, 0);
+			for (UINT8 device = 0; device < 2; device++)
+			{
+				for (UINT8 channel = 0; channel < 4; channel++)
+				{
+					writeArrDeltaFreq(device, channel, indexVal, 0);
+					writeArrDeltaAmp(device, channel, indexVal, 0);
+				}
 			}
 		}
 		else if (word == "set") {

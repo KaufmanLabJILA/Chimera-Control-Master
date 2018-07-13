@@ -203,6 +203,7 @@
     <ClInclude Include="commonTypes.h" />
     <ClInclude Include="Communicator.h" />
     <ClInclude Include="DacStructures.h" />
+    <ClInclude Include="DdsState.h" />
     <ClInclude Include="DDS_SYNTH.h" />
     <ClInclude Include="DebugOptionsControl.h" />
     <ClInclude Include="Expression.h" />

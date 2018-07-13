@@ -1,6 +1,7 @@
 #pragma once
 #include <windows.h>
 #include "ftd2xx.h"
+#include "DdsState.h"
 
 #define MSGLENGTH         7
 #define WBWRITE           (unsigned char)161
@@ -25,6 +26,7 @@ private:
 	// the script file contents get dumped into this.
 	std::string currentDDSScriptText;
 	ScriptStream currentDDSScript;
+	DdsState currentState;
 public:
 	DDS_SYNTH(const char devSerial[]);
 	~DDS_SYNTH();

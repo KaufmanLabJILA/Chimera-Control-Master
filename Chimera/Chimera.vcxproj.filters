@@ -467,6 +467,9 @@
     <ClInclude Include="DDS_SYNTH.h">
       <Filter>Main Window</Filter>
     </ClInclude>
+    <ClInclude Include="DdsState.h">
+      <Filter>Main Window</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Icon2.ico">
