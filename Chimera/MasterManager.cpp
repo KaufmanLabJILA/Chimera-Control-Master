@@ -300,6 +300,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 			{
 				skipOption = input->skipNext->load();
 			}
+			input->dacs->stopDacs();
 			input->dacs->configureClocks(variationInc, skipOption);
 			input->dacs->writeDacs(variationInc, skipOption);
 			input->ttls->writeTtlDataToFPGA(variationInc, skipOption);

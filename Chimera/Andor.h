@@ -61,6 +61,7 @@ class AndorCamera
 		void setAcquisitionMode(int mode);
 		void setADChannel(int channel); 
 		void setEmCcdGain(int gain);
+		void SetFastExternalTrigger(int mode);
 		void setEmGainSettingsAdvanced(int state);
 		void setFanMode(int mode);
 		void setFrameTransferMode();
@@ -121,8 +122,8 @@ class AndorCamera
 
 		static UINT __stdcall cameraThread( void* voidPtr );
 		
-		void initializeClass( Communicator* comm,
-										   std::vector<std::chrono::time_point<std::chrono::high_resolution_clock>>* imageTimes );
+		//void initializeClass( Communicator* comm, std::vector<std::chrono::time_point<std::chrono::high_resolution_clock>>* imageTimes );
+		void initializeClass(Communicator* comm, chronoTimes* imageTimes);
 		std::string getSystemInfo();
 
 	private:

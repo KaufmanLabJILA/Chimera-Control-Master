@@ -369,11 +369,11 @@ void SerialSynth::writeStopFreq(double freq, UINT channel) {
 
 //Gain ranges from 0 to 100.
 void SerialSynth::writeGain(double gainin, UINT channel) {
-	UINT gain = round(gainin/100 * 65535);
+	UINT gain = round(gainin/100/6.2 * 65535);
 	if (channel > 31 || channel < 0) {
 		thrower("Error: only channels 0 to 31 valid.");
 	}
-	if (gain > 0xFFFF) {
+	if (gain > 0xFFFF/6) {
 		thrower("Error: gain too high.");
 	}
 	if (gain < 0) {

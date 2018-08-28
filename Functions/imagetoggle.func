@@ -1,37 +1,27 @@
 % Master-Script See the "?" for info on commands.
-def imagedoppler():
+def imagetoggle():
    t += .1
    dac: blue3dpow 0.3
    dac: imagingDelta -.3
-   dac: imagingPow .175
+   dac: imagingPow .1
    off: red3d
    off: rp707
    off: rp679
+   off: blueshut
  %%%%%%Image 1%%%%%
-   %dac: y1coil -5
-   %dac: z1coil 0
-   %dac: x1coil .5
-   %dac: x1coil -.06
-   %dac: y1coil .2
-   %dac: z1coil 0
-  repeat: 10
+
     on: red3dnarrow
     on: radial
-    t += .35
-    off: red3dnarrow
     on: imag461
-    t += .02
+    t += 5
     off: imag461
-  end
+    off: red3dnarrow
+    off: radial
 
+    t += .2
 
-
-   off: blueshut
-   t += .2
-
-   on: andorshut
-   t += 4
-
+    on: andorshut
+    t += 4
 
     %on: red3dnarrow
     %on: radial
@@ -39,12 +29,11 @@ def imagedoppler():
     %on: radial
     % off: red3dnarrow
 
-
 %%%Red MOT cooling parameters
 
 %%%%%
 
-
+dac: imagingPow .1
 
 off: rp707
 %off: rp679
@@ -52,37 +41,39 @@ off: rp707
 on: andortrig
 t += .2 
 off: radial
-repeat: 60
+
     on: red3dnarrow
-    %on: radial
-    t += .5
     on: imag461
-    t += .05
+    t += 38
     off: imag461
-end
+    off: red3dnarrow
+   
 off: andortrig
 off: radial
-
 off: andortrig
 
 on: stepdds 
 t += .007 
 off: stepdds
 
-daclinspace: tweezerpow tweezerpow_val -2.7 5 10
-%on: red3dnarrow
-t += 20
-off: red3dnarrow
+%daclinspace: tweezerpow tweezerpow_val -1.2 5 10
 
-repeat: 1
-    on: red3dnarrow
-    %on: radial
-    t += .5
+%off: red3dnarrow
+%t += 20
+%on: rp707
+%on: rp679
+dac: imagingPow .1
+on: red3dnarrow
     on: imag461
-    t += .06
+    t += 100
     off: imag461
-end
-daclinspace: tweezerpow -2.7 tweezerpow_val 5 10
+off: red3dnarrow
+t += 1
+%daclinspace: tweezerpow -1.2 tweezerpow_val 5 10
+%daclinspace: tweezerpow tweezerpow_val filter_pow 5 10
+%t += 10
+%daclinspace: tweezerpow filter_pow tweezerpow_val 5 10
+%t += 10
 
 t += 20
 off: red3dnarrow
@@ -90,23 +81,24 @@ off: red3dnarrow
 on: stepdds 
 t += .007 
 off: stepdds
+dac: imagingPow .1
 
-dac: imagingPow .175
-%on: andortrig
+on: andortrig
 t += .2 
-repeat: 1
+off: radial
 
     on: red3dnarrow
-    %on: radial
-    t += .5
     on: imag461
-    t += .03
+    t += 38
     off: imag461
-end
-off: radial
+    off: red3dnarrow
+   
 off: andortrig
+off: radial
+
+off: andorshut
 
  %%%%%
-%t += 115
-t += 5
+t += 115
+%t += 50
 

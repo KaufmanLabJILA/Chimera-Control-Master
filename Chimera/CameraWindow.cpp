@@ -206,7 +206,7 @@ void CameraWindow::abortCameraRun()
 		atomCrunchThreadActive = false;
 		// Wait until plotting thread is complete.
 		WaitForSingleObject( plotThreadHandle, INFINITE );
-		plotThreadAborting = false;
+		//plotThreadAborting = false;
 		// camera is no longer running.
 		try
 		{
@@ -236,6 +236,7 @@ void CameraWindow::abortCameraRun()
 				}
 			}
 		}
+		plotThreadAborting = false;
 	}
 	else if (status == DRV_IDLE)
 	{
@@ -313,37 +314,39 @@ LRESULT CameraWindow::onCameraProgress( WPARAM wParam, LPARAM lParam )
 	CDC* drawer = GetDC( );
 	try
 	{
-		if (realTimePic)
-		{
-			std::pair<int, int> minMax;
-			// draw the most recent pic.
-			minMax = stats.update( picData.back(), pictureNumber % currentSettings.picsPerRepetition, selectedPixel,
-								   currentSettings.imageSettings.width, currentSettings.imageSettings.height,
-								   pictureNumber / currentSettings.picsPerRepetition,
-								   currentSettings.totalPicsInExperiment / currentSettings.picsPerRepetition );
-
-			pics.drawPicture( drawer, pictureNumber % currentSettings.picsPerRepetition, picData.back(), minMax );
-
-			timer.update( pictureNumber / currentSettings.picsPerRepetition, currentSettings.repetitionsPerVariation,
-						  currentSettings.totalVariations, currentSettings.picsPerRepetition );
-		}
-		else if (pictureNumber % currentSettings.picsPerRepetition == 0)
-		{
-
-			int counter = 0;
-			for (auto data : picData)
+		if (plotThreadAborting == false) {
+			if (realTimePic)
 			{
 				std::pair<int, int> minMax;
-				minMax = stats.update( data, counter, selectedPixel, currentSettings.imageSettings.width,
-									   currentSettings.imageSettings.height, pictureNumber / currentSettings.picsPerRepetition,
-									   currentSettings.totalPicsInExperiment / currentSettings.picsPerRepetition );
+				// draw the most recent pic.
+				minMax = stats.update(picData.back(), pictureNumber % currentSettings.picsPerRepetition, selectedPixel,
+					currentSettings.imageSettings.width, currentSettings.imageSettings.height,
+					pictureNumber / currentSettings.picsPerRepetition,
+					currentSettings.totalPicsInExperiment / currentSettings.picsPerRepetition);
 
-				pics.drawPicture( drawer, counter, data, minMax );
-				pics.drawDongles( drawer, selectedPixel, analysisHandler.getAnalysisLocs(), analysisHandler.getAtomGrid() );
-				counter++;
+				pics.drawPicture(drawer, pictureNumber % currentSettings.picsPerRepetition, picData.back(), minMax);
+
+				timer.update(pictureNumber / currentSettings.picsPerRepetition, currentSettings.repetitionsPerVariation,
+					currentSettings.totalVariations, currentSettings.picsPerRepetition);
 			}
-			timer.update( pictureNumber / currentSettings.picsPerRepetition, currentSettings.repetitionsPerVariation,
-						  currentSettings.totalVariations, currentSettings.picsPerRepetition );
+			else if (pictureNumber % currentSettings.picsPerRepetition == 0)
+			{
+
+				int counter = 0;
+				for (auto data : picData)
+				{
+					std::pair<int, int> minMax;
+					minMax = stats.update(data, counter, selectedPixel, currentSettings.imageSettings.width,
+						currentSettings.imageSettings.height, pictureNumber / currentSettings.picsPerRepetition,
+						currentSettings.totalPicsInExperiment / currentSettings.picsPerRepetition);
+
+					pics.drawPicture(drawer, counter, data, minMax);
+					pics.drawDongles(drawer, selectedPixel, analysisHandler.getAnalysisLocs(), analysisHandler.getAtomGrid());
+					counter++;
+				}
+				timer.update(pictureNumber / currentSettings.picsPerRepetition, currentSettings.repetitionsPerVariation,
+					currentSettings.totalVariations, currentSettings.picsPerRepetition);
+			}
 		}
 
 	}

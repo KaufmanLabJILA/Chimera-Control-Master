@@ -126,9 +126,9 @@ void DDS_SYNTH::lockPLLs() {
 //Input frequency in MHz
 INT DDS_SYNTH::getFTW(double freq) {//Negative ints, Nyquist freq, works out.
 	if (freq > INTERNAL_CLOCK/2) {
-		thrower("DDS frequency out of range");
+		thrower("DDS frequency out of range. Must be <250MHz. ");
 	}
-	INT FTW = (INT)round(freq * pow(2, 32) / (INTERNAL_CLOCK));
+	INT FTW = (INT)round((freq * pow(2, 32)) / (INTERNAL_CLOCK));
 	return(FTW);
 }
 
@@ -162,10 +162,10 @@ UINT DDS_SYNTH::getATW(double amp) {
 }
 
 INT DDS_SYNTH::get32bitATW(double amp) {//SIGNED
-	if (amp > 100) {
+	if (abs(amp) > 100) {
 		thrower("DDS amplitude out of range, should be <100%.");
 	}
-	INT ATW = (INT)round(amp * (pow(2, 32) - 1) / 100.0);
+	INT ATW = (INT)round(amp * (pow(2, 32) - pow(2,22)) / 100.0);
 	return(ATW);
 }
 
@@ -276,7 +276,7 @@ void DDS_SYNTH::writeArrDeltaAmp(UINT8 device, UINT8 channel, UINT8 index, doubl
 
 	UINT16 address = 0x1400 + 0x200 * (4 * device + 3 - channel) + index;
 
-	UINT ATW = get32bitATW(deltaamp);
+	INT ATW = get32bitATW(deltaamp);
 
 	UINT8 byte4 = ATW & 0x000000ffUL;
 	UINT8 byte3 = (ATW & 0x0000ff00UL) >> 8;
@@ -364,10 +364,16 @@ void DDS_SYNTH::programDDS(DDS_SYNTH* dds, std::vector<variableType>& variables,
 			currentDDSScript >> index;
 			currentDDSScript >> subWord;
 			indexVal = index.evaluate(variables, variation);
+			if (indexVal > 255) {
+				thrower("Maximum number of DDS snapshots is 256. ");
+			}
 			currentState.index = indexVal;
 			if (subWord == "reps") {
 				currentDDSScript >> rep;
 				repVal = rep.evaluate(variables, variation);
+				if (repVal > 65535) {
+					thrower("Maximum number of steps in ramp is 65535. ");
+				}
 				writeArrReps(indexVal, repVal);
 			}
 			else {
@@ -381,6 +387,9 @@ void DDS_SYNTH::programDDS(DDS_SYNTH* dds, std::vector<variableType>& variables,
 					{
 						currentDDSScript >> freq;
 						freqstep = (freq.evaluate(variables, variation) - currentState.freqs[device][channel]) / static_cast<double>(repVal);
+						if (freqstep > INTERNAL_CLOCK / 4) {
+							thrower("DDS frequency step too large, must be <125MHz. Try adding more reps to ramp.");
+						}
 						writeArrDeltaFreq(device, channel, indexVal, freqstep);
 						currentState.freqs[device][channel] = freq.evaluate(variables, variation);
 					}
@@ -397,6 +406,9 @@ void DDS_SYNTH::programDDS(DDS_SYNTH* dds, std::vector<variableType>& variables,
 					{
 						currentDDSScript >> amp;
 						ampstep = (amp.evaluate(variables, variation) - currentState.amps[device][channel]) / static_cast<double>(repVal);
+						if (ampstep > 50) {
+							thrower("DDS amplitude step too large, must be <50%. Try adding more reps to ramp.");
+						}
 						writeArrDeltaAmp(device, channel, indexVal, ampstep);
 						currentState.amps[device][channel] = amp.evaluate(variables, variation);
 					}
