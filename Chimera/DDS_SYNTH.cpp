@@ -152,7 +152,6 @@ void DDS_SYNTH::writefreq(UINT8 device, UINT8 channel, double freq) {
 	write(device, 4, byte1, byte2, byte3, byte4);
 }
 
-//Amplitude in %, note that this scale is non-linear, and ranges from ~-13dBm to -7dBm
 UINT DDS_SYNTH::getATW(double amp) {
 	if (amp > 100) {
 		thrower("DDS amplitude out of range, should be <100%.");

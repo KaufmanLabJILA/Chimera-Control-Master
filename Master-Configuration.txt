@@ -23,7 +23,7 @@ resetdds
 0
 stepdds
 0
-a12
+mmload
 0
 a13
 0
@@ -199,12 +199,15 @@ sidemotpower
 piezomirror
 -10 - 10
 0
-7
-xcoilval 0.015
-ycoilval 0.0135
-zcoilval 0.0025
+10
+xcoilval 0.016
+ycoilval 0.0165
+zcoilval 0.005
 bluecoilx 0
 bluecoily 0
 bluecoilz -0.05
 motcoils 4
-240 310 1 310 370 1
+carrier 79.9808
+rsb 0.219
+asb 0.045
+75 150 1 300 375 1

@@ -8,12 +8,25 @@ on: andortrig
 t += .2 
 off: radial
 
-    on: red3dnarrow
-    on: imag461
-    t += 75
-    off: imag461
-    off: red3dnarrow
-   
+    %off: red3dnarrow
+    %on: imag461
+    %t += 75
+    %off: imag461
+    %off: red3dnarrow
+on: imag461
+repeat: 38
+  on: radial2
+  on: radial
+  t += .5
+  off: radial2
+  off: radial
+  on: axial
+  t += .5
+  off: axial
+end   
+off: imag461
+
+
 off: andortrig
 off: radial
 t += 1

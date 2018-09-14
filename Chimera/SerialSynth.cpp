@@ -373,8 +373,8 @@ void SerialSynth::writeGain(double gainin, UINT channel) {
 	if (channel > 31 || channel < 0) {
 		thrower("Error: only channels 0 to 31 valid.");
 	}
-	if (gain > 0xFFFF/6) {
-		thrower("Error: gain too high.");
+	if (gain > 0xFFFF) {
+		thrower("Error: gain too high."); //TODO: put correct limit, 1/6, back in here
 	}
 	if (gain < 0) {
 		thrower("Error: gain cannot be negative. Maybe try changing phase instead?");

@@ -5,48 +5,53 @@
 %%%MAY WANT TO CHECK THAT SETTINGS ARE STILL CORRECT.
 
 % Channel order:
-% tweezermod null null null red3dnarrow radial axial radial2
+% tweezermod na na na red3dnarrow radial axial radial2
 
 % Setting initial state, what happens after reset.
 reset
-freqs 2 100 80 1 80.55 82 80.0 80 %freqs in MHz
-amps  0 100 0 100 50 100 99 10 %amps in percent
+freqs 2 100 80 1 80.55 82 80.0 100 %freqs in MHz
+amps  0 100 0 100 30 100 99 0 %amps in percent
 
 % further cooling
 snapshot 0 reps 2
-freqs 5 90 2 1 80.55 80.16 80.25 80
-amps  0 90 0 100 20 100 10 10
+freqs 5 90 2 1 80.55 80.16 80.25 100
+amps  0 90 0 100 20 100 10 0
 
 % pre-image
 snapshot 1 reps 2
-freqs 0 70 2 1 78.7 80.065 80.06 80
-amps  0 80 0 100 50 40 40 10
+freqs 0 70 2 1 78.5 80.065 80.06 100
+amps  0 80 0 100 30 40 40 0
 
 % further cooling
 snapshot 2 reps 2
 %freqs 0 120 2 specao 80.03 80.05 80.05 80
-freqs 0 70 2 1 80.18 100 100 80
-amps  0 70 0 100 50 40 100 10
+freqs 0 70 2 1 80.1 carrier+rsb carrier+asb carrier+rsb
+amps  0 70 0 100 50 50 30 50
+
+% Heating
+snapshot 3 reps 2
+%freqs 0 120 2 specao 80.03 80.05 80.05 80
+freqs 0 70 2 1 80.1 carrier-rsb carrier-asb 80
+amps  0 70 0 100 50 80 40 10
 
 % spec
-snapshot 3 reps 2
-freqs 5 34 2 1 80.1 100 100 80
-amps  0 60 0 100 20 5 50 10
+snapshot 4 reps 2
+freqs 5 34 2 1 80.1 100 100 100
+amps  0 60 0 100 40 60 50 50
 
 % image1
-snapshot 4 reps 2
-freqs 0 40 2 1 78.7 90 80.06 80
-amps  0 20 0 100 80 10 40 10
+snapshot 5 reps 2
+freqs 0 40 2 1 100 80.1 80.125 80.102
+amps  0 20 0 100 30 50 30 50
 
 % image2
-snapshot 5 reps 2
-freqs 0 40 2 1 78.7 90 100 80
-amps  0 20 0 100 40 10 20 10
+snapshot 6 reps 2
+freqs 0 40 2 1 100 80.5 80.125 80.102
+amps  0 20 0 100 30 50 30 50
 
 % image3
-snapshot 6 reps 2
-freqs 0 40 2 1 78.7 90 80.06 80
-amps  0 20 0 100 80 10 40 10
-
+snapshot 7 reps 2
+freqs 0 40 2 1 78.8 80.1 80.125 80.102
+amps  0 20 0 100 30 50 30 50
 
 end
