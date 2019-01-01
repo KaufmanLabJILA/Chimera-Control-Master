@@ -1,0 +1,12 @@
+% Master-Script See the "?" for info on commands.
+def mako_image():
+  %Image red MOT:
+  %on: blueshut
+  %t += 5  
+  on: blue3d
+  on: mako1
+  t += .5
+  off: mako1
+  off: blue3d
+  off: blueshut
+

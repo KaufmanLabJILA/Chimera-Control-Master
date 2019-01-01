@@ -9,8 +9,8 @@
 
 % Setting initial state, what happens after reset.
 reset
-freqs 2 100 80 1 80.55 82 80.0 100 %freqs in MHz
-amps  0 100 0 100 30 100 99 0 %amps in percent
+freqs 2 100 80 1 80.125 80 80 80 %freqs in MHz
+amps  0 100 0 100 30 100 100 100 %amps in percent
 
 % further cooling
 snapshot 0 reps 2
@@ -19,39 +19,38 @@ amps  0 90 0 100 20 100 10 0
 
 % pre-image
 snapshot 1 reps 2
-freqs 0 40 2 1 100 80.1 80.125 80.125
-amps  0 20 0 100 30 40 50 1
+freqs 0 40 2 1 100 80.1 80.125 70
+amps  0 20 0 100 25 40 50 100
 
 % further cooling
 snapshot 2 reps 2
 %freqs 0 120 2 specao 80.03 80.05 80.05 80
+freqs 0 70 2 1 carrier+.12 carrier+rsb carrier+asb carrier+rsb
+amps  0 70 0 100 50 60 15 0
+
+% spec
+snapshot 3 reps 2
+freqs 5 34 2 1 100 79.92 100 79.94
+amps  0 60 0 100 40 100 15 1
+
+% image1
+snapshot 4 reps 2
+freqs 0 40 2 1 79.95 80.2 80.09 carrieri+rsbi
+amps  0 20 0 100 50 60 30 0
+
+% image2
+snapshot 5 reps 2
 freqs 0 70 2 1 80.1 carrier+rsb carrier+asb carrier+rsb
 amps  0 70 0 100 50 50 30 50
 
-% Heating
-snapshot 3 reps 2
-%freqs 0 120 2 specao 80.03 80.05 80.05 80
-freqs 0 70 2 1 80.1 carrier-rsb carrier-asb 80
-amps  0 70 0 100 50 80 40 10
-
 % spec
-snapshot 4 reps 2
-freqs 5 34 2 1 80.1 79.98 100 100
-amps  0 60 0 100 40 20 50 50
-
-% image1
-snapshot 5 reps 2
-freqs 0 40 2 1 79.95 80.0275 80.05 80.125
-amps  0 20 0 100 50 70 100 0
-
-% image2
 snapshot 6 reps 2
-freqs 0 40 2 1 79.95 80.0275 80.05 80.125
-amps  0 20 0 100 50 70 100 0
+freqs 5 34 2 1 80.1 100 100 100
+amps  0 60 0 100 40 60 20 50
 
 % image3
 snapshot 7 reps 2
-freqs 0 40 2 1 79.95 80.0275 80.05 80.125
-amps  0 20 0 100 50 70 100 0
+freqs 0 80 2 1 79.95 80.0 80.05 70
+amps  0 100 0 100 50 70 100 100
 
 end

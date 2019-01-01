@@ -47,6 +47,7 @@ class AndorCamera
 		void getAdjustedRingExposureTimes(int size, float* timesArray);
 		void getNumberOfPreAmpGains(int& number);
 		void getOldestImage(std::vector<long>& dataArray);
+		void getNewestImage(std::vector<long>& dataArray);
 		void getPreAmpGain(int index, float& gain);
 		void queryStatus();
 		void queryStatus(int& status);
@@ -68,6 +69,7 @@ class AndorCamera
 		void setFrameTransferMode(int mode);
 		void setHSSpeed(int type, int index);
 		void setVSSpeed(int index);
+		void getVSSpeed(int index, float * speed);
 		void setImage(int hBin, int vBin, int lBorder, int rBorder, int tBorder, int bBorder);
 		void setKineticCycleTime();
 		void setKineticCycleTime(float cycleTime);

@@ -37,7 +37,8 @@ AndorCamera::AndorCamera()
 		//setBaselineOffset(0); //TODO: put this back?
 		setShutter(0, 5, 30, 30); //Shutter open for any series, 30ms open/close time.
 		setDMAParameters(1, 0.0001f);
-		setFanMode(2); //Internal fan off.
+		// TODO: turn fan back off, fanmode 2
+		setFanMode(0); //Internal fan off.
 		SetFastExternalTrigger(0); //TODO: Be careful of this setting.
 	}
 	catch (Error& err)
@@ -181,7 +182,7 @@ void AndorCamera::onFinish()
 
 
 /*
- * this thread watches the camera for pictuers and when it sees a picture lets the main thread know via a message. 
+ * this thread watches the camera for pictures and when it sees a picture lets the main thread know via a message. 
  * it gets initialized at the start of the program and is basically always running.
  */
 unsigned __stdcall AndorCamera::cameraThread( void* voidPtr )
@@ -324,6 +325,7 @@ void AndorCamera::armCamera(CameraWindow* camWin, double& minKineticCycleTime)
 	}
 	else if (runSettings.acquisitionMode == 3)
 	{
+		setFrameTransferMode(0);
 		setKineticCycleTime();
 		setScanNumber();
 		// set this to 1.
@@ -382,8 +384,10 @@ std::vector<std::vector<long>> AndorCamera::acquireImageData()
 	{
 		if (exception.whatBare() == "DRV_NO_NEW_DATA")
 		{
+			throw;
+			//TODO: put handling for this error back in.
 			// just return this anyways.
-			return imagesOfExperiment;
+			/*return imagesOfExperiment*/;
 		}
 		else
 		{
@@ -429,7 +433,11 @@ std::vector<std::vector<long>> AndorCamera::acquireImageData()
 	imagesOfExperiment[experimentPictureNumber].resize(size);
  	if (!ANDOR_SAFEMODE)
 	{
-		getOldestImage(tempImage);
+		getOldestImage(tempImage); //TODO: go back to getoldest.
+		//getNewestImage(tempImage);
+		if (tempImage.size() == 0) {
+			throw;
+		}
 		// immediately rotate
 		for (UINT imageVecInc = 0; imageVecInc < imagesOfExperiment[experimentPictureNumber].size(); imageVecInc++)
 		{
@@ -1334,6 +1342,14 @@ void AndorCamera::setVSSpeed(int index)
 	}
 }
 
+void AndorCamera::getVSSpeed(int index, float *speed)
+{
+	if (!ANDOR_SAFEMODE)
+	{
+		GetVSSpeed(index, speed);
+	}
+}
+
 // note that the function used here could be used to get actual information about the number of images, I just only use
 // it to check whether there are any new images or not. Not sure if this is the smartest way to do this.
 void AndorCamera::checkForNewImages()
@@ -1352,6 +1368,15 @@ void AndorCamera::getOldestImage(std::vector<long>& dataArray)
 	if (!ANDOR_SAFEMODE)
 	{
 		andorErrorChecker(GetOldestImage(dataArray.data(), dataArray.size()));
+	}
+}
+
+
+void AndorCamera::getNewestImage(std::vector<long>& dataArray)
+{
+	if (!ANDOR_SAFEMODE)
+	{
+		andorErrorChecker(GetMostRecentImage(dataArray.data(), dataArray.size()));
 	}
 }
 

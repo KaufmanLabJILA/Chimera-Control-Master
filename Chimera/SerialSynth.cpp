@@ -309,7 +309,7 @@ void SerialSynth::move(){
 }
 
 UINT SerialSynth::getFTW(double freq) {
-	UINT FTW = (UINT) round(freq * pow(2,28) / (800.0 / 3.0));
+	UINT FTW = (UINT) round(freq * pow(2,32) / (800.0 / 3.0));
 	return(FTW);
 }
 

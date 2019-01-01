@@ -335,6 +335,10 @@ LRESULT CameraWindow::onCameraProgress( WPARAM wParam, LPARAM lParam )
 				int counter = 0;
 				for (auto data : picData)
 				{
+					if (data.size() == 0) {//TODO: remove, better fix involving reading all images at end of each rep, rather than during.
+						int size = currentSettings.imageSettings.width * currentSettings.imageSettings.height;
+						data.resize(size, 0);
+					}
 					std::pair<int, int> minMax;
 					minMax = stats.update(data, counter, selectedPixel, currentSettings.imageSettings.width,
 						currentSettings.imageSettings.height, pictureNumber / currentSettings.picsPerRepetition,

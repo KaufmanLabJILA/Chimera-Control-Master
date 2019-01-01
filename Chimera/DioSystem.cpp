@@ -1425,10 +1425,10 @@ UINT DioSystem::countTriggers( UINT row, UINT number, UINT variation )
 
 void DioSystem::checkNotTooManyTimes( UINT variation )
 {
-	if ( formattedTtlSnapshots[variation].size( ) > 512 )
+	if ( formattedTtlSnapshots[variation].size( ) > 4096)
 	{
-		thrower( "ERROR: DIO Data has more than 512 individual timestamps, which is larger than the DIO64 FIFO Buffer"
-				 ". The DIO64 card can only support 512 individual time-stamps. If you need more, you need to configure"
+		thrower( "ERROR: DIO Data has more than 4096 individual timestamps, which is larger than the DIO64 FIFO Buffer"
+				 ". The DIO64 card can only support 4096 individual time-stamps. If you need more, you need to configure"
 				 " this code to create a thread to continuously write to the DIO64 card as it outputs." );
 	}
 }

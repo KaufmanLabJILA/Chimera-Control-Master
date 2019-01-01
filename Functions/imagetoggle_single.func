@@ -1,32 +1,18 @@
 % Master-Script See the "?" for info on commands.
 def imagetoggle_single():
 
-off: rp707
-off: rp679
-
 on: andortrig
 t += .2 
-off: radial
+%off: radial
 
-    %off: red3dnarrow
-    %on: imag461
-    %t += 75
-    %off: imag461
-    %off: red3dnarrow
 on: imag461
-repeat: 38
-  on: radial2
-  on: radial
-  t += .5
-  off: radial2
-  off: radial
-  on: axial
-  t += .5
-  off: axial
-end   
+on: red3dnarrow
+%on: radial
+t += 75
+off: red3dnarrow
 off: imag461
-
-
+  
+off: imag461
 off: andortrig
 off: radial
 t += 1
