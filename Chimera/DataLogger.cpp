@@ -256,6 +256,9 @@ void DataLogger::logMasterParameters( MasterThreadInput* input )
 		}
 		H5::Group runParametersGroup( file.createGroup( "/Master-Parameters" ) );
 		writeDataSet( input->runMaster, "Run-Master", runParametersGroup );
+		writeDataSet(input->repetitionNumber, "Repetitions", runParametersGroup);
+		logVariables(input->variables, runParametersGroup);
+
 		if ( input->runMaster )
 		{
 			std::ifstream masterScript( input->masterScriptAddress );
@@ -272,10 +275,9 @@ void DataLogger::logMasterParameters( MasterThreadInput* input )
 			writeDataSet( "", "NA:Master-Script", runParametersGroup );
 			writeDataSet( "", "NA:Master-Script-File-Address", runParametersGroup );
 		}
-		writeDataSet( input->repetitionNumber, "Repetitions", runParametersGroup );
-		logVariables( input->variables, runParametersGroup );
-		logNiawgSettings( input );
-		logAgilentSettings( input->agilents );
+		logFunctions(runParametersGroup);
+		//logNiawgSettings( input );
+		//logAgilentSettings( input->agilents );
 	}
 	catch ( H5::Exception& err )
 	{
@@ -283,6 +285,113 @@ void DataLogger::logMasterParameters( MasterThreadInput* input )
 	}
 }
 
+void DataLogger::logFunctions(H5::Group& group)
+{
+	H5::Group funcGroup(group.createGroup("Functions"));
+	try
+	{
+		// Re-add the entries back in and figure out which one is the current one.
+		std::vector<std::string> names;
+		std::string search_path = FUNCTIONS_FOLDER_LOCATION + "\\" + "*." + FUNCTION_EXTENSION;
+		WIN32_FIND_DATA fd;
+		HANDLE hFind;
+		hFind = FindFirstFile(cstr(search_path), &fd);
+		if (hFind != INVALID_HANDLE_VALUE)
+		{
+			do
+			{
+				// if looking for folders
+				if (!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+				{
+					names.push_back(fd.cFileName);
+				}
+			} while (FindNextFile(hFind, &fd));
+			FindClose(hFind);
+		}
+
+		for (auto name : names)
+		{
+			std::ifstream functionFile(FUNCTIONS_FOLDER_LOCATION + "\\" + name);
+			std::stringstream stream;
+			stream << functionFile.rdbuf();
+			std::string tempStr(stream.str());
+			H5::Group indvFunc(funcGroup.createGroup(name));
+			writeDataSet(stream.str(), name, indvFunc);
+		}
+	}
+	catch (H5::Exception& err)
+	{
+		thrower("ERROR: Failed to log functions in HDF5 file: " + err.getDetailMsg());
+	}
+}
+
+void DataLogger::logDDSParameters(MasterThreadInput* input)
+{
+	try
+	{
+		if (input == NULL)
+		{
+			H5::Group runParametersGroup(file.createGroup("/DDS-Parameters:NA"));
+			return;
+		}
+		H5::Group runParametersGroup(file.createGroup("/DDS-Parameters"));
+		writeDataSet(input->runMaster, "Run-DDS", runParametersGroup);
+		if (input->runMaster)
+		{
+			std::ifstream ddsScript(input->ddsScriptAddress);
+			if (!ddsScript.is_open())
+			{
+				thrower("ERROR: Failed to load DDS script!");
+			}
+			std::string scriptBuf(str(ddsScript.rdbuf()));
+			writeDataSet(scriptBuf, "DDS-Script", runParametersGroup);
+			writeDataSet(input->ddsScriptAddress, "DDS-Script-File-Address", runParametersGroup);
+		}
+		else
+		{
+			writeDataSet("", "NA:DDS-Script", runParametersGroup);
+			writeDataSet("", "NA:DDS-Script-File-Address", runParametersGroup);
+		}
+	}
+	catch (H5::Exception& err)
+	{
+		thrower("ERROR: Failed to log DDS parameters in HDF5 file: detail:" + err.getDetailMsg());
+	}
+}
+
+void DataLogger::logMoogParameters(MasterThreadInput* input)
+{
+	try
+	{
+		if (input == NULL)
+		{
+			H5::Group runParametersGroup(file.createGroup("/Moog-Parameters:NA"));
+			return;
+		}
+		H5::Group runParametersGroup(file.createGroup("/Moog-Parameters"));
+		writeDataSet(input->runMoog, "Run-Moog", runParametersGroup);
+		if (input->runMoog)
+		{
+			std::ifstream moogScript(input->moogScriptAddress);
+			if (!moogScript.is_open())
+			{
+				thrower("ERROR: Failed to load Moog script!");
+			}
+			std::string scriptBuf(str(moogScript.rdbuf()));
+			writeDataSet(scriptBuf, "Moog-Script", runParametersGroup);
+			writeDataSet(input->moogScriptAddress, "Moog-Script-File-Address", runParametersGroup);
+		}
+		else
+		{
+			writeDataSet("", "NA:Moog-Script", runParametersGroup);
+			writeDataSet("", "NA:Moog-Script-File-Address", runParametersGroup);
+		}
+	}
+	catch (H5::Exception& err)
+	{
+		thrower("ERROR: Failed to log Moog parameters in HDF5 file: detail:" + err.getDetailMsg());
+	}
+}
 
 void DataLogger::logVariables( const std::vector<variableType>& variables, H5::Group& group )
 {
@@ -301,7 +410,6 @@ void DataLogger::logVariables( const std::vector<variableType>& variables, H5::G
 		writeAttribute( variable.constant, "Constant", varSet );
 	}
 }
-
 
 void DataLogger::writePic(UINT currentPictureNumber, std::vector<long> image, imageParameters dims)
 {

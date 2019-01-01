@@ -1145,6 +1145,8 @@ namespace commonFunctions
 		logger->initializeDataFiles();
 		logger->logAndorSettings( input.camSettings, takeAndorPictures );
 		logger->logMasterParameters( input.masterInput );
+		logger->logDDSParameters(input.masterInput);
+		logger->logMoogParameters(input.masterInput);
 		logger->logMiscellaneous();
 		//logger->closeFile(); //TODO: May have to remove this once andor is integrated.
 	}

@@ -275,7 +275,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 				//}
 			}
 			if (!DDS_SAFEMODE) {
-				input->dds->loadDDSScript(input->DDSScriptAddress);
+				input->dds->loadDDSScript(input->ddsScriptAddress);
 				input->dds->programDDS(input->dds, input->variables, variationInc);
 			}
 			input->comm->sendError( warnings );
@@ -535,7 +535,7 @@ void MasterManager::startExperimentThread(MasterThreadInput* input)
 		input->moog->loadMoogScript(input->moogScriptAddress);
 	}
 	if (!DDS_SAFEMODE) {
-		input->dds->loadDDSScript(input->DDSScriptAddress);
+		input->dds->loadDDSScript(input->ddsScriptAddress);
 	}
 	// start thread.
 	runningThread = AfxBeginThread(experimentThreadProcedure, input, THREAD_PRIORITY_HIGHEST);

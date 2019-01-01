@@ -688,7 +688,7 @@ void MainWindow::fillMasterThreadInput(MasterThreadInput* input)
 	input->python = &this->python;
 	input->masterScriptAddress = profile.getMasterAddressFromConfig();
 	input->moogScriptAddress = profile.getMoogAddressFromConfig();
-	input->DDSScriptAddress = profile.getDdsAddressFromConfig();
+	input->ddsScriptAddress = profile.getDdsAddressFromConfig();
 	input->settings = settings.getOptions();
 	input->repetitionNumber = getRepNumber();
 	input->debugOptions = debugger.getOptions();

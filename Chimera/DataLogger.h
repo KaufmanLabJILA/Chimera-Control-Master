@@ -18,12 +18,15 @@ class DataLogger
 		void initializeDataFiles();
 		void writePic( UINT currentPictureNumber, std::vector<long> image, imageParameters dims );
 		void logMasterParameters( MasterThreadInput* input);
+		void logFunctions(H5::Group& group);
+		void logDDSParameters(MasterThreadInput* input);
+		void logMoogParameters(MasterThreadInput* input);
 		void logMiscellaneous();
 		void logAndorSettings( AndorRunSettings settings, bool on );
 		void logNiawgSettings( MasterThreadInput* input );
 		void logAgilentSettings( const std::vector<Agilent*>& input );
 		void logVariables( const std::vector<variableType>& variables, H5::Group& group );
-		void logTektronicsSettings();
+		//void logTektronicsSettings();
 		UINT getNextFileNumber();
 		void closeFile();
 		void deleteFile(Communicator* comm);

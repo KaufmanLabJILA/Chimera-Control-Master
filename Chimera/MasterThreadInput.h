@@ -25,7 +25,7 @@ struct MasterThreadInput
 	SerialSynth* moog;
 	std::string moogScriptAddress;
 	DDS_SYNTH* dds;
-	std::string DDSScriptAddress;
+	std::string ddsScriptAddress;
 
 	EmbeddedPythonHandler* python;
 	DataLogger* logger;
