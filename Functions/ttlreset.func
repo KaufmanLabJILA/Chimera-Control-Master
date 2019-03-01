@@ -1,0 +1,23 @@
+% Master-Script See the "?" for info on commands.
+def ttlReset():
+  
+  on: rp707
+  on: rp679
+
+  off: axial
+  off: radial
+  off: radial2
+  off: red3d
+  off: red3dnarrow
+  off: imag461
+  off: blowawayttl
+  off: tweezermod
+
+  off: imagshut
+  off: andorshut
+  off: blowawayshutter
+
+  off: mako1
+  off: mmload
+  off: stepdds
+  off: resetdds

@@ -5,57 +5,58 @@
 %%%MAY WANT TO CHECK THAT SETTINGS ARE STILL CORRECT.
 
 % Channel order:
-% tweezermod FNC 698 na red3dnarrow radial axial radial2
+% tweezermod FNC 698 688 red3dnarrow radial axial radial2
 
 % Setting initial state, what happens after reset.
 reset
-freqs 2 72.76 75 1 82.5 82.9 80 80 %freqs in MHz
+freqs 0 72.76 75 80 82.5 82.9 80 80 %freqs in MHz
 amps  0 100 100 100 100 100 100 100 %amps in percent
 
 % further cooling
 snapshot 0 reps 2
-freqs 5 72.76 75 1 80.55 80.16 80.25 100
+freqs 0 72.76 75 80 80.55 80.16 80.25 100
 amps  0 100 100 100 100 100 10 100
 
 % pre-image
 snapshot 1 reps 2
-freqs 0 72.76 75 1 100 83.7 80.125 79.5
+freqs 0 72.76 75 80 100 radcool 80.125 79.5
 amps  0 100 100 0 100 60 50 100
 
 %  image1
 snapshot 2 reps 2
-%freqs 0 120 2 specao 80.03 80.05 80.05 80
-freqs 0 72.76 75 1 84 83.7 83.5 79.94
-amps  10 100 100 100 25 60 90 100
+%freqs 0 120 2 specao 80.03 80.05 80.05 0
+freqs 0 72.76 75 80 84 radcool 83.5 84
+amps  10 100 100 100 25 60 90 90
 
 % post image cooling
 snapshot 3 reps 2
-freqs 0 72.76 75 1 80.06 radial_freq 79.975 radial_freq
-amps  10 100 100 100 100 cool_pow 5 25
+freqs 0 72.76 75 80 80.06 80.07 79.975 80.05
+%freqs 0 72.76 75 1 80.06 79.823 79.885 79.797
+amps  10 100 100 100 100 100 20 40
 
 % spectroscopy
 snapshot 4 reps 2
-freqs 0 72.76 specscan 1 82.9 80 80 79.5
-amps  10 100 100 100 100 100 100 100
+freqs 0 72.76 clock+specscan 80 82.9 spec3p1 spec3p1 spec3p1
+amps  0 100 100 100 100 85 25 15
 
 % image2 %was 82.5, 100
 snapshot 5 reps 2
-freqs 0 72.76 75 1 82.9 83.7 83.5 79.94
+freqs 0 72.76 75 80 82.9 radcool 83.5 79.94
 amps  10 100 100 100 100 60 90 100
 
 % NA
 snapshot 6 reps 2
-freqs 0 72.76 75 1 80.1 carrier+rsb carrier+asb carrier+rsb
+freqs 0 72.76 75 80 80.1 carrier_3p1+rsb carrier_3p1+asb carrier_3p1+rsb
 amps  0 100 100 100 10 50 30 100
 
 % NA
 snapshot 7 reps 2
-freqs 5 72.76 75 1 80.1 100 100 100
+freqs 5 72.76 75 80 80.1 100 100 100
 amps  0 100 100 100 10 60 20 100
 
 % NA
 snapshot 8 reps 2
-freqs 0 72.76 75 1 79.95 80.0 80.05 80
+freqs 0 72.76 75 80 79.95 80.0 80.05 80
 amps  0 100 100 100 100 100 100 100
 
 end

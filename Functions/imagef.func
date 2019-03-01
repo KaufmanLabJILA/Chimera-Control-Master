@@ -1,0 +1,15 @@
+% Master-Script See the "?" for info on commands.
+def imagef():
+  dac: imagingPow .09
+  on: andorshut
+  t += 4
+  on: andortrig
+  t += .2
+  on: imag461
+  on: radial
+  t += 18
+  off: imag461
+  off: radial
+%  off: axial
+  off: andortrig
+  off: andorshut

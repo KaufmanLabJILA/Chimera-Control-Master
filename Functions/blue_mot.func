@@ -10,6 +10,8 @@ def blue_mot(loadTime):
   on: slower
   dac: x1coil bluecoilx
   dac: y1coil bluecoily
+  dac: y2coil bluecoily
+
   dac: z1coil bluecoilz
   dac: motcoils 4
 

@@ -24,19 +24,19 @@ amps  0 100 100 0 100 60 50 100
 
 %  image1
 snapshot 2 reps 2
-%freqs 0 120 2 specao 80.03 80.05 80.05 80
-freqs 0 72.76 75 1 84 83.7 83.5 79.94
-amps  10 100 100 100 25 60 90 100
+%freqs 0 120 2 specao 80.03 80.05 80.05 0
+freqs 0 72.76 75 1 84 83.7 83.5 84
+amps  10 100 100 100 25 60 90 90
 
 % post image cooling
 snapshot 3 reps 2
 freqs 0 72.76 75 1 80.06 radial_freq 79.975 radial_freq
-amps  10 100 100 100 100 cool_pow 5 25
+amps  10 100 100 100 100 25 5 cool_pow
 
 % spectroscopy
 snapshot 4 reps 2
-freqs 0 72.76 specscan 1 82.9 80 80 79.5
-amps  10 100 100 100 100 100 100 100
+freqs 0 72.76 specscan 1 82.9 80 80 79.9
+amps  10 100 100 100 100 100 100 25
 
 % image2 %was 82.5, 100
 snapshot 5 reps 2

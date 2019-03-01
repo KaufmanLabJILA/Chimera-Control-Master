@@ -25,7 +25,7 @@ stepdds
 0
 mmload
 0
-a13
+shut689
 0
 a14
 0
@@ -154,7 +154,7 @@ nc
 imagingpow
 -10 - 10
 0
-diagmotpower
+imagtune
 -10 - 10
 0
 depumpfreq
@@ -164,13 +164,13 @@ tweezermod
 -10 - 10
 0
 intensity698
--10 - 0
+-10 - 10
 0
 tweezerpow
 -10 - 0
 0
-nc14
-0 - 0.4
+bluetune
+-0.1 - 0.1
 0
 blue3dpow
 -10 - 10
@@ -207,9 +207,9 @@ bluecoilx 0
 bluecoily 0
 bluecoilz -0.05
 motcoils 4
-carrier 79.98
+carrier_3p1 79.946
 rsb 0.224
 asb 0.04
-carrieri 79.99
+carrier_3p0 79.99
 rsbi 0.086
 201 300 1 311 410 1
