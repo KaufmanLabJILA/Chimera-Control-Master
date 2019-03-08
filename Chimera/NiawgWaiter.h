@@ -3,7 +3,7 @@
 #include <thread>
 
 #include "windows.h"
-#include "niFgen.h"
+//#include "niFgen.h"
 #include "externals.h"
 #include "time.h"
 #include "constants.h"

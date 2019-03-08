@@ -11,7 +11,6 @@
 MainWindow::MainWindow(UINT id, CDialog* splash) : CDialog(id), profile(PROFILES_PATH), 
     masterConfig( MASTER_CONFIGURATION_FILE_ADDRESS ), 
 	appSplash( splash ),
-	niawg( 1,14 ),
 	dds(DDS_FPGA_ADDRESS)
 {
 	// create all the main rgbs and brushes. I want to make sure this happens before other windows are created.
@@ -192,19 +191,19 @@ void MainWindow::passConfigPress( )
 }
 
 
-void MainWindow::passNiawgIsOnPress( )
-{
-	if ( niawg.isOn() )
-	{
-		niawg.turnOff( );
-		menu.CheckMenuItem( ID_NIAWG_NIAWGISON, MF_UNCHECKED );
-	}
-	else
-	{
-		niawg.turnOn( );
-		menu.CheckMenuItem( ID_NIAWG_NIAWGISON, MF_CHECKED );
-	}
-}
+//void MainWindow::passNiawgIsOnPress( )
+//{
+//	if ( niawg.isOn() )
+//	{
+//		niawg.turnOff( );
+//		menu.CheckMenuItem( ID_NIAWG_NIAWGISON, MF_UNCHECKED );
+//	}
+//	else
+//	{
+//		niawg.turnOn( );
+//		menu.CheckMenuItem( ID_NIAWG_NIAWGISON, MF_CHECKED );
+//	}
+//}
 
 
 LRESULT MainWindow::onNoAtomsAlertMessage( WPARAM wp, LPARAM lp )
@@ -254,27 +253,27 @@ BOOL MainWindow::OnInitDialog( )
 	// don't redraw until the first OnSize.
 	SetRedraw( false );
 
-	/// initialize niawg.
-	try
-	{
-		niawg.initialize( );
-	}
-	catch ( Error& except )
-	{
-		errBox( "ERROR: NIAWG failed to start! Error: " + except.whatStr( ) );
-		return -1;
-	}
+	///// initialize niawg.
+	//try
+	//{
+	//	niawg.initialize( );
+	//}
+	//catch ( Error& except )
+	//{
+	//	errBox( "ERROR: NIAWG failed to start! Error: " + except.whatStr( ) );
+	//	return -1;
+	//}
 
-	try
-	{
-		niawg.setDefaultWaveforms( this );
-		// but the default starts in the horizontal configuration, so switch back and start in this config.
-		restartNiawgDefaults( );
-	}
-	catch ( Error& exception )
-	{
-		errBox( "ERROR: failed to start niawg default waveforms! Niawg gave the following error message: " + exception.whatStr( ) );
-	}
+	//try
+	//{
+	//	niawg.setDefaultWaveforms( this );
+	//	// but the default starts in the horizontal configuration, so switch back and start in this config.
+	//	restartNiawgDefaults( );
+	//}
+	//catch ( Error& exception )
+	//{
+	//	errBox( "ERROR: failed to start niawg default waveforms! Niawg gave the following error message: " + exception.whatStr( ) );
+	//}
 	// not done with the script, it will not stay on the NIAWG, so I need to keep track of it so thatI can reload it onto the NIAWG when necessary.	
 	/// Initialize Windows
 	std::string which = "";
@@ -487,16 +486,16 @@ void MainWindow::OnSize(UINT nType, int cx, int cy)
 }
 
 
-void MainWindow::setNiawgRunningState( bool newRunningState )
-{
-	niawg.setRunningState( newRunningState );
-}
-
-
-bool MainWindow::niawgIsRunning()
-{
-	return niawg.niawgIsRunning();
-}
+//void MainWindow::setNiawgRunningState( bool newRunningState )
+//{
+//	niawg.setRunningState( newRunningState );
+//}
+//
+//
+//bool MainWindow::niawgIsRunning()
+//{
+//	return niawg.niawgIsRunning();
+//}
 
 
 
@@ -510,10 +509,10 @@ BOOL MainWindow::PreTranslateMessage(MSG* pMsg)
 }
 
 
-void MainWindow::setNiawgDefaults()
-{
-	niawg.setDefaultWaveforms(this);
-}
+//void MainWindow::setNiawgDefaults()
+//{
+//	niawg.setDefaultWaveforms(this);
+//}
 
 
 fontMap MainWindow::getFonts()
@@ -551,10 +550,10 @@ void MainWindow::OnClose()
 }
 
 
-void MainWindow::stopNiawg()
-{
-	niawg.turnOff();
-}
+//void MainWindow::stopNiawg()
+//{
+//	niawg.turnOff();
+//}
 
 
 UINT MainWindow::getRepNumber()
@@ -571,7 +570,7 @@ std::string MainWindow::getSystemStatusString()
 	if (!NIAWG_SAFEMODE)
 	{
 		status += "Code System is Active!\n";
-		status += niawg.fgenConduit.getDeviceInfo();
+		//status += niawg.fgenConduit.getDeviceInfo();
 	}
 	else
 	{
@@ -593,10 +592,10 @@ RunInfo MainWindow::getRunInfo()
 }
 
 
-void MainWindow::restartNiawgDefaults()
-{
-	niawg.restartDefault();
-}
+//void MainWindow::restartNiawgDefaults()
+//{
+//	niawg.restartDefault();
+//}
 
 HBRUSH MainWindow::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
@@ -944,23 +943,23 @@ LRESULT MainWindow::onFatalErrorMessage(WPARAM wParam, LPARAM lParam)
 	errorStatus.addStatusText(statusMessage);
 	// resseting things.
 	//TheScriptingWindow->setIntensityDefault();
-	std::string msgText = "Exited with Error!\r\nPassively Outputting Default Waveform.";
+	std::string msgText = "Exited with Error!";
 	changeShortStatusColor("R");
-	comm.sendColorBox( Niawg, 'R' );
+	//comm.sendColorBox( Niawg, 'R' );
 	try
 	{
-		niawg.restartDefault();
+		//niawg.restartDefault();
 		comm.sendError("EXITED WITH ERROR!");
-		comm.sendColorBox( Niawg, 'R' );
-		comm.sendStatus("EXITED WITH ERROR!\r\nInitialized Default Waveform\r\n");
+		//comm.sendColorBox( Niawg, 'R' );
+		comm.sendStatus("EXITED WITH ERROR!");
 	}
 	catch (Error& except)
 	{
 		comm.sendError("EXITED WITH ERROR! " + except.whatStr());
-		comm.sendColorBox( Niawg, 'R' );
-		comm.sendStatus("EXITED WITH ERROR!\r\nNIAWG RESTART FAILED!\r\n");
+		//comm.sendColorBox( Niawg, 'R' );
+		//comm.sendStatus("EXITED WITH ERROR!\r\nNIAWG RESTART FAILED!\r\n");
 	}
-	setNiawgRunningState( false );
+	//setNiawgRunningState( false );
 	Beep( 850, 50 );
 	Sleep( 50 );
 	Beep( 830, 50 );
@@ -969,12 +968,12 @@ LRESULT MainWindow::onFatalErrorMessage(WPARAM wParam, LPARAM lParam)
 
 void MainWindow::stopRearranger( )
 {
-	niawg.turnOffRerng( );
+	//niawg.turnOffRerng( );
 }
 
 void MainWindow::waitForRearranger( )
 {
-	niawg.waitForRerng( );
+	//niawg.waitForRerng( );
 }
 
 
@@ -987,20 +986,20 @@ LRESULT MainWindow::onNormalFinishMessage(WPARAM wParam, LPARAM lParam)
 	changeShortStatusColor("B");
 	stopRearranger( );
 	TheCameraWindow->wakeRearranger();
-	comm.sendColorBox( Niawg, 'B' );
-	try
-	{
-		niawg.restartDefault();
-	}
-	catch ( Error& except )
-	{
-		comm.sendError( "ERROR! The niawg finished normally, but upon restarting the default waveform, threw the "
-						"following error: " + except.whatStr( ) );
-		comm.sendColorBox( Niawg, 'B' );
-		comm.sendStatus( "ERROR!\r\n" );
-		return 0;
-	}
-	setNiawgRunningState( false );
+	//comm.sendColorBox( Niawg, 'B' );
+	//try
+	//{
+	//	niawg.restartDefault();
+	//}
+	//catch ( Error& except )
+	//{
+	//	comm.sendError( "ERROR! The niawg finished normally, but upon restarting the default waveform, threw the "
+	//					"following error: " + except.whatStr( ) );
+	//	comm.sendColorBox( Niawg, 'B' );
+	//	comm.sendStatus( "ERROR!\r\n" );
+	//	return 0;
+	//}
+	//setNiawgRunningState( false );
 	try
 	{
 		waitForRearranger( );

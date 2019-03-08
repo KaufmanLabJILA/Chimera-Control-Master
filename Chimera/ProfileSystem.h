@@ -1,7 +1,7 @@
 #pragma once
 #include "Control.h"
 #include "ProfileSystem.h"
-#include "NiawgController.h"
+//#include "NiawgController.h"
 #include "commonTypes.h"
 #include "profileSettings.h"
 #include <vector>
@@ -9,7 +9,8 @@
 
 class MainWindow;
 class ScriptingWindow;
-
+class AuxiliaryWindow;
+class CameraWindow;
 /*
 ]--- This singleton class manages the entire "profile" system, where "profiles" are my term for the entirety of the settings in the code (strange word choice I
 ]- know). It consists of the relevant controls, some saved indicators that can be checked to determine if the user should be prompted to save at a given point,
@@ -53,8 +54,8 @@ class ProfileSystem
 		void renameConfiguration();
 		void deleteConfiguration();
 
-		static void openNiawgFiles( niawgPair<std::vector<std::fstream>>& scriptFiles, profileSettings profile, 
-								   bool programNiawg );
+		//static void openNiawgFiles( niawgPair<std::vector<std::fstream>>& scriptFiles, profileSettings profile, 
+								   //bool programNiawg );
 		void updateConfigurationSavedStatus( bool isSaved );
 		bool configurationSettingsReadyCheck(ScriptingWindow* scriptWindow, MainWindow* mainWin, 
 											 AuxiliaryWindow* auxWin, CameraWindow* camWin);

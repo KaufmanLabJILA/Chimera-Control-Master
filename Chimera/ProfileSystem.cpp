@@ -2,7 +2,7 @@
 
 #include "ProfileSystem.h"
 #include "TextPromptDialog.h"
-#include "NiawgController.h"
+//#include "NiawgController.h"
 #include "AuxiliaryWindow.h"
 #include "Andor.h"
 #include "CameraWindow.h"
@@ -60,38 +60,38 @@ void ProfileSystem::initialize( POINT& pos, CWnd* parent, int& id, cToolTips& to
 
 
 // just looks at the info in a file and loads it into references, doesn't change anything in the gui or main settings.
-void ProfileSystem::openNiawgFiles( niawgPair<std::vector<std::fstream>>& scriptFiles, profileSettings profile, 
-									bool programNiawg )
-{
-	scriptFiles[Vertical].resize( profile.sequenceConfigNames.size() );
-	scriptFiles[Horizontal].resize( profile.sequenceConfigNames.size() );
-	/// gather information from every configuration in the sequence. /////////////////////////////////////////////////////////////////////
-	for (UINT sequenceInc = 0; sequenceInc < profile.sequenceConfigNames.size(); sequenceInc++)
-	{
-		// open configuration file
-		std::ifstream configFile( profile.categoryPath + "\\" + profile.sequenceConfigNames[sequenceInc] );
-		std::string /*intensityScriptAddress,*/ version;
-		niawgPair<std::string> niawgScriptAddresses;
-		// first get version info:
-		std::getline( configFile, version );
-		/// load files
-		checkDelimiterLine( configFile, "SCRIPTS" );
-		configFile.get();
-		for (auto axis : AXES)
-		{
-			getline( configFile, niawgScriptAddresses[axis] );
-			if (programNiawg)
-			{
-				scriptFiles[axis][sequenceInc].open( niawgScriptAddresses[axis] );
-				if (!scriptFiles[axis][sequenceInc].is_open())
-				{
-					thrower( "ERROR: Failed to open vertical script file named: " + niawgScriptAddresses[axis]
-							 + " found in configuration: " + profile.sequenceConfigNames[sequenceInc] + "\r\n" );
-				}
-			}
-		}
-	}
-}
+//void ProfileSystem::openNiawgFiles( niawgPair<std::vector<std::fstream>>& scriptFiles, profileSettings profile, 
+//									bool programNiawg )
+//{
+//	scriptFiles[Vertical].resize( profile.sequenceConfigNames.size() );
+//	scriptFiles[Horizontal].resize( profile.sequenceConfigNames.size() );
+//	/// gather information from every configuration in the sequence. /////////////////////////////////////////////////////////////////////
+//	for (UINT sequenceInc = 0; sequenceInc < profile.sequenceConfigNames.size(); sequenceInc++)
+//	{
+//		// open configuration file
+//		std::ifstream configFile( profile.categoryPath + "\\" + profile.sequenceConfigNames[sequenceInc] );
+//		std::string /*intensityScriptAddress,*/ version;
+//		niawgPair<std::string> niawgScriptAddresses;
+//		// first get version info:
+//		std::getline( configFile, version );
+//		/// load files
+//		checkDelimiterLine( configFile, "SCRIPTS" );
+//		configFile.get();
+//		for (auto axis : AXES)
+//		{
+//			getline( configFile, niawgScriptAddresses[axis] );
+//			if (programNiawg)
+//			{
+//				scriptFiles[axis][sequenceInc].open( niawgScriptAddresses[axis] );
+//				if (!scriptFiles[axis][sequenceInc].is_open())
+//				{
+//					thrower( "ERROR: Failed to open vertical script file named: " + niawgScriptAddresses[axis]
+//							 + " found in configuration: " + profile.sequenceConfigNames[sequenceInc] + "\r\n" );
+//				}
+//			}
+//		}
+//	}
+//}
 
 
 void ProfileSystem::saveEntireProfile( ScriptingWindow* scriptWindow, MainWindow* mainWin, 

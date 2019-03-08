@@ -1,5 +1,5 @@
 #pragma once
-#include "nifgen.h"
+//#include "nifgen.h"
 #include <string>
 
 // This is my wrapper for NI_FGEN functionality. the NiawgController class owns one of these objects, any other 

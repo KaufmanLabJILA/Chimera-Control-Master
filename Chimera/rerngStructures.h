@@ -3,8 +3,8 @@
 #include <vector>
 #include <string>
 #include "windows.h"
-#include "NiawgController.h"
-#include "NiawgStructures.h"
+//#include "NiawgController.h"
+//#include "NiawgStructures.h"
 
 
 

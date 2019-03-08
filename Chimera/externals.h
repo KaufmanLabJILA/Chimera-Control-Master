@@ -7,12 +7,12 @@
 #include "MainWindow.h"
 #include "ScriptingWindow.h"
 #include "DebugOptionsControl.h"
-#include "NiawgController.h"
+//#include "NiawgController.h"
 #include "Control.h"
 #include "Windows.h"
 #include <string>
 #include <vector>
-#include "niFgen.h"
+//#include "niFgen.h"
 extern std::vector<std::string> WAVEFORM_NAME_FILES;
 extern std::vector<std::string> WAVEFORM_TYPE_FOLDERS;
 
@@ -23,7 +23,7 @@ extern const std::array<int, 2> AXES;
 // the following is used to receive the index of whatever axis is not your current axis.
 extern const std::array<int, 2> ALT_AXES;
 extern const std::array<std::string, 2> AXES_NAMES;
-extern const niawgPair<std::string> ORIENTATION;
+//extern const niawgPair<std::string> ORIENTATION;
 
 
 extern bool eWaitError;

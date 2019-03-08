@@ -1,9 +1,9 @@
 #pragma once
 
 #include "stdafx.h"
-#include "agilentStructures.h"
+//#include "agilentStructures.h"
 #include "miscellaneousCommonFunctions.h"
-#include "niFgen.h"
+//#include "niFgen.h"
 #include <string>
 #include "miscellaneousCommonFunctions.h"
 
@@ -12,9 +12,10 @@
 
 //#define MASTER_COMPUTER
 //#define SPECTRE_LAPTOP
-#define ADAMS_LAB
+//#define ADAMS_LAB
 // #define DESKTOP_COMPUTER
 //#define SALAMIS_TABLET
+#define PAL9000
 /// File Locations
 
 #ifdef ADAMS_LAB
@@ -53,6 +54,60 @@
 	const std::string PYTHON_CODE_LOCATION = "C:/Users/KLab/Desktop/Chimera-Control-Master/";
 	// same as debug output location but with forward slashes for ease of use in python
 	const std::string PYTHON_INPUT_LOCATION = "C:/Users/KLab/Desktop/Chimera-Control-Master/Debug-Output";
+	const std::string PLOT_FILES_SAVE_LOCATION = PROJECT_LOCATION + "Plotting";
+	const std::string LIB_PATH = PROJECT_LOCATION + "Waveforms-Library\\dummyLib\\";
+	const std::string DEFAULT_SCRIPT_FOLDER_PATH = PROJECT_LOCATION + "Default Scripts\\";
+	const std::string PROFILES_PATH = PROJECT_LOCATION + "Profiles\\";
+	const std::string DATA_SAVE_LOCATION = DATABASE_LOCATION;
+	const std::string MUSIC_LOCATION = PROJECT_LOCATION + "Camerawg\\Final Fantasy VII - Victory Fanfare [HQ].mp3";
+	const std::string FUNCTIONS_FOLDER_LOCATION = PROJECT_LOCATION + "Functions\\";
+	const std::string MASTER_CONFIGURATION_FILE_ADDRESS = PROJECT_LOCATION + "Master-Configuration.txt";
+	const std::string MOT_ROUTINE_ADDRESS = PROJECT_LOCATION + "Master Profiles\\Hotkey Experiments\\MOT\\turnOnMot.mScript";
+	const std::string DEBUG_OUTPUT_LOCATION = PROJECT_LOCATION + "Debug-Output\\";
+	const std::string TIMING_OUTPUT_LOCATION = PROJECT_LOCATION + "Data\\";
+	const std::string NIAWG_WAVEFORM_OUTPUT_LOCATION = TIMING_OUTPUT_LOCATION;
+
+	//Test file for moog
+	const std::string MOOG_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_MOOG_SCRIPT.moogScript";
+	const std::string DDS_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_DDS_SCRIPT.ddsScript";
+#endif
+
+#ifdef PAL9000
+	#define PYTHON_HOME L"C:\\ProgramData\\Anaconda3\\"
+	#define MOOG_SAFEMODE true
+	#define NIAWG_SAFEMODE true
+	#define ANDOR_SAFEMODE true
+	#define PYTHON_SAFEMODE true
+	#define DIO_SAFEMODE true
+	#define DIO_FPGA_SAFEMODE true
+	#define DIO_ARM_MODE true
+	#define DDS_SAFEMODE true
+	#define DAQMX_SAFEMODE true
+	#define RSG_SAFEMODE true
+	#define DDS_FPGA_ADDRESS "FT1I6IBSB" //Device Serial: FT1I6IBS, Use FT1I6IBSB in C++ to select Channel B
+	#define TOP_BOTTOM_TEK_SAFEMODE true
+	#define TOP_BOTTOM_TEK_USB_ADDRESS "USB0::0x0699::0x0343::C021681::0::INSTR"
+	#define EO_AXIAL_TEK_SAFEMODE true
+	#define EO_AXIAL_TEK_USB_ADDRESS "USB0::0x0699::0x034C::C010386::0::INSTR"
+	#define TOP_BOTTOM_AGILENT_SAFEMODE true
+	#define TOP_BOTTOM_AGILENT_USB_ADDRESS "USB0::0x0957::0x2307::MY50002574::0::INSTR"
+	#define UWAVE_AXIAL_AGILENT_SAFEMODE true
+	#define UWAVE_AXIAL_AGILENT_USB_ADDRESS "USB0::0x0957::0x2C07::MY52810615::0::INSTR"
+	#define INTENSITY_SAFEMODE true
+	#define INTENSITY_AGILENT_USB_ADDRESS "USB0::0x0957::0x2307::MY50004500::0::INSTR"
+	#define FLASHING_SAFEMODE true
+	#define FLASHING_AGILENT_USB_ADDRESS "USB0::0x0957::0x2307::MY50003003::0::INSTR"
+	#define TESTING_AGILENT_USB_ADDRESS "USB0::0x0957::0x2C07::MY52801397::0::INSTR"
+	#define AXIAL_AGILENT_SAFEMODE true
+	#define AXIAL_AGILENT_USB_ADDRESS ""
+	#define UWAVE_SAFEMODE true
+	#define UWAVE_AGILENT_USB_ADDRESS ""
+
+	const std::string PROJECT_LOCATION = "C:\\Users\\KLab\\Documents\\Chimera-Control-Master\\";
+	const std::string DATABASE_LOCATION = "A:\\";
+	const std::string PYTHON_CODE_LOCATION = "C:/Users/KLab/Documents/Chimera-Control-Master/";
+	// same as debug output location but with forward slashes for ease of use in python
+	const std::string PYTHON_INPUT_LOCATION = "C:/Users/KLab/Documents/Chimera-Control-Master/Debug-Output";
 	const std::string PLOT_FILES_SAVE_LOCATION = PROJECT_LOCATION + "Plotting";
 	const std::string LIB_PATH = PROJECT_LOCATION + "Waveforms-Library\\dummyLib\\";
 	const std::string DEFAULT_SCRIPT_FOLDER_PATH = PROJECT_LOCATION + "Default Scripts\\";
@@ -165,7 +220,6 @@
 	const std::string TIMING_OUTPUT_LOCATION = PROJECT_LOCATION + "\\Data\\";
 	const std::string NIAWG_WAVEFORM_OUTPUT_LOCATION = TIMING_OUTPUT_LOCATION;
 #endif
-
 
 #ifdef MASTER_COMPUTER
 	#define NIAWG_SAFEMODE false
@@ -431,53 +485,53 @@ const char * const SERVER_ADDRESS = "192.168.236.1";
 #define INTENSITY_AGILENT_TRIGGER_ROW 1
 #define INTENSITY_AGILENT_TRIGGER_NUM 6
 
-
-const agilentSettings UWAVE_AGILENT_SETTINGS = { 
-												// safemode option											
-												UWAVE_SAFEMODE, 
-												// usb address
-												UWAVE_AGILENT_USB_ADDRESS,
-												// sample rate (Hz)
-												10e6, 
-												// impedance (ohms, or inf)
-												"50", 
-												// the output filter state (controls rounding & overshoot issues 
-												// between samples)
-												"NORMal",
-												// Memory location, whether the device will save waveforms to 
-												// the internal 64MB Memory buffer or to an external USB drive, which
-												// can (obviously) have much more space.f
-												"INT",
-												// various control IDs (no need to change)
-												 IDC_UWAVE_CHANNEL1_BUTTON, IDC_UWAVE_CHANNEL2_BUTTON, 
-												 IDC_UWAVE_SYNC_BUTTON, IDC_UWAVE_AGILENT_COMBO,
-												 IDC_UWAVE_FUNCTION_COMBO, IDC_UWAVE_EDIT, IDC_UWAVE_PROGRAM, 
-												 IDC_UWAVE_CALIBRATION_BUTTON,
-												 UWAVE_AGILENT_TRIGGER_ROW, UWAVE_AGILENT_TRIGGER_NUM };
-
-const agilentSettings TOP_BOTTOM_AGILENT_SETTINGS = { TOP_BOTTOM_AGILENT_SAFEMODE, TOP_BOTTOM_AGILENT_USB_ADDRESS,
-													  1e6, "INF", "NORMal", "INT",
-													  IDC_TOP_BOTTOM_CHANNEL1_BUTTON, IDC_TOP_BOTTOM_CHANNEL2_BUTTON,
-													  IDC_TOP_BOTTOM_SYNC_BUTTON, IDC_TOP_BOTTOM_AGILENT_COMBO,
-													  IDC_TOP_BOTTOM_FUNCTION_COMBO, IDC_TOP_BOTTOM_EDIT, 
-													  IDC_TOP_BOTTOM_PROGRAM, IDC_TOP_BOTTOM_CALIBRATION_BUTTON,
-													  TOP_BOTTOM_AGILENT_TRIGGER_ROW, TOP_BOTTOM_AGILENT_TRIGGER_NUM };
-
-const agilentSettings AXIAL_AGILENT_SETTINGS = { AXIAL_AGILENT_SAFEMODE, AXIAL_AGILENT_USB_ADDRESS,
-												 1e6, "INF", "NORMal", "INT",
-												 IDC_AXIAL_CHANNEL1_BUTTON, IDC_AXIAL_CHANNEL2_BUTTON,
-												 IDC_AXIAL_SYNC_BUTTON, IDC_AXIAL_AGILENT_COMBO,
-												 IDC_AXIAL_FUNCTION_COMBO, IDC_AXIAL_EDIT, IDC_AXIAL_PROGRAM,
-												 IDC_AXIAL_CALIBRATION_BUTTON,
-												 AXIAL_AGILENT_TRIGGER_ROW, AXIAL_AGILENT_TRIGGER_NUM };
-
-const agilentSettings FLASHING_AGILENT_SETTINGS = { FLASHING_SAFEMODE, FLASHING_AGILENT_USB_ADDRESS,
-													1e6, "INF", "NORMal", "INT",
-													IDC_FLASHING_CHANNEL1_BUTTON, IDC_FLASHING_CHANNEL2_BUTTON,
-													IDC_FLASHING_SYNC_BUTTON, IDC_FLASHING_AGILENT_COMBO,
-													IDC_FLASHING_FUNCTION_COMBO, IDC_FLASHING_EDIT, 
-													IDC_FLASHING_PROGRAM, IDC_FLASHING_CALIBRATION_BUTTON,
-													FLASHING_AGILENT_TRIGGER_ROW, FLASHING_AGILENT_TRIGGER_NUM };
+//
+//const agilentSettings UWAVE_AGILENT_SETTINGS = { 
+//												// safemode option											
+//												UWAVE_SAFEMODE, 
+//												// usb address
+//												UWAVE_AGILENT_USB_ADDRESS,
+//												// sample rate (Hz)
+//												10e6, 
+//												// impedance (ohms, or inf)
+//												"50", 
+//												// the output filter state (controls rounding & overshoot issues 
+//												// between samples)
+//												"NORMal",
+//												// Memory location, whether the device will save waveforms to 
+//												// the internal 64MB Memory buffer or to an external USB drive, which
+//												// can (obviously) have much more space.f
+//												"INT",
+//												// various control IDs (no need to change)
+//												 IDC_UWAVE_CHANNEL1_BUTTON, IDC_UWAVE_CHANNEL2_BUTTON, 
+//												 IDC_UWAVE_SYNC_BUTTON, IDC_UWAVE_AGILENT_COMBO,
+//												 IDC_UWAVE_FUNCTION_COMBO, IDC_UWAVE_EDIT, IDC_UWAVE_PROGRAM, 
+//												 IDC_UWAVE_CALIBRATION_BUTTON,
+//												 UWAVE_AGILENT_TRIGGER_ROW, UWAVE_AGILENT_TRIGGER_NUM };
+//
+//const agilentSettings TOP_BOTTOM_AGILENT_SETTINGS = { TOP_BOTTOM_AGILENT_SAFEMODE, TOP_BOTTOM_AGILENT_USB_ADDRESS,
+//													  1e6, "INF", "NORMal", "INT",
+//													  IDC_TOP_BOTTOM_CHANNEL1_BUTTON, IDC_TOP_BOTTOM_CHANNEL2_BUTTON,
+//													  IDC_TOP_BOTTOM_SYNC_BUTTON, IDC_TOP_BOTTOM_AGILENT_COMBO,
+//													  IDC_TOP_BOTTOM_FUNCTION_COMBO, IDC_TOP_BOTTOM_EDIT, 
+//													  IDC_TOP_BOTTOM_PROGRAM, IDC_TOP_BOTTOM_CALIBRATION_BUTTON,
+//													  TOP_BOTTOM_AGILENT_TRIGGER_ROW, TOP_BOTTOM_AGILENT_TRIGGER_NUM };
+//
+//const agilentSettings AXIAL_AGILENT_SETTINGS = { AXIAL_AGILENT_SAFEMODE, AXIAL_AGILENT_USB_ADDRESS,
+//												 1e6, "INF", "NORMal", "INT",
+//												 IDC_AXIAL_CHANNEL1_BUTTON, IDC_AXIAL_CHANNEL2_BUTTON,
+//												 IDC_AXIAL_SYNC_BUTTON, IDC_AXIAL_AGILENT_COMBO,
+//												 IDC_AXIAL_FUNCTION_COMBO, IDC_AXIAL_EDIT, IDC_AXIAL_PROGRAM,
+//												 IDC_AXIAL_CALIBRATION_BUTTON,
+//												 AXIAL_AGILENT_TRIGGER_ROW, AXIAL_AGILENT_TRIGGER_NUM };
+//
+//const agilentSettings FLASHING_AGILENT_SETTINGS = { FLASHING_SAFEMODE, FLASHING_AGILENT_USB_ADDRESS,
+//													1e6, "INF", "NORMal", "INT",
+//													IDC_FLASHING_CHANNEL1_BUTTON, IDC_FLASHING_CHANNEL2_BUTTON,
+//													IDC_FLASHING_SYNC_BUTTON, IDC_FLASHING_AGILENT_COMBO,
+//													IDC_FLASHING_FUNCTION_COMBO, IDC_FLASHING_EDIT, 
+//													IDC_FLASHING_PROGRAM, IDC_FLASHING_CALIBRATION_BUTTON,
+//													FLASHING_AGILENT_TRIGGER_ROW, FLASHING_AGILENT_TRIGGER_NUM };
 
 //const agilentSettings INTENSITY_AGILENT_SETTINGS = { INTENSITY_SAFEMODE, INTENSITY_AGILENT_USB_ADDRESS,
 //													 1e6, "INF", "NORMal", "USB",

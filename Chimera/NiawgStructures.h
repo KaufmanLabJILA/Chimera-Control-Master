@@ -1,6 +1,6 @@
 #pragma once
 #include "Expression.h"
-#include "nifgen.h"
+//#include "nifgen.h"
 #include "Windows.h"
 #include <string>
 #include <vector>

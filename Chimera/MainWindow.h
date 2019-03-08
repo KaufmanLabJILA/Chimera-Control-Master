@@ -126,7 +126,7 @@ class MainWindow : public CDialog
 		StatusIndicator shortStatus;
 		
 		//rerngControl rearrangeControl;
-		NiawgController niawg;
+		//NiawgController niawg;
 		SerialSynth moog;
 		DDS_SYNTH dds;
 

@@ -23,7 +23,7 @@
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>NIPXIe5451ArbWvFmGen20</RootNamespace>
     <ProjectName>Chimera</ProjectName>
-    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -81,9 +81,10 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\ProgramData\Anaconda3\include;C:\Program Files\IVI Foundation\VISA\WinNt\include;C:\Program Files\IVI Foundation\IVI\Include;C:\Program Files\Agilent\IO Libraries Suite\lib_x64;C:\Program Files\Agilent\IO Libraries Suite\include;$(VXIPNPPATH)WinNT\include;$(IncludePath);$(ProjectDir)\Packages\64-Bit-Libs\boost_1_64_0;$(ProjectDir)\Packages\64-Bit-Libs\Debug\HDF5-1.10.1-win64\include</IncludePath>
-    <LibraryPath>C:\Program Files\Andor SOLIS\Drivers;C:\Program Files\Agilent\IO Libraries Suite\lib_x64;C:\Program Files\IVI Foundation\VISA\Win64\Lib_x64\msc;$(ProjectDir)\Packages\64-Bit-Libs\boost_1_64_0\lib-64bit;$(ProjectDir)\Packages\64-Bit-Libs\Debug\HDF5-1.10.1-win64\lib;$(ProjectDir)\Packages\64-Bit-Libs\Debug\Python;C:\Program Files (x86)\National Instruments\Shared\ExternalCompilerSupport\C\lib64\msvc;$(ProjectDir)\Packages\64-Bit-Libs\Release\Python;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\ProgramData\Anaconda3\include;$(ProjectDir)\Packages\64-Bit-Libs\boost_1_64_0;$(IncludePath);$(ProjectDir)\Packages\64-Bit-Libs\Debug\HDF5-1.10.1-win64\include</IncludePath>
+    <LibraryPath>$(ProjectDir)\Packages\64-Bit-Libs\boost_1_64_0\lib-64bit;$(ProjectDir)\Packages\64-Bit-Libs\Debug\HDF5-1.10.1-win64\lib;$(ProjectDir)\Packages\64-Bit-Libs\Debug\Python;$(ProjectDir)\Packages\64-Bit-Libs\Release\Python;C:\Program Files\Andor SDK;$(LibraryPath);C:\Program Files (x86)\National Instruments\Shared\ExternalCompilerSupport\C\lib64\msvc</LibraryPath>
     <ExecutablePath>$(VC_ExecutablePath_x64);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(FxCopDir);$(PATH)</ExecutablePath>
+    <ExcludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(MSBuild_ExecutablePath);$(VC_LibraryPath_x64);</ExcludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>true</LinkIncremental>
@@ -121,7 +122,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32; NO_WARN_MBCS_MFC_DEPRECATION;_DEBUG;_CONSOLE;_LIB;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NO_WARN_MBCS_MFC_DEPRECATION;_DEBUG;_CONSOLE;_LIB;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;_SILENCE_FPOS_SEEKPOS_DEPRECATION_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>
       </AdditionalIncludeDirectories>
@@ -132,10 +133,11 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(NIIVIPATH)\Lib_x64\msc;$(PXIPNPPATH)\winnt\Lib_x64\msc;C:\Program Files (x86)\IVI Foundation\VISA\WinNT\Lib_x64\msc;C:\Program Files (x86)\IVI Foundation\VISA\WinNT\agvisa\Lib_x64\msc</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
       <TreatLinkerWarningAsErrors>
       </TreatLinkerWarningAsErrors>
-      <AdditionalDependencies>niFgen.lib;atmcd64m.lib;atmcd32m.lib;visa32.lib;legacy_stdio_definitions.lib;%(AdditionalDependencies);python36_d.lib;libhdf5_cpp_D.lib;libhdf5_D.lib;libzlib_D.lib;libszip_D.lib;NIDAQmx.lib</AdditionalDependencies>
+      <AdditionalDependencies>atmcd64m.lib;python36_d.lib;libhdf5_cpp_D.lib;libhdf5_D.lib;libzlib_D.lib;libszip_D.lib;NIDAQmx.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -186,8 +188,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Agilent.h" />
-    <ClInclude Include="agilentStructures.h" />
     <ClInclude Include="AlertSystem.h" />
     <ClInclude Include="AndorRunSettings.h" />
     <ClInclude Include="ATMCD32D.H" />
@@ -215,10 +215,8 @@
     <ClInclude Include="PlotDataSet.h" />
     <ClInclude Include="EmbeddedPythonHandler.h" />
     <ClInclude Include="ExperimentTimer.h" />
-    <ClInclude Include="Fgen.h" />
     <ClInclude Include="gnuplot-iostream.h" />
     <ClInclude Include="gnuplotter.h" />
-    <ClInclude Include="GpibFlume.h" />
     <ClInclude Include="imageParameters.h" />
     <ClInclude Include="longnam.h" />
     <ClInclude Include="MainOptionsControl.h" />
@@ -228,7 +226,6 @@
     <ClInclude Include="MasterManager.h" />
     <ClInclude Include="miscellaneousCommonFunctions.h" />
     <ClInclude Include="ChimeraApp.h" />
-    <ClInclude Include="NiawgStructures.h" />
     <ClInclude Include="PictureControl.h" />
     <ClInclude Include="PictureManager.h" />
     <ClInclude Include="PictureSettingsControl.h" />
@@ -254,10 +251,8 @@
     <ClInclude Include="rerngParams.h" />
     <ClInclude Include="rerngStructures.h" />
     <ClInclude Include="rerngthreadinput.h" />
-    <ClInclude Include="RhodeSchwarz.h" />
     <ClInclude Include="NoteSystem.h" />
     <ClInclude Include="Script.h" />
-    <ClInclude Include="scriptedAgilentWaveform.h" />
     <ClInclude Include="ScriptingWindow.h" />
     <ClInclude Include="ScriptStream.h" />
     <ClInclude Include="Segment.h" />
@@ -266,13 +261,10 @@
     <ClInclude Include="splashDialog.h" />
     <ClInclude Include="StatusControl.h" />
     <ClInclude Include="StatusIndicator.h" />
-    <ClInclude Include="TektronicsControl.h" />
     <ClInclude Include="TestWin.h" />
     <ClInclude Include="TextPromptDialog.h" />
     <ClInclude Include="fonts.h" />
     <ClInclude Include="commonFunctions.h" />
-    <ClInclude Include="NiawgController.h" />
-    <ClInclude Include="NiawgWaiter.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="saveTextFileFromEdit.h" />
     <ClInclude Include="scriptWriteHelpProc.h" />
@@ -284,10 +276,8 @@
     <ClInclude Include="tinyPlotInfo.h" />
     <ClInclude Include="VariableStructures.h" />
     <ClInclude Include="VariableSystem.h" />
-    <ClInclude Include="VisaFlume.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Agilent.cpp" />
     <ClCompile Include="AlertSystem.cpp" />
     <ClCompile Include="beginningSettingsDialogProc.cpp" />
     <ClCompile Include="CameraImageDimensions.cpp" />
@@ -309,9 +299,7 @@
     <ClCompile Include="EmbeddedPythonHandler.cpp" />
     <ClCompile Include="ExperimentTimer.cpp" />
     <ClCompile Include="externals.cpp" />
-    <ClCompile Include="Fgen.cpp" />
     <ClCompile Include="Gnuplotter.cpp" />
-    <ClCompile Include="GpibFlume.cpp" />
     <ClCompile Include="MainOptionsControl.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="Andor.cpp" />
@@ -331,9 +319,7 @@
     <ClCompile Include="RearrangeControl.cpp" />
     <ClCompile Include="Repetitions.cpp" />
     <ClCompile Include="rerngControl.cpp" />
-    <ClCompile Include="RhodeSchwarz.cpp" />
     <ClCompile Include="Script.cpp" />
-    <ClCompile Include="scriptedAgilentWaveform.cpp" />
     <ClCompile Include="ScriptingWindow.cpp" />
     <ClCompile Include="ScriptStream.cpp" />
     <ClCompile Include="Segment.cpp" />
@@ -342,13 +328,10 @@
     <ClCompile Include="splashDialog.cpp" />
     <ClCompile Include="StatusControl.cpp" />
     <ClCompile Include="StatusIndicator.cpp" />
-    <ClCompile Include="TektronicsControl.cpp" />
     <ClCompile Include="TestWin.cpp" />
     <ClCompile Include="TextPromptDialog.cpp" />
     <ClCompile Include="commonFunctions.cpp" />
-    <ClCompile Include="NiawgController.cpp" />
     <ClCompile Include="ChimeraApp.cpp" />
-    <ClCompile Include="NiawgWaiter.cpp" />
     <ClCompile Include="saveTextFileFromEdit.cpp" />
     <ClCompile Include="miscellaneousCommonFunctions.cpp" />
     <ClCompile Include="ScriptWritingInstructionsDialog.cpp" />
@@ -361,7 +344,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="VariableSystem.cpp" />
-    <ClCompile Include="VisaFlume.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\JILA.bmp" />
@@ -389,9 +371,6 @@
     <None Include="ftd2xx64.dll" />
     <None Include="ftlang.dll" />
     <None Include="ftserui2.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <Object Include="ni4882.obj" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="ftd2xx.lib" />

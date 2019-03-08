@@ -3,15 +3,15 @@
 #include "DioSystem.h"
 #include "DacSystem.h"
 #include "VariableSystem.h"
-#include "RhodeSchwarz.h"
-#include "GpibFlume.h"
+//#include "RhodeSchwarz.h"
+//#include "GpibFlume.h"
 #include "DebugOptionsControl.h"
 #include "ScriptStream.h"
-#include "Agilent.h"
+//#include "Agilent.h"
 #include "commonTypes.h"
 #include "StatusControl.h"
 #include "Repetitions.h"
-#include "TektronicsControl.h"
+//#include "TektronicsControl.h"
 #include "DataLogger.h"
 #include "atomCruncherInput.h"
 #include "realTimePlotterInput.h"
@@ -40,8 +40,7 @@ class MasterManager
 		void loadMasterScript(std::string scriptAddress);
 
 		void analyzeMasterScript( DioSystem* ttls, DacSystem* dacs, 
-								  std::vector<std::pair<UINT, UINT>>& ttlShades, std::vector<UINT>& dacShades, 
-								  RhodeSchwarz* rsg, std::vector<variableType>& vars);
+								  std::vector<std::pair<UINT, UINT>>& ttlShades, std::vector<UINT>& dacShades, std::vector<variableType>& vars);
 		// this function needs the master window in order to gather the relevant parameters for the experiment.
 		void startExperimentThread(MasterThreadInput* input);
 		void loadMotSettings(MasterThreadInput* input);
@@ -68,8 +67,7 @@ class MasterManager
 		std::string functionsFolderLocation;
 		// called by analyzeMasterScript functions only.
 		void analyzeFunction( std::string function, std::vector<std::string> args, DioSystem* ttls, DacSystem* dacs,
-							  std::vector<std::pair<UINT, UINT>>& ttlShades, std::vector<UINT>& dacShades, 
-							  RhodeSchwarz* rsg, std::vector<variableType>& vars);
+							  std::vector<std::pair<UINT, UINT>>& ttlShades, std::vector<UINT>& dacShades, std::vector<variableType>& vars);
 		// 
 		timeType operationTime;
 		bool experimentIsRunning;
