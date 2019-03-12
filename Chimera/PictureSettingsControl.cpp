@@ -5,12 +5,31 @@
 #include "CameraSettingsControl.h"
 #include "CameraWindow.h"
 #include "Commctrl.h"
+#include <boost/lexical_cast.hpp>
 
 void PictureSettingsControl::initialize( cameraPositions& pos, CWnd* parent, int& id )
 {
 	// introducing things row by row
 	/// Set Picture Options
 	UINT count = 0;
+
+	/// IMAGES PER REP CONTROL OVERRIDE
+
+	picsPerRepEdit.seriesPos = { pos.seriesPos.x + 240, pos.seriesPos.y, pos.seriesPos.x + 480, pos.seriesPos.y + 25 };
+	picsPerRepEdit.videoPos = { -1,-1,-1,-1 };
+	picsPerRepEdit.amPos = { -1,-1,-1,-1 };
+	picsPerRepEdit.Create(NORM_EDIT_OPTIONS, picsPerRepEdit.seriesPos, parent, id++);
+	picsPerRepEdit.SetWindowTextA("");
+
+	picsPerRepLabel.seriesPos = { pos.seriesPos.x, pos.seriesPos.y, pos.seriesPos.x + 240, pos.seriesPos.y + 25 };
+	picsPerRepLabel.videoPos = { -1,-1,-1,-1 };
+	picsPerRepLabel.amPos = { -1,-1,-1,-1 };
+	picsPerRepLabel.Create("Images Per Repetition:", NORM_STATIC_OPTIONS, picsPerRepEdit.seriesPos, parent, id++);
+
+	pos.seriesPos.y += 25;
+	pos.amPos.y += 25;
+	pos.videoPos.y += 25;
+
 	/// Picture Numbers
 	pictureLabel.seriesPos = { pos.seriesPos.x, pos.seriesPos.y, pos.seriesPos.x + 100, pos.seriesPos.y + 20 };
 	pictureLabel.amPos = { pos.amPos.x, pos.amPos.y, pos.amPos.x + 100,	pos.amPos.y + 20 };
@@ -349,6 +368,25 @@ CBrush* PictureSettingsControl::colorControls(int id, CDC* colorer, brushMap bru
 
 UINT PictureSettingsControl::getPicsPerRepetition()
 {
+	CString txt;
+	picsPerRepEdit.GetWindowTextA(txt);
+	if (txt != "")
+	{
+		try
+		{
+			picsPerRepetitionUnofficial = boost::
+				lexical_cast<UINT>(txt);
+		}
+		catch (boost::bad_lexical_cast& err)
+		{
+			thrower("Failed to convert pics per repetition to unsigned int!");
+		}
+		picsPerRepManual = true;
+	}
+	else
+	{
+		picsPerRepManual = false;
+	}
 	return picsPerRepetitionUnofficial;
 }
 
@@ -451,10 +489,17 @@ void PictureSettingsControl::setExposureTimes(std::vector<float>& times, AndorCa
 
 std::vector<float> PictureSettingsControl::getUsedExposureTimes()
 {
-	updateSettings( );
+	updateSettings();
 	std::vector<float> usedTimes;
 	usedTimes = exposureTimesUnofficial;
-	usedTimes.resize(picsPerRepetitionUnofficial);
+
+	if (picsPerRepManual) {
+		usedTimes.resize(1); //Only use first exposure time if many images.
+	}
+	else {
+		usedTimes.resize(picsPerRepetitionUnofficial);
+	}
+
 	return usedTimes;
 }
 
@@ -494,6 +539,10 @@ void PictureSettingsControl::setThresholds(std::array<int, 4> newThresholds)
 	{
 		thresholdEdits[thresholdInc].SetWindowTextA(cstr(thresholds[thresholdInc]));
 	}
+}
+
+BOOL PictureSettingsControl::getPicsPerRepManual() {
+	return picsPerRepManual;
 }
 
 void PictureSettingsControl::setPicturesPerExperiment(UINT pics, AndorCamera* andorObj)
@@ -592,6 +641,8 @@ void PictureSettingsControl::rearrange(std::string cameraMode, std::string trigg
 	exposureLabel.rearrange(cameraMode, triggerMode, width, height, fonts);
 	thresholdLabel.rearrange(cameraMode, triggerMode, width, height, fonts);
 	colormapLabel.rearrange(cameraMode, triggerMode, width, height, fonts);
+	picsPerRepEdit.rearrange(cameraMode, triggerMode, width, height, fonts);
+	picsPerRepLabel.rearrange(cameraMode, triggerMode, width, height, fonts);
 
 	for (auto& control : pictureNumbers)
 	{

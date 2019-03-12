@@ -38,6 +38,7 @@ class PictureSettingsControl
 		UINT getPicsPerRepetition();
 		void updateSettings( );
 		void setUnofficialPicsPerRep( UINT picNum, AndorCamera* andorObj );
+		BOOL getPicsPerRepManual();
 	private:
 		CameraSettingsControl* parentSettingsControl;
 		std::array<int, 4> colors;
@@ -46,6 +47,7 @@ class PictureSettingsControl
 		// This variable is used by this control and communicated to the andor object, but is not directly accessed
 		// while the main camera control needs to figure out how many pictures per repetition there are.
 		UINT picsPerRepetitionUnofficial;
+		BOOL picsPerRepManual;
 		/// Grid of PictureOptions
 		//Control<CButton> setPictureOptionsButton;		
 		Control<CStatic> totalPicNumberLabel;
@@ -59,6 +61,10 @@ class PictureSettingsControl
 		std::array<Control<CEdit>, 4> exposureEdits;
 		std::array<Control<CEdit>, 4> thresholdEdits;
 		std::array<Control<CComboBox>, 4> colormapCombos;
+
+		// Manual image/rep control
+		Control<CStatic> picsPerRepLabel;
+		Control<CEdit> picsPerRepEdit;
 
 		//std::array<Control<CButton>, 4> blackWhiteRadios;
 		//std::array<Control<CButton>, 4> veridaRadios;

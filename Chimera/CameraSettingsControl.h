@@ -47,6 +47,7 @@ class CameraSettingsControl
 		void handleOpenConfig(std::ifstream& configFile, int versionMajor, int versionMinor );
 		void handleNewConfig( std::ofstream& newFile );
 		void handleSaveConfig(std::ofstream& configFile);
+		BOOL getPicsPerRepManual();
 
 	private:
 		AndorCamera* andorFriend;

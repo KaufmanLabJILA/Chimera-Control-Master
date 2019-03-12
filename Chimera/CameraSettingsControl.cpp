@@ -122,6 +122,7 @@ void CameraSettingsControl::initialize( cameraPositions& pos, int& id, CWnd* par
 	pos.seriesPos.y += 50;
 	pos.amPos.y += 50;
 	pos.videoPos.y += 50;
+
 	//
 	picSettingsObj.initialize( pos, parent, id );
 
@@ -325,6 +326,9 @@ void CameraSettingsControl::rearrange( std::string cameraMode, std::string trigg
 	minKineticCycleTimeDisp.rearrange( cameraMode, triggerMode, width, height, fonts );
 }
 
+BOOL CameraSettingsControl::getPicsPerRepManual() {
+	return picSettingsObj.getPicsPerRepManual();
+}
 
 void CameraSettingsControl::setEmGain(AndorCamera* andorObj)
 {

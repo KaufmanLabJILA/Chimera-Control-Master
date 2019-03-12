@@ -315,7 +315,7 @@ LRESULT CameraWindow::onCameraProgress( WPARAM wParam, LPARAM lParam )
 	try
 	{
 		if (plotThreadAborting == false) {
-			if (realTimePic)
+			if (realTimePic || CameraSettings.getPicsPerRepManual())
 			{
 				std::pair<int, int> minMax;
 				// draw the most recent pic.
