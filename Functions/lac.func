@@ -1,7 +1,7 @@
 % Master-Script See the "?" for info on commands.
 def lac():
   
-  dac: imagingPow .095
+  dac: imagingPow .1
 
   on: rp707
   on: rp679

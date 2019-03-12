@@ -5,7 +5,7 @@
 %%%MAY WANT TO CHECK THAT SETTINGS ARE STILL CORRECT.
 
 % Channel order:
-% tweezermod 813 698 FNCAO red3dnarrow radial axial radial2
+% tweezermod 813 698 FNC red3dnarrow radial axial radial2
 
 % Setting initial state, what happens after reset.
 reset
@@ -19,32 +19,31 @@ amps  0 100 100 100 100 100 10 100
 
 % pre-image
 snapshot 1 reps 2
-freqs 0 80 75 72.76 100 radcool 79.975 lacfreq
-amps  0 100 100 100 100 radpow 30 lacpow
-%freqs 0 80 75 72.76 100 80.07 79.975 lacfreq
-%amps  0 100 100 100 100 100 30 lacpow
+freqs 0 80 75 72.76 100 radcool 80.125 sbcool
+amps  0 100 100 100 100 radpow 50 100
 
 %  image1
 snapshot 2 reps 2
 %freqs 0 120 2 specao 80.03 80.05 80.05 0
-freqs 0 80 75 72.76 84 radcool 83.5 radcool
-amps  10 100 100 100 25 radpow 90 radpow
+freqs 0 80 75 72.76 84 radcool 83.5 sbcool
+amps  10 100 100 100 25 radpow 90 45
 
 % post image cooling
 snapshot 3 reps 2
 freqs 0 80 75 72.76 80.06 80.07 79.975 80.07
+
 %freqs 0 72.76 75 1 80.06 79.823 79.885 79.797
-amps  10 100 100 100 100 100 30 45
+amps  10 100 100 100 100 100 25 25
 
 % spectroscopy
 snapshot 4 reps 2
-freqs 0 80 clock+specscan 72.76 82.9 spec3p1 spec3p1 spec3p1
+freqs 0 80 clock+specscan 72.76 82.9 90 90 spec3p1 
 amps  0 100 100 100 100 85 25 15
 
 % image2 %was 82.5, 100
 snapshot 5 reps 2
-freqs 0 80 75 72.76 82.9 radcool 83.5 radcool
-amps  10 100 100 100 100 radpow 90 radpow
+freqs 0 80 75 72.76 82.9 radcool 83.5 sbcool
+amps  10 100 100 100 100 radpow 90 45
 
 % NA
 snapshot 6 reps 2

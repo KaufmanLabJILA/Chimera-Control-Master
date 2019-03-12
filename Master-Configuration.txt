@@ -203,13 +203,13 @@ piezomirror
 xcoilval 0.018
 ycoilval 0.021
 zcoilval 0.0055
-bluecoilx 0
-bluecoily 0
-bluecoilz -0.05
+bluecoilx -0.04
+bluecoily 0.02
+bluecoilz 0.025
 motcoils 4
 carrier_3p1 79.946
 rsb 0.224
 asb 0.04
 carrier_3p0 79.99
 rsbi 0.086
-201 300 1 311 410 1
+1 151 1 376 475 1

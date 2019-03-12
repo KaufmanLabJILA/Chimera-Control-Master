@@ -20,8 +20,8 @@ def blue_mot(loadTime):
 
   
   %Drop power for additional cooling
-  dac: blue3dpow .03
-  t += 5
+  dac: blue3dpow .01
+  t += 3
   dac: blue3dpow 0.3
   off: blue3d
   off: rp707

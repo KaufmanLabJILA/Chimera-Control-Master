@@ -1,0 +1,6 @@
+def fieldZero():
+ %Zero field values.
+ dac: z1coil -.003
+ dac: y1coil .017
+ dac: y2coil .017
+ dac: x1coil .022

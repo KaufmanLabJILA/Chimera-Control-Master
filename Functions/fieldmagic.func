@@ -1,0 +1,5 @@
+def fieldMagic():
+ dac: z1coil -.003
+ dac: y1coil 0.67
+ dac: y2coil 0.67
+ dac: x1coil bx_scan
