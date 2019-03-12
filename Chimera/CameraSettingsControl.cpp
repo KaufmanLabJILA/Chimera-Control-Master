@@ -9,6 +9,9 @@ CameraSettingsControl::CameraSettingsControl(AndorCamera* friendInitializer) : p
 	andorFriend = friendInitializer;
 	// initialize settings. Most of these have been picked to match initial settings set in the "initialize" 
 	// function.
+
+	picSettingsObj.picsPerRepManual = false;
+
 	runSettings.exposureTimes = { 0.026f };
 	runSettings.picsPerRepetition = 1;
 	runSettings.kineticCycleTime = 0.1f;
@@ -327,7 +330,7 @@ void CameraSettingsControl::rearrange( std::string cameraMode, std::string trigg
 }
 
 BOOL CameraSettingsControl::getPicsPerRepManual() {
-	return picSettingsObj.getPicsPerRepManual();
+	return picSettingsObj.picsPerRepManual;
 }
 
 void CameraSettingsControl::setEmGain(AndorCamera* andorObj)
@@ -576,6 +579,7 @@ void CameraSettingsControl::handleOpenConfig(std::ifstream& configFile, int vers
  	setRunSettings(tempSettings);
  	ProfileSystem::checkDelimiterLine(configFile, "END_CAMERA_SETTINGS");
 	picSettingsObj.handleOpenConfig(configFile, versionMajor, versionMinor, andorFriend);
+	//setRunSettings(tempSettings);
 	updateRunSettingsFromPicSettings( );
 	if ( (versionMajor == 2 && versionMinor > 4) || versionMajor > 2 )
 	{

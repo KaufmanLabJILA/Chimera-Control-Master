@@ -9,22 +9,30 @@
 
 void PictureSettingsControl::initialize( cameraPositions& pos, CWnd* parent, int& id )
 {
+	picsPerRepetitionUnofficial = 1;
+
 	// introducing things row by row
 	/// Set Picture Options
 	UINT count = 0;
 
 	/// IMAGES PER REP CONTROL OVERRIDE
 
-	picsPerRepEdit.seriesPos = { pos.seriesPos.x + 240, pos.seriesPos.y, pos.seriesPos.x + 480, pos.seriesPos.y + 25 };
-	picsPerRepEdit.videoPos = { -1,-1,-1,-1 };
-	picsPerRepEdit.amPos = { -1,-1,-1,-1 };
-	picsPerRepEdit.Create(NORM_EDIT_OPTIONS, picsPerRepEdit.seriesPos, parent, id++);
-	picsPerRepEdit.SetWindowTextA("");
-
-	picsPerRepLabel.seriesPos = { pos.seriesPos.x, pos.seriesPos.y, pos.seriesPos.x + 240, pos.seriesPos.y + 25 };
+	picsPerRepLabel.seriesPos = { pos.seriesPos.x, pos.seriesPos.y, pos.seriesPos.x + 200, pos.seriesPos.y + 25 };
 	picsPerRepLabel.videoPos = { -1,-1,-1,-1 };
 	picsPerRepLabel.amPos = { -1,-1,-1,-1 };
-	picsPerRepLabel.Create("Images Per Repetition:", NORM_STATIC_OPTIONS, picsPerRepEdit.seriesPos, parent, id++);
+	picsPerRepLabel.Create("Images Per Repetition:", NORM_STATIC_OPTIONS, picsPerRepLabel.seriesPos, parent, id++);
+
+	picsPerRepToggle.seriesPos = { pos.seriesPos.x + 200, pos.seriesPos.y, pos.seriesPos.x + 220, pos.seriesPos.y + 25 };
+	picsPerRepToggle.videoPos = { -1,-1,-1,-1 };
+	picsPerRepToggle.amPos = { -1,-1,-1,-1 };
+	picsPerRepToggle.Create("", NORM_CHECK_OPTIONS, picsPerRepLabel.seriesPos, parent, id++);
+	picsPerRepToggle.SetCheck(0);
+
+	picsPerRepEdit.seriesPos = { pos.seriesPos.x + 220, pos.seriesPos.y, pos.seriesPos.x + 480, pos.seriesPos.y + 25 };
+	picsPerRepEdit.videoPos = { -1,-1,-1,-1 };
+	picsPerRepEdit.amPos = { -1,-1,-1,-1 };
+	picsPerRepEdit.Create(NORM_EDIT_OPTIONS, picsPerRepToggle.seriesPos, parent, id++);
+	picsPerRepEdit.SetWindowTextA("");
 
 	pos.seriesPos.y += 25;
 	pos.amPos.y += 25;
@@ -170,8 +178,6 @@ void PictureSettingsControl::initialize( cameraPositions& pos, CWnd* parent, int
 	disablePictureControls( 1 );
 	disablePictureControls( 2 );
 	disablePictureControls( 3 );
-	// should move up
-	picsPerRepetitionUnofficial = 1;
 }
 
 
@@ -203,6 +209,7 @@ void PictureSettingsControl::handleNewConfig( std::ofstream& newFile )
 void PictureSettingsControl::handleSaveConfig(std::ofstream& saveFile)
 {
 	saveFile << "PICTURE_SETTINGS\n";
+	saveFile << picsPerRepManual << "\n";
 	saveFile << picsPerRepetitionUnofficial << "\n";
 	for (auto color : colors)
 	{
@@ -227,8 +234,17 @@ void PictureSettingsControl::handleOpenConfig(std::ifstream& openFile, int versi
 {
 	ProfileSystem::checkDelimiterLine(openFile, "PICTURE_SETTINGS");
 	UINT picsPerRep;
-	openFile >> picsPerRep;
-	setUnofficialPicsPerRep( picsPerRep, andor );
+	if (versionMajor > 2) {
+		openFile >> picsPerRepManual;
+		openFile >> picsPerRep;
+		picsPerRepEdit.SetWindowTextA(cstr(picsPerRep));
+		setUnofficialPicsPerRep(picsPerRep, andor);
+	}
+	else {
+		openFile >> picsPerRep;
+		setUnofficialPicsPerRep(picsPerRep, andor);
+	}
+
 	std::array<int, 4> fileThresholds;
 	for (auto& color : colors)
 	{
@@ -370,12 +386,11 @@ UINT PictureSettingsControl::getPicsPerRepetition()
 {
 	CString txt;
 	picsPerRepEdit.GetWindowTextA(txt);
-	if (txt != "")
+	if (picsPerRepManual)
 	{
 		try
 		{
-			picsPerRepetitionUnofficial = boost::
-				lexical_cast<UINT>(txt);
+			picsPerRepetitionUnofficial = boost::lexical_cast<UINT>(txt);
 		}
 		catch (boost::bad_lexical_cast& err)
 		{
@@ -393,7 +408,10 @@ UINT PictureSettingsControl::getPicsPerRepetition()
 
 void PictureSettingsControl::setUnofficialPicsPerRep( UINT picNum, AndorCamera* andorObj )
 {
-	picsPerRepetitionUnofficial = picNum;
+	picsPerRepetitionUnofficial = getPicsPerRepetition();
+	if (!picsPerRepManual) {
+		picsPerRepetitionUnofficial = picNum;
+	}
 	// not all settings are changed here, and some are used to recalculate totals.
 	AndorRunSettings settings = andorObj->getSettings( );
 	settings.picsPerRepetition = picsPerRepetitionUnofficial;
@@ -457,7 +475,12 @@ void PictureSettingsControl::setExposureTimes(std::vector<float>& times, AndorCa
 {
 	std::vector<float> exposuresToSet;
 	exposuresToSet = times;
-	exposuresToSet.resize(picsPerRepetitionUnofficial);
+	if (picsPerRepManual) {
+		exposuresToSet.resize(1);
+	}
+	else {
+		exposuresToSet.resize(picsPerRepetitionUnofficial);
+	}
 	AndorRunSettings settings = andorObj->getSettings();
 	settings.exposureTimes = exposuresToSet;
 	andorObj->setSettings(settings);
@@ -541,8 +564,8 @@ void PictureSettingsControl::setThresholds(std::array<int, 4> newThresholds)
 	}
 }
 
-BOOL PictureSettingsControl::getPicsPerRepManual() {
-	return picsPerRepManual;
+void PictureSettingsControl::setPicsPerRepManual() {
+	picsPerRepManual = picsPerRepToggle.GetCheck();
 }
 
 void PictureSettingsControl::setPicturesPerExperiment(UINT pics, AndorCamera* andorObj)
@@ -641,8 +664,9 @@ void PictureSettingsControl::rearrange(std::string cameraMode, std::string trigg
 	exposureLabel.rearrange(cameraMode, triggerMode, width, height, fonts);
 	thresholdLabel.rearrange(cameraMode, triggerMode, width, height, fonts);
 	colormapLabel.rearrange(cameraMode, triggerMode, width, height, fonts);
-	picsPerRepEdit.rearrange(cameraMode, triggerMode, width, height, fonts);
 	picsPerRepLabel.rearrange(cameraMode, triggerMode, width, height, fonts);
+	picsPerRepToggle.rearrange(cameraMode, triggerMode, width, height, fonts);
+	picsPerRepEdit.rearrange(cameraMode, triggerMode, width, height, fonts);
 
 	for (auto& control : pictureNumbers)
 	{

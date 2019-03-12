@@ -111,7 +111,7 @@ void CameraWindow::handleOpeningConfig(std::ifstream& configFile, int versionMaj
 	CameraSettings.handleOpenConfig(configFile, versionMajor, versionMinor );
 	pics.handleOpenConfig(configFile, versionMajor, versionMinor );
 	analysisHandler.handleOpenConfig( configFile, versionMajor, versionMinor );
-	if ( CameraSettings.getSettings( ).picsPerRepetition == 1 )
+	if ( CameraSettings.getSettings( ).picsPerRepetition == 1 || CameraSettings.getPicsPerRepManual())
 	{
 		pics.setSinglePicture( this, CameraSettings.readImageParameters( this )  );
 	}
@@ -627,7 +627,7 @@ void CameraWindow::handlePictureSettings(UINT id)
 {
 	selectedPixel = { 0,0 };
 	CameraSettings.handlePictureSettings(id, &Andor);
-	if (CameraSettings.getSettings().picsPerRepetition == 1)
+	if (CameraSettings.getSettings().picsPerRepetition == 1 || CameraSettings.getPicsPerRepManual())
 	{
 		pics.setSinglePicture( this, CameraSettings.readImageParameters( this ) );
 	}
@@ -786,7 +786,7 @@ void CameraWindow::prepareCamera( ExperimentInput& input )
 	readImageParameters( );
 	//
 	CameraSettings.updatePassivelySetSettings();
-	pics.setNumberPicturesActive( CameraSettings.getSettings().picsPerRepetition );
+	pics.setNumberPicturesActive( CameraSettings.getSettings().picsPerRepetition, CameraSettings.getPicsPerRepManual());
 	// this is a bit awkward at the moment.
 	
 	CameraSettings.setRepsPerVariation(mainWindowFriend->getRepNumber());
