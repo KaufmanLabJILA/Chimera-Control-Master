@@ -471,6 +471,7 @@ void CameraSettingsControl::handleTimer()
 
 void CameraSettingsControl::updateRunSettingsFromPicSettings( )
 {
+	runSettings.showPicsInRealTime = picSettingsObj.picsPerRepManual;
 	runSettings.exposureTimes = picSettingsObj.getUsedExposureTimes( );
 	runSettings.picsPerRepetition = picSettingsObj.getPicsPerRepetition( );
 	runSettings.totalPicsInVariation = runSettings.picsPerRepetition * runSettings.repetitionsPerVariation;

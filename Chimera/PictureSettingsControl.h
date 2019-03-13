@@ -32,7 +32,7 @@ class PictureSettingsControl
 		std::array<int, 4> getThresholds();
 		CBrush* colorControls(int idNumber, CDC* colorer, brushMap brushes, rgbMap rgbs);
 		void confirmAcquisitionTimings();
-		void setPicturesPerExperiment(UINT pics, AndorCamera* andorObj);
+		//void setPicturesPerExperiment(UINT pics, AndorCamera* andorObj);
 		void setThresholds(std::array<int, 4> thresholds);
 		void rearrange(std::string cameraMode, std::string triggerMode, int width, int height, fontMap fonts);
 		UINT getPicsPerRepetition();

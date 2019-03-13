@@ -408,9 +408,9 @@ UINT PictureSettingsControl::getPicsPerRepetition()
 
 void PictureSettingsControl::setUnofficialPicsPerRep( UINT picNum, AndorCamera* andorObj )
 {
-	picsPerRepetitionUnofficial = getPicsPerRepetition();
-	if (!picsPerRepManual) {
-		picsPerRepetitionUnofficial = picNum;
+	picsPerRepetitionUnofficial = picNum;
+	if (picsPerRepManual) {
+		picsPerRepetitionUnofficial = getPicsPerRepetition();
 	}
 	// not all settings are changed here, and some are used to recalculate totals.
 	AndorRunSettings settings = andorObj->getSettings( );
@@ -422,6 +422,9 @@ void PictureSettingsControl::setUnofficialPicsPerRep( UINT picNum, AndorCamera* 
 	}
 	settings.totalPicsInExperiment = int( settings.totalVariations * settings.totalPicsInVariation );
 	andorObj->setSettings( settings );
+	if (picsPerRepManual) {
+		picNum = 1;
+	}
 	for ( UINT picInc = 0; picInc < 4; picInc++ )
 	{
 		if ( picInc < picNum )
@@ -446,15 +449,16 @@ void PictureSettingsControl::setUnofficialPicsPerRep( UINT picNum, AndorCamera* 
 
 void PictureSettingsControl::handleOptionChange(int id, AndorCamera* andorObj)
 {
+	setPicsPerRepManual();
 	if (id >= totalNumberChoice.front().GetDlgCtrlID() && id <= totalNumberChoice.back().GetDlgCtrlID())
 	{
 		int picNum = id - totalNumberChoice.front().GetDlgCtrlID();
+		if (totalNumberChoice[picNum].GetCheck())
+		{
+			setUnofficialPicsPerRep(picNum + 1, andorObj);
+		}
 		// this message can weirdly get set after a configuration opens as well, it only means to set the number if the 
 		// relevant button is now checked.
-		if ( totalNumberChoice[picNum].GetCheck( ) )
-		{
-			setUnofficialPicsPerRep( picNum + 1, andorObj );
-		}
 	}
 	else if (id >= colormapCombos[0].GetDlgCtrlID() && id <= colormapCombos[3].GetDlgCtrlID())
 	{
@@ -568,42 +572,42 @@ void PictureSettingsControl::setPicsPerRepManual() {
 	picsPerRepManual = picsPerRepToggle.GetCheck();
 }
 
-void PictureSettingsControl::setPicturesPerExperiment(UINT pics, AndorCamera* andorObj)
-{
-	if (pics > 4)
-	{
-		return;
-	}
-	picsPerRepetitionUnofficial = pics;
-	AndorRunSettings settings = andorObj->getSettings();
-	settings.picsPerRepetition = picsPerRepetitionUnofficial;
-	settings.totalPicsInVariation = settings.picsPerRepetition  * settings.repetitionsPerVariation;
-	if (settings.totalVariations * settings.totalPicsInVariation > INT_MAX)
-	{
-		thrower( "ERROR: Trying to take too many pictures! Maximum picture number is " + str( INT_MAX ) );
-	}
-	settings.totalPicsInExperiment = int(settings.totalVariations * settings.totalPicsInVariation);
-	for (UINT picInc = 0; picInc < 4; picInc++)
-	{
-		if (picInc == pics - 1)
-		{
-			totalNumberChoice[picInc].SetCheck(1);
-		}
-		else
-		{
-			totalNumberChoice[picInc].SetCheck(0);
-		}
-
-		if (picInc < picsPerRepetitionUnofficial)
-		{
-			enablePictureControls(picInc);
-		}
-		else
-		{
-			disablePictureControls(picInc);
-		}
-	}
-}
+//void PictureSettingsControl::setPicturesPerExperiment(UINT pics, AndorCamera* andorObj)
+//{
+//	if (pics > 4)
+//	{
+//		return;
+//	}
+//	picsPerRepetitionUnofficial = pics;
+//	AndorRunSettings settings = andorObj->getSettings();
+//	settings.picsPerRepetition = picsPerRepetitionUnofficial;
+//	settings.totalPicsInVariation = settings.picsPerRepetition  * settings.repetitionsPerVariation;
+//	if (settings.totalVariations * settings.totalPicsInVariation > INT_MAX)
+//	{
+//		thrower( "ERROR: Trying to take too many pictures! Maximum picture number is " + str( INT_MAX ) );
+//	}
+//	settings.totalPicsInExperiment = int(settings.totalVariations * settings.totalPicsInVariation);
+//	for (UINT picInc = 0; picInc < 4; picInc++)
+//	{
+//		if (picInc == pics - 1)
+//		{
+//			totalNumberChoice[picInc].SetCheck(1);
+//		}
+//		else
+//		{
+//			totalNumberChoice[picInc].SetCheck(0);
+//		}
+//
+//		if (picInc < picsPerRepetitionUnofficial)
+//		{
+//			enablePictureControls(picInc);
+//		}
+//		else
+//		{
+//			disablePictureControls(picInc);
+//		}
+//	}
+//}
 
 
 /*

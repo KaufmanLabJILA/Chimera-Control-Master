@@ -315,7 +315,7 @@ LRESULT CameraWindow::onCameraProgress( WPARAM wParam, LPARAM lParam )
 	try
 	{
 		if (plotThreadAborting == false) {
-			if (realTimePic || CameraSettings.getPicsPerRepManual())
+			if (realTimePic)
 			{
 				std::pair<int, int> minMax;
 				// draw the most recent pic.
@@ -328,6 +328,20 @@ LRESULT CameraWindow::onCameraProgress( WPARAM wParam, LPARAM lParam )
 
 				timer.update(pictureNumber / currentSettings.picsPerRepetition, currentSettings.repetitionsPerVariation,
 					currentSettings.totalVariations, currentSettings.picsPerRepetition);
+			}
+			else if (CameraSettings.getPicsPerRepManual())
+			{
+				std::pair<int, int> minMax;
+				// draw the most recent pic.
+				minMax = stats.update(picData.back(), pictureNumber % 1, selectedPixel,
+					currentSettings.imageSettings.width, currentSettings.imageSettings.height,
+					pictureNumber / 1,
+					currentSettings.totalPicsInExperiment / 1);
+
+				pics.drawPicture(drawer, pictureNumber % 1, picData.back(), minMax);
+
+				timer.update(pictureNumber / 1, currentSettings.repetitionsPerVariation,
+					currentSettings.totalVariations, 1);
 			}
 			else if (pictureNumber % currentSettings.picsPerRepetition == 0)
 			{
@@ -366,8 +380,15 @@ LRESULT CameraWindow::onCameraProgress( WPARAM wParam, LPARAM lParam )
 	{
 		try
 		{
-			dataHandler.writePic( pictureNumber, picData[(pictureNumber - 1) % currentSettings.picsPerRepetition],
-								  currentSettings.imageSettings );
+			if (CameraSettings.getPicsPerRepManual()) {
+				dataHandler.writePic(pictureNumber, picData[(pictureNumber - 1) % 1],
+					currentSettings.imageSettings);
+			}
+			else {
+				dataHandler.writePic(pictureNumber, picData[(pictureNumber - 1) % currentSettings.picsPerRepetition],
+					currentSettings.imageSettings);
+			}
+
 		}
 		catch (Error& err)
 		{
@@ -1081,7 +1102,7 @@ std::string CameraWindow::getStartMessage()
 	dialogMsg += "\r\n";
 	dialogMsg += "Kintetic Cycle Time: " + str( CameraSettings.getSettings().kineticCycleTime ) + "\r\n";
 	dialogMsg += "Pictures per Repetition: " + str( CameraSettings.getSettings().picsPerRepetition ) + "\r\n";
-	dialogMsg += "Repetitions per Variation: " + str( CameraSettings.getSettings().totalPicsInVariation ) + "\r\n";
+	dialogMsg += "Pictures per Variation: " + str( CameraSettings.getSettings().totalPicsInVariation ) + "\r\n";
 	dialogMsg += "Variations per Experiment: " + str( CameraSettings.getSettings().totalVariations ) + "\r\n";
 	dialogMsg += "Total Pictures per Experiment: " + str( CameraSettings.getSettings().totalPicsInExperiment ) + "\r\n";
 	dialogMsg += "Real-Time Atom Detection Thresholds: ";
