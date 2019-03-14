@@ -112,7 +112,7 @@ void CameraSettingsControl::initialize( cameraPositions& pos, int& id, CWnd* par
 	temperatureOffButton.seriesPos = { pos.seriesPos.x + 430, pos.seriesPos.y, pos.seriesPos.x + 480, pos.seriesPos.y + 25 };
 	temperatureOffButton.videoPos = { pos.videoPos.x + 430, pos.videoPos.y, pos.videoPos.x + 480, pos.videoPos.y + 25 };
 	temperatureOffButton.amPos = { pos.amPos.x + 430, pos.amPos.y, pos.amPos.x + 480, pos.amPos.y + 25 };
-	temperatureOffButton.Create( "OFF", NORM_PUSH_OPTIONS, temperatureOffButton.seriesPos, parent, id++ );
+	temperatureOffButton.Create( "OFF", NORM_PUSH_OPTIONS, temperatureOffButton.seriesPos, parent, IDC_SET_TEMPERATURE_OFF_BUTTON);
 	pos.seriesPos.y += 25;
 	pos.amPos.y += 25;
 	pos.videoPos.y += 25;

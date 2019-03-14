@@ -50,6 +50,7 @@ class CameraWindow : public CDialog
 		void passTrigger();
 		void passCameraMode();
 		void passSetTemperaturePress();
+		void passSetTemperatureOffPress();
 		void passAlwaysShowGrid();
 		void passManualSetAnalysisLocations();
 		void passSetGridCorner( );

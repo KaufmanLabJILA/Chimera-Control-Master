@@ -20,18 +20,18 @@ void PictureSettingsControl::initialize( cameraPositions& pos, CWnd* parent, int
 	picsPerRepLabel.seriesPos = { pos.seriesPos.x, pos.seriesPos.y, pos.seriesPos.x + 200, pos.seriesPos.y + 25 };
 	picsPerRepLabel.videoPos = { -1,-1,-1,-1 };
 	picsPerRepLabel.amPos = { -1,-1,-1,-1 };
-	picsPerRepLabel.Create("Images Per Repetition:", NORM_STATIC_OPTIONS, picsPerRepLabel.seriesPos, parent, id++);
+	picsPerRepLabel.Create("Images Per Repetition:", NORM_STATIC_OPTIONS, picsPerRepLabel.seriesPos, parent, PICTURE_SETTINGS_ID_START + count++);
 
 	picsPerRepToggle.seriesPos = { pos.seriesPos.x + 200, pos.seriesPos.y, pos.seriesPos.x + 220, pos.seriesPos.y + 25 };
 	picsPerRepToggle.videoPos = { -1,-1,-1,-1 };
 	picsPerRepToggle.amPos = { -1,-1,-1,-1 };
-	picsPerRepToggle.Create("", NORM_CHECK_OPTIONS, picsPerRepLabel.seriesPos, parent, id++);
+	picsPerRepToggle.Create("", NORM_CHECK_OPTIONS, picsPerRepLabel.seriesPos, parent, PICTURE_SETTINGS_ID_START + count++);
 	picsPerRepToggle.SetCheck(0);
 
 	picsPerRepEdit.seriesPos = { pos.seriesPos.x + 220, pos.seriesPos.y, pos.seriesPos.x + 480, pos.seriesPos.y + 25 };
 	picsPerRepEdit.videoPos = { -1,-1,-1,-1 };
 	picsPerRepEdit.amPos = { -1,-1,-1,-1 };
-	picsPerRepEdit.Create(NORM_EDIT_OPTIONS, picsPerRepToggle.seriesPos, parent, id++);
+	picsPerRepEdit.Create(NORM_EDIT_OPTIONS, picsPerRepToggle.seriesPos, parent, PICTURE_SETTINGS_ID_START + count++);
 	picsPerRepEdit.SetWindowTextA("");
 
 	pos.seriesPos.y += 25;
@@ -411,6 +411,7 @@ void PictureSettingsControl::setUnofficialPicsPerRep( UINT picNum, AndorCamera* 
 {
 	if (picsPerRepManual) {
 		picsPerRepetitionUnofficial = getPicsPerRepetition();
+		picNum = 1;
 	}
 	else {
 		picsPerRepetitionUnofficial = picNum;
@@ -426,9 +427,6 @@ void PictureSettingsControl::setUnofficialPicsPerRep( UINT picNum, AndorCamera* 
 	}
 	settings.totalPicsInExperiment = int( settings.totalVariations * settings.totalPicsInVariation );
 	andorObj->setSettings( settings );
-	if (picsPerRepManual) {
-		picNum = 1;
-	}
 	for ( UINT picInc = 0; picInc < 4; picInc++ )
 	{
 		if ( picInc < picNum )
@@ -454,7 +452,10 @@ void PictureSettingsControl::setUnofficialPicsPerRep( UINT picNum, AndorCamera* 
 void PictureSettingsControl::handleOptionChange(int id, AndorCamera* andorObj)
 {
 	setPicsPerRepManual();
-	if (id >= totalNumberChoice.front().GetDlgCtrlID() && id <= totalNumberChoice.back().GetDlgCtrlID())
+	if (id == picsPerRepToggle.GetDlgCtrlID()) {
+		setUnofficialPicsPerRep(1, andorObj);
+	}
+	else if (id >= totalNumberChoice.front().GetDlgCtrlID() && id <= totalNumberChoice.back().GetDlgCtrlID())
 	{
 		int picNum = id - totalNumberChoice.front().GetDlgCtrlID();
 		if (totalNumberChoice[picNum].GetCheck())

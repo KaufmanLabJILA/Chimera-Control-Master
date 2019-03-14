@@ -54,6 +54,7 @@ BEGIN_MESSAGE_MAP(CameraWindow, CDialog)
 	// 
 	ON_COMMAND( IDC_SET_EM_GAIN_BUTTON, &CameraWindow::setEmGain)
 	ON_COMMAND( IDC_SET_TEMPERATURE_BUTTON, &CameraWindow::passSetTemperaturePress)
+	ON_COMMAND(IDC_SET_TEMPERATURE_OFF_BUTTON, &CameraWindow::passSetTemperatureOffPress)
 	ON_COMMAND( IDOK, &CameraWindow::catchEnter)
 	ON_COMMAND( IDC_SET_ANALYSIS_LOCATIONS, &CameraWindow::passManualSetAnalysisLocations)
 	ON_COMMAND( IDC_SET_GRID_CORNER, &CameraWindow::passSetGridCorner)
@@ -617,6 +618,18 @@ void CameraWindow::passSetTemperaturePress()
 	mainWindowFriend->updateConfigurationSavedStatus( false );
 }
 
+void CameraWindow::passSetTemperatureOffPress()
+{
+	try
+	{
+		CameraSettings.handleSetTemperatureOffPress();
+	}
+	catch (Error& err)
+	{
+		mainWindowFriend->getComm()->sendError(err.what());
+	}
+	mainWindowFriend->updateConfigurationSavedStatus(false);
+}
 
 /*
  *
