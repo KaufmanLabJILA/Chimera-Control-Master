@@ -238,6 +238,7 @@ void PictureSettingsControl::handleOpenConfig(std::ifstream& openFile, int versi
 		openFile >> picsPerRepManual;
 		openFile >> picsPerRep;
 		picsPerRepEdit.SetWindowTextA(cstr(picsPerRep));
+		picsPerRepToggle.SetCheck(picsPerRepManual);
 		setUnofficialPicsPerRep(picsPerRep, andor);
 	}
 	else {
@@ -408,9 +409,12 @@ UINT PictureSettingsControl::getPicsPerRepetition()
 
 void PictureSettingsControl::setUnofficialPicsPerRep( UINT picNum, AndorCamera* andorObj )
 {
-	picsPerRepetitionUnofficial = picNum;
 	if (picsPerRepManual) {
 		picsPerRepetitionUnofficial = getPicsPerRepetition();
+	}
+	else {
+		picsPerRepetitionUnofficial = picNum;
+		picsPerRepEdit.SetWindowTextA(cstr(picNum));
 	}
 	// not all settings are changed here, and some are used to recalculate totals.
 	AndorRunSettings settings = andorObj->getSettings( );

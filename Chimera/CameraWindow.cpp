@@ -333,15 +333,15 @@ LRESULT CameraWindow::onCameraProgress( WPARAM wParam, LPARAM lParam )
 			{
 				std::pair<int, int> minMax;
 				// draw the most recent pic.
-				minMax = stats.update(picData.back(), pictureNumber % 1, selectedPixel,
+				minMax = stats.update(picData.back(), 0, selectedPixel,
 					currentSettings.imageSettings.width, currentSettings.imageSettings.height,
-					pictureNumber / 1,
-					currentSettings.totalPicsInExperiment / 1);
+					pictureNumber / currentSettings.picsPerRepetition,
+					currentSettings.totalPicsInExperiment / currentSettings.picsPerRepetition);
 
-				pics.drawPicture(drawer, pictureNumber % 1, picData.back(), minMax);
+				pics.drawPicture(drawer, 0, picData.back(), minMax);
 
-				timer.update(pictureNumber / 1, currentSettings.repetitionsPerVariation,
-					currentSettings.totalVariations, 1);
+				timer.update(pictureNumber / currentSettings.picsPerRepetition, currentSettings.repetitionsPerVariation,
+					currentSettings.totalVariations, currentSettings.picsPerRepetition);
 			}
 			else if (pictureNumber % currentSettings.picsPerRepetition == 0)
 			{
