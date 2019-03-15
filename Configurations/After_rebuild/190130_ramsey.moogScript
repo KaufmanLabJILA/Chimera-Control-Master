@@ -2,11 +2,11 @@
 %corresponds to 125-40MHz
 onoff 0b1111111111
 
-gain 0 485
+gain 0 490
 startfreq 0 100
 loadphase 0 .314
 
-gain 1 376
+gain 1 380
 startfreq 1 95
 loadphase 1 1.256 
 
@@ -18,15 +18,15 @@ gain 3 533
 startfreq 3 85
 loadphase 3 5.0265
 
-gain 4 426
+gain 4 425
 startfreq 4 80
 loadphase 4 7.854 
 
-gain 5 360
+gain 5 358
 startfreq 5 75
 loadphase 5 11.3097 
 
-gain 6 400
+gain 6 395
 startfreq 6 70
 loadphase 6 15.3938
 
@@ -38,7 +38,7 @@ gain 8 320
 startfreq 8 60
 loadphase 8 25.4469
 
-gain 9 453
+gain 9 443
 startfreq 9 55
 loadphase 9 31.4159
 
