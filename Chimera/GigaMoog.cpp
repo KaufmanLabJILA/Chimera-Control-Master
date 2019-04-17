@@ -12,8 +12,8 @@
 //const UINT gigaMoog::moveoffset = 2560;
 
 gigaMoog::gigaMoog(std::string portID, int baudrate) : fpga(portID, baudrate) {
-	if (!MOOG_SAFEMODE) {
-		writeOff();
+	if (!GIGAMOOG_SAFEMODE) {
+		//writeOff();
 	}
 }
 
@@ -57,6 +57,8 @@ void gigaMoog::loadMoogScript(std::string scriptAddress)
 
 void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vars)
 {
+	writeOff();
+
 	MessageSender ms;
 
 	currentMoogScriptText = currentMoogScript.str();

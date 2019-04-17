@@ -252,10 +252,10 @@ BOOL ScriptingWindow::OnInitDialog()
 	//								mainWindowFriend->getRgbs()["theme BG2"] );
 
 	startLocation = { 480, 28 };
-	gmoogScript.initialize(480, 900, startLocation, tooltips, this, id, "Moog",
+	gmoogScript.initialize(480, 900, startLocation, tooltips, this, id, "Gmoog",
 		"Gigamoog 1 Script",
 		{ IDC_GMOOG_FUNCTION_COMBO, IDC_GMOOG_EDIT },
-		mainWindowFriend->getRgbs()["theme BG2"]);
+		mainWindowFriend->getRgbs()["theme BG1"]);
 	//horizontalNiawgScript.initialize( 480, 900, startLocation, tooltips, this,  id, "Horizontal NIAWG",
 	//								  "Horizontal NIAWG Script", { IDC_HORIZONTAL_NIAWG_FUNCTION_COMBO, 
 	//								  IDC_HORIZONTAL_NIAWG_EDIT }, mainWindowFriend->getRgbs()["theme BG1"]);
@@ -803,12 +803,30 @@ void ScriptingWindow::saveDdsScriptAs(CWnd* parent)
 
 }
 
+void ScriptingWindow::newGmoogScript()
+{
+	try
+	{
+		gmoogScript.checkSave(getProfile().categoryPath, mainWindowFriend->getRunInfo());
+		gmoogScript.newScript();
+		updateConfigurationSavedStatus(false);
+		gmoogScript.updateScriptNameText(getProfile().categoryPath);
+		gmoogScript.colorEntireScript(auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(),
+			auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames());
+	}
+	catch (Error& err)
+	{
+		comm()->sendError(err.what());
+	}
+
+}
+
 void ScriptingWindow::openGmoogScript(CWnd* parent)
 {
 	try
 	{
 		gmoogScript.checkSave(getProfile().categoryPath, mainWindowFriend->getRunInfo());
-		std::string moogOpenName = openWithExplorer(parent, MOOG_SCRIPT_EXTENSION);
+		std::string moogOpenName = openWithExplorer(parent, GIGAMOOG_SCRIPT_EXTENSION);
 		gmoogScript.openParentScript(moogOpenName, getProfile().categoryPath,
 			mainWindowFriend->getRunInfo());
 		updateConfigurationSavedStatus(false);
@@ -1007,12 +1025,12 @@ void ScriptingWindow::handleOpenConfig(std::ifstream& configFile, int versionMaj
 	}
 	catch (Error& err)
 	{
-		int answer = promptBox("ERROR: Failed to open gmoog script file: " + moogName + ", with error \r\n"
+		int answer = promptBox("ERROR: Failed to open gmoog script file: " + gmoogName + ", with error \r\n"
 			+ err.whatStr() + "\r\nAttempt to find file yourself?", MB_YESNO);
 		if (answer == IDYES)
 		{
 			//openVerticalScript( openWithExplorer( NULL, "nScript" ) );
-			openGmoogScript(openWithExplorer(NULL, MOOG_SCRIPT_EXTENSION));
+			openGmoogScript(openWithExplorer(NULL, GIGAMOOG_SCRIPT_EXTENSION));
 		}
 	}
 	try

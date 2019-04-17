@@ -580,6 +580,7 @@ const char * const SERVER_ADDRESS = "192.168.236.1";
 #define PLOTTING_EXTENSION "plot"
 
 #define MOOG_SCRIPT_EXTENSION "moogScript"
+#define GIGAMOOG_SCRIPT_EXTENSION "gmoogScript"
 #define DDS_SCRIPT_EXTENSION "ddsScript"
 
 #define OSCILLOSCOPE_TRIGGER "A7"
@@ -636,6 +637,17 @@ const char MOOG_INFO_TEXT[] =
 "step <stepsize>, stepsize is a 10-bit unsigned number. LSB = 25MHz/sec.\n"
 "(C) Software triggers:\n"
 "move, load, no inputs. Mostly just for debugging since actual experiment would use external TTL triggers\n"
+;
+
+const char GIGAMOOG_INFO_TEXT[] =
+">>> This is a script for programming the Gigamoogs. <<<\n"
+"- the input format is referenced below using angled brackets <...>. Place the input on\n"
+" the line below the command in the format specified.\n"
+"- The associated c++ code has been designed to be flexible when it comes to trailing white spaces at the ends of\n"
+" lines and in between commands, so use whatever such formatting pleases your eyes.\n"
+"Accepted Commands:\n"
+"(A) set:\n"
+"DAC number, channel number, amplitude (%), frequency (MHz), phase (degrees)."
 ;
 
 const char DDS_INFO_TEXT[] =

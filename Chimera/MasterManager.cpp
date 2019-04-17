@@ -74,6 +74,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 		{
 			input->thisObj->analyzeMasterScript( input->ttls, input->dacs, ttlShadeLocs, dacShadeLocs,
 												 input->variables );
+			input->gmoog->analyzeMoogScript(input->gmoog, input->variables);
 		}
 		/// prep Moog
 		if (input->runMoog) {
@@ -529,10 +530,12 @@ void MasterManager::startExperimentThread(MasterThreadInput* input)
 	if (input->runMaster)
 	{
 		loadMasterScript( input->masterScriptAddress );
+		input->gmoog->loadMoogScript(input->gmoogScriptAddress);
 	}
 	if (input->runMoog)
 	{
 		input->moog->loadMoogScript(input->moogScriptAddress);
+
 	}
 	if (!DDS_SAFEMODE) {
 		input->dds->loadDDSScript(input->ddsScriptAddress);

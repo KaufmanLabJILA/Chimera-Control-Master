@@ -42,6 +42,10 @@ void Script::initialize( int width, int height, POINT& startingLocation, cToolTi
 	{
 		extension = str(".") + MOOG_SCRIPT_EXTENSION;
 	}
+	else if (deviceTypeInput == "Gmoog")
+	{
+		extension = str(".") + GIGAMOOG_SCRIPT_EXTENSION;
+	}
 	else if (deviceTypeInput == "DDS")
 	{
 		extension = str(".") + DDS_SCRIPT_EXTENSION;
@@ -177,41 +181,41 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 		return rgbs["theme comment"];
 	}
 	// Check NIAWG-specific commands
-	if ( editType == "Horizontal NIAWG" || editType == "Vertical NIAWG" )
-	{
-		for ( auto num : range( 10 ) )
-		{
-			if ( word == "gen" + str( num + 1 ) + "const" || word == "gen" + str( num + 1 ) + "ampramp"
-				|| word == "gen" + str( num + 1 ) + "freqramp" || word == "gen" + str( num + 1 ) + "freq&ampramp"
-				 || word == "flash" || word == "rearrange")
-			{
-				return rgbs["theme purple"];
-			}
-		}
-		// check logic
-		if ( word == "repeattiltrig" || word == "repeatSet#" || word == "repeattilsoftwaretrig" || word == "endrepeat" 
-			 || word == "repeatforever" )
-		{
-			return rgbs["theme blue"];
-		}
-		// check options
-		if (word == "lin" || word == "nr" || word == "tanh")
-		{
-			return rgbs["theme green"];
-		}
-		// check variable
-		else if (word == "{" || word == "}")
-		{
-			return rgbs["theme aqua"];
-		}
-		if (word.size() > 8)
-		{
-			if (word.substr(word.size() - 8, 8) == ".nScript")
-			{
-				return rgbs["theme yellow"];
-			}
-		}
-	}
+	//if ( editType == "Horizontal NIAWG" || editType == "Vertical NIAWG" )
+	//{
+	//	for ( auto num : range( 10 ) )
+	//	{
+	//		if ( word == "gen" + str( num + 1 ) + "const" || word == "gen" + str( num + 1 ) + "ampramp"
+	//			|| word == "gen" + str( num + 1 ) + "freqramp" || word == "gen" + str( num + 1 ) + "freq&ampramp"
+	//			 || word == "flash" || word == "rearrange")
+	//		{
+	//			return rgbs["theme purple"];
+	//		}
+	//	}
+	//	// check logic
+	//	if ( word == "repeattiltrig" || word == "repeatSet#" || word == "repeattilsoftwaretrig" || word == "endrepeat" 
+	//		 || word == "repeatforever" )
+	//	{
+	//		return rgbs["theme blue"];
+	//	}
+	//	// check options
+	//	if (word == "lin" || word == "nr" || word == "tanh")
+	//	{
+	//		return rgbs["theme green"];
+	//	}
+	//	// check variable
+	//	else if (word == "{" || word == "}")
+	//	{
+	//		return rgbs["theme aqua"];
+	//	}
+	//	if (word.size() > 8)
+	//	{
+	//		if (word.substr(word.size() - 8, 8) == ".nScript")
+	//		{
+	//			return rgbs["theme yellow"];
+	//		}
+	//	}
+	//}
 	// Check Moog-specific commands
 	if (editType == "Moog") {
 		if (word == "startfreq"|| word == "stopfreq"|| word == "gain"|| word == "loadphase"|| word == "movephase"|| word == "onoff"|| word == "step")
@@ -236,6 +240,28 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 		if (word.size() > 8)
 		{
 			if (word.substr(word.size() - 8, 8) == ".moogScript")
+			{
+				return rgbs["theme yellow"];
+			}
+		}
+	}
+	if (editType == "Gmoog") {
+		if (word == "set")
+		{
+			return rgbs["theme purple"];
+		}
+		// check variable
+		else if (word == "{" || word == "}")
+		{
+			return rgbs["theme aqua"];
+		}
+		else if (word == "dac0" || word == "dac1" || word == "dac2" || word == "dac3")
+		{
+			return rgbs["theme green"];
+		}
+		if (word.size() > 8)
+		{
+			if (word.substr(word.size() - 8, 8) == ".gmoogScript")
 			{
 				return rgbs["theme yellow"];
 			}
@@ -632,6 +658,10 @@ void Script::handleToolTip( NMHDR * pNMHDR, LRESULT * pResult )
 		{
 			pTTT->lpszText = (LPSTR)MOOG_INFO_TEXT;
 		}
+		else if (deviceType == "Gmoog")
+		{
+			pTTT->lpszText = (LPSTR)GIGAMOOG_INFO_TEXT;
+		}
 		else if (deviceType == "DDS")
 		{
 			pTTT->lpszText = (LPSTR)DDS_INFO_TEXT;
@@ -968,7 +998,7 @@ void Script::newScript()
 {
 	std::string tempName;
 	tempName = DEFAULT_SCRIPT_FOLDER_PATH;
-	if (deviceType == "Horizontal NIAWG")
+/*	if (deviceType == "Horizontal NIAWG")
 	{
 		tempName += "DEFAULT_HORIZONTAL_SCRIPT.nScript";
 	}
@@ -980,13 +1010,18 @@ void Script::newScript()
 	{
 		tempName += "DEFAULT_INTENSITY_SCRIPT.aScript";
 	}
-	else if (deviceType == "Master")
+	else*/ 
+	if (deviceType == "Master")
 	{
 		tempName += "DEFAULT_MASTER_SCRIPT.mScript";
 	}	
 	else if (deviceType == "Moog")
 	{
 		tempName += "DEFAULT_MOOG_SCRIPT.moogScript";
+	}
+	else if (deviceType == "Gmoog")
+	{
+		tempName += "DEFAULT_GMOOG_SCRIPT.gmoogScript";
 	}
 	else if (deviceType == "DDS")
 	{
@@ -1010,21 +1045,21 @@ void Script::openParentScript(std::string parentScriptFileAndPath, std::string c
 	int myError = _splitpath_s(cstr(parentScriptFileAndPath), dirChars, _MAX_FNAME, pathChars, _MAX_FNAME, fileChars, 
 								_MAX_FNAME, extChars, _MAX_EXT);
 	std::string extStr(extChars);
-	if (deviceType == "Horizontal NIAWG" || deviceType == "Vertical NIAWG")
-	{
-		if (extStr != str(".") + NIAWG_SCRIPT_EXTENSION)
-		{
-			thrower("ERROR: Attempted to open non-NIAWG script inside NIAWG script control.");
-		}
-	}
-	else if (deviceType == "Agilent")
-	{
-		if (extStr != str( "." ) + AGILENT_SCRIPT_EXTENSION)
-		{
-			thrower("ERROR: Attempted to open non-agilent script from agilent script control.");
-		}
-	}
-	else if (deviceType == "Master")
+	//if (deviceType == "Horizontal NIAWG" || deviceType == "Vertical NIAWG")
+	//{
+	//	if (extStr != str(".") + NIAWG_SCRIPT_EXTENSION)
+	//	{
+	//		thrower("ERROR: Attempted to open non-NIAWG script inside NIAWG script control.");
+	//	}
+	//}
+	//else if (deviceType == "Agilent")
+	//{
+	//	if (extStr != str( "." ) + AGILENT_SCRIPT_EXTENSION)
+	//	{
+	//		thrower("ERROR: Attempted to open non-agilent script from agilent script control.");
+	//	}
+	//}
+	if (deviceType == "Master")
 	{
 		if (extStr != str( "." ) + MASTER_SCRIPT_EXTENSION)
 		{
@@ -1034,6 +1069,13 @@ void Script::openParentScript(std::string parentScriptFileAndPath, std::string c
 	else if (deviceType == "Moog")
 	{
 		if (extStr != str(".") + MOOG_SCRIPT_EXTENSION)
+		{
+			thrower("ERROR: Attempted to open non-moog script from moog script control!");
+		}
+	}
+	else if (deviceType == "Gmoog")
+	{
+		if (extStr != str(".") + GIGAMOOG_SCRIPT_EXTENSION)
 		{
 			thrower("ERROR: Attempted to open non-moog script from moog script control!");
 		}
