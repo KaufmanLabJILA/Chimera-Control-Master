@@ -172,6 +172,18 @@
     <ClCompile Include="DDS_SYNTH.cpp">
       <Filter>Main Window</Filter>
     </ClCompile>
+    <ClCompile Include="BoostAsyncSerial.cpp">
+      <Filter>Serial</Filter>
+    </ClCompile>
+    <ClCompile Include="MessagePrinter.cpp">
+      <Filter>Serial</Filter>
+    </ClCompile>
+    <ClCompile Include="MessageSender.cpp">
+      <Filter>Serial</Filter>
+    </ClCompile>
+    <ClCompile Include="GigaMoog.cpp">
+      <Filter>Main Window</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -410,6 +422,21 @@
     <ClInclude Include="DdsState.h">
       <Filter>Main Window</Filter>
     </ClInclude>
+    <ClInclude Include="MessageSender.h">
+      <Filter>Serial</Filter>
+    </ClInclude>
+    <ClInclude Include="Messagetypes.h">
+      <Filter>Serial</Filter>
+    </ClInclude>
+    <ClInclude Include="BoostAsyncSerial.h">
+      <Filter>Serial</Filter>
+    </ClInclude>
+    <ClInclude Include="MessagePrinter.h">
+      <Filter>Serial</Filter>
+    </ClInclude>
+    <ClInclude Include="GigaMoog.h">
+      <Filter>Main Window</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Icon2.ico">
@@ -465,6 +492,9 @@
     </Filter>
     <Filter Include="Camera Window\Structures">
       <UniqueIdentifier>{c30ebec6-c2b0-499a-8318-6856c626e280}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Serial">
+      <UniqueIdentifier>{4984a09b-18ba-449c-af17-d1f92289dc10}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

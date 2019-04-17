@@ -60,7 +60,7 @@ void BoostAsyncSerial::readhandler(const boost::system::error_code & error, std:
 	boost::mutex::scoped_lock look(mutex_);
 
 	if (error) {
-		throw std::runtime_error("Error reading from serial");
+		thrower("Error reading from serial");
 	}
 	
 	port_->async_read_some(boost::asio::buffer(readbuffer), boost::bind(&BoostAsyncSerial::readhandler, this,
@@ -81,7 +81,7 @@ void BoostAsyncSerial::readhandler(const boost::system::error_code & error, std:
 void BoostAsyncSerial::write(std::vector<unsigned char> data)
 {
 	if (!port_->is_open()) {
-		throw std::runtime_error("Serial port has not been opened");
+		thrower("Serial port has not been opened");
 	}
 	boost::asio::write(*port_, boost::asio::buffer(data));
 }
@@ -91,7 +91,7 @@ void BoostAsyncSerial::write(std::vector<int> data)
 	std::vector<unsigned char> converted(data.size());
 	for (int idx = 0; idx < data.size(); idx++) {
 		if(data[idx] < 0 || data[idx] >255){
-			throw std::invalid_argument("Byte value needs to be in range 0-255");
+			thrower("Byte value needs to be in range 0-255");
 		}
 		converted[idx] = data[idx];
 	}
@@ -107,7 +107,7 @@ void BoostAsyncSerial::write(std::vector<int> data)
 void BoostAsyncSerial::read()
 {
 	if (!port_->is_open()) {
-		throw std::runtime_error("Serial port has not been opened");
+		thrower("Serial port has not been opened");
 	}
 	port_->async_read_some(boost::asio::buffer(readbuffer), boost::bind(&BoostAsyncSerial::readhandler,
 		this,

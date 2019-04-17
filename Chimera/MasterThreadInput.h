@@ -16,6 +16,7 @@
 //for moog test:
 #include "SerialSynth.h"
 #include "DDS_SYNTH.h"
+#include "GigaMoog.h"
 
 #include "rerngParams.h"
 
@@ -28,6 +29,8 @@ struct MasterThreadInput
 	//for moog test:
 	SerialSynth* moog;
 	std::string moogScriptAddress;
+	gigaMoog* gmoog;
+	std::string gmoogScriptAddress;
 	DDS_SYNTH* dds;
 	std::string ddsScriptAddress;
 

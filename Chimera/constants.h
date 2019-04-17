@@ -75,6 +75,7 @@
 #ifdef PAL9000
 	#define PYTHON_HOME L"C:\\ProgramData\\Anaconda3\\"
 	#define MOOG_SAFEMODE true
+	#define GIGAMOOG_SAFEMODE false
 	#define NIAWG_SAFEMODE true
 	#define ANDOR_SAFEMODE true
 	#define PYTHON_SAFEMODE true
@@ -85,6 +86,7 @@
 	#define DAQMX_SAFEMODE true
 	#define RSG_SAFEMODE true
 	#define DDS_FPGA_ADDRESS "FT1I6IBSB" //Device Serial: FT1I6IBS, Use FT1I6IBSB in C++ to select Channel B
+	#define GIGAMOOG_PORT "COM7"
 	#define TOP_BOTTOM_TEK_SAFEMODE true
 	#define TOP_BOTTOM_TEK_USB_ADDRESS "USB0::0x0699::0x0343::C021681::0::INSTR"
 	#define EO_AXIAL_TEK_SAFEMODE true
@@ -123,6 +125,7 @@
 
 	//Test file for moog
 	const std::string MOOG_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_MOOG_SCRIPT.moogScript";
+	const std::string GMOOG_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_GMOOG_SCRIPT.moogScript";
 	const std::string DDS_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_DDS_SCRIPT.ddsScript";
 #endif
 
@@ -366,10 +369,12 @@ const char * const SERVER_ADDRESS = "192.168.236.1";
 
 #define IDC_MOOG_FUNCTION_COMBO 12001
 #define IDC_MOOG_EDIT 12002
+#define IDC_GMOOG_FUNCTION_COMBO 12003
+#define IDC_GMOOG_EDIT 12004
 //#define IDC_VERTICAL_NIAWG_FUNCTION_COMBO 12001
 //#define IDC_VERTICAL_NIAWG_EDIT 12002
-#define IDC_HORIZONTAL_NIAWG_FUNCTION_COMBO 12003
-#define IDC_HORIZONTAL_NIAWG_EDIT 12004
+//#define IDC_HORIZONTAL_NIAWG_FUNCTION_COMBO 12003
+//#define IDC_HORIZONTAL_NIAWG_EDIT 12004
 
 #define IDC_DDS_FUNCTION_COMBO 12005
 #define IDC_DDS_EDIT 12006

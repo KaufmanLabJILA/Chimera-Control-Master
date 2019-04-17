@@ -317,9 +317,10 @@ namespace commonFunctions
 			{
 				try
 				{
-					scriptWin->saveHorizontalScript( );
+					//scriptWin->saveHorizontalScript( );
 					//scriptWin->saveVerticalScript( );
 					scriptWin->saveMoogScript();
+					scriptWin->saveGmoogScript();
 					//scriptWin->saveIntensityScript( );
 					scriptWin->saveDdsScript();
 
@@ -526,24 +527,24 @@ namespace commonFunctions
 				scriptWin->saveDdsScriptAs(parent);
 				break;
 			}
-			case ID_FILE_MY_HORIZONTAL_NEW:
+			case ID_FILE_MY_GIGAMOOG_NEW:
 			{
-				scriptWin->newHorizontalScript();
+				scriptWin->newGmoogScript();
 				break;
 			}
-			case ID_FILE_MY_HORIZONTAL_OPEN:
+			case ID_FILE_MY_GIGAMOOG_OPEN:
 			{
-				scriptWin->openHorizontalScript(parent);
+				scriptWin->openGmoogScript(parent);
 				break;
 			}
-			case ID_FILE_MY_HORIZONTAL_SAVE:
+			case ID_FILE_MY_GIGAMOOG_SAVE:
 			{
-				scriptWin->saveHorizontalScript();
+				scriptWin->saveGmoogScript();
 				break;
 			}
-			case ID_FILE_MY_HORIZONTAL_SAVEAS:
+			case ID_FILE_MY_GIGAMOOG_SAVEAS:
 			{
-				scriptWin->saveHorizontalScriptAs(parent);
+				scriptWin->saveGmoogScriptAs(parent);
 				break;
 			}
 			case ID_MASTERSCRIPT_NEW:

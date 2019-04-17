@@ -3,7 +3,7 @@
 
 using namespace::boost::asio;
 using namespace::std;
-using namespace::std::placeholders;
+//using namespace::std::placeholders;
 
 const UINT SerialSynth::freqstartoffset = 512;
 const UINT SerialSynth::freqstopoffset = 1024;
@@ -25,19 +25,19 @@ SerialSynth::~SerialSynth(void){
 //Remember: A non-static member function must be called with an object. That is, it always implicitly passes "this" pointer as its argument.
 auto SerialSynth::parseFunction(string funcstr) {
 	if (funcstr == "startfreq") {
-		return std::bind(&SerialSynth::writeStartFreq, this, _1, _2);
+		return std::bind(&SerialSynth::writeStartFreq, this, std::placeholders::_1, std::placeholders::_2);
 	}
 	else if (funcstr == "stopfreq") {
-		return std::bind(&SerialSynth::writeStopFreq, this, _1, _2);
+		return std::bind(&SerialSynth::writeStopFreq, this, std::placeholders::_1, std::placeholders::_2);
 	}
 	else if (funcstr == "gain") {
-		return std::bind(&SerialSynth::writeGain, this, _1, _2);
+		return std::bind(&SerialSynth::writeGain, this, std::placeholders::_1, std::placeholders::_2);
 	}
 	else if (funcstr == "loadphase") {
-		return std::bind(&SerialSynth::writeLoadPhase, this, _1, _2);
+		return std::bind(&SerialSynth::writeLoadPhase, this, std::placeholders::_1, std::placeholders::_2);
 	}
 	else if (funcstr == "movephase") {
-		return std::bind(&SerialSynth::writeMovePhase, this, _1, _2);
+		return std::bind(&SerialSynth::writeMovePhase, this, std::placeholders::_1, std::placeholders::_2);
 	}
 	else {
 		thrower("ERROR: " + funcstr + " is not a recognized settings function that can be swept over");

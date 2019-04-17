@@ -22,6 +22,8 @@
 //megamoog controller
 #include "SerialSynth.h"
 #include "DDS_SYNTH.h"
+#include "GigaMoog.h"
+
 
 class ScriptingWindow;
 class CameraWindow;
@@ -128,6 +130,7 @@ class MainWindow : public CDialog
 		//rerngControl rearrangeControl;
 		//NiawgController niawg;
 		SerialSynth moog;
+		gigaMoog gmoog;
 		DDS_SYNTH dds;
 
 		ColorBox boxes;

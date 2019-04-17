@@ -33,7 +33,7 @@ public:
 	template<typename T> void set(const std::string& key, const T& value)
 	{
 		if (exists(key))
-			throw "Duplicate key";
+			thrower("Duplicate key");
 
 		mParameters[key] = value;
 	}
@@ -41,7 +41,7 @@ public:
 	template<typename T> const T& get(const std::string& key)const
 	{
 		if (!exists(key))
-			throw "Can't find key";
+			thrower("Can't find key");
 
 		return boost::get<T>(mParameters.find(key)->second);
 	}
@@ -102,7 +102,7 @@ struct SetLoadFrequency : KA007_Message_Base
 		bytes.push_back(0);
 		int mult;
 		switch (p.get<MessageDAC>("DAC")) {
-			case MessageDAC::DAC0 : mult = 0;
+			case MessageDAC::DAC0: mult = 0;
 								break;
 			case MessageDAC::DAC1: mult = 1;
 								break;
@@ -121,7 +121,7 @@ struct SetLoadFrequency : KA007_Message_Base
 		//process amplitude
 		//Percent to 16-bit number
 		auto ATW = p.get<double>("Amplitude");
-		if(ATW < 0.0 || ATW > 100.0) throw std::runtime_error("invalid amplitude");
+		if(ATW < 0.0 || ATW > 100.0) thrower("invalid amplitude");
 		ATW *= 655.35;
 		int ATW_bits = (int)ATW;
 		
@@ -131,7 +131,7 @@ struct SetLoadFrequency : KA007_Message_Base
 		//process phase
 		//Degrees to 12-bit
 		auto PTW = p.get<double>("Phase");
-		if (PTW < 0.0 || PTW > 360.0) throw std::runtime_error("invalid phase");
+		if (PTW < 0.0 || PTW > 360.0) thrower("invalid phase");
 		PTW /= 360.0;
 		PTW *= 4096;
 		int PTW_bits = (int)PTW;
@@ -181,7 +181,7 @@ class KA007_MessageFactory
 public:
 	KA007_MessageFactory()
 	{
-		if (sizeof(unsigned long long int) != 8) throw std::runtime_error("unsigned long long int needs to be 64-bit wide");
+		if (sizeof(unsigned long long int) != 8) thrower("unsigned long long int needs to be 64-bit wide");
 		
 		factories[MessageSetting::LOADFREQUENCY] = [] (KA007ParameterContainer params) {
 			auto bytes = SetLoadFrequency();

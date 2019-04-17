@@ -194,6 +194,7 @@
     <ClInclude Include="atomCruncherInput.h" />
     <ClInclude Include="atomGrid.h" />
     <ClInclude Include="beginningSettingsDialogProc.h" />
+    <ClInclude Include="BoostAsyncSerial.h" />
     <ClInclude Include="CameraImageDimensions.h" />
     <ClInclude Include="cameraPositions.h" />
     <ClInclude Include="CameraSettingsControl.h" />
@@ -207,6 +208,10 @@
     <ClInclude Include="DDS_SYNTH.h" />
     <ClInclude Include="DebugOptionsControl.h" />
     <ClInclude Include="Expression.h" />
+    <ClInclude Include="GigaMoog.h" />
+    <ClInclude Include="MessagePrinter.h" />
+    <ClInclude Include="MessageSender.h" />
+    <ClInclude Include="Messagetypes.h" />
     <ClInclude Include="profileSettings.h" />
     <ClInclude Include="ProfileSystem.h" />
     <ClInclude Include="DacSettingsDialog.h" />
@@ -280,6 +285,7 @@
   <ItemGroup>
     <ClCompile Include="AlertSystem.cpp" />
     <ClCompile Include="beginningSettingsDialogProc.cpp" />
+    <ClCompile Include="BoostAsyncSerial.cpp" />
     <ClCompile Include="CameraImageDimensions.cpp" />
     <ClCompile Include="CameraSettingsControl.cpp" />
     <ClCompile Include="CameraWindow.cpp" />
@@ -289,6 +295,9 @@
     <ClCompile Include="DDS_SYNTH.cpp" />
     <ClCompile Include="DebugOptionsControl.cpp" />
     <ClCompile Include="Expression.cpp" />
+    <ClCompile Include="GigaMoog.cpp" />
+    <ClCompile Include="MessagePrinter.cpp" />
+    <ClCompile Include="MessageSender.cpp" />
     <ClCompile Include="openWithExplorer.cpp" />
     <ClCompile Include="ProfileSystem.cpp" />
     <ClCompile Include="Control.cpp" />
