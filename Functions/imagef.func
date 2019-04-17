@@ -1,16 +1,17 @@
 % Master-Script See the "?" for info on commands.
 def imagef():
-  %dac: bluetune bluetune_imag
+  dac: bluetune bluetune_imag
   dac: imagingPow imagpow
   on: andorshut
-  t += 4
+  %t += 4
   on: andortrig
   t += .2
   on: imag461
   on: radial
-  t += 18
-  off: imag461
-  off: radial
+  t += 20
 %  off: axial
   off: andortrig
-  off: andorshut
+  %off: andorshut
+  off: radial
+  off: imag461
+  t += .01
