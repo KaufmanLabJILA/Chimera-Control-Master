@@ -13,7 +13,7 @@ namespace commonFunctions
 	/// Run Menu
 	void prepareCamera( MainWindow* mainWin, CameraWindow* camWin, ExperimentInput& input );
 	void prepareMasterThread( int msgID, ScriptingWindow* scriptWin, MainWindow* mainWin, CameraWindow* camWin,
-							  AuxiliaryWindow* auxWin, ExperimentInput& input, bool single, bool runMoog, bool runNiawg, bool runTtls );
+							  AuxiliaryWindow* auxWin, ExperimentInput& input, bool single, bool runMoog, bool runTtls );
 	void abortRearrangement( MainWindow* mainWin, CameraWindow* camWin );
 	void startMaster(MainWindow* mainWin, ExperimentInput& input);
 
@@ -21,13 +21,13 @@ namespace commonFunctions
 	//void startFullMasterThread( MainWindow* mainWin, AuxiliaryWindow* auxWin, ScriptingWindow* scriptWin, 
 	//							ExperimentInput& input, CameraWindow* camWin );
 	void setMot(MainWindow* mainWin);
-	void abortNiawg( ScriptingWindow* scriptWin, MainWindow* mainWin );
+	//void abortNiawg( ScriptingWindow* scriptWin, MainWindow* mainWin );
 	void abortCamera( CameraWindow* camWin, MainWindow* mainWin );
 	void abortMaster(MainWindow* mainWin, AuxiliaryWindow* auxWin);
 	void exitProgram( ScriptingWindow* scriptWindow, MainWindow* mainWin, CameraWindow* camWin, AuxiliaryWindow* auxWin );
 	/// Scripting Menu
 	int saveProfile( ScriptingWindow* scriptWindow, MainWindow* mainWin );
-	void reloadNIAWGDefaults( MainWindow* mainWin );
+	//void reloadNIAWGDefaults( MainWindow* mainWin );
 }
 
 

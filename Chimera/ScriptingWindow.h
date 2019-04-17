@@ -15,7 +15,8 @@ template <typename type> struct scriptInfo
 {
 	//type verticalNIAWG;
 	type moog;
-	type horizontalNIAWG;
+	type gmoog;
+	//type horizontalNIAWG;
 	//type intensityAgilent;
 	type master;
 	type DDS;
@@ -72,6 +73,13 @@ class ScriptingWindow : public CDialog
 		void saveMoogScriptAs(CWnd* parent);
 		void moogEditChange();
 
+		void newGmoogScript();
+		void openGmoogScript(CWnd* parent);
+		void openGmoogScript(std::string name);
+		void saveGmoogScript();
+		void saveGmoogScriptAs(CWnd* parent);
+		void gmoogEditChange();
+
 		void newDdsScript();
 		void openDdsScript(CWnd* parent);
 		void openDdsScript(std::string name);
@@ -86,12 +94,12 @@ class ScriptingWindow : public CDialog
 		//void saveVerticalScriptAs(CWnd* parent);
 		//void verticalEditChange();
 
-		void newHorizontalScript();
-		void openHorizontalScript(CWnd* parent);
-		void openHorizontalScript(std::string name);
-		void saveHorizontalScript();
-		void saveHorizontalScriptAs(CWnd* parent);
-		void horizontalEditChange();
+		//void newHorizontalScript();
+		//void openHorizontalScript(CWnd* parent);
+		//void openHorizontalScript(std::string name);
+		//void saveHorizontalScript();
+		//void saveHorizontalScriptAs(CWnd* parent);
+		//void horizontalEditChange();
 
 		void newMasterScript();
 		void openMasterScript(CWnd* parent);
@@ -113,7 +121,8 @@ class ScriptingWindow : public CDialog
 
 		//void handleIntensityButtons( UINT id );
 		void handleMoogScriptComboChange();
-		void handleHorizontalScriptComboChange();
+		void handleGmoogScriptComboChange();
+		//void handleHorizontalScriptComboChange();
 		//void handleVerticalScriptComboChange();
 		void handleAgilentScriptComboChange();
 		void handleMasterFunctionChange( );
@@ -131,7 +140,7 @@ class ScriptingWindow : public CDialog
 		//
 		cToolTips tooltips;
 
-		Script horizontalNiawgScript, masterScript, moogScript, ddsScript /*verticalNiawgScript*/;
+		Script masterScript, moogScript, gmoogScript, ddsScript /*verticalNiawgScript*/ /*horizontalNiawgScript*/;
 		ColorBox statusBox;
 		ProfileIndicator profileDisplay;
 

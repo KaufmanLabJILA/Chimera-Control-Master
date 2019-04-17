@@ -3,19 +3,24 @@
 #include "DioSystem.h"
 #include "DacSystem.h"
 #include "VariableSystem.h"
-#include "RhodeSchwarz.h"
+//#include "RhodeSchwarz.h"
 #include "GpibFlume.h"
 #include "DebugOptionsControl.h"
-#include "Agilent.h"
+//#include "Agilent.h"
 #include "EmbeddedPythonHandler.h"
 #include <chrono>
 #include <vector>
 #include <atomic>
-
+#include <condition_variable>
+#include "atomCruncherInput.h"
 //for moog test:
 #include "SerialSynth.h"
 #include "DDS_SYNTH.h"
+#include "GigaMoog.h"
 
+#include "rerngParams.h"
+
+class DataLogger;
 class MasterManager;
 
 //Useful structure for containing relevant parameters for master thread.
@@ -24,6 +29,8 @@ struct MasterThreadInput
 	//for moog test:
 	SerialSynth* moog;
 	std::string moogScriptAddress;
+	gigaMoog* gmoog;
+	std::string gmoogScriptAddress;
 	DDS_SYNTH* dds;
 	std::string ddsScriptAddress;
 
@@ -38,13 +45,13 @@ struct MasterThreadInput
 	MasterManager* thisObj;
 	std::string masterScriptAddress;
 	Communicator* comm;
-	RhodeSchwarz* rsg;
+	//RhodeSchwarz* rsg;
 	debugInfo debugOptions;
-	std::vector<Agilent*> agilents;
-	TektronicsControl* topBottomTek;
-	TektronicsControl* eoAxialTek;
+	//std::vector<Agilent*> agilents;
+	//TektronicsControl* topBottomTek;
+	//TektronicsControl* eoAxialTek;
 	VariableSystem* globalControl;
-	NiawgController* niawg;
+	//NiawgController* niawg;
 	UINT intensityAgilentNumber;
 	bool quiet;
 	mainOptions settings;

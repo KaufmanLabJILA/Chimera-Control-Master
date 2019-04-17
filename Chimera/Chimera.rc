@@ -172,7 +172,7 @@ STYLE DS_SETFONT | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_SYSMENU
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     LTEXT           "Chimera Control System\nCreated by Mark Brown\n\nModified by Aaron Young\nfor use in Kaufman Lab\n\n\nLoading..................",IDC_STATIC,285,28,82,100
-    CONTROL         IDB_KLAB,IDC_STATIC,"Static",SS_BITMAP,0,0,399,332
+    CONTROL         IDB_BITMAP1,IDC_STATIC,"Static",SS_BITMAP,0,0,399,332
 END
 
 
@@ -248,12 +248,12 @@ BEGIN
             MENUITEM "&Save Moog Script",           ID_FILE_MY_MOOG_SAVE
             MENUITEM "Save Moog Script &As",        ID_FILE_MY_MOOG_SAVEAS
         END
-        POPUP "Hori&zontal Script"
+        POPUP "G&igamoog Script"
         BEGIN
-            MENUITEM "Ne&w Horizontal Script",      ID_FILE_MY_HORIZONTAL_NEW
-            MENUITEM "Op&en Horizontal Script",     ID_FILE_MY_HORIZONTAL_OPEN
-            MENUITEM "&Save Horizontal Script",     ID_FILE_MY_HORIZONTAL_SAVE
-            MENUITEM "Save Horizontal Script &As",  ID_FILE_MY_HORIZONTAL_SAVEAS
+            MENUITEM "Ne&w Gigamoog Script",        ID_FILE_MY_GIGAMOOG_NEW
+            MENUITEM "Op&en Gigamoog Script",       ID_FILE_MY_GIGAMOOG_OPEN
+            MENUITEM "&Save Gigamoog Script",       ID_FILE_MY_GIGAMOOG_SAVE
+            MENUITEM "Save Gigamoog Script &As",    ID_FILE_MY_GIGAMOOG_SAVEAS
         END
         POPUP "&DDS Script"
         BEGIN

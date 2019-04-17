@@ -136,62 +136,62 @@ void DataLogger::initializeDataFiles()
 }
 
 
-void DataLogger::logAgilentSettings( const std::vector<Agilent*>& agilents )
-{
-	H5::Group agilentsGroup( file.createGroup( "/Agilents" ) );
-	for ( auto& agilent : agilents )
-	{
-		H5::Group singleAgilent( agilentsGroup.createGroup( agilent->getName( ) ) );
-		// mode
-		deviceOutputInfo info = agilent->getOutputInfo( );
-		UINT channelCount = 1;
-		for ( auto& channel : info.channel )
-		{
-			H5::Group channelGroup( singleAgilent.createGroup( "Channel-" + str( channelCount ) ) );
-			std::string outputModeName;
-			switch ( channel.option )
-			{
-			case -2:
-				outputModeName = "No-Control";
-				break;
-			case -1:
-				outputModeName = "Output-Off";
-				break;
-			case 0:
-				outputModeName = "DC";
-				break;
-			case 1:
-				outputModeName = "Sine";
-				break;
-			case 2:
-				outputModeName = "Square";
-				break;
-			case 3:
-				outputModeName = "Preloaded-Arb";
-				break;
-			case 4:
-				outputModeName = "Scripted-Arb";
-				break;
-			}
-			writeDataSet( outputModeName, "Output-Mode", channelGroup );
-			H5::Group dcGroup( channelGroup.createGroup( "DC-Settings" ) );
-			writeDataSet( channel.dc.dcLevelInput.expressionStr, "DC-Level", dcGroup );
-			H5::Group sineGroup( channelGroup.createGroup( "Sine-Settings" ) );
-			writeDataSet( channel.sine.frequencyInput.expressionStr, "Frequency", sineGroup );
-			writeDataSet( channel.sine.amplitudeInput.expressionStr, "Amplitude", sineGroup );
-			H5::Group squareGroup( channelGroup.createGroup( "Square-Settings" ) );
-			writeDataSet( channel.square.amplitudeInput.expressionStr, "Amplitude", squareGroup );
-			writeDataSet( channel.square.frequencyInput.expressionStr, "Frequency", squareGroup );
-			writeDataSet( channel.square.offsetInput.expressionStr, "Offset", squareGroup );
-			H5::Group preloadedArbGroup( channelGroup.createGroup( "Preloaded-Arb-Settings" ) );
-			writeDataSet( channel.preloadedArb.address, "Address", preloadedArbGroup );
-			H5::Group scriptedArbSettings( channelGroup.createGroup( "Scripted-Arb-Settings" ) );
-			writeDataSet( channel.scriptedArb.fileAddress, "Script-File-Address", preloadedArbGroup );
-			// TODO: load script file itself
-			channelCount++;
-		}
-	}
-}
+//void DataLogger::logAgilentSettings( const std::vector<Agilent*>& agilents )
+//{
+//	H5::Group agilentsGroup( file.createGroup( "/Agilents" ) );
+//	for ( auto& agilent : agilents )
+//	{
+//		H5::Group singleAgilent( agilentsGroup.createGroup( agilent->getName( ) ) );
+//		// mode
+//		deviceOutputInfo info = agilent->getOutputInfo( );
+//		UINT channelCount = 1;
+//		for ( auto& channel : info.channel )
+//		{
+//			H5::Group channelGroup( singleAgilent.createGroup( "Channel-" + str( channelCount ) ) );
+//			std::string outputModeName;
+//			switch ( channel.option )
+//			{
+//			case -2:
+//				outputModeName = "No-Control";
+//				break;
+//			case -1:
+//				outputModeName = "Output-Off";
+//				break;
+//			case 0:
+//				outputModeName = "DC";
+//				break;
+//			case 1:
+//				outputModeName = "Sine";
+//				break;
+//			case 2:
+//				outputModeName = "Square";
+//				break;
+//			case 3:
+//				outputModeName = "Preloaded-Arb";
+//				break;
+//			case 4:
+//				outputModeName = "Scripted-Arb";
+//				break;
+//			}
+//			writeDataSet( outputModeName, "Output-Mode", channelGroup );
+//			H5::Group dcGroup( channelGroup.createGroup( "DC-Settings" ) );
+//			writeDataSet( channel.dc.dcLevelInput.expressionStr, "DC-Level", dcGroup );
+//			H5::Group sineGroup( channelGroup.createGroup( "Sine-Settings" ) );
+//			writeDataSet( channel.sine.frequencyInput.expressionStr, "Frequency", sineGroup );
+//			writeDataSet( channel.sine.amplitudeInput.expressionStr, "Amplitude", sineGroup );
+//			H5::Group squareGroup( channelGroup.createGroup( "Square-Settings" ) );
+//			writeDataSet( channel.square.amplitudeInput.expressionStr, "Amplitude", squareGroup );
+//			writeDataSet( channel.square.frequencyInput.expressionStr, "Frequency", squareGroup );
+//			writeDataSet( channel.square.offsetInput.expressionStr, "Offset", squareGroup );
+//			H5::Group preloadedArbGroup( channelGroup.createGroup( "Preloaded-Arb-Settings" ) );
+//			writeDataSet( channel.preloadedArb.address, "Address", preloadedArbGroup );
+//			H5::Group scriptedArbSettings( channelGroup.createGroup( "Scripted-Arb-Settings" ) );
+//			writeDataSet( channel.scriptedArb.fileAddress, "Script-File-Address", preloadedArbGroup );
+//			// TODO: load script file itself
+//			channelCount++;
+//		}
+//	}
+//}
 
 void DataLogger::logAndorSettings( AndorRunSettings settings, bool on)
 {
@@ -466,32 +466,32 @@ int DataLogger::getDataFileNumber()
 }
 
 
-void DataLogger::logNiawgSettings(MasterThreadInput* input)
-{
-	H5::Group niawgGroup( file.createGroup( "/NIAWG" ) );
-	writeDataSet( input->runNiawg, "Run-NIAWG", niawgGroup );
-	if ( input->runNiawg )
-	{
-		niawgPair<std::vector<std::fstream>> niawgFiles;
-		std::vector<std::fstream> intensityScriptFiles;
-		ProfileSystem::openNiawgFiles( niawgFiles, input->profile, input->runNiawg );
-		std::stringstream stream;
-		stream << niawgFiles[Horizontal][0].rdbuf( );
-		writeDataSet( stream.str( ), "Horizontal-NIAWG-Script", niawgGroup );
-		stream = std::stringstream( );
-		stream << niawgFiles[Vertical][0].rdbuf( );
-		writeDataSet( stream.str( ), "Vertical-NIAWG-Script", niawgGroup );
-		writeDataSet( NIAWG_SAMPLE_RATE, "NIAWG-Sample-Rate", niawgGroup );
-		writeDataSet( NIAWG_GAIN, "NIAWG-Gain", niawgGroup );
-	}
-	else
-	{
-		writeDataSet( "", "NA:Horizontal-NIAWG-Script", niawgGroup );
-		writeDataSet( "", "NA:Vertical-NIAWG-Script", niawgGroup );
-		writeDataSet( -1, "NA:NIAWG-Sample-Rate", niawgGroup );
-		writeDataSet( -1, "NA:NIAWG-Gain", niawgGroup );
-	}
-}
+//void DataLogger::logNiawgSettings(MasterThreadInput* input)
+//{
+//	H5::Group niawgGroup( file.createGroup( "/NIAWG" ) );
+//	writeDataSet( input->runNiawg, "Run-NIAWG", niawgGroup );
+//	if ( input->runNiawg )
+//	{
+//		niawgPair<std::vector<std::fstream>> niawgFiles;
+//		std::vector<std::fstream> intensityScriptFiles;
+//		ProfileSystem::openNiawgFiles( niawgFiles, input->profile, input->runNiawg );
+//		std::stringstream stream;
+//		stream << niawgFiles[Horizontal][0].rdbuf( );
+//		writeDataSet( stream.str( ), "Horizontal-NIAWG-Script", niawgGroup );
+//		stream = std::stringstream( );
+//		stream << niawgFiles[Vertical][0].rdbuf( );
+//		writeDataSet( stream.str( ), "Vertical-NIAWG-Script", niawgGroup );
+//		writeDataSet( NIAWG_SAMPLE_RATE, "NIAWG-Sample-Rate", niawgGroup );
+//		writeDataSet( NIAWG_GAIN, "NIAWG-Gain", niawgGroup );
+//	}
+//	else
+//	{
+//		writeDataSet( "", "NA:Horizontal-NIAWG-Script", niawgGroup );
+//		writeDataSet( "", "NA:Vertical-NIAWG-Script", niawgGroup );
+//		writeDataSet( -1, "NA:NIAWG-Sample-Rate", niawgGroup );
+//		writeDataSet( -1, "NA:NIAWG-Gain", niawgGroup );
+//	}
+//}
 
 
 H5::DataSet DataLogger::writeDataSet( bool data, std::string name, H5::Group& group )

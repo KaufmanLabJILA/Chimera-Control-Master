@@ -5,7 +5,7 @@
 #include "DioSystem.h"
 #include "DacSystem.h"
 #include "AuxiliaryWindow.h"
-#include "NiawgWaiter.h"
+//#include "NiawgWaiter.h"
 #include "Expression.h"
 
 
@@ -41,13 +41,13 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 	std::string abortString = "\r\nABORTED!\r\n";
 	std::chrono::time_point<chronoClock> startTime( chronoClock::now( ) );
 	std::vector<long> variedMixedSize;
-	niawgPair<std::vector<std::fstream>> niawgFiles;
-	NiawgOutput output;
-	std::vector<ViChar> userScriptSubmit;
-	output.isDefault = false;
+	//niawgPair<std::vector<std::fstream>> niawgFiles;
+	//NiawgOutput output;
+	//std::vector<ViChar> userScriptSubmit;
+	//output.isDefault = false;
 	// initialize to 2 because of default waveforms. This can probably be changed to 1, since only one default waveform
 	// now, but might cause temporary breakages.
-	output.waves.resize( 2 );
+	//output.waves.resize( 2 );
 	std::vector<std::pair<UINT, UINT>> ttlShadeLocs;
 	std::vector<UINT> dacShadeLocs;
 	bool foundRearrangement = false;
@@ -60,37 +60,38 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 		expUpdate( "Done.\r\n", input->comm, input->quiet );
 		/// Prep agilents
 		expUpdate( "Loading Agilent Info...", input->comm, input->quiet );
-		for (auto agilent : input->agilents)
-		{
-			RunInfo dum;
-			agilent->handleInput( input->profile.categoryPath, dum );
-		}
+		//for (auto agilent : input->agilents)
+		//{
+		//	RunInfo dum;
+		//	agilent->handleInput( input->profile.categoryPath, dum );
+		//}
 		/// prep master systems
 		expUpdate( "Analyzing Master Script...", input->comm, input->quiet );
 		input->dacs->resetDacEvents();
 		input->ttls->resetTtlEvents();
-		input->rsg->clearFrequencies();
+		//input->rsg->clearFrequencies();
 		if (input->runMaster)
 		{
-			input->thisObj->analyzeMasterScript( input->ttls, input->dacs, ttlShadeLocs, dacShadeLocs, input->rsg,
+			input->thisObj->analyzeMasterScript( input->ttls, input->dacs, ttlShadeLocs, dacShadeLocs,
 												 input->variables );
+			input->gmoog->analyzeMoogScript(input->gmoog, input->variables);
 		}
 		/// prep Moog
 		if (input->runMoog) {
 			input->moog->analyzeMoogScript(input->moog, input->variables);
 		}
 		/// prep NIAWG
-		if (input->runNiawg)
-		{
-			input->niawg->prepareNiawg(  input, output, niawgFiles, warnings, userScriptSubmit, foundRearrangement, 
-											input->rearrangeInfo, input->variables );
-			input->niawg->writeStaticNiawg( output, input->debugOptions, input->constants );
+		//if (input->runNiawg)
+		//{
+		//	input->niawg->prepareNiawg(  input, output, niawgFiles, warnings, userScriptSubmit, foundRearrangement, 
+		//									input->rearrangeInfo, input->variables );
+		//	input->niawg->writeStaticNiawg( output, input->debugOptions, input->constants );
 
-		}
-		if ( input->thisObj->isAborting )
-		{
-			thrower( abortString );
-		}
+		//}
+		//if ( input->thisObj->isAborting )
+		//{
+		//	thrower( abortString );
+		//}
 		/// update ttl and dac looks & interaction based on which ones are used in the experiment.
 		if (input->runMaster)
 		{
@@ -115,9 +116,9 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 			input->ttls->interpretKey( input->variables );
 			input->dacs->interpretKey( input->variables, warnings );
 		}
-		input->rsg->interpretKey( input->variables );
-		input->topBottomTek->interpretKey( input->variables );
-		input->eoAxialTek->interpretKey( input->variables );
+		//input->rsg->interpretKey( input->variables );
+		//input->topBottomTek->interpretKey( input->variables );
+		//input->eoAxialTek->interpretKey( input->variables );
 		/// organize commands, prepping final forms of the data for each repetition.
 		// This must be done after the "interpret key" step, as before that commands don't have hard times attached to 
 		// them.
@@ -153,7 +154,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 							 "snapshots was " + str( input->dacs->getNumberSnapshots( variationInc ) ) );
 				}
 				input->dacs->checkTimingsWork( variationInc );
-				if ( input->runNiawg )
+				/*if ( input->runNiawg )
 				{
 					if ( input->ttls->countTriggers( input->niawg->getTrigLines( ).first,
 													 input->niawg->getTrigLines( ).second, variationInc ) !=
@@ -162,9 +163,9 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 						warnings += "WARNING: NIAWG is not getting triggered by the ttl system the same number of times a"
 							" trigger command appears in the NIAWG script.";
 					}
-				}
+				}*/
 			}
-			input->rsg->orderEvents( variationInc );
+			//input->rsg->orderEvents( variationInc );
 		}
 		/// output some timing information
 		std::chrono::time_point<chronoClock> varProgramEndTime( chronoClock::now( ) );
@@ -225,62 +226,62 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 				}
 			}
 			expUpdate( "Programming RSG, Agilents, NIAWG, & Teltronics...\r\n", input->comm, input->quiet );
-			input->rsg->programRsg( variationInc );
-			input->rsg->setInfoDisp( variationInc );
-			// program devices
-			for (auto& agilent : input->agilents)
-			{
-				input->comm->sendColorBox( Intensity, 'Y' );
-				agilent->setAgilent( variationInc, input->variables ); //TODO: Runs slow, and not actually in use.
-				input->comm->sendColorBox( Intensity, 'G' );
-			}
+			//input->rsg->programRsg( variationInc );
+			//input->rsg->setInfoDisp( variationInc );
+			//// program devices
+			//for (auto& agilent : input->agilents)
+			//{
+			//	input->comm->sendColorBox( Intensity, 'Y' );
+			//	agilent->setAgilent( variationInc, input->variables ); //TODO: Runs slow, and not actually in use.
+			//	input->comm->sendColorBox( Intensity, 'G' );
+			//}
 			// check right number of triggers (currently must be done after agilent is set.
-			for ( auto& agilent : input->agilents )
-			{
-				for ( auto chan : range( 2 ) )
-				{
-					if ( agilent->getOutputInfo( ).channel[chan].option != 4 )
-					{
-						continue;
-					}
-					UINT ttlTrigs;
-					if ( input->runMaster )
-					{
-						ttlTrigs = input->ttls->countTriggers( agilent->getTriggerLine( ).first,
-																 agilent->getTriggerLine( ).second, variationInc );
-					}
-					else
-					{
-						ttlTrigs = 0;
-					}					 
-					UINT agilentExpectedTrigs = agilent->getOutputInfo( ).channel[chan].scriptedArb.wave.getNumTrigs( );
-					if ( ttlTrigs != agilentExpectedTrigs )
-					{
-						warnings += "WARNING: Agilent " + agilent->getName( ) + " is not getting triggered by the "
-							"ttl system the same number of times a trigger command appears in the agilent channel "
-							+ str( chan + 1 ) + " script. There are " + str( agilentExpectedTrigs ) + " triggers in"
-							" the agilent script, and " + str( ttlTrigs ) + " ttl triggers sent to that agilent.";
-					}
-				}
-			}
-			if (input->runNiawg)
-			{
-				input->niawg->programNiawg( input, output, warnings, variationInc, variations, variedMixedSize,
-											userScriptSubmit );
-				//if ( foundRearrangement )
-				//{
-				//	input->niawg->turnOffRerng( );
-				//	input->conditionVariableForRearrangement->notify_all( );
-				//	input->niawg->handleStartingRerng( input, output );
-				//}
-			}
+			//for ( auto& agilent : input->agilents )
+			//{
+			//	for ( auto chan : range( 2 ) )
+			//	{
+			//		if ( agilent->getOutputInfo( ).channel[chan].option != 4 )
+			//		{
+			//			continue;
+			//		}
+			//		UINT ttlTrigs;
+			//		if ( input->runMaster )
+			//		{
+			//			ttlTrigs = input->ttls->countTriggers( agilent->getTriggerLine( ).first,
+			//													 agilent->getTriggerLine( ).second, variationInc );
+			//		}
+			//		else
+			//		{
+			//			ttlTrigs = 0;
+			//		}					 
+			//		UINT agilentExpectedTrigs = agilent->getOutputInfo( ).channel[chan].scriptedArb.wave.getNumTrigs( );
+			//		if ( ttlTrigs != agilentExpectedTrigs )
+			//		{
+			//			warnings += "WARNING: Agilent " + agilent->getName( ) + " is not getting triggered by the "
+			//				"ttl system the same number of times a trigger command appears in the agilent channel "
+			//				+ str( chan + 1 ) + " script. There are " + str( agilentExpectedTrigs ) + " triggers in"
+			//				" the agilent script, and " + str( ttlTrigs ) + " ttl triggers sent to that agilent.";
+			//		}
+			//	}
+			//}
+			//if (input->runNiawg)
+			//{
+			//	input->niawg->programNiawg( input, output, warnings, variationInc, variations, variedMixedSize,
+			//								userScriptSubmit );
+			//	//if ( foundRearrangement )
+			//	//{
+			//	//	input->niawg->turnOffRerng( );
+			//	//	input->conditionVariableForRearrangement->notify_all( );
+			//	//	input->niawg->handleStartingRerng( input, output );
+			//	//}
+			//}
 			if (!DDS_SAFEMODE) {
 				input->dds->loadDDSScript(input->ddsScriptAddress);
 				input->dds->programDDS(input->dds, input->variables, variationInc);
 			}
 			input->comm->sendError( warnings );
-			input->topBottomTek->programMachine( variationInc );
-			input->eoAxialTek->programMachine( variationInc );
+			//input->topBottomTek->programMachine( variationInc );
+			//input->eoAxialTek->programMachine( variationInc );
 			//
 			input->comm->sendRepProgress( 0 );
 			expUpdate( "Running Experiment.\r\n", input->comm, input->quiet );
@@ -363,37 +364,37 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 			}
 			catch ( Error& ) { /* this gets thrown if no dac events. just continue.*/ }
 		}
-		if (input->runNiawg)
-		{
-			input->niawg->cleanupNiawg( input->profile, input->runMaster, niawgFiles, output, input->comm,
-										   input->settings.dontActuallyGenerate );
-		}
+		//if (input->runNiawg)
+		//{
+		//	input->niawg->cleanupNiawg( input->profile, input->runMaster, niawgFiles, output, input->comm,
+		//								   input->settings.dontActuallyGenerate );
+		//}
 		input->comm->sendNormalFinish( );
 	}
 	catch (Error& exception)
 	{
-		if (input->runNiawg)
-		{
-			for (const auto& sequenceInc : range( input->profile.sequenceConfigNames.size() ))
-			{
-				for (const auto& axis : AXES)
-				{
-					if (niawgFiles[axis].size() != 0)
-					{
-						if (niawgFiles[axis][sequenceInc].is_open())
-						{
-							niawgFiles[axis][sequenceInc].close();
-						}
-					}
-				}
-			}
-			// clear out some niawg stuff
-			for (auto& wave : output.waves)
-			{
-				wave.core.waveVals.clear();
-				wave.core.waveVals.shrink_to_fit();
-			}
-		}
+		//if (input->runNiawg)
+		//{
+		//	for (const auto& sequenceInc : range( input->profile.sequenceConfigNames.size() ))
+		//	{
+		//		for (const auto& axis : AXES)
+		//		{
+		//			/*if (niawgFiles[axis].size() != 0)
+		//			{
+		//				if (niawgFiles[axis][sequenceInc].is_open())
+		//				{
+		//					niawgFiles[axis][sequenceInc].close();
+		//				}
+		//			}*/
+		//		}
+		//	}
+		//	// clear out some niawg stuff
+		//	//for (auto& wave : output.waves)
+		//	//{
+		//	//	wave.core.waveVals.clear();
+		//	//	wave.core.waveVals.shrink_to_fit();
+		//	//}
+		//}
 		input->thisObj->experimentIsRunning = false;
 		{
 			std::lock_guard<std::mutex> locker( input->thisObj->abortLock );
@@ -529,10 +530,12 @@ void MasterManager::startExperimentThread(MasterThreadInput* input)
 	if (input->runMaster)
 	{
 		loadMasterScript( input->masterScriptAddress );
+		input->gmoog->loadMoogScript(input->gmoogScriptAddress);
 	}
 	if (input->runMoog)
 	{
 		input->moog->loadMoogScript(input->moogScriptAddress);
+
 	}
 	if (!DDS_SAFEMODE) {
 		input->dds->loadDDSScript(input->ddsScriptAddress);
@@ -688,7 +691,7 @@ void MasterManager::analyzeFunctionDefinition(std::string defLine, std::string& 
 
 void MasterManager::analyzeFunction( std::string function, std::vector<std::string> args, DioSystem* ttls,
 									 DacSystem* dacs, std::vector<std::pair<UINT, UINT>>& ttlShades,
-									 std::vector<UINT>& dacShades, RhodeSchwarz* rsg, std::vector<variableType>& vars)
+									 std::vector<UINT>& dacShades, std::vector<variableType>& vars)
 {
 	/// load the file
 	std::fstream functionFile;
@@ -869,17 +872,17 @@ void MasterManager::analyzeFunction( std::string function, std::vector<std::stri
 			}
 		}
 		/// Handle RSG calls.
-		else if (word == "rsg:")
-		{
-			rsgEventForm info;
-			functionStream >> info.frequency;
-			info.frequency.assertValid( vars );
-			functionStream >> info.power;
-			info.power.assertValid( vars );
-			// test frequency
-			info.time = operationTime;
-			rsg->addFrequency( info );
-		}
+		//else if (word == "rsg:")
+		//{
+		//	rsgEventForm info;
+		//	functionStream >> info.frequency;
+		//	info.frequency.assertValid( vars );
+		//	functionStream >> info.power;
+		//	info.power.assertValid( vars );
+		//	// test frequency
+		//	info.time = operationTime;
+		//	rsg->addFrequency( info );
+		//}
 		/// deal with function calls.
 		else if (word == "call")
 		{
@@ -919,7 +922,7 @@ void MasterManager::analyzeFunction( std::string function, std::vector<std::stri
 			}
 			try
 			{
-				analyzeFunction(functionName, newArgs, ttls, dacs, ttlShades, dacShades, rsg, vars);
+				analyzeFunction(functionName, newArgs, ttls, dacs, ttlShades, dacShades, vars);
 			}
 			catch (Error& err)
 			{
@@ -1025,7 +1028,7 @@ bool MasterManager::handleTimeCommands( std::string word, ScriptStream& stream, 
 
 void MasterManager::analyzeMasterScript( DioSystem* ttls, DacSystem* dacs,
 										 std::vector<std::pair<UINT, UINT>>& ttlShades, std::vector<UINT>& dacShades, 
-										 RhodeSchwarz* rsg, std::vector<variableType>& vars)
+										 std::vector<variableType>& vars)
 {
 	// reset some things.
 	loadSkipTime.first.clear( );
@@ -1158,7 +1161,7 @@ void MasterManager::analyzeMasterScript( DioSystem* ttls, DacSystem* dacs,
 			}
 		}
 		/// Deal with RSG calls
-		else if (word == "rsg:")
+		/*else if (word == "rsg:")
 		{
 			rsgEventForm info;
 			currentMasterScript >> info.frequency;
@@ -1167,7 +1170,7 @@ void MasterManager::analyzeMasterScript( DioSystem* ttls, DacSystem* dacs,
 			info.power.assertValid( vars );
 			info.time = operationTime;
 			rsg->addFrequency( info );
-		}
+		}*/
 		/// deal with raman beam calls (setting raman frequency).
 		/// deal with function calls.
 		else if (word == "call")
@@ -1202,7 +1205,7 @@ void MasterManager::analyzeMasterScript( DioSystem* ttls, DacSystem* dacs,
 			}
 			try
 			{
-				analyzeFunction(functionName, args, ttls, dacs, ttlShades, dacShades, rsg, vars);
+				analyzeFunction(functionName, args, ttls, dacs, ttlShades, dacShades, vars);
 			}
 			catch (Error& err)
 			{

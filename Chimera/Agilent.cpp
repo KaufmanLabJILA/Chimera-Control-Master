@@ -12,7 +12,7 @@
 #include <fstream>
 
 // NI's visa file. Also gets indirectly included via #include "nifgen.h".
-#include "visa.h"
+//#include "visa.h"
 
 Agilent::Agilent( const agilentSettings& settings ) : visaFlume( settings.safemode, settings.address ),
 													  sampleRate( settings.sampleRate ),

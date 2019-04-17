@@ -25,9 +25,6 @@
     <ClCompile Include="StatusControl.cpp">
       <Filter>General Files</Filter>
     </ClCompile>
-    <ClCompile Include="TektronicsControl.cpp">
-      <Filter>Auxiliary Window</Filter>
-    </ClCompile>
     <ClCompile Include="ScriptWritingInstructionsDialog.cpp">
       <Filter>Scripting Window</Filter>
     </ClCompile>
@@ -36,9 +33,6 @@
     </ClCompile>
     <ClCompile Include="ScriptingWindow.cpp">
       <Filter>Scripting Window</Filter>
-    </ClCompile>
-    <ClCompile Include="RhodeSchwarz.cpp">
-      <Filter>Auxiliary Window</Filter>
     </ClCompile>
     <ClCompile Include="Repetitions.cpp">
       <Filter>Main Window</Filter>
@@ -65,12 +59,6 @@
       <Filter>Camera Window</Filter>
     </ClCompile>
     <ClCompile Include="NoteSystem.cpp">
-      <Filter>Main Window</Filter>
-    </ClCompile>
-    <ClCompile Include="NiawgWaiter.cpp">
-      <Filter>Main Window</Filter>
-    </ClCompile>
-    <ClCompile Include="NiawgController.cpp">
       <Filter>Main Window</Filter>
     </ClCompile>
     <ClCompile Include="miscellaneousCommonFunctions.cpp">
@@ -133,9 +121,6 @@
     <ClCompile Include="AlertSystem.cpp">
       <Filter>Camera Window</Filter>
     </ClCompile>
-    <ClCompile Include="Agilent.cpp">
-      <Filter>Auxiliary Window</Filter>
-    </ClCompile>
     <ClCompile Include="SmsTextingControl.cpp">
       <Filter>Main Window</Filter>
     </ClCompile>
@@ -148,17 +133,8 @@
     <ClCompile Include="cleanString.cpp">
       <Filter>General Files</Filter>
     </ClCompile>
-    <ClCompile Include="Fgen.cpp">
-      <Filter>Main Window</Filter>
-    </ClCompile>
-    <ClCompile Include="VisaFlume.cpp">
-      <Filter>Auxiliary Window</Filter>
-    </ClCompile>
     <ClCompile Include="ProfileSystem.cpp">
       <Filter>Main Window</Filter>
-    </ClCompile>
-    <ClCompile Include="scriptedAgilentWaveform.cpp">
-      <Filter>Auxiliary Window</Filter>
     </ClCompile>
     <ClCompile Include="Segment.cpp">
       <Filter>Auxiliary Window</Filter>
@@ -181,9 +157,6 @@
     <ClCompile Include="openWithExplorer.cpp">
       <Filter>General Files</Filter>
     </ClCompile>
-    <ClCompile Include="GpibFlume.cpp">
-      <Filter>Auxiliary Window</Filter>
-    </ClCompile>
     <ClCompile Include="PlotDataSet.cpp">
       <Filter>Camera Window</Filter>
     </ClCompile>
@@ -197,6 +170,18 @@
       <Filter>Main Window</Filter>
     </ClCompile>
     <ClCompile Include="DDS_SYNTH.cpp">
+      <Filter>Main Window</Filter>
+    </ClCompile>
+    <ClCompile Include="BoostAsyncSerial.cpp">
+      <Filter>Serial</Filter>
+    </ClCompile>
+    <ClCompile Include="MessagePrinter.cpp">
+      <Filter>Serial</Filter>
+    </ClCompile>
+    <ClCompile Include="MessageSender.cpp">
+      <Filter>Serial</Filter>
+    </ClCompile>
+    <ClCompile Include="GigaMoog.cpp">
       <Filter>Main Window</Filter>
     </ClCompile>
   </ItemGroup>
@@ -222,9 +207,6 @@
     <ClInclude Include="VariableSystem.h">
       <Filter>Auxiliary Window</Filter>
     </ClInclude>
-    <ClInclude Include="TektronicsControl.h">
-      <Filter>Auxiliary Window</Filter>
-    </ClInclude>
     <ClInclude Include="Script.h">
       <Filter>Scripting Window</Filter>
     </ClInclude>
@@ -233,9 +215,6 @@
     </ClInclude>
     <ClInclude Include="ScriptingWindow.h">
       <Filter>Scripting Window</Filter>
-    </ClInclude>
-    <ClInclude Include="RhodeSchwarz.h">
-      <Filter>Auxiliary Window</Filter>
     </ClInclude>
     <ClInclude Include="Repetitions.h">
       <Filter>Main Window</Filter>
@@ -259,12 +238,6 @@
       <Filter>Camera Window</Filter>
     </ClInclude>
     <ClInclude Include="NoteSystem.h">
-      <Filter>Main Window</Filter>
-    </ClInclude>
-    <ClInclude Include="NiawgWaiter.h">
-      <Filter>Main Window</Filter>
-    </ClInclude>
-    <ClInclude Include="NiawgController.h">
       <Filter>Main Window</Filter>
     </ClInclude>
     <ClInclude Include="ProfileIndicator.h">
@@ -348,9 +321,6 @@
     <ClInclude Include="AlertSystem.h">
       <Filter>Camera Window</Filter>
     </ClInclude>
-    <ClInclude Include="Agilent.h">
-      <Filter>Auxiliary Window</Filter>
-    </ClInclude>
     <ClInclude Include="SmsTextingControl.h">
       <Filter>Main Window</Filter>
     </ClInclude>
@@ -369,26 +339,11 @@
     <ClInclude Include="cleanString.h">
       <Filter>General Files</Filter>
     </ClInclude>
-    <ClInclude Include="NiawgStructures.h">
-      <Filter>Main Window\Structures</Filter>
-    </ClInclude>
     <ClInclude Include="DataLogger.h">
       <Filter>Camera Window</Filter>
     </ClInclude>
-    <ClInclude Include="Fgen.h">
-      <Filter>Main Window</Filter>
-    </ClInclude>
-    <ClInclude Include="VisaFlume.h">
-      <Filter>Auxiliary Window</Filter>
-    </ClInclude>
     <ClInclude Include="ProfileSystem.h">
       <Filter>Main Window</Filter>
-    </ClInclude>
-    <ClInclude Include="agilentStructures.h">
-      <Filter>Auxiliary Window</Filter>
-    </ClInclude>
-    <ClInclude Include="scriptedAgilentWaveform.h">
-      <Filter>Auxiliary Window</Filter>
     </ClInclude>
     <ClInclude Include="Segment.h">
       <Filter>Main Window</Filter>
@@ -413,9 +368,6 @@
     </ClInclude>
     <ClInclude Include="VariableStructures.h">
       <Filter>Main Window\Structures</Filter>
-    </ClInclude>
-    <ClInclude Include="GpibFlume.h">
-      <Filter>Auxiliary Window</Filter>
     </ClInclude>
     <ClInclude Include="PlotDataSet.h">
       <Filter>Camera Window</Filter>
@@ -468,6 +420,21 @@
       <Filter>Main Window</Filter>
     </ClInclude>
     <ClInclude Include="DdsState.h">
+      <Filter>Main Window</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageSender.h">
+      <Filter>Serial</Filter>
+    </ClInclude>
+    <ClInclude Include="Messagetypes.h">
+      <Filter>Serial</Filter>
+    </ClInclude>
+    <ClInclude Include="BoostAsyncSerial.h">
+      <Filter>Serial</Filter>
+    </ClInclude>
+    <ClInclude Include="MessagePrinter.h">
+      <Filter>Serial</Filter>
+    </ClInclude>
+    <ClInclude Include="GigaMoog.h">
       <Filter>Main Window</Filter>
     </ClInclude>
   </ItemGroup>
@@ -526,6 +493,9 @@
     <Filter Include="Camera Window\Structures">
       <UniqueIdentifier>{c30ebec6-c2b0-499a-8318-6856c626e280}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Serial">
+      <UniqueIdentifier>{4984a09b-18ba-449c-af17-d1f92289dc10}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Planning.txt" />
@@ -534,9 +504,6 @@
     <ResourceCompile Include="Chimera.rc">
       <Filter>Things I Don%27t Mess With %28Often%29</Filter>
     </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Object Include="ni4882.obj" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DioStructures.h">

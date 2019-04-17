@@ -16,7 +16,7 @@
 // an namespace for agilent functions.
 
 // Contains functions and types used by the NIAWG.
-#include "niFgen.h"
+//#include "niFgen.h"
 
 // Contians the declaration of the main window procedure control function
 #include "winProcScripts.h"

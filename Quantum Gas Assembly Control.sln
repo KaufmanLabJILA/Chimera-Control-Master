@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestConsoleApp", "TestConsoleApp\TestConsoleApp.vcxproj", "{70993E60-B2D9-4A2E-9F31-56F1B35F46B8}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Chimera", "Chimera\Chimera.vcxproj", "{BDB7E898-2F81-4410-90C7-0BD4D3212AF8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7EE230EC-4789-4E4C-9061-9EEB23360CCB}"
@@ -22,20 +20,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{70993E60-B2D9-4A2E-9F31-56F1B35F46B8}.Debug|Win32.ActiveCfg = Debug|Win32
-		{70993E60-B2D9-4A2E-9F31-56F1B35F46B8}.Debug|Win32.Build.0 = Debug|Win32
-		{70993E60-B2D9-4A2E-9F31-56F1B35F46B8}.Debug|x64.ActiveCfg = Debug|x64
-		{70993E60-B2D9-4A2E-9F31-56F1B35F46B8}.Debug|x64.Build.0 = Debug|x64
-		{70993E60-B2D9-4A2E-9F31-56F1B35F46B8}.Debug|x86.ActiveCfg = Debug|Win32
-		{70993E60-B2D9-4A2E-9F31-56F1B35F46B8}.Debug|x86.Build.0 = Debug|Win32
-		{70993E60-B2D9-4A2E-9F31-56F1B35F46B8}.Debug|x86.Deploy.0 = Debug|Win32
-		{70993E60-B2D9-4A2E-9F31-56F1B35F46B8}.Release|Win32.ActiveCfg = Release|Win32
-		{70993E60-B2D9-4A2E-9F31-56F1B35F46B8}.Release|Win32.Build.0 = Release|Win32
-		{70993E60-B2D9-4A2E-9F31-56F1B35F46B8}.Release|x64.ActiveCfg = Release|x64
-		{70993E60-B2D9-4A2E-9F31-56F1B35F46B8}.Release|x64.Build.0 = Release|x64
-		{70993E60-B2D9-4A2E-9F31-56F1B35F46B8}.Release|x86.ActiveCfg = Release|Win32
-		{70993E60-B2D9-4A2E-9F31-56F1B35F46B8}.Release|x86.Build.0 = Release|Win32
-		{70993E60-B2D9-4A2E-9F31-56F1B35F46B8}.Release|x86.Deploy.0 = Release|Win32
 		{BDB7E898-2F81-4410-90C7-0BD4D3212AF8}.Debug|Win32.ActiveCfg = Debug|Win32
 		{BDB7E898-2F81-4410-90C7-0BD4D3212AF8}.Debug|Win32.Build.0 = Debug|Win32
 		{BDB7E898-2F81-4410-90C7-0BD4D3212AF8}.Debug|x64.ActiveCfg = Debug|x64

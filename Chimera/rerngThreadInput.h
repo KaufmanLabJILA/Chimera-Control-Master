@@ -9,7 +9,7 @@
 #include <condition_variable>
 #include "windows.h"
 
-class NiawgController;
+//class NiawgController;
 
 // rerng = rearrange
 struct rerngThreadInput
@@ -25,7 +25,7 @@ struct rerngThreadInput
 	std::vector<std::vector<bool>>* atomsQueue;
 	// the static wave?
 	waveInfo rerngWave;
-	NiawgController* niawg;
+	//NiawgController* niawg;
 	Communicator* comm;
 	// stuff from the rearrangement input
 	rerngOptions rerngOptions;

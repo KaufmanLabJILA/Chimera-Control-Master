@@ -1,4 +1,6 @@
 #pragma once
+// TODO: Should probably deal with properly at some point
+//#define _SILENCE_FPOS_SEEKPOS_DEPRECATION_WARNING
 #include "gnuplot-iostream.h"
 #include <vector>
 #include <string>

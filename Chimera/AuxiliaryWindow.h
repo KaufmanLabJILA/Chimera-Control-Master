@@ -12,13 +12,13 @@
 #include "RichEditControl.h"
 #include "Repetitions.h"
 #include "SocketWrapper.h"
-#include "RhodeSchwarz.h"
-#include "GpibFlume.h"
+//#include "RhodeSchwarz.h"
+//#include "GpibFlume.h"
 #include "MasterConfiguration.h"
-#include "Agilent.h"
+//#include "Agilent.h"
 #include "commonTypes.h"
 #include "StatusControl.h"
-#include "TektronicsControl.h"
+//#include "TektronicsControl.h"
 
 enum agilentNames
 {
@@ -49,7 +49,7 @@ public:
 	cToolTips toolTips;
 	BOOL PreTranslateMessage(MSG* pMsg);
 	/// Message Map Functions
-	void OnTimer(UINT_PTR eventID);
+	//void OnTimer(UINT_PTR eventID);
 	void handleTtlPush(UINT id);
 	void handlTtlHoldPush();
 	void ViewOrChangeTTLNames();
@@ -61,12 +61,12 @@ public:
 	std::array<std::array<std::string, 16>, 4> getTtlNames();
 	std::array<std::string, 24> getDacNames();
 
-	void updateAgilent(agilentNames name);
-	void newAgilentScript(agilentNames name);
-	void openAgilentScript(agilentNames name, CWnd* parent);
-	void saveAgilentScript(agilentNames name);
-	void saveAgilentScriptAs(agilentNames name, CWnd* parent);
-	void handleAgilentEditChange(UINT id);
+	//void updateAgilent(agilentNames name);
+	//void newAgilentScript(agilentNames name);
+	//void openAgilentScript(agilentNames name, CWnd* parent);
+	//void saveAgilentScript(agilentNames name);
+	//void saveAgilentScriptAs(agilentNames name, CWnd* parent);
+	//void handleAgilentEditChange(UINT id);
 
 	void drawVariables(UINT id, NMHDR* pNMHDR, LRESULT* pResultf);
 	void handleEnter();
@@ -81,10 +81,10 @@ public:
 	void zeroTtls();
 	void zeroDacs();
 
-	void handleAgilentOptions(UINT id);
+	//void handleAgilentOptions(UINT id);
 
 	void loadMotSettings(MasterThreadInput* input);
-	void handleTektronicsButtons(UINT id);
+	//void handleTektronicsButtons(UINT id);
 
 	void sendErr(std::string msg);
 	void sendStatus(std::string msg);
@@ -105,10 +105,10 @@ public:
 	std::pair<UINT, UINT> getTtlBoardSize();
 	UINT getNumberOfDacs();
 	void setVariablesActiveState(bool active);
-	void passTopBottomTekProgram();
-	void passEoAxialTekProgram();
-	Agilent& whichAgilent(UINT id);
-	void handleAgilentCombo(UINT id);
+	//void passTopBottomTekProgram();
+	//void passEoAxialTekProgram();
+	//Agilent& whichAgilent(UINT id);
+	//void handleAgilentCombo(UINT id);
 
 	VariableSystem configVariables;
 	VariableSystem globalVariables;
@@ -126,14 +126,14 @@ private:
 	toolTipTextMap toolTipText;
 
 	/// control system classes
-	RhodeSchwarz RhodeSchwarzGenerator;
+	//RhodeSchwarz RhodeSchwarzGenerator;
 	// 
-	std::array<Agilent, 4> agilents;
+	//std::array<Agilent, 4> agilents;
 
 	DioSystem ttlBoard;
 	DacSystem dacBoards;
 	MasterConfiguration masterConfig{ MASTER_CONFIGURATION_FILE_ADDRESS };
-	TektronicsControl topBottomTek, eoAxialTek;
+	//TektronicsControl topBottomTek, eoAxialTek;
 
 	ColorBox boxes;
 

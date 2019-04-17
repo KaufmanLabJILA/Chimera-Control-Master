@@ -8,6 +8,7 @@
 #include "DataAnalysisHandler.h"					  
 #include "CameraImageDimensions.h"
 #include "AndorRunSettings.h"
+#include "MasterThreadInput.h"
 /*
  * Handles the writing of h5 files. Some parts of this are effectively HDF5 wrappers.
  */
@@ -23,8 +24,8 @@ class DataLogger
 		void logMoogParameters(MasterThreadInput* input);
 		void logMiscellaneous();
 		void logAndorSettings( AndorRunSettings settings, bool on );
-		void logNiawgSettings( MasterThreadInput* input );
-		void logAgilentSettings( const std::vector<Agilent*>& input );
+		//void logNiawgSettings( MasterThreadInput* input );
+		//void logAgilentSettings( const std::vector<Agilent*>& input );
 		void logVariables( const std::vector<variableType>& variables, H5::Group& group );
 		//void logTektronicsSettings();
 		UINT getNextFileNumber();
