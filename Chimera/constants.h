@@ -12,15 +12,16 @@
 
 //#define MASTER_COMPUTER
 //#define SPECTRE_LAPTOP
-//#define ADAMS_LAB
+#define GLADOS
 // #define DESKTOP_COMPUTER
 //#define SALAMIS_TABLET
-#define PAL9000
+//#define PAL9000
 /// File Locations
 
-#ifdef ADAMS_LAB
+#ifdef GLADOS
 	#define PYTHON_HOME L"C:\\ProgramData\\Anaconda3\\"
 	#define MOOG_SAFEMODE false
+	#define GIGAMOOG_SAFEMODE false
 	#define NIAWG_SAFEMODE true
 	#define ANDOR_SAFEMODE false
 	#define PYTHON_SAFEMODE true
@@ -31,6 +32,7 @@
 	#define DAQMX_SAFEMODE false
 	#define RSG_SAFEMODE true
 	#define DDS_FPGA_ADDRESS "FT1I6IBSB" //Device Serial: FT1I6IBS, Use FT1I6IBSB in C++ to select Channel B
+	#define GIGAMOOG_PORT "COM6"
 	#define TOP_BOTTOM_TEK_SAFEMODE true
 	#define TOP_BOTTOM_TEK_USB_ADDRESS "USB0::0x0699::0x0343::C021681::0::INSTR"
 	#define EO_AXIAL_TEK_SAFEMODE true

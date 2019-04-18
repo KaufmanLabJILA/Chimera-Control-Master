@@ -70,178 +70,6 @@ BEGIN_MESSAGE_MAP(AuxiliaryWindow, CDialog)
 
 END_MESSAGE_MAP()
 
-
-//void AuxiliaryWindow::newAgilentScript(agilentNames name)
-//{
-//	try
-//	{
-//		mainWindowFriend->updateConfigurationSavedStatus(false);
-//		agilents[name].checkSave(mainWindowFriend->getProfileSettings().categoryPath, mainWindowFriend->getRunInfo());
-//		agilents[name].agilentScript.newScript();
-//		agilents[name].agilentScript.updateScriptNameText(mainWindowFriend->getProfileSettings().categoryPath);
-//		agilents[name].agilentScript.colorEntireScript(getAllVariables(), mainWindowFriend->getRgbs(),
-//			getTtlNames(), getDacNames());
-//	}
-//	catch (Error& err)
-//	{
-//		sendErr(err.what());
-//	}
-//
-//}
-//
-//
-//void AuxiliaryWindow::openAgilentScript(agilentNames name, CWnd* parent)
-//{
-//	try
-//	{
-//		mainWindowFriend->updateConfigurationSavedStatus(false);
-//		agilents[name].agilentScript.checkSave(mainWindowFriend->getProfileSettings().categoryPath,
-//			mainWindowFriend->getRunInfo());
-//		std::string openFileName = openWithExplorer(parent, AGILENT_SCRIPT_EXTENSION);
-//		agilents[name].agilentScript.openParentScript(openFileName,
-//			mainWindowFriend->getProfileSettings().categoryPath,
-//			mainWindowFriend->getRunInfo());
-//		agilents[name].agilentScript.updateScriptNameText(mainWindowFriend->getProfileSettings().categoryPath);
-//	}
-//	catch (Error& err)
-//	{
-//		sendErr(err.what());
-//	}
-//}
-//
-//
-//void AuxiliaryWindow::updateAgilent(agilentNames name)
-//{
-//	try
-//	{
-//		agilents[name].handleInput(mainWindowFriend->getProfileSettings().categoryPath,
-//			mainWindowFriend->getRunInfo());
-//	}
-//	catch (Error& err)
-//	{
-//		sendErr(err.what());
-//	}
-//}
-//
-//
-//void AuxiliaryWindow::saveAgilentScript(agilentNames name)
-//{
-//	try
-//	{
-//		mainWindowFriend->updateConfigurationSavedStatus(false);
-//		agilents[name].agilentScript.saveScript(mainWindowFriend->getProfileSettings().categoryPath,
-//			mainWindowFriend->getRunInfo());
-//		agilents[name].agilentScript.updateScriptNameText(mainWindowFriend->getProfileSettings().categoryPath);
-//	}
-//	catch (Error& err)
-//	{
-//		sendErr(err.what());
-//	}
-//}
-//
-//
-//void AuxiliaryWindow::saveAgilentScriptAs(agilentNames name, CWnd* parent)
-//{
-//	try
-//	{
-//		mainWindowFriend->updateConfigurationSavedStatus(false);
-//		std::string extensionNoPeriod = agilents[name].agilentScript.getExtension();
-//		if (extensionNoPeriod.size() == 0)
-//		{
-//			return;
-//		}
-//		extensionNoPeriod = extensionNoPeriod.substr(1, extensionNoPeriod.size());
-//		std::string newScriptAddress = saveWithExplorer(parent, extensionNoPeriod,
-//			mainWindowFriend->getProfileSettings());
-//		agilents[name].agilentScript.saveScriptAs(newScriptAddress, mainWindowFriend->getRunInfo());
-//		agilents[name].agilentScript.updateScriptNameText(mainWindowFriend->getProfileSettings().categoryPath);
-//	}
-//	catch (Error& err)
-//	{
-//		sendErr(err.what());
-//	}
-//}
-//
-//
-//void AuxiliaryWindow::OnTimer(UINT_PTR eventID)
-//{
-//	for (auto& agilent : agilents)
-//	{
-//		agilent.agilentScript.handleTimerCall(getAllVariables(), mainWindowFriend->getRgbs(),
-//			getTtlNames(), getDacNames());
-//	}
-//}
-
-//
-//Agilent& AuxiliaryWindow::whichAgilent(UINT id)
-//{
-//	if (id >= IDC_TOP_BOTTOM_CHANNEL1_BUTTON && id <= IDC_TOP_BOTTOM_PROGRAM
-//		|| id == IDC_TOP_BOTTOM_CALIBRATION_BUTTON)
-//	{
-//		return agilents[TopBottom];
-//	}
-//	else if (id >= IDC_AXIAL_CHANNEL1_BUTTON && id <= IDC_AXIAL_PROGRAM
-//		|| id == IDC_AXIAL_CALIBRATION_BUTTON)
-//	{
-//		return agilents[Axial];
-//	}
-//	else if (id >= IDC_FLASHING_CHANNEL1_BUTTON && id <= IDC_FLASHING_PROGRAM
-//		|| id == IDC_FLASHING_CALIBRATION_BUTTON)
-//	{
-//		return agilents[Flashing];
-//	}
-//	else if (id >= IDC_UWAVE_CHANNEL1_BUTTON && id <= IDC_UWAVE_PROGRAM
-//		|| id == IDC_UWAVE_CALIBRATION_BUTTON)
-//	{
-//		return agilents[Microwave];
-//	}
-//	thrower("ERROR: id seen in \"whichAgilent\" handler does not belong to any agilent!");
-//}
-//
-//
-//void AuxiliaryWindow::handleAgilentEditChange(UINT id)
-//{
-//	Agilent& agilent = whichAgilent(id);
-//	try
-//	{
-//		agilent.agilentScript.handleEditChange();
-//		SetTimer(SYNTAX_TIMER_ID, SYNTAX_TIMER_LENGTH, NULL);
-//	}
-//	catch (Error& err)
-//	{
-//		sendErr(err.what());
-//	}
-//}
-//
-//
-//void AuxiliaryWindow::passTopBottomTekProgram()
-//{
-//	try
-//	{
-//		topBottomTek.handleProgram();
-//		sendStatus("Programmed Top/Bottom Tektronics Generator.\r\n");
-//	}
-//	catch (Error& exception)
-//	{
-//		sendErr("Error while programing top/Bottom Tektronics generator: " + exception.whatStr() + "\r\n");
-//	}
-//}
-//
-//
-//void AuxiliaryWindow::passEoAxialTekProgram()
-//{
-//	try
-//	{
-//		eoAxialTek.handleProgram();
-//		sendStatus("Programmed E.O.M / Axial Tektronics Generator.\r\n");
-//	}
-//	catch (Error& exception)
-//	{
-//		sendErr("Error while programing E.O.M. / Axial Tektronics generator: " + exception.whatStr() + "\r\n");
-//	}
-//}
-//
-
 std::pair<UINT, UINT> AuxiliaryWindow::getTtlBoardSize()
 {
 	return ttlBoard.getTtlBoardSize();
@@ -1116,6 +944,7 @@ BOOL AuxiliaryWindow::PreTranslateMessage(MSG* pMsg)
 
 BOOL AuxiliaryWindow::OnInitDialog()
 {
+	SetWindowPos(NULL, 0, 0, 1920, 1080, SWP_NOZORDER | SWP_NOMOVE);
 	// don't redraw until the first OnSize.
 	SetRedraw(false);
 
@@ -1127,7 +956,7 @@ BOOL AuxiliaryWindow::OnInitDialog()
 		ttlBoard.initialize(controlLocation, toolTips, this, id);
 		dacBoards.initialize(controlLocation, toolTips, this, id);
 
-		POINT statusLoc = { 960, 0 };
+		//POINT statusLoc = { 960, 0 };
 		/*topBottomTek.initialize(statusLoc, this, id, "Top-Bottom-Tek", "Top", "Bottom", 480,
 		{ TOP_BOTTOM_PROGRAM, TOP_ON_OFF, TOP_FSK, BOTTOM_ON_OFF, BOTTOM_FSK });
 		eoAxialTek.initialize(statusLoc, this, id, "EO / Axial", "EO", "Axial", 480, { EO_AXIAL_PROGRAM,
@@ -1144,7 +973,7 @@ BOOL AuxiliaryWindow::OnInitDialog()
 		agilents[Microwave].initialize(480, controlLocation, toolTips, this, id, "Microwave-Agilent", 100,
 			mainWindowFriend->getRgbs()["theme BG1"]);*/
 
-		controlLocation = POINT{ 1440, 0 };
+		controlLocation = POINT{ 480, 0 };
 		globalVariables.initialize(controlLocation, toolTips, this, id, "GLOBAL VARIABLES",
 			mainWindowFriend->getRgbs(), IDC_GLOBAL_VARS_LISTVIEW);
 		configVariables.initialize(controlLocation, toolTips, this, id, "CONFIGURATION VARIABLES",
