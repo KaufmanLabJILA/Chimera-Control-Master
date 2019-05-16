@@ -24,8 +24,8 @@ public:
 	void loadMoogScript(std::string scriptAddress);
 	void analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vars);
 
-	virtual void writeOff(void);
-
+	virtual void writeOff(MessageSender& ms);
+	void send(MessageSender& ms);
 
 private:
 	BoostAsyncSerial fpga;

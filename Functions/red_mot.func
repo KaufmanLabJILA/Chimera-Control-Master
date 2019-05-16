@@ -4,7 +4,6 @@ def red_mot(loadTime):
   dac: y1coil rmby
   dac: y2coil rmby
   dac: z1coil rmbz
-  off: radial
   dac: motcoils .5
 
   t += loadTime
@@ -12,7 +11,6 @@ def red_mot(loadTime):
   %on: blueshut
   %t += 6
   off: red3d
-  off: radial
   % Additional cooling with narrow-line red MOT
   %on: red3dnarrow
   %t += 30

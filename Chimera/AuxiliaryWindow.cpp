@@ -944,7 +944,6 @@ BOOL AuxiliaryWindow::PreTranslateMessage(MSG* pMsg)
 
 BOOL AuxiliaryWindow::OnInitDialog()
 {
-	SetWindowPos(NULL, 0, 0, 1920, 1080, SWP_NOZORDER | SWP_NOMOVE);
 	// don't redraw until the first OnSize.
 	SetRedraw(false);
 

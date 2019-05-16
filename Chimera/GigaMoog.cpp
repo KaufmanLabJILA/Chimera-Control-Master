@@ -55,11 +55,66 @@ void gigaMoog::loadMoogScript(std::string scriptAddress)
 	scriptFile.close();
 }
 
+void gigaMoog::writeOff(MessageSender& ms) {
+
+	for (int channel = 0; channel < 64; channel++) {
+		Message m = Message::make().destination(MessageDestination::KA007)
+			.DAC(MessageDAC::DAC0).channel(channel)
+			.setting(MessageSetting::LOADFREQUENCY)
+			.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0.0);;
+		ms.enqueue(m);
+	}
+
+	for (int channel = 0; channel < 64; channel++) {
+		Message m = Message::make().destination(MessageDestination::KA007)
+			.DAC(MessageDAC::DAC1).channel(channel)
+			.setting(MessageSetting::LOADFREQUENCY)
+			.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0.0);;
+		ms.enqueue(m);
+	}
+
+	for (int channel = 0; channel < 64; channel++) {
+		Message m = Message::make().destination(MessageDestination::KA007)
+			.DAC(MessageDAC::DAC2).channel(channel)
+			.setting(MessageSetting::LOADFREQUENCY)
+			.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0.0);;
+		ms.enqueue(m);
+	}
+
+	for (int channel = 0; channel < 64; channel++) {
+		Message m = Message::make().destination(MessageDestination::KA007)
+			.DAC(MessageDAC::DAC3).channel(channel)
+			.setting(MessageSetting::LOADFREQUENCY)
+			.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0.0);;
+		ms.enqueue(m);
+	}
+
+	//{
+	//	Message m = Message::make().destination(MessageDestination::KA007)
+	//		.setting(MessageSetting::TERMINATE_SEQ);
+	//	ms.enqueue(m);
+	//}
+
+	//ms.getQueueElementCount();
+	//MessagePrinter rec;
+	//fpga.setReadCallback(boost::bind(&MessagePrinter::callback, rec, _1));
+	//fpga.write(ms.getMessageBytes());
+}
+
+void gigaMoog::send(MessageSender& ms)
+{
+	ms.getQueueElementCount();
+	//MessagePrinter rec;
+	//fpga.setReadCallback(boost::bind(&MessagePrinter::callback, rec, _1));
+	fpga.write(ms.getMessageBytes());
+}
+
 void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vars)
 {
-	writeOff();
 
 	MessageSender ms;
+
+	writeOff(ms);
 
 	currentMoogScriptText = currentMoogScript.str();
 	if (currentMoogScript.str() == "")
@@ -71,6 +126,7 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vars
 	std::vector<UINT> totalRepeatNum, currentRepeatNum;
 	std::vector<std::streamoff> repeatPos;
 	// the analysis loop.
+
 	while (!(currentMoogScript.peek() == EOF) || word != "__end__")
 	{
 		if (word == "set") {
@@ -81,8 +137,6 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vars
 			currentMoogScript >> amplitude;
 			currentMoogScript >> frequency;
 			currentMoogScript >> phase;
-
-
 
 			MessageDAC dacset;
 			if (DAC == "dac0") {
@@ -121,57 +175,6 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vars
 		ms.enqueue(m);
 	}
 
-	ms.getQueueElementCount();
-	//MessagePrinter rec;
-	//fpga.setReadCallback(boost::bind(&MessagePrinter::callback, rec, _1));
-	fpga.write(ms.getMessageBytes());
-}
-
-void gigaMoog::writeOff() {
-
-	MessageSender ms;
-
-	for (int channel = 0; channel < 64; channel++) {
-		Message m = Message::make().destination(MessageDestination::KA007)
-			.DAC(MessageDAC::DAC0).channel(channel)
-			.setting(MessageSetting::LOADFREQUENCY)
-			.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0.0);;
-		ms.enqueue(m);
-	}
-
-	for (int channel = 0; channel < 64; channel++) {
-		Message m = Message::make().destination(MessageDestination::KA007)
-			.DAC(MessageDAC::DAC1).channel(channel)
-			.setting(MessageSetting::LOADFREQUENCY)
-			.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0.0);;
-		ms.enqueue(m);
-	}
-
-	for (int channel = 0; channel < 64; channel++) {
-		Message m = Message::make().destination(MessageDestination::KA007)
-			.DAC(MessageDAC::DAC2).channel(channel)
-			.setting(MessageSetting::LOADFREQUENCY)
-			.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0.0);;
-		ms.enqueue(m);
-	}
-
-	for (int channel = 0; channel < 64; channel++) {
-		Message m = Message::make().destination(MessageDestination::KA007)
-			.DAC(MessageDAC::DAC3).channel(channel)
-			.setting(MessageSetting::LOADFREQUENCY)
-			.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0.0);;
-		ms.enqueue(m);
-	}
-	
-	{
-		Message m = Message::make().destination(MessageDestination::KA007)
-			.setting(MessageSetting::TERMINATE_SEQ);
-		ms.enqueue(m);
-	}
-
-	ms.getQueueElementCount();
-	//MessagePrinter rec;
-	//fpga.setReadCallback(boost::bind(&MessagePrinter::callback, rec, _1));
-	fpga.write(ms.getMessageBytes());
+	send(ms);
 
 }

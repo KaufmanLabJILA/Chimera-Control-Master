@@ -8,7 +8,7 @@ def imagef():
   t += .2
   on: imag461
   on: radial
-  t += 20
+  t += 40
 %  off: axial
   off: andortrig
   %off: andorshut

@@ -249,6 +249,7 @@ LRESULT MainWindow::onNoAtomsAlertMessage( WPARAM wp, LPARAM lp )
 
 BOOL MainWindow::OnInitDialog( )
 {
+	//SetWindowPos(NULL, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 	eMainWindowHwnd = GetSafeHwnd( );
 	// don't redraw until the first OnSize.
 	SetRedraw( false );

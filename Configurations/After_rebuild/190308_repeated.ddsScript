@@ -5,28 +5,28 @@
 
 % SB COOL
 reset
-freqs 0 80 75 72.76 80.06 80.07 80 80.07
-amps  10 100 100 100 100 100 30 45 %SB cool
+freqs 0 80 75 72.76 80.06 80.07 79.67 radial2_coolfreq
+amps  10 100 100 100 100 100 30 radial2_coolpow %SB cool
 
 % SPECTROSCOPY
 snapshot 0 reps 2
 freqs 0 80 clock+specscan 72.76 82.9 spec3p1 spec3p1 spec3p1
-amps  0 100 100 100 100 85 25 15
+amps  0 100 100 100 100 100 10 5
 
 % IMAGE
 snapshot 1 reps 2
 freqs 0 80 75 72.76 84 radcool 83.5 radcool
-amps  10 100 100 100 25 radpow 90 radpow
+amps  10 100 100 100 75 radpow 90 radpow
 
 %%%
 % MOT
 snapshot 2 reps 2
-freqs 0 80 75 72.76 82.5 82.9 80 80
-amps  0 100 100 100 100 100 100 10
+freqs 0 80 75 72.76 82.5 80 80 80
+amps  0 100 100 100 100 10 100 10
 
 % LAC
 snapshot 3 reps 2
-freqs 0 80 75 72.76 100 84 79.975 lacfreq
-amps  0 100 100 100 100 100 30 100
+freqs 0 80 75 72.76 100 lacfreq 79.975 lacfreq
+amps  0 100 100 100 100 40 30 100
 
 end

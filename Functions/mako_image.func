@@ -5,7 +5,7 @@ def mako_image():
   %t += 5  
   on: blue3d
   on: mako1
-  t += .5
+  t += 1
   off: mako1
   off: blue3d
   off: blueshut
