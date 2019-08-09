@@ -12,9 +12,9 @@ def red_mot(loadTime):
   %t += 6
   off: red3d
   % Additional cooling with narrow-line red MOT
-  %on: red3dnarrow
-  %t += 30
-  %off: red3dnarrow
+  on: red3dnarrow
+  t += 50
+  off: red3dnarrow
   %dac: red3dpow .15
   %t += 30
 

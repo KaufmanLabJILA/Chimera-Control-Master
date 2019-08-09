@@ -1,0 +1,30 @@
+% Master-Script See the "?" for info on commands.
+def imageshort():
+  dac: bluetune bluetune_imag
+  dac: imagingPow .3
+  on: andorshut
+  on: imagshut
+%  on: blueshut
+  t += 4
+%  on: imag461
+%  t += .02
+%  off: imag461
+%  t += .02
+  on: andortrig
+  off: tweezerAO
+  t += .0005
+  on: imag461
+  t += .005
+  off: blowawayttl
+  off: imagshut
+  off: slower
+  off: blue3d
+  off: radial
+  off: axial
+  off: andortrig
+  %off: andorshut
+  off: radial2
+  off: imag461
+  t += .01
+  off: blowawayshutter
+  off: blueshut

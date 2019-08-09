@@ -3,10 +3,23 @@ def mako_image():
   %Image red MOT:
   %on: blueshut
   %t += 5  
-  on: blue3d
+  %on: imag461
+  %on: slower
   on: mako1
-  t += 1
+  %on: blowawayttl
+  t += .25
+  %on: imag461
+  on: slower
+  %on: blowawayttl
+  %t += .25
+  on: blue3d
+  t += 2
+  off: blowawayttl
   off: mako1
   off: blue3d
   off: blueshut
+  off: slower
+
+  %off: imag461
+  %off: imagshut
 
