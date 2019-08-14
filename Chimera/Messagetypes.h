@@ -18,8 +18,9 @@ enum class MessageDAC {
 };
 
 enum class MessageSetting {
-	LOADFREQUENCY,
-	TERMINATE_SEQ
+  LOADFREQUENCY,
+  MOVEFREQUENCY,
+  TERMINATE_SEQ
 };
 
 typedef std::map<std::string, boost::variant<MessageDestination, MessageDAC, MessageSetting, int, double>> tKA007MessageParameters;
@@ -150,10 +151,131 @@ struct SetLoadFrequency : KA007_Message_Base
 
 		return bytes;
 	}
+struct SetMoveFrequency : KA007_Message_Base
+{
+  std::vector<int> getBytes(KA007ParameterContainer p) const override
+  {
+    std::vector<int> bytes;
+    //message type 2 (upper nibble) to DDS (lower nibble = 2)
+    bytes.push_back(0x22);
+    //bytes.push_back(0x10); //loopback for testing
+    //length is 4
+    bytes.push_back(4);
+    //channel is selected in header data
+    bytes.push_back(0);
+    int mult;
+    switch (p.get<MessageDAC>("DAC")) {
+      case MessageDAC::DAC0 : mult = 0;
+                break;
+      case MessageDAC::DAC1: mult = 1;
+                break;
+      case MessageDAC::DAC2: mult = 2;
+                break;
+      case MessageDAC::DAC3: mult = 3;
+                break;
+    }
+    bytes.push_back(p.get<int>("Channel") + 64*mult);
+    //payload
+    //upper 64 bit
+      //36-bit FTW
+      //16-bit ATW
+      //12-bit PTW
+    //lower 64 bit
+      // 4-bit instant move
+      //28-bit ATW increment
+      // 8-bit step sequence
+      // 8-bit empty
+      //12-bit FTW increment
+      // 4-bit Phase jump enable
+    auto bits = KA007_Message_Base::getFTW(p.get<double>("Frequency"));
+    
+    //process amplitude
+    //Percent to 16-bit number
+    auto ATW = p.get<double>("Amplitude");
+    if(ATW < 0.0 || ATW > 100.0) throw std::runtime_error("invalid amplitude");
+    ATW *= 655.35;
+    int ATW_bits = (int)ATW;
+    
+    bits = bits << 16;
+    bits = bits | ATW_bits;
+
+    //process phase
+    //Degrees to 12-bit
+    auto PTW = p.get<double>("Phase");
+    if (PTW < 0.0 || PTW > 360.0) throw std::runtime_error("invalid phase");
+    PTW /= 360.0;
+    PTW *= 4096;
+    int PTW_bits = (int)PTW;
+
+    bits = bits << 12;
+    bits = bits | PTW_bits;
+    
+    //enqueue upper 64 bits (8 bytes)
+    for (int i = 7; i >=0 ; i--) {
+      bytes.push_back((bits >> (8 * i)) & 0xFF);
+    }
+    
+    bits = p.get<int>("InstantFTW");
+    
+    bits = bits << 28;
+	//conversion to 28-bit signed number
+	int temp = p.get<int>("ATWIncr");
+	if (temp < -134217728)temp = -134217728;
+	if (temp > 134217727)temp = 134217727;
+	if (temp < 0)temp = temp + 268435456;
+	bits = bits | temp;
+    
+    bits = bits << 8;
+    bits = bits | p.get<int>("StepSequenceID");
+    
+    //empty byte
+    bits = bits << 8;
+
+    bits = bits << 12;
+    //conversion to 10-bit signed number
+	temp = p.get<int>("FTWIncr");
+	if (temp < -512)temp = -512;
+	if (temp >  511)temp =  511;
+	if (temp <    0)temp =  temp + 1024;
+	bits = bits | temp;
+    
+    bits = bits << 4;
+    bits = bits | p.get<int>("PhaseJump");
+
+    //enqueue lower 64 bits (8 bytes)
+    for (int i = 7; i >=0 ; i--) {
+      bytes.push_back((bits >> (8 * i)) & 0xFF);
+    }
+
+    std::cout << "Sending bytes: ";
+    for(auto& byte : bytes)
+      std::cout << byte << " ";
+    std::cout << "\n";
+
+    return bytes;
+  }
 };
 
 struct TerminateSequence : KA007_Message_Base
 {
+  std::vector<int> getBytes(KA007ParameterContainer) const override
+  {
+    std::vector<int> bytes;
+    //message type 3 to DDS
+    bytes.push_back(0x32);
+    //length is 2
+    bytes.push_back(0);
+    //no header data
+    bytes.push_back(0);
+    bytes.push_back(0);
+
+    std::cout << "Sending bytes: ";
+    for (auto& byte : bytes)
+      std::cout << byte << " ";
+    std::cout << "\n";
+
+    return bytes;
+  }
 	std::vector<int> getBytes(KA007ParameterContainer) const override
 	{
 		std::vector<int> bytes;
