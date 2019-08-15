@@ -109,7 +109,7 @@ void gigaMoog::send(MessageSender& ms)
 	fpga.write(ms.getMessageBytes());
 }
 
-void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vars)
+void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& variables, UINT variation)
 {
 
 	MessageSender ms;
@@ -156,9 +156,9 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vars
 			}
 
 			Message m = Message::make().destination(MessageDestination::KA007)
-				.DAC(dacset).channel(channel.evaluate())
+				.DAC(dacset).channel(channel.evaluate(variables, variation))
 				.setting(MessageSetting::LOADFREQUENCY)
-				.frequencyMHz(frequency.evaluate()).amplitudePercent(amplitude.evaluate()).phaseDegrees(phase.evaluate());;
+				.frequencyMHz(frequency.evaluate(variables, variation)).amplitudePercent(amplitude.evaluate(variables, variation)).phaseDegrees(phase.evaluate(variables, variation));;
 			ms.enqueue(m);
 		}
 		else

@@ -73,9 +73,6 @@
     <ClCompile Include="MainOptionsControl.cpp">
       <Filter>Main Window</Filter>
     </ClCompile>
-    <ClCompile Include="Gnuplotter.cpp">
-      <Filter>Camera Window</Filter>
-    </ClCompile>
     <ClCompile Include="ExperimentTimer.cpp">
       <Filter>Camera Window</Filter>
     </ClCompile>
@@ -273,9 +270,6 @@
     <ClInclude Include="MainOptionsControl.h">
       <Filter>Main Window</Filter>
     </ClInclude>
-    <ClInclude Include="gnuplotter.h">
-      <Filter>Camera Window</Filter>
-    </ClInclude>
     <ClInclude Include="ExperimentTimer.h">
       <Filter>Camera Window</Filter>
     </ClInclude>
@@ -383,9 +377,6 @@
     </ClInclude>
     <ClInclude Include="cameraPositions.h">
       <Filter>Camera Window\Structures</Filter>
-    </ClInclude>
-    <ClInclude Include="gnuplot-iostream.h">
-      <Filter>Camera Window</Filter>
     </ClInclude>
     <ClInclude Include="imageParameters.h">
       <Filter>Camera Window\Structures</Filter>

@@ -22,7 +22,7 @@ public:
 
 	//Attempt to parse moog script
 	void loadMoogScript(std::string scriptAddress);
-	void analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vars);
+	void analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& variables, UINT variation);
 
 	virtual void writeOff(MessageSender& ms);
 	void send(MessageSender& ms);

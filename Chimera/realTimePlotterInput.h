@@ -2,7 +2,7 @@
 #include "atomGrid.h"
 #include "imageParameters.h"
 #include "Communicator.h"
-#include "gnuplotter.h"
+//#include "gnuplotter.h"
 #include "tinyPlotInfo.h"
 #include <atomic>
 #include <vector>
@@ -33,7 +33,7 @@ struct realTimePlotterInput
 	UINT plottingFrequency;
 	UINT numberOfRunsToAverage;
 	std::vector<double> key;
-	Gnuplotter* plotter;
+	//Gnuplotter* plotter;
 
 	bool needsCounts;
 };

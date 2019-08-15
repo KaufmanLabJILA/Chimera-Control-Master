@@ -29,7 +29,7 @@ class KA007ParameterContainer
 public:
 	KA007ParameterContainer() {};
 	~KA007ParameterContainer() {};
-
+	
 	template<typename T> void set(const std::string& key, const T& value)
 	{
 		if (exists(key))
@@ -37,6 +37,45 @@ public:
 
 		mParameters[key] = value;
 	}
+	
+	//TODO: template previously not working when compiling in release mode. Solved with overloads below, but then miraculously compiles. 
+
+	//void set(const std::string& key, const int& value)
+	//{
+	//	if (exists(key))
+	//		thrower("Duplicate key");
+
+	//	mParameters[key] = value;
+	//}
+	//void set(const std::string& key, const MessageDestination& value)
+	//{
+	//	if (exists(key))
+	//		thrower("Duplicate key");
+
+	//	mParameters[key] = value;
+	//}
+	//void set(const std::string& key, const MessageDAC& value)
+	//{
+	//	if (exists(key))
+	//		thrower("Duplicate key");
+
+	//	mParameters[key] = value;
+	//}
+	//void set(const std::string& key, const MessageSetting& value)
+	//{
+	//	if (exists(key))
+	//		thrower("Duplicate key");
+
+	//	mParameters[key] = value;
+	//}
+	//void set(const std::string& key, const double& value)
+	//{
+	//	if (exists(key))
+	//		thrower("Duplicate key");
+
+	//	mParameters[key] = value;
+	//}
+
 
 	template<typename T> const T& get(const std::string& key)const
 	{

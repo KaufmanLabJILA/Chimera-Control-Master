@@ -7,17 +7,17 @@
 reset
 %freqs 80 80 75 80 80.06 radial2_coolfreq axial_freq 79.83
 %amps  0 100 100 100 100 100 100 10 %SB cool
-freqs 80 80 75 80 84 79.875 79.835 79.92
-amps  0 100 100 100 75 6 80 13
+freqs 80 80 75 80 79.74 79.8 79.8 79.85
+amps  0 100 100 100 100 6 80 13
 
 % SPECTROSCOPY
 snapshot 0 reps 2
-freqs 80 80 75 80 84 spec3p1 spec3p1 spec3p1
-amps  0 100 100 100 75 3.5 100 3
+freqs 80 80 75 80 spec3p1 spec3p1 spec3p1 spec3p1
+amps  0 100 100 100 100 3.5 100 3
 
 % IMAGE
 snapshot 1 reps 2
-freqs 80 80 75 80 84 80 79.77 79.92
+freqs 80 80 75 80 84 79.92 79.77 79.95
 amps  0 100 100 100 75 2.5 35 13
 
 %%%
@@ -28,7 +28,7 @@ amps  0 100 100 100 60 10 100 10
 
 % LAC
 snapshot 3 reps 2
-freqs 80 80 75 80 100 80 79.975 79.92
-amps  0 100 100 100 100 75 30 6
+freqs 80 80 75 80 100 79.92 79.975 79.95
+amps  0 100 100 100 100 3.5 30 13
 
 end

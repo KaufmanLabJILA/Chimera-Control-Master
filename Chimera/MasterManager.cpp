@@ -74,7 +74,6 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 		{
 			input->thisObj->analyzeMasterScript( input->ttls, input->dacs, ttlShadeLocs, dacShadeLocs,
 												 input->variables );
-			input->gmoog->analyzeMoogScript(input->gmoog, input->variables);
 		}
 		/// prep Moog
 		if (input->runMoog) {
@@ -279,6 +278,11 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 				input->dds->loadDDSScript(input->ddsScriptAddress);
 				input->dds->programDDS(input->dds, input->variables, variationInc);
 			}
+			if (!MOOG_SAFEMODE) {
+				input->gmoog->loadMoogScript(input->gmoogScriptAddress);
+				input->gmoog->analyzeMoogScript(input->gmoog, input->variables, variationInc);
+			}
+
 			input->comm->sendError( warnings );
 			//input->topBottomTek->programMachine( variationInc );
 			//input->eoAxialTek->programMachine( variationInc );

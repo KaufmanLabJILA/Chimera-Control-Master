@@ -14,7 +14,8 @@ def imageshort():
   off: tweezerAO
   t += .0005
   on: imag461
-  t += .005
+  t += .001
+%  t += 1
   off: blowawayttl
   off: imagshut
   off: slower

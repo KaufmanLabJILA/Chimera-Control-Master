@@ -11,12 +11,9 @@
 
 CameraWindow::CameraWindow() : CDialog(), 
 								CameraSettings(&Andor), 
-								dataHandler(DATA_SAVE_LOCATION), 
-                                plotter(GNUPLOT_LOCATION)
+								dataHandler(DATA_SAVE_LOCATION)
 {
 	/// test the plotter quickly
-	plotter.send( "set title \"Gnuplot is Working. You can close this window at any time.\"" );
-	plotter.send("plot '-'");
 	std::vector<double> data(100);
 	int count = 0;
 	for ( auto& dat : data )
@@ -24,7 +21,7 @@ CameraWindow::CameraWindow() : CDialog(),
 		dat = -(count - 50)*(count - 50);
 		count++;
 	}
-	plotter.sendData(data);
+//	plotter.sendData(data);
 };
 
 
@@ -927,7 +924,6 @@ void CameraWindow::preparePlotter( ExperimentInput& input )
 		dummyKey.resize( 1000 );
 		input.plotterInput->key = dummyKey;
 	}
-	input.plotterInput->plotter = &plotter;
 	input.plotterInput->atomQueue = &plotterAtomQueue;
 	analysisHandler.fillPlotThreadInput( input.plotterInput );
 }

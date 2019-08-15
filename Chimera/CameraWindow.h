@@ -7,7 +7,7 @@
 #include "DataAnalysisHandler.h"
 #include "ExperimentTimer.h"
 #include "DataLogger.h"
-#include "gnuplotter.h"
+//#include "gnuplotter.h"
 #include "commonFunctions.h"
 #include "atomCruncherInput.h"
 #include "cameraPositions.h"
@@ -141,7 +141,7 @@ class CameraWindow : public CDialog
 		std::atomic<bool> skipNext=false;
 		std::vector<double> plotterKey;
 		chronoTimes imageTimes, imageGrabTimes, mainThreadStartTimes, crunchSeesTimes, crunchFinTimes;
-		Gnuplotter plotter;
+		//Gnuplotter plotter;
 		
 };
 
