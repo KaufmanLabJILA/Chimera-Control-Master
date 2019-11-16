@@ -4,12 +4,13 @@ def bluemot_steadystate():
   dac: x1coil bluecoilx
   %dac: x2coil bluecoilx
   dac: y1coil bluecoily
-  %dac: y2coil bluecoily
+  dac: y2coil bluecoily
   dac: z1coil bluecoilz
   %dac: z2coil bluecoilz
   dac: motcoils 4
   dac: blue3dpow 0.3
   on: blueshut
+  on: blowawayshutter
   on: blue3d
   on: red3d
   on: rp707

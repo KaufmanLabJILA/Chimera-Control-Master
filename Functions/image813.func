@@ -1,0 +1,23 @@
+% Master-Script See the "?" for info on commands.
+def image813():
+  dac: bluetune bluetune_imag
+  dac: imagingPow .1
+
+  on: andorshut
+  on: imagshut
+  t += 4
+  on: andortrig
+  t += .2
+  on: imag461
+  %on: radial
+  on: radial2
+  %on: axial
+  t += 49
+  off: andortrig
+  off: andorshut
+  off: radial
+  off: radial2
+  off: axial
+  off: imag461
+  off: imagshut
+  t += .01

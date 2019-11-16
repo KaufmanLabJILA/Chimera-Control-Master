@@ -7,13 +7,13 @@ def mako_image():
   %on: slower
   on: mako1
   %on: blowawayttl
-  t += .25
+  t += .025
   %on: imag461
-  on: slower
+  %on: slower
   %on: blowawayttl
   %t += .25
   on: blue3d
-  t += 2
+  t += 5
   off: blowawayttl
   off: mako1
   off: blue3d

@@ -161,6 +161,32 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vari
 				.frequencyMHz(frequency.evaluate(variables, variation)).amplitudePercent(amplitude.evaluate(variables, variation)).phaseDegrees(phase.evaluate(variables, variation));;
 			ms.enqueue(m);
 		}
+		else if (word == "test") {
+
+			for (int channel = 0; channel < 15; channel++) {
+				Message m = Message::make().destination(MessageDestination::KA007)
+					.DAC(MessageDAC::DAC0).channel(channel)
+					.setting(MessageSetting::MOVEFREQUENCY)
+					.frequencyMHz(218+channel/15).amplitudePercent(50).phaseDegrees(180.0).instantFTW(1).ATWIncr(-100).stepSequenceID(0).FTWIncr(1).phaseJump(0);
+				ms.enqueue(m);
+			}
+			for (int channel = 0; channel < 15; channel++) {
+				Message m = Message::make().destination(MessageDestination::KA007)
+					.DAC(MessageDAC::DAC1).channel(channel)
+					.setting(MessageSetting::MOVEFREQUENCY)
+					.frequencyMHz(218 + channel/15).amplitudePercent(50).phaseDegrees(180.0).instantFTW(1).ATWIncr(-100).stepSequenceID(0).FTWIncr(1).phaseJump(0);
+				ms.enqueue(m);
+			};
+			//for (int channel = 0; channel < 8
+			//	; channel++) {
+			//	Message m = Message::make().destination(MessageDestination::KA007)
+			//		.DAC(MessageDAC::DAC0).channel(channel)
+			//		.setting(MessageSetting::MOVEFREQUENCY)
+			//		.frequencyMHz(235).amplitudePercent(5 + 5 * channel).phaseDegrees(180.0).instantFTW(0).ATWIncr(-1).stepSequenceID(2).FTWIncr(1).phaseJump(1);
+			//	ms.enqueue(m);
+			//};
+
+		}
 		else
 		{
 			thrower("ERROR: unrecognized moog script command: \"" + word + "\"");

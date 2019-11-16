@@ -313,7 +313,27 @@ void AndorCamera::armCamera(CameraWindow* camWin, double& minKineticCycleTime)
 	{
 		setHSSpeed(1, 0);
 	}
-	setVSSpeed(2); //TODO: change "1" to meaningful value.
+	setVSSpeed(3); //TODO: change "1" to meaningful value.
+	setVSAmplitude(0);
+	//int hsN, vsN;
+
+	//getNumberHSSpeeds(0, 0, &hsN);
+	//getNumberVSSpeeds(&vsN);
+
+	//float vss0, vss1, vss2, vss3, vss4, vss5;
+	//getVSSpeed(0, &vss0);
+	//getVSSpeed(1, &vss1);
+	//getVSSpeed(2, &vss2);
+	//getVSSpeed(3, &vss3);
+	//getVSSpeed(4, &vss4);
+
+	//float hss0, hss1, hss2, hss3, hss4, hss5;
+	//getHSSpeed(0, 0, 0, &hss0);
+	//getHSSpeed(0, 0, 1, &hss1);
+	//getHSSpeed(0, 0, 2, &hss2);
+	//getHSSpeed(0, 0, 3, &hss3);
+
+
 	setAcquisitionMode();
 	setReadMode();
 	setExposures();
@@ -1342,11 +1362,44 @@ void AndorCamera::setVSSpeed(int index)
 	}
 }
 
+void AndorCamera::setVSAmplitude(int index)
+{
+	if (!ANDOR_SAFEMODE)
+	{
+		andorErrorChecker(SetVSAmplitude(index));
+	}
+}
+
+
 void AndorCamera::getVSSpeed(int index, float *speed)
 {
 	if (!ANDOR_SAFEMODE)
 	{
 		GetVSSpeed(index, speed);
+	}
+}
+
+void AndorCamera::getHSSpeed(int channel, int typ, int index, float *speed)
+{
+	if (!ANDOR_SAFEMODE)
+	{
+		GetHSSpeed(channel, typ, index, speed);
+	}
+}
+
+void AndorCamera::getNumberVSSpeeds(int *speeds)
+{
+	if (!ANDOR_SAFEMODE)
+	{
+		GetNumberVSSpeeds(speeds);
+	}
+}
+
+void AndorCamera::getNumberHSSpeeds(int channel, int typ, int *speeds)
+{
+	if (!ANDOR_SAFEMODE)
+	{
+		GetNumberHSSpeeds(channel, typ, speeds);
 	}
 }
 

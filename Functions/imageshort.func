@@ -4,6 +4,9 @@ def imageshort():
   dac: imagingPow .3
   on: andorshut
   on: imagshut
+
+  on: blowawayshutter
+
 %  on: blueshut
   t += 4
 %  on: imag461
@@ -11,10 +14,11 @@ def imageshort():
 %  off: imag461
 %  t += .02
   on: andortrig
-  off: tweezerAO
+%  off: tweezerAO
   t += .0005
-  on: imag461
-  t += .001
+%  on: imag461
+  on: blowawayttl
+  t += .005
 %  t += 1
   off: blowawayttl
   off: imagshut

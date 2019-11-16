@@ -69,7 +69,13 @@ class AndorCamera
 		void setFrameTransferMode(int mode);
 		void setHSSpeed(int type, int index);
 		void setVSSpeed(int index);
+		void setVSAmplitude(int index);
 		void getVSSpeed(int index, float * speed);
+		void getHSSpeed(int channel, int typ, int index, float *speed);
+		void getNumberVSSpeeds(int *speeds);
+		void getNumberHSSpeeds(int channel, int typ, int *speeds);
+
+
 		void setImage(int hBin, int vBin, int lBorder, int rBorder, int tBorder, int bBorder);
 		void setKineticCycleTime();
 		void setKineticCycleTime(float cycleTime);
