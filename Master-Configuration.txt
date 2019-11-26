@@ -167,7 +167,7 @@ intensity698
 -10 - 10
 0
 tweezerpow
-0 - 10
+-1 - 10
 0
 bluetune
 -0.1 - 0.1

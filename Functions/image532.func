@@ -1,5 +1,5 @@
 % Master-Script See the "?" for info on commands.
-def imagef():
+def image532():
   dac: bluetune bluetune_imag
   dac: imagingPow imagpow
   on: andorshut
@@ -7,20 +7,23 @@ def imagef():
   t += 4
   on: andortrig
   t += .2
-  repeat: 60
+  repeat: 180
     on: imag461
     t += .1
     off: imag461
     on: radial
-    t += .25
+    t += .2
     off: radial
     on: axial
-    t += .25
+    t += .2
     off: axial
-    on: radial2
-    t += .25
-    off: radial2
+    %on: radial2
+    %t += .2
+    %off: radial2    
+    %t += 0.05
   end
+  t += .1
+
   off: andortrig
   off: andorshut   
   off: imag461

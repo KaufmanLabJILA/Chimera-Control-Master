@@ -2,4 +2,7 @@ def fieldZero():
  dac: z1coil .005
  dac: y1coil .009
  dac: y2coil .009
- dac: x1coil .014
+ dac: x1coil .014
+ %dac: y1coil .02
+ %dac: y2coil .02
+ 

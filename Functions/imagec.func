@@ -1,0 +1,22 @@
+def imagec():
+  dac: bluetune bluetune_imag
+  dac: imagingPow imagpow
+  on: andorshut
+  on: imagshut
+  t += 4
+  on: andortrig
+  t += .2
+  on: imag461
+  on: radial2
+  on: radial
+  on: axial
+  t += 35
+  off: radial2
+  off: axial
+  off: radial
+
+  off: andortrig
+  off: andorshut   
+  off: imag461
+  off: imagshut
+  t += .01
