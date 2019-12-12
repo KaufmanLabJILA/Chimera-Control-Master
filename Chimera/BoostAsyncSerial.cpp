@@ -3,17 +3,20 @@
 
 BoostAsyncSerial::BoostAsyncSerial(std::string portID, int baudrate)
 {
-	port_ = std::make_unique<boost::asio::serial_port>(io_service_);
+	if (!GIGAMOOG_SAFEMODE) {
+		port_ = std::make_unique<boost::asio::serial_port>(io_service_);
 
-	port_->open(portID);
-	port_->set_option(boost::asio::serial_port_base::baud_rate(baudrate));
-	port_->set_option(boost::asio::serial_port_base::character_size(8));
-	port_->set_option(boost::asio::serial_port_base::stop_bits(boost::asio::serial_port_base::stop_bits::one));
-	port_->set_option(boost::asio::serial_port_base::parity(boost::asio::serial_port_base::parity::none));
-	port_->set_option(boost::asio::serial_port_base::flow_control(boost::asio::serial_port_base::flow_control::none));
+		port_->open(portID);
+		port_->set_option(boost::asio::serial_port_base::baud_rate(baudrate));
+		port_->set_option(boost::asio::serial_port_base::character_size(8));
+		port_->set_option(boost::asio::serial_port_base::stop_bits(boost::asio::serial_port_base::stop_bits::one));
+		port_->set_option(boost::asio::serial_port_base::parity(boost::asio::serial_port_base::parity::none));
+		port_->set_option(boost::asio::serial_port_base::flow_control(boost::asio::serial_port_base::flow_control::none));
 
-	io_thread = boost::thread(boost::bind(&BoostAsyncSerial::run, this));
-	read();
+		io_thread = boost::thread(boost::bind(&BoostAsyncSerial::run, this));
+		read();
+	}
+
 }
 
 BoostAsyncSerial::BoostAsyncSerial(
