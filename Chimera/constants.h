@@ -21,6 +21,7 @@
 #ifdef ADAMS_LAB
 	#define PYTHON_HOME L"C:\\ProgramData\\Anaconda3\\"
 	#define MOOG_SAFEMODE false
+	#define GIGAMOOG_SAFEMODE false 
 	#define NIAWG_SAFEMODE true
 	#define ANDOR_SAFEMODE false
 	#define PYTHON_SAFEMODE true
@@ -31,6 +32,7 @@
 	#define DAQMX_SAFEMODE false
 	#define RSG_SAFEMODE true
 	#define DDS_FPGA_ADDRESS "FT1I6IBSB" //Device Serial: FT1I6IBS, Use FT1I6IBSB in C++ to select Channel B
+	#define GIGAMOOG_PORT "COM6" 
 	#define TOP_BOTTOM_TEK_SAFEMODE true
 	#define TOP_BOTTOM_TEK_USB_ADDRESS "USB0::0x0699::0x0343::C021681::0::INSTR"
 	#define EO_AXIAL_TEK_SAFEMODE true
@@ -399,8 +401,9 @@ const char * const SERVER_ADDRESS = "192.168.236.1";
 #define IDC_SET_EM_GAIN_BUTTON 23006
 #define IDC_TRIGGER_COMBO 23007
 #define IDC_SET_TEMPERATURE_BUTTON 23008
-#define PICTURE_SETTINGS_ID_START 23009
-#define PICTURE_SETTINGS_ID_END 23034
+#define IDC_SET_TEMPERATURE_OFF_BUTTON 23009 
+#define PICTURE_SETTINGS_ID_START 23010 
+#define PICTURE_SETTINGS_ID_END 23038
 // #define IDC_SET_IMAGE_PARAMETERS_BUTTON 23045
 #define IDC_SET_REPETITONS_PER_VARIATION_BUTTON 23046
 #define IDC_SET_VARIATION_NUMBER 23047
@@ -489,62 +492,6 @@ const char * const SERVER_ADDRESS = "192.168.236.1";
 #define FLASHING_AGILENT_TRIGGER_NUM 0
 #define INTENSITY_AGILENT_TRIGGER_ROW 1
 #define INTENSITY_AGILENT_TRIGGER_NUM 6
-
-//
-//const agilentSettings UWAVE_AGILENT_SETTINGS = { 
-//												// safemode option											
-//												UWAVE_SAFEMODE, 
-//												// usb address
-//												UWAVE_AGILENT_USB_ADDRESS,
-//												// sample rate (Hz)
-//												10e6, 
-//												// impedance (ohms, or inf)
-//												"50", 
-//												// the output filter state (controls rounding & overshoot issues 
-//												// between samples)
-//												"NORMal",
-//												// Memory location, whether the device will save waveforms to 
-//												// the internal 64MB Memory buffer or to an external USB drive, which
-//												// can (obviously) have much more space.f
-//												"INT",
-//												// various control IDs (no need to change)
-//												 IDC_UWAVE_CHANNEL1_BUTTON, IDC_UWAVE_CHANNEL2_BUTTON, 
-//												 IDC_UWAVE_SYNC_BUTTON, IDC_UWAVE_AGILENT_COMBO,
-//												 IDC_UWAVE_FUNCTION_COMBO, IDC_UWAVE_EDIT, IDC_UWAVE_PROGRAM, 
-//												 IDC_UWAVE_CALIBRATION_BUTTON,
-//												 UWAVE_AGILENT_TRIGGER_ROW, UWAVE_AGILENT_TRIGGER_NUM };
-//
-//const agilentSettings TOP_BOTTOM_AGILENT_SETTINGS = { TOP_BOTTOM_AGILENT_SAFEMODE, TOP_BOTTOM_AGILENT_USB_ADDRESS,
-//													  1e6, "INF", "NORMal", "INT",
-//													  IDC_TOP_BOTTOM_CHANNEL1_BUTTON, IDC_TOP_BOTTOM_CHANNEL2_BUTTON,
-//													  IDC_TOP_BOTTOM_SYNC_BUTTON, IDC_TOP_BOTTOM_AGILENT_COMBO,
-//													  IDC_TOP_BOTTOM_FUNCTION_COMBO, IDC_TOP_BOTTOM_EDIT, 
-//													  IDC_TOP_BOTTOM_PROGRAM, IDC_TOP_BOTTOM_CALIBRATION_BUTTON,
-//													  TOP_BOTTOM_AGILENT_TRIGGER_ROW, TOP_BOTTOM_AGILENT_TRIGGER_NUM };
-//
-//const agilentSettings AXIAL_AGILENT_SETTINGS = { AXIAL_AGILENT_SAFEMODE, AXIAL_AGILENT_USB_ADDRESS,
-//												 1e6, "INF", "NORMal", "INT",
-//												 IDC_AXIAL_CHANNEL1_BUTTON, IDC_AXIAL_CHANNEL2_BUTTON,
-//												 IDC_AXIAL_SYNC_BUTTON, IDC_AXIAL_AGILENT_COMBO,
-//												 IDC_AXIAL_FUNCTION_COMBO, IDC_AXIAL_EDIT, IDC_AXIAL_PROGRAM,
-//												 IDC_AXIAL_CALIBRATION_BUTTON,
-//												 AXIAL_AGILENT_TRIGGER_ROW, AXIAL_AGILENT_TRIGGER_NUM };
-//
-//const agilentSettings FLASHING_AGILENT_SETTINGS = { FLASHING_SAFEMODE, FLASHING_AGILENT_USB_ADDRESS,
-//													1e6, "INF", "NORMal", "INT",
-//													IDC_FLASHING_CHANNEL1_BUTTON, IDC_FLASHING_CHANNEL2_BUTTON,
-//													IDC_FLASHING_SYNC_BUTTON, IDC_FLASHING_AGILENT_COMBO,
-//													IDC_FLASHING_FUNCTION_COMBO, IDC_FLASHING_EDIT, 
-//													IDC_FLASHING_PROGRAM, IDC_FLASHING_CALIBRATION_BUTTON,
-//													FLASHING_AGILENT_TRIGGER_ROW, FLASHING_AGILENT_TRIGGER_NUM };
-
-//const agilentSettings INTENSITY_AGILENT_SETTINGS = { INTENSITY_SAFEMODE, INTENSITY_AGILENT_USB_ADDRESS,
-//													 1e6, "INF", "NORMal", "USB",
-//													 IDC_INTENSITY_CHANNEL1_BUTTON, IDC_INTENSITY_CHANNEL2_BUTTON,
-//													 IDC_INTENSITY_SYNC_BUTTON, IDC_INTENSITY_AGILENT_COMBO,
-//													 IDC_INTENSITY_FUNCTION_COMBO, IDC_INTENSITY_EDIT,
-//													 IDC_INTENSITY_PROGRAM, IDC_INTENSITY_CALIBRATION_BUTTON,
-//													 INTENSITY_AGILENT_TRIGGER_ROW, INTENSITY_AGILENT_TRIGGER_NUM };
 
 // plot designer
 #define IDC_GENERAL_PLOT_TYPE 15008

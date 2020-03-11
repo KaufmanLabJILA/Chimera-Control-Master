@@ -11,12 +11,11 @@
 
 CameraWindow::CameraWindow() : CDialog(), 
 								CameraSettings(&Andor), 
-								dataHandler(DATA_SAVE_LOCATION), 
-                                plotter(GNUPLOT_LOCATION)
+								dataHandler(DATA_SAVE_LOCATION)
 {
 	/// test the plotter quickly
-	plotter.send( "set title \"Gnuplot is Working. You can close this window at any time.\"" );
-	plotter.send("plot '-'");
+	//plotter.send( "set title \"Gnuplot is Working. You can close this window at any time.\"" );
+	//plotter.send("plot '-'");
 	std::vector<double> data(100);
 	int count = 0;
 	for ( auto& dat : data )
@@ -24,7 +23,7 @@ CameraWindow::CameraWindow() : CDialog(),
 		dat = -(count - 50)*(count - 50);
 		count++;
 	}
-	plotter.sendData(data);
+	//plotter.sendData(data);
 };
 
 
@@ -54,6 +53,7 @@ BEGIN_MESSAGE_MAP(CameraWindow, CDialog)
 	// 
 	ON_COMMAND( IDC_SET_EM_GAIN_BUTTON, &CameraWindow::setEmGain)
 	ON_COMMAND( IDC_SET_TEMPERATURE_BUTTON, &CameraWindow::passSetTemperaturePress)
+	ON_COMMAND(IDC_SET_TEMPERATURE_OFF_BUTTON, &CameraWindow::passSetTemperatureOffPress)
 	ON_COMMAND( IDOK, &CameraWindow::catchEnter)
 	ON_COMMAND( IDC_SET_ANALYSIS_LOCATIONS, &CameraWindow::passManualSetAnalysisLocations)
 	ON_COMMAND( IDC_SET_GRID_CORNER, &CameraWindow::passSetGridCorner)
@@ -111,7 +111,7 @@ void CameraWindow::handleOpeningConfig(std::ifstream& configFile, int versionMaj
 	CameraSettings.handleOpenConfig(configFile, versionMajor, versionMinor );
 	pics.handleOpenConfig(configFile, versionMajor, versionMinor );
 	analysisHandler.handleOpenConfig( configFile, versionMajor, versionMinor );
-	if ( CameraSettings.getSettings( ).picsPerRepetition == 1 )
+	if (CameraSettings.getSettings().picsPerRepetition == 1 || CameraSettings.getPicsPerRepManual())
 	{
 		pics.setSinglePicture( this, CameraSettings.readImageParameters( this )  );
 	}
@@ -329,6 +329,20 @@ LRESULT CameraWindow::onCameraProgress( WPARAM wParam, LPARAM lParam )
 				timer.update(pictureNumber / currentSettings.picsPerRepetition, currentSettings.repetitionsPerVariation,
 					currentSettings.totalVariations, currentSettings.picsPerRepetition);
 			}
+			else if (CameraSettings.getPicsPerRepManual())
+			{
+				std::pair<int, int> minMax;
+				// draw the most recent pic. 
+				minMax = stats.update(picData.back(), 0, selectedPixel,
+					currentSettings.imageSettings.width, currentSettings.imageSettings.height,
+					pictureNumber / currentSettings.picsPerRepetition,
+					currentSettings.totalPicsInExperiment / currentSettings.picsPerRepetition);
+
+				pics.drawPicture(drawer, 0, picData.back(), minMax);
+
+				timer.update(pictureNumber / currentSettings.picsPerRepetition, currentSettings.repetitionsPerVariation,
+					currentSettings.totalVariations, currentSettings.picsPerRepetition);
+			}
 			else if (pictureNumber % currentSettings.picsPerRepetition == 0)
 			{
 
@@ -366,8 +380,15 @@ LRESULT CameraWindow::onCameraProgress( WPARAM wParam, LPARAM lParam )
 	{
 		try
 		{
-			dataHandler.writePic( pictureNumber, picData[(pictureNumber - 1) % currentSettings.picsPerRepetition],
-								  currentSettings.imageSettings );
+			if (CameraSettings.getPicsPerRepManual()) {
+				dataHandler.writePic(pictureNumber, picData[(pictureNumber - 1) % 1],
+					currentSettings.imageSettings);
+			}
+			else {
+				dataHandler.writePic(pictureNumber, picData[(pictureNumber - 1) % currentSettings.picsPerRepetition],
+					currentSettings.imageSettings);
+			}
+
 		}
 		catch (Error& err)
 		{
@@ -596,6 +617,18 @@ void CameraWindow::passSetTemperaturePress()
 	mainWindowFriend->updateConfigurationSavedStatus( false );
 }
 
+void CameraWindow::passSetTemperatureOffPress()
+{
+	try
+	{
+		CameraSettings.handleSetTemperatureOffPress();
+	}
+	catch (Error& err)
+	{
+		mainWindowFriend->getComm()->sendError(err.what());
+	}
+	mainWindowFriend->updateConfigurationSavedStatus(false);
+}
 
 /*
  *
@@ -627,7 +660,7 @@ void CameraWindow::handlePictureSettings(UINT id)
 {
 	selectedPixel = { 0,0 };
 	CameraSettings.handlePictureSettings(id, &Andor);
-	if (CameraSettings.getSettings().picsPerRepetition == 1)
+	if (CameraSettings.getSettings().picsPerRepetition == 1 || CameraSettings.getPicsPerRepManual())
 	{
 		pics.setSinglePicture( this, CameraSettings.readImageParameters( this ) );
 	}
@@ -786,7 +819,7 @@ void CameraWindow::prepareCamera( ExperimentInput& input )
 	readImageParameters( );
 	//
 	CameraSettings.updatePassivelySetSettings();
-	pics.setNumberPicturesActive( CameraSettings.getSettings().picsPerRepetition );
+	pics.setNumberPicturesActive(CameraSettings.getSettings().picsPerRepetition, CameraSettings.getPicsPerRepManual());
 	// this is a bit awkward at the moment.
 	
 	CameraSettings.setRepsPerVariation(mainWindowFriend->getRepNumber());
@@ -893,7 +926,7 @@ void CameraWindow::preparePlotter( ExperimentInput& input )
 		dummyKey.resize( 1000 );
 		input.plotterInput->key = dummyKey;
 	}
-	input.plotterInput->plotter = &plotter;
+	//input.plotterInput->plotter = &plotter;
 	input.plotterInput->atomQueue = &plotterAtomQueue;
 	analysisHandler.fillPlotThreadInput( input.plotterInput );
 }
@@ -1080,7 +1113,7 @@ std::string CameraWindow::getStartMessage()
 		+ str( currentImageParameters.bottom ) + " - " + str( currentImageParameters.top ) + "\r\n";
 	dialogMsg += "\r\n";
 	dialogMsg += "Kintetic Cycle Time: " + str( CameraSettings.getSettings().kineticCycleTime ) + "\r\n";
-	dialogMsg += "Pictures per Repetition: " + str( CameraSettings.getSettings().picsPerRepetition ) + "\r\n";
+	dialogMsg += "Pictures per Variation: " + str(CameraSettings.getSettings().totalPicsInVariation) + "\r\n";
 	dialogMsg += "Repetitions per Variation: " + str( CameraSettings.getSettings().totalPicsInVariation ) + "\r\n";
 	dialogMsg += "Variations per Experiment: " + str( CameraSettings.getSettings().totalVariations ) + "\r\n";
 	dialogMsg += "Total Pictures per Experiment: " + str( CameraSettings.getSettings().totalPicsInExperiment ) + "\r\n";

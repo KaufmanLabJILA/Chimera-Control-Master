@@ -68,12 +68,15 @@ void PictureManager::drawDongles( CDC* dc, coordinate selectedLocation, std::vec
 }
 
 
-void PictureManager::setNumberPicturesActive( int numberActive )
+void PictureManager::setNumberPicturesActive(int numberActive, bool picsPerRepManual)
 {
+	if (picsPerRepManual) {
+		numberActive = 1;
+	}
 	int count = 1;
 	for (auto& pic : pictures)
 	{
-		pic.setActive( count <= numberActive );
+		pic.setActive(count <= numberActive);
 		count++;
 	}
 }
@@ -305,7 +308,7 @@ void PictureManager::initialize( POINT& loc, CWnd* parent, int& id, cToolTips& t
 		pic.updatePalette( palettes[2] );
 	}
 	// initialize to one. this matches the camera settings initialization.
-	setNumberPicturesActive( 1 );
+	setNumberPicturesActive(1, false);
 }
 
 

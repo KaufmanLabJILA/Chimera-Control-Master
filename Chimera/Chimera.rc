@@ -101,9 +101,7 @@ BEGIN
     IDD_SPLASH, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 684
         TOPMARGIN, 7
-        BOTTOMMARGIN, 360
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -172,7 +170,7 @@ STYLE DS_SETFONT | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_SYSMENU
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     LTEXT           "Chimera Control System\nCreated by Mark Brown\n\nModified by Aaron Young\nfor use in Kaufman Lab\n\n\nLoading..................",IDC_STATIC,285,28,82,100
-    CONTROL         IDB_BITMAP1,IDC_STATIC,"Static",SS_BITMAP,0,0,399,332
+    CONTROL         IDB_BITMAP1,IDC_STATIC,"Static",SS_BITMAP,0,0,399,332 
 END
 
 

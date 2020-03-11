@@ -1,6 +1,7 @@
 
 #include "stdafx.h"
 #include "MainOptionsControl.h"
+#include <boost/lexical_cast.hpp> 
 
 void MainOptionsControl::initialize( int& id, POINT& loc, CWnd* parent, cToolTips& tooltips )
 {
@@ -50,7 +51,16 @@ void MainOptionsControl::handleSaveConfig(std::ofstream& saveFile)
 	saveFile << randomizeRepsButton.GetCheck() << "\n";
 	saveFile << randomizeVariationsButton.GetCheck() << "\n";
 	CString txt;
-	atomThresholdForSkipEdit.GetWindowTextA( txt );
+	int tmp;
+	atomThresholdForSkipEdit.GetWindowTextA(txt);
+	try
+	{
+		tmp = boost::lexical_cast<UINT>(txt);
+	}
+	catch (boost::bad_lexical_cast& err)
+	{
+		thrower("Failed to convert pics per repetition to unsigned int!");
+	}
 	saveFile << txt << "\n";
 	saveFile << "END_MAIN_OPTIONS\n";
 }

@@ -711,8 +711,8 @@ void DataAnalysisControl::handlePlotAtoms( realTimePlotterInput* input, Plotting
 																	   - input->numberOfRunsToAverage + 1,
 																	   finX[dataSetI][groupI].end( ), 0.0 )
 													   + finData[dataSetI][groupI].second ) / input->numberOfRunsToAverage;
-					input->plotter->send( "set xrange [" + str( finX[dataSetI][groupI][0] - 1 ) + ":"
-										  + str( finX[dataSetI][groupI].back( ) + 1 ) + "]" );
+					//input->plotter->send( "set xrange [" + str( finX[dataSetI][groupI][0] - 1 ) + ":"
+					//					  + str( finX[dataSetI][groupI].back( ) + 1 ) + "]" );
 				}
 			}
 			else
@@ -749,9 +749,9 @@ void DataAnalysisControl::handlePlotAtoms( realTimePlotterInput* input, Plotting
 		avgErrs[dataSetI].back( ) = error;
 	}
 	/// General Plotting Options
-	input->plotter->send("set terminal wxt " + str(plotNumber) + " title \"" + plotInfo.getTitle() 
-						  + "\" noraise background rgb 'black'");
-	input->plotter->send("set format y \"%.1f\"");
+	//input->plotter->send("set terminal wxt " + str(plotNumber) + " title \"" + plotInfo.getTitle() 
+	//					  + "\" noraise background rgb 'black'");
+	//input->plotter->send("set format y \"%.1f\"");
 	// set x range.
 	double xRangeMin = *std::min_element(input->key.begin(), input->key.end());
 	double xRangeMax = *std::max_element(input->key.begin(), input->key.end());
@@ -761,17 +761,17 @@ void DataAnalysisControl::handlePlotAtoms( realTimePlotterInput* input, Plotting
 		// zero range causes issues, but happens if you have only 1 data point.
 		xrange++;
 	}
-	xRangeMin -= xrange / input->key.size();
-	xRangeMax += xrange / input->key.size();
-	input->plotter->send("set xrange [" + str(xRangeMin) + ":" + str(xRangeMax) + "]");
-	input->plotter->send("set grid ytics lc rgb \"#bbbbbb\" lw 1 lt 0");
-	input->plotter->send("set grid xtics lc rgb \"#bbbbbb\" lw 1 lt 0");
-	input->plotter->send("set yrange [0:1]");
-	input->plotter->send("set title \"" + plotInfo.getTitle() + "\" tc rgb 'white'");
-	input->plotter->send("set xlabel \"Key Value\" tc rgb 'white'");
-	input->plotter->send("set ylabel \"" + plotInfo.getYLabel() + "\" tc rgb 'white'");
-	input->plotter->send("set border lc rgb 'white'");
-	input->plotter->send("set key tc rgb 'white' outside");
+	//xRangeMin -= xrange / input->key.size();
+	//xRangeMax += xrange / input->key.size();
+	//input->plotter->send("set xrange [" + str(xRangeMin) + ":" + str(xRangeMax) + "]");
+	//input->plotter->send("set grid ytics lc rgb \"#bbbbbb\" lw 1 lt 0");
+	//input->plotter->send("set grid xtics lc rgb \"#bbbbbb\" lw 1 lt 0");
+	//input->plotter->send("set yrange [0:1]");
+	//input->plotter->send("set title \"" + plotInfo.getTitle() + "\" tc rgb 'white'");
+	//input->plotter->send("set xlabel \"Key Value\" tc rgb 'white'");
+	//input->plotter->send("set ylabel \"" + plotInfo.getYLabel() + "\" tc rgb 'white'");
+	//input->plotter->send("set border lc rgb 'white'");
+	//input->plotter->send("set key tc rgb 'white' outside");
 	/// FITTING
 	for (UINT dataSetI = 0; dataSetI < plotInfo.getDataSetNumber(); dataSetI++)
 	{
@@ -788,40 +788,40 @@ void DataAnalysisControl::handlePlotAtoms( realTimePlotterInput* input, Plotting
 					// to keep track of each fit separately so that I can plot them all later. 
 					case GAUSSIAN_FIT:
 					{
-						input->plotter->send("f" + fitNum + "(x) = A" + fitNum + " * exp(-(x - B" + fitNum 
-											  + ")**2 / (2 * C" + fitNum + "))");
-						input->plotter->send("A" + fitNum + " = 1");
-						input->plotter->send("B" + fitNum + " = " + str(finX[dataSetI][groupInc].size() / 2.0));
-						input->plotter->send("C" + fitNum + " = 1");
-						input->plotter->send( "fit f" + fitNum + "(x) '-' using 1:2 via A" + fitNum + ", B" + fitNum 
-											  + ", C" + fitNum );
+						//input->plotter->send("f" + fitNum + "(x) = A" + fitNum + " * exp(-(x - B" + fitNum 
+						//					  + ")**2 / (2 * C" + fitNum + "))");
+						//input->plotter->send("A" + fitNum + " = 1");
+						//input->plotter->send("B" + fitNum + " = " + str(finX[dataSetI][groupInc].size() / 2.0));
+						//input->plotter->send("C" + fitNum + " = 1");
+						//input->plotter->send( "fit f" + fitNum + "(x) '-' using 1:2 via A" + fitNum + ", B" + fitNum 
+						//					  + ", C" + fitNum );
 						break;
 					}
 					case LORENTZIAN_FIT:
 					{
-						input->plotter->send( "f" + fitNum + "(x) = (A" + fitNum + " / (2 * 3.14159265359)) / ((x - B" 
-											  + fitNum + ")**2 + (A" + fitNum + " / 2)**2)" );
-						input->plotter->send( "A" + fitNum + " = 1" );
-						input->plotter->send( "B" + fitNum + " = " + str( finX[dataSetI][groupInc].size( ) / 2.0 ) );
-						input->plotter->send( "fit f" + fitNum + "(x) '-' using 1:2 via A" + fitNum + ", B" + fitNum );
+						//input->plotter->send( "f" + fitNum + "(x) = (A" + fitNum + " / (2 * 3.14159265359)) / ((x - B" 
+						//					  + fitNum + ")**2 + (A" + fitNum + " / 2)**2)" );
+						//input->plotter->send( "A" + fitNum + " = 1" );
+						//input->plotter->send( "B" + fitNum + " = " + str( finX[dataSetI][groupInc].size( ) / 2.0 ) );
+						//input->plotter->send( "fit f" + fitNum + "(x) '-' using 1:2 via A" + fitNum + ", B" + fitNum );
 						break;
 					}
 					case SINE_FIT:
 					{
-						input->plotter->send( "f" + fitNum + "(x) = A" + fitNum + " * sin(B" + fitNum + " * x + C" 
-											  + fitNum + ") * exp( - D" + fitNum + " * x)" );
-						input->plotter->send( "A" + fitNum + " = 1" );
-						input->plotter->send( "B" + fitNum + " = 1" );
-						input->plotter->send( "C" + fitNum + " = 1" );
-						input->plotter->send( "D" + fitNum + " = 1" );
-						input->plotter->send( "fit f" + fitNum + "(x) '-' using 1:2 via A" + fitNum + ", B" + fitNum + ", C" + fitNum + ", D" + fitNum );
+						//input->plotter->send( "f" + fitNum + "(x) = A" + fitNum + " * sin(B" + fitNum + " * x + C" 
+						//					  + fitNum + ") * exp( - D" + fitNum + " * x)" );
+						//input->plotter->send( "A" + fitNum + " = 1" );
+						//input->plotter->send( "B" + fitNum + " = 1" );
+						//input->plotter->send( "C" + fitNum + " = 1" );
+						//input->plotter->send( "D" + fitNum + " = 1" );
+						//input->plotter->send( "fit f" + fitNum + "(x) '-' using 1:2 via A" + fitNum + ", B" + fitNum + ", C" + fitNum + ", D" + fitNum );
 						break;
 					}
 					default:
 					{
 						errBox( "Coding Error: Bad Fit option!" );
 					}
-					input->plotter->sendData( finX[dataSetI][groupInc], finAvgs[dataSetI][groupInc] );
+					//input->plotter->sendData( finX[dataSetI][groupInc], finAvgs[dataSetI][groupInc] );
 				}
 			}
 		}
@@ -874,7 +874,7 @@ void DataAnalysisControl::handlePlotAtoms( realTimePlotterInput* input, Plotting
 							errBox( "Coding Error: Bad Fit option!" );
 						}
 					}
-					input->plotter->send( plotString );
+					//input->plotter->send( plotString );
 					UINT lineTypeNumber = dataSetI % GNUPLOT_LINETYPES.size();
 					UINT colorSpacing = 256 / finAvgs[dataSetI].size( );
 					std::string colorText = "\" lt rgb \"#" + GIST_RAINBOW[colorSpacing * groupI] + "\"";
@@ -951,7 +951,7 @@ void DataAnalysisControl::handlePlotAtoms( realTimePlotterInput* input, Plotting
 							errBox("Coding Error: Bad Fit option!");
 						}
 					}
-					input->plotter->send(plotString);
+					//input->plotter->send(plotString);
 					UINT lineTypeNumber = dataSetI % GNUPLOT_LINETYPES.size( );
 					UINT colorSpacing = 256 / finAvgs[dataSetI].size( );
 					std::string colorText = "\" lt rgb \"#" + GIST_RAINBOW[colorSpacing * groupI] + "\"";
@@ -964,7 +964,7 @@ void DataAnalysisControl::handlePlotAtoms( realTimePlotterInput* input, Plotting
 		}
 	}
 	std::string error;
-	input->plotter->send(gnuplotPlotCmd);
+	//input->plotter->send(gnuplotPlotCmd);
 	/// SEND DATA
 	if (plotInfo.getXAxis() == "Running Average")
 	{
@@ -979,7 +979,7 @@ void DataAnalysisControl::handlePlotAtoms( realTimePlotterInput* input, Plotting
 			{
 				if (finData[dataSetI][groupI].second >= input->numberOfRunsToAverage)
 				{
-					input->plotter->sendData(finX[dataSetI][groupI], finAvgs[dataSetI][groupI]);
+					//input->plotter->sendData(finX[dataSetI][groupI], finAvgs[dataSetI][groupI]);
 				}
 			}
 		}
@@ -990,9 +990,9 @@ void DataAnalysisControl::handlePlotAtoms( realTimePlotterInput* input, Plotting
 		{
 			for (auto groupI : range(finAvgs[dataSetI].size()))
 			{
-				input->plotter->sendData(finX[dataSetI][groupI], finAvgs[dataSetI][groupI], finErrs[dataSetI][groupI]);
+				//input->plotter->sendData(finX[dataSetI][groupI], finAvgs[dataSetI][groupI], finErrs[dataSetI][groupI]);
 			}
-			input->plotter->sendData( avgX[dataSetI], avgAvgs[dataSetI], avgErrs[dataSetI] );
+			//input->plotter->sendData( avgX[dataSetI], avgAvgs[dataSetI], avgErrs[dataSetI] );
 		}
 	}
 }
@@ -1089,8 +1089,8 @@ void DataAnalysisControl::handlePlotCounts( realTimePlotterInput* input, Plottin
 																	   - input->numberOfRunsToAverage + 1,
 																	   finX[dataSetI][groupI].end( ), 0.0 )
 													   + finData[dataSetI][groupI].size( )) / input->numberOfRunsToAverage;
-					input->plotter->send( "set xrange [" + str( finX[dataSetI][groupI][0] - 1 ) + ":"
-										  + str( finX[dataSetI][groupI].back( ) + 1 ) + "]" );
+					//input->plotter->send( "set xrange [" + str( finX[dataSetI][groupI][0] - 1 ) + ":"
+										  //+ str( finX[dataSetI][groupI].back( ) + 1 ) + "]" );
 				}
 			}
 			else
@@ -1148,16 +1148,16 @@ void DataAnalysisControl::handlePlotCounts( realTimePlotterInput* input, Plottin
 	}
 
 	/// General Plotting Options
-	input->plotter->send( "set terminal wxt " + str( plotNumber ) + " title \"" + plotInfo.getTitle( )
-						  + "\" noraise background rgb 'black'" );
-	input->plotter->send( "set format y \"%.1f\"" );
-	// counts can be arbitrarily large.
-	input->plotter->send( "set autoscale y" );
-	input->plotter->send( "set title \"" + plotInfo.getTitle( ) + "\" tc rgb 'white'" );
-	input->plotter->send( "set xlabel \"Key Value\" tc rgb 'white'" );
-	input->plotter->send( "set ylabel \"" + plotInfo.getYLabel( ) + "\" tc rgb 'white'" );
-	input->plotter->send( "set border lc rgb 'white'" );
-	input->plotter->send( "set key tc rgb 'white' outside" );
+	//input->plotter->send( "set terminal wxt " + str( plotNumber ) + " title \"" + plotInfo.getTitle( )
+	//					  + "\" noraise background rgb 'black'" );
+	//input->plotter->send( "set format y \"%.1f\"" );
+	//// counts can be arbitrarily large.
+	//input->plotter->send( "set autoscale y" );
+	//input->plotter->send( "set title \"" + plotInfo.getTitle( ) + "\" tc rgb 'white'" );
+	//input->plotter->send( "set xlabel \"Key Value\" tc rgb 'white'" );
+	//input->plotter->send( "set ylabel \"" + plotInfo.getYLabel( ) + "\" tc rgb 'white'" );
+	//input->plotter->send( "set border lc rgb 'white'" );
+	//input->plotter->send( "set key tc rgb 'white' outside" );
 	/// FITTING
 	for ( UINT dataSetI = 0; dataSetI < plotInfo.getDataSetNumber( ); dataSetI++ )
 	{
@@ -1174,38 +1174,38 @@ void DataAnalysisControl::handlePlotCounts( realTimePlotterInput* input, Plottin
 					// to keep track of each fit separately so that I can plot them all later. 
 					case GAUSSIAN_FIT:
 					{
-						input->plotter->send( "f" + fitNum + "(x) = A" + fitNum + " * exp(-(x - B" + fitNum
-											  + ")**2 / (2 * C" + fitNum + "))" );
-						input->plotter->send( "A" + fitNum + " = 1" );
-						input->plotter->send( "B" + fitNum + " = " + str( finX[dataSetI][groupInc].size( ) / 2.0 ) );
-						input->plotter->send( "C" + fitNum + " = 1" );
-						input->plotter->send( "fit f" + fitNum + "(x) '-' using 1:2 via A" + fitNum + ", B" + fitNum
-											  + ", C" + fitNum );
+						//input->plotter->send( "f" + fitNum + "(x) = A" + fitNum + " * exp(-(x - B" + fitNum
+						//					  + ")**2 / (2 * C" + fitNum + "))" );
+						//input->plotter->send( "A" + fitNum + " = 1" );
+						//input->plotter->send( "B" + fitNum + " = " + str( finX[dataSetI][groupInc].size( ) / 2.0 ) );
+						//input->plotter->send( "C" + fitNum + " = 1" );
+						//input->plotter->send( "fit f" + fitNum + "(x) '-' using 1:2 via A" + fitNum + ", B" + fitNum
+						//					  + ", C" + fitNum );
 						break;
 					}
 					case LORENTZIAN_FIT:
 					{
-						input->plotter->send( "f" + fitNum + "(x) = (A" + fitNum + " / (2 * 3.14159265359)) / ((x - B" + fitNum + ")**2 + (A" + fitNum + " / 2)**2)" );
-						input->plotter->send( "A" + fitNum + " = 1" );
-						input->plotter->send( "B" + fitNum + " = " + str( finX[dataSetI][groupInc].size( ) / 2.0 ) );
-						input->plotter->send( "fit f" + fitNum + "(x) '-' using 1:2 via A" + fitNum + ", B" + fitNum );
+						//input->plotter->send( "f" + fitNum + "(x) = (A" + fitNum + " / (2 * 3.14159265359)) / ((x - B" + fitNum + ")**2 + (A" + fitNum + " / 2)**2)" );
+						//input->plotter->send( "A" + fitNum + " = 1" );
+						//input->plotter->send( "B" + fitNum + " = " + str( finX[dataSetI][groupInc].size( ) / 2.0 ) );
+						//input->plotter->send( "fit f" + fitNum + "(x) '-' using 1:2 via A" + fitNum + ", B" + fitNum );
 						break;
 					}
 					case SINE_FIT:
 					{
-						input->plotter->send( "f" + fitNum + "(x) = A" + fitNum + " * sin(B" + fitNum + " * x + C" + fitNum + ") * exp( - D" + fitNum + " * x)" );
-						input->plotter->send( "A" + fitNum + " = 1" );
-						input->plotter->send( "B" + fitNum + " = 1" );
-						input->plotter->send( "C" + fitNum + " = 1" );
-						input->plotter->send( "D" + fitNum + " = 1" );
-						input->plotter->send( "fit f" + fitNum + "(x) '-' using 1:2 via A" + fitNum + ", B" + fitNum + ", C" + fitNum + ", D" + fitNum );
+						//input->plotter->send( "f" + fitNum + "(x) = A" + fitNum + " * sin(B" + fitNum + " * x + C" + fitNum + ") * exp( - D" + fitNum + " * x)" );
+						//input->plotter->send( "A" + fitNum + " = 1" );
+						//input->plotter->send( "B" + fitNum + " = 1" );
+						//input->plotter->send( "C" + fitNum + " = 1" );
+						//input->plotter->send( "D" + fitNum + " = 1" );
+						//input->plotter->send( "fit f" + fitNum + "(x) '-' using 1:2 via A" + fitNum + ", B" + fitNum + ", C" + fitNum + ", D" + fitNum );
 						break;
 					}
 					default:
 					{
 						errBox( "Coding Error: Bad Fit option!" );
 					}
-					input->plotter->sendData( finX[dataSetI][groupInc], finAvgs[dataSetI][groupInc] );
+					//input->plotter->sendData( finX[dataSetI][groupInc], finAvgs[dataSetI][groupInc] );
 				}
 			}
 		}
@@ -1258,7 +1258,7 @@ void DataAnalysisControl::handlePlotCounts( realTimePlotterInput* input, Plottin
 						errBox( "Coding Error: Bad Fit option!" );
 					}
 					}
-					input->plotter->send( plotString );
+					//input->plotter->send( plotString );
 					UINT lineTypeNumber = dataSetI % GNUPLOT_LINETYPES.size( );
 					UINT colorSpacing = 256 / finAvgs[dataSetI].size( );
 					std::string colorText = "\" lt rgb \"#" + GIST_RAINBOW[colorSpacing * groupI] + "\"";
@@ -1334,7 +1334,7 @@ void DataAnalysisControl::handlePlotCounts( realTimePlotterInput* input, Plottin
 							errBox( "Coding Error: Bad Fit option!" );
 						}
 					}
-					input->plotter->send( plotString );
+					//input->plotter->send( plotString );
 					UINT lineTypeNumber = dataSetI % GNUPLOT_LINETYPES.size( );
 					UINT colorSpacing = 256 / finAvgs[dataSetI].size( );
 					std::string colorText = "\" lt rgb \"#" + GIST_RAINBOW[colorSpacing * groupI] + "\"";
@@ -1347,7 +1347,7 @@ void DataAnalysisControl::handlePlotCounts( realTimePlotterInput* input, Plottin
 		}
 	}
 	std::string error;
-	input->plotter->send( gnuplotPlotCmd );
+	//input->plotter->send( gnuplotPlotCmd );
 	/// SEND DATA
 	if ( plotInfo.getXAxis( ) == "Running Average" )
 	{
@@ -1355,13 +1355,13 @@ void DataAnalysisControl::handlePlotCounts( realTimePlotterInput* input, Plottin
 		{
 			for ( auto groupI : range( groupNum ) )
 			{
-				input->plotter->sendData( finAvgs[dataSetI][groupI], finData[dataSetI][groupI] );
+				//input->plotter->sendData( finAvgs[dataSetI][groupI], finData[dataSetI][groupI] );
 			}
 			for ( auto groupI : range( groupNum ) )
 			{
 				if ( finData[dataSetI][groupI].size( ) >= input->numberOfRunsToAverage )
 				{
-					input->plotter->sendData( finX[dataSetI][groupI], finAvgs[dataSetI][groupI] );
+					//input->plotter->sendData( finX[dataSetI][groupI], finAvgs[dataSetI][groupI] );
 				}
 			}
 		}
@@ -1372,9 +1372,9 @@ void DataAnalysisControl::handlePlotCounts( realTimePlotterInput* input, Plottin
 		{
 			for ( auto groupI : range( finAvgs[dataSetI].size( ) ) )
 			{
-				input->plotter->sendData( finX[dataSetI][groupI], finAvgs[dataSetI][groupI], finErrs[dataSetI][groupI] );
+				//input->plotter->sendData( finX[dataSetI][groupI], finAvgs[dataSetI][groupI], finErrs[dataSetI][groupI] );
 			}
-			input->plotter->sendData( avgX[dataSetI], avgAvgs[dataSetI], avgErrs[dataSetI] );
+			//input->plotter->sendData( avgX[dataSetI], avgAvgs[dataSetI], avgErrs[dataSetI] );
 		}
 	}
 }
@@ -1415,26 +1415,26 @@ void DataAnalysisControl::handlePlotHist( realTimePlotterInput* input, PlottingI
 		return;
 	}
 	// is redundant to re-set these things each re-plot, but I'm not sure there's a better way.
-	input->plotter->send( "set terminal wxt " + str( plotNumber ) + " title \"" + plotInfo.getTitle( ) 
-						  + "\" noraise background rgb 'black'" );
-	input->plotter->send( "set title \"" + plotInfo.getTitle( ) + "\" tc rgb '#FFFFFF'" );
-	input->plotter->send( "set xlabel \"Counts\" tc rgb '#FFFFFF'" );
-	input->plotter->send( "set ylabel \"" + plotInfo.getYLabel( ) + "\" tc rgb '#FFFFFF'" );
-	input->plotter->send( "set border lc rgb '#FFFFFF'" );
-	input->plotter->send( "set key tc rgb '#FFFFFF' outside" );
-	input->plotter->send( "set title \"" + plotInfo.getTitle( ) + "\"" );
-	input->plotter->send( "set format y \"%.1f\"" );
-	input->plotter->send( "set style fill" );
-	input->plotter->send( "set autoscale x" );
-	input->plotter->send( "set yrange [0:*]" );
-	input->plotter->send( "set xlabel \"Count #\"" );
-	input->plotter->send( "set ylabel \"Occurrences\"" );
+	//input->plotter->send( "set terminal wxt " + str( plotNumber ) + " title \"" + plotInfo.getTitle( ) 
+	//					  + "\" noraise background rgb 'black'" );
+	//input->plotter->send( "set title \"" + plotInfo.getTitle( ) + "\" tc rgb '#FFFFFF'" );
+	//input->plotter->send( "set xlabel \"Counts\" tc rgb '#FFFFFF'" );
+	//input->plotter->send( "set ylabel \"" + plotInfo.getYLabel( ) + "\" tc rgb '#FFFFFF'" );
+	//input->plotter->send( "set border lc rgb '#FFFFFF'" );
+	//input->plotter->send( "set key tc rgb '#FFFFFF' outside" );
+	//input->plotter->send( "set title \"" + plotInfo.getTitle( ) + "\"" );
+	//input->plotter->send( "set format y \"%.1f\"" );
+	//input->plotter->send( "set style fill" );
+	//input->plotter->send( "set autoscale x" );
+	//input->plotter->send( "set yrange [0:*]" );
+	//input->plotter->send( "set xlabel \"Count #\"" );
+	//input->plotter->send( "set ylabel \"Occurrences\"" );
 	double spaceFactor = 1;
 	// this is fixed. in principle the bin width, set later, can vary, which at the moment would result in some odd 
 	// plots.
 	double boxWidth = spaceFactor * plotInfo.getDataSetHistBinWidth( 0 );
-	input->plotter->send( "set boxwidth " + str( boxWidth ) );
-	input->plotter->send( "set style fill solid 1" );
+	//input->plotter->send( "set boxwidth " + str( boxWidth ) );
+	//input->plotter->send( "set style fill solid 1" );
 	// leave 0.2 pixels worth of space in between the bins.
 	std::string gnuCommand = "plot";
 	int totalDataSetNum = plotInfo.getDataSetNumber( );
@@ -1456,7 +1456,7 @@ void DataAnalysisControl::handlePlotHist( realTimePlotterInput* input, PlottingI
 		}
 	}
 
-	input->plotter->send( gnuCommand );
+	//input->plotter->send( gnuCommand );
 	for ( auto dataSetI : range(plotInfo.getDataSetNumber( )) )
 	{
 		for ( auto groupI : range( input->atomGridInfo.width * input->atomGridInfo.height ) )
@@ -1468,7 +1468,7 @@ void DataAnalysisControl::handlePlotHist( realTimePlotterInput* input, PlottingI
 				locations.push_back( elem.second.first );
 				values.push_back( elem.second.second );
 			}
-			input->plotter->sendData( locations, values );
+			//input->plotter->sendData( locations, values );
 		}
 	}
 }

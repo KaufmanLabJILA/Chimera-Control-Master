@@ -9,6 +9,9 @@ CameraSettingsControl::CameraSettingsControl(AndorCamera* friendInitializer) : p
 	andorFriend = friendInitializer;
 	// initialize settings. Most of these have been picked to match initial settings set in the "initialize" 
 	// function.
+
+	picSettingsObj.picsPerRepManual = false;
+
 	runSettings.exposureTimes = { 0.026f };
 	runSettings.picsPerRepetition = 1;
 	runSettings.kineticCycleTime = 0.1f;
@@ -109,7 +112,7 @@ void CameraSettingsControl::initialize( cameraPositions& pos, int& id, CWnd* par
 	temperatureOffButton.seriesPos = { pos.seriesPos.x + 430, pos.seriesPos.y, pos.seriesPos.x + 480, pos.seriesPos.y + 25 };
 	temperatureOffButton.videoPos = { pos.videoPos.x + 430, pos.videoPos.y, pos.videoPos.x + 480, pos.videoPos.y + 25 };
 	temperatureOffButton.amPos = { pos.amPos.x + 430, pos.amPos.y, pos.amPos.x + 480, pos.amPos.y + 25 };
-	temperatureOffButton.Create( "OFF", NORM_PUSH_OPTIONS, temperatureOffButton.seriesPos, parent, id++ );
+	temperatureOffButton.Create("OFF", NORM_PUSH_OPTIONS, temperatureOffButton.seriesPos, parent, IDC_SET_TEMPERATURE_OFF_BUTTON);
 	pos.seriesPos.y += 25;
 	pos.amPos.y += 25;
 	pos.videoPos.y += 25;
@@ -325,6 +328,9 @@ void CameraSettingsControl::rearrange( std::string cameraMode, std::string trigg
 	minKineticCycleTimeDisp.rearrange( cameraMode, triggerMode, width, height, fonts );
 }
 
+BOOL CameraSettingsControl::getPicsPerRepManual() {
+	return picSettingsObj.picsPerRepManual;
+}
 
 void CameraSettingsControl::setEmGain(AndorCamera* andorObj)
 {
@@ -464,6 +470,7 @@ void CameraSettingsControl::handleTimer()
 
 void CameraSettingsControl::updateRunSettingsFromPicSettings( )
 {
+	runSettings.showPicsInRealTime = picSettingsObj.picsPerRepManual;
 	runSettings.exposureTimes = picSettingsObj.getUsedExposureTimes( );
 	runSettings.picsPerRepetition = picSettingsObj.getPicsPerRepetition( );
 	runSettings.totalPicsInVariation = runSettings.picsPerRepetition * runSettings.repetitionsPerVariation;
@@ -569,7 +576,7 @@ void CameraSettingsControl::handleOpenConfig(std::ifstream& configFile, int vers
 	configFile >> tempSettings.accumulationTime;
 	configFile >> tempSettings.accumulationNumber;
 	configFile >> tempSettings.temperatureSetting; 
- 	setRunSettings(tempSettings);
+ 	//setRunSettings(tempSettings);
  	ProfileSystem::checkDelimiterLine(configFile, "END_CAMERA_SETTINGS");
 	picSettingsObj.handleOpenConfig(configFile, versionMajor, versionMinor, andorFriend);
 	updateRunSettingsFromPicSettings( );
