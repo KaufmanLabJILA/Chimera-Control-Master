@@ -211,6 +211,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 		{
 			expUpdate("Variation #" + str(variationInc + 1) + "\r\n", input->comm, input->quiet);
 			Sleep(input->debugOptions.sleepTime);
+			// Write experiment variable values to GUI
 			for (auto tempVariable : input->variables)
 			{
 				// if varies... 
@@ -224,7 +225,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 						input->comm, input->quiet);
 				}
 			}
-			expUpdate("Programming RSG, Agilents, NIAWG, & Teltronics...\r\n", input->comm, input->quiet);
+			expUpdate("Programming Moog, DDS...\r\n", input->comm, input->quiet);
 			//input->rsg->programRsg( variationInc ); 
 			//input->rsg->setInfoDisp( variationInc ); 
 			//// program devices 

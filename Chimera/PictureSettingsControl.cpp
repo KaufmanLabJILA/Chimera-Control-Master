@@ -1,4 +1,3 @@
-
 #include "stdafx.h" 
 #include "PictureSettingsControl.h" 
 #include "Andor.h" 

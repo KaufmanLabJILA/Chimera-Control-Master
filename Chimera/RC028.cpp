@@ -517,9 +517,11 @@ unsigned long RC028::write()
 	
 }
 
-
 bool RC028::runstatus()
 {
+	if (DIO_FPGA_SAFEMODE) {
+		return false;
+	}
 	//variables for write
 	FT_STATUS ftStatus;
 	DWORD BytesWritten;
