@@ -11,11 +11,11 @@
 // build and debug other aspects of the program.
 
 //#define MASTER_COMPUTER
-//#define SPECTRE_LAPTOP
+#define DEEP_THOUGHT
 //#define ADAMS_LAB
 // #define DESKTOP_COMPUTER
 //#define SALAMIS_TABLET
-#define PAL9000
+//#define PAL9000
 /// File Locations
 
 #ifdef ADAMS_LAB
@@ -74,8 +74,8 @@
 	const std::string DDS_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_DDS_SCRIPT.ddsScript";
 #endif
 
-#ifdef PAL9000
-	#define PYTHON_HOME L"C:\\ProgramData\\Anaconda3\\"
+#ifdef DEEP_THOUGHT
+	#define PYTHON_HOME L"C:\\Users\\klab\\Anaconda3\\"
 	#define MOOG_SAFEMODE true
 	#define GIGAMOOG_SAFEMODE true
 	#define NIAWG_SAFEMODE true
@@ -107,11 +107,11 @@
 	#define UWAVE_SAFEMODE true
 	#define UWAVE_AGILENT_USB_ADDRESS ""
 
-	const std::string PROJECT_LOCATION = "C:\\Users\\KLab\\Documents\\Chimera-Control-Master\\";
+	const std::string PROJECT_LOCATION = "C:\\Users\\klab\\Documents\\Chimera-Control-Master\\";
 	const std::string DATABASE_LOCATION = "A:\\";
-	const std::string PYTHON_CODE_LOCATION = "C:/Users/KLab/Documents/Chimera-Control-Master/";
+	const std::string PYTHON_CODE_LOCATION = "C:/Users/klab/Documents/Chimera-Control-Master/";
 	// same as debug output location but with forward slashes for ease of use in python
-	const std::string PYTHON_INPUT_LOCATION = "C:/Users/KLab/Documents/Chimera-Control-Master/Debug-Output";
+	const std::string PYTHON_INPUT_LOCATION = "C:/Users/klab/Documents/Chimera-Control-Master/Debug-Output";
 	const std::string PLOT_FILES_SAVE_LOCATION = PROJECT_LOCATION + "Plotting";
 	const std::string LIB_PATH = PROJECT_LOCATION + "Waveforms-Library\\dummyLib\\";
 	const std::string DEFAULT_SCRIPT_FOLDER_PATH = PROJECT_LOCATION + "Default Scripts\\";
@@ -184,12 +184,15 @@
 	const std::string DDS_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_DDS_SCRIPT.ddsScript";
 #endif
 
-#ifdef SPECTRE_LAPTOP
-	#define PYTHON_HOME L"C:\\ProgramData\\Anaconda3\\"
+#ifdef SPECTRE
+	#define PYTHON_HOME L"C:\\Users\\klab\\Anaconda3\\"
+	#define GIGAMOOG_SAFEMODE true
+	#define DDS_SAFEMODE true
 	#define NIAWG_SAFEMODE true
 	#define ANDOR_SAFEMODE true
 	#define PYTHON_SAFEMODE true
 	#define DIO_SAFEMODE true
+	#define DIO_FPGA_SAFEMODE true
 	#define DAQMX_SAFEMODE true
 	#define RSG_SAFEMODE true
 	#define TOP_BOTTOM_TEK_SAFEMODE true
@@ -208,10 +211,10 @@
 	#define UWAVE_SAFEMODE true
 	#define UWAVE_AGILENT_USB_ADDRESS "USB0::0x0957::0x2C07::MY52801397::0::INSTR"
 
-	const std::string PROJECT_LOCATION = "C:\\Users\\Mark-Brown\\Chimera-Control\\";
-	const std::string PYTHON_CODE_LOCATION = "C:/Users/Mark-Brown/Chimera-Control/Chimera";
+	const std::string PROJECT_LOCATION = "C:\\Users\\klab\\Documents\\Chimera-Control\\";
+	const std::string PYTHON_CODE_LOCATION = "C:/Users/klab/Documents/Chimera-Control/Chimera";
 	// same as debug output location but with forward slashes for ease of use in python
-	const std::string PYTHON_INPUT_LOCATION = "C:/Users/Mark-Brown/Chimera-Control/Debug-Output/";
+	const std::string PYTHON_INPUT_LOCATION = "C:/Users/klab/Documents/Chimera-Control/Debug-Output/";
 	const std::string PLOT_FILES_SAVE_LOCATION = PROJECT_LOCATION + "Plotting";
 	const std::string LIB_PATH = PROJECT_LOCATION + "Waveforms-Library\\dummyLib\\";
 	const std::string DEFAULT_SCRIPT_FOLDER_PATH = PROJECT_LOCATION + "Default Scripts\\";
