@@ -11,7 +11,7 @@
 MainWindow::MainWindow(UINT id, CDialog* splash) : CDialog(id), profile(PROFILES_PATH), 
     masterConfig( MASTER_CONFIGURATION_FILE_ADDRESS ), 
 	appSplash( splash ),
-	dds(DDS_FPGA_ADDRESS), gmoog(GIGAMOOG_PORT, 115200)
+	dds(DDS_FPGA_ADDRESS), gmoog(GIGAMOOG_PORT, 115200), zynq_tcp()
 {
 	// create all the main rgbs and brushes. I want to make sure this happens before other windows are created.
 	mainRGBs["Light Green"]			= RGB( 163,	190, 140);
@@ -365,6 +365,26 @@ BOOL MainWindow::OnInitDialog( )
 	catch ( Error& err )
 	{
 		errBox( err.what( ) );
+	}
+
+	int tcp_connect;
+	try
+	{
+		tcp_connect = zynq_tcp.connectTCP(ZYNQ_ADDRESS);
+	}
+	catch (Error& err)
+	{
+		tcp_connect = 1;
+		errBox(err.what());
+	}
+	if (tcp_connect > 0) {
+		char buffer[80];
+		sprintf_s(buffer, 80, "Connected to Zynq server. Sent %u Bytes.\n", tcp_connect);
+		setShortStatus(buffer);
+	}
+	else
+	{
+		setShortStatus("Connection to Zynq server failed.\n");
 	}
 	updateConfigurationSavedStatus( true );
 	return TRUE;

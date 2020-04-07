@@ -19,6 +19,9 @@
 //#include "NiawgController.h"
 //#include "rerngControl.h"
 
+//ZynqTCP
+#include "ZynqTCP.h"
+
 //megamoog controller
 #include "SerialSynth.h"
 #include "DDS_SYNTH.h"
@@ -127,6 +130,9 @@ class MainWindow : public CDialog
 		SmsTextingControl texter;
 		StatusIndicator shortStatus;
 		
+		//Zynq tcp connection
+		ZynqTCP zynq_tcp;
+
 		//rerngControl rearrangeControl;
 		//NiawgController niawg;
 		SerialSynth moog;
