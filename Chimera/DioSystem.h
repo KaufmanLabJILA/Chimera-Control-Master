@@ -105,7 +105,6 @@ class DioSystem
 		Control<CButton> ttlHold;
 		Control<CButton> zeroTtls;
 		std::array< std::array< Control<CButton>, 8 >, 8 > ttlPushControls;
-		std::array< Control<CStatic>, 8 > ttlNumberLabels;
 		std::array< Control<CStatic>, 8 > ttlRowLabels;
 		std::array< std::array<bool, 8>, 8 > ttlStatus;
 		std::array< std::array<bool, 8>, 8 > ttlShadeStatus;

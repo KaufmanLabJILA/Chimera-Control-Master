@@ -17,12 +17,12 @@
 // I don't use this because I manually import dll functions.
 // #include "Dio64.h"
 
-void DioSystem::handleNewConfig( std::ofstream& newFile )
+void DioSystem::handleNewConfig(std::ofstream& newFile)
 {
 	newFile << "TTLS\n";
-	for ( int ttlRowInc = 0; ttlRowInc < getNumberOfTTLRows( ); ttlRowInc++ )
+	for (int ttlRowInc = 0; ttlRowInc < getNumberOfTTLRows(); ttlRowInc++)
 	{
-		for ( int ttlNumberInc = 0; ttlNumberInc < getNumberOfTTLsPerRow( ); ttlNumberInc++ )
+		for (int ttlNumberInc = 0; ttlNumberInc < getNumberOfTTLsPerRow(); ttlNumberInc++)
 		{
 			newFile << 0 << " ";
 		}
@@ -47,7 +47,7 @@ void DioSystem::handleSaveConfig(std::ofstream& saveFile)
 }
 
 
-void DioSystem::handleOpenConfig(std::ifstream& openFile, int versionMajor, int versionMinor )
+void DioSystem::handleOpenConfig(std::ifstream& openFile, int versionMajor, int versionMinor)
 {
 	//connectDioFPGA();
 	ProfileSystem::checkDelimiterLine(openFile, "TTLS");
@@ -150,11 +150,11 @@ DioSystem::DioSystem()
 	}
 	/// load modules
 	// this first module is required for the second module which I actually load functions from.
-	HMODULE dio = LoadLibrary( "DIO64_Visa32.dll" );
+	HMODULE dio = LoadLibrary("DIO64_Visa32.dll");
 	if (!dio)
 	{
 		int err = GetLastError();
-		errBox( "Failed to load dio64_32.dll! Windows Error Code: " + str( err ) );
+		errBox("Failed to load dio64_32.dll! Windows Error Code: " + str(err));
 	}
 	// initialize function pointers. This only requires the DLLs to be loaded (which requires them to be present on the machine...) 
 	// so it's not in a safemode block.
@@ -171,7 +171,7 @@ DioSystem::DioSystem()
 	raw_DIO64_In_Read = (DIO64_In_Read)GetProcAddress(dio, "DIO64_In_Read");
 	raw_DIO64_In_Status = (DIO64_In_Status)GetProcAddress(dio, "DIO64_In_Status");
 	raw_DIO64_In_Stop = (DIO64_In_Stop)GetProcAddress(dio, "DIO64_In_Stop");
-	
+
 	raw_DIO64_Out_Config = (DIO64_Out_Config)GetProcAddress(dio, "DIO64_Out_Config");
 	raw_DIO64_Out_ForceOutput = (DIO64_Out_ForceOutput)GetProcAddress(dio, "DIO64_Out_ForceOutput");
 	raw_DIO64_Out_GetInput = (DIO64_Out_GetInput)GetProcAddress(dio, "DIO64_Out_GetInput");
@@ -197,7 +197,7 @@ DioSystem::DioSystem()
 	}
 	catch (Error& exception)
 	{
-		errBox( exception.what() );
+		errBox(exception.what());
 	}
 }
 
@@ -205,84 +205,84 @@ std::string DioSystem::getSystemInfo()
 {
 	DWORD answer = 1000;
 	std::string info = "TTL System Info:\nInput Mode: ";
-	dioGetAttr( 0, 0, answer);
-	switch ( answer )
+	dioGetAttr(0, 0, answer);
+	switch (answer)
 	{
-		case 1100:
-			// didn't change from start; no board or system connected.
-			info += "no answer?\n";
-			break;
-			//return "";
-		case 0:
-			info += "Polled\n";
-			break;
-		case 1:
-			info += "Interrupt\n";
-			break;
-		case 2:
-			info += "Packet\n";
-			break;
-		case 3:
-			info += "Demand\n";
-			break;
-		default:
-			info += "UNKNOWN!\n";
+	case 1100:
+		// didn't change from start; no board or system connected.
+		info += "no answer?\n";
+		break;
+		//return "";
+	case 0:
+		info += "Polled\n";
+		break;
+	case 1:
+		info += "Interrupt\n";
+		break;
+	case 2:
+		info += "Packet\n";
+		break;
+	case 3:
+		info += "Demand\n";
+		break;
+	default:
+		info += "UNKNOWN!\n";
 	}
-	dioGetAttr( 0, 1, answer );
+	dioGetAttr(0, 1, answer);
 	info += "Output Mode: ";
-	switch ( answer )
+	switch (answer)
 	{
-		case 1000:
-			info += "no answer?\n";
-			break;
-		case 0:
-			info += "Polled\n";
-			break;
-		case 1:
-			info += "Interrupt\n";
-			break;
-		case 2:
-			info += "Packet\n";
-			break;
-		case 3:
-			info += "Demand\n";
-			break;
-		default:
-			info += "UNKNOWN!\n";
+	case 1000:
+		info += "no answer?\n";
+		break;
+	case 0:
+		info += "Polled\n";
+		break;
+	case 1:
+		info += "Interrupt\n";
+		break;
+	case 2:
+		info += "Packet\n";
+		break;
+	case 3:
+		info += "Demand\n";
+		break;
+	default:
+		info += "UNKNOWN!\n";
 	}
-	dioGetAttr( 0, 2, answer );
+	dioGetAttr(0, 2, answer);
 	if (answer == 1000)
 	{
 		info += "Input Buffer Size: no answer?\n";
 	}
-	info += "Input Buffer Size: " + str( answer ) + "\n";
-	dioGetAttr( 0, 3, answer );
+	info += "Input Buffer Size: " + str(answer) + "\n";
+	dioGetAttr(0, 3, answer);
 	if (answer == 1000)
 	{
 		info += "Output Buffer Size: no answer?\n";
 	}
-	info += "Output Buffer Size: " + str( answer ) + "\n";
-	dioGetAttr( 0, 4, answer );
+	info += "Output Buffer Size: " + str(answer) + "\n";
+	dioGetAttr(0, 4, answer);
 	info += "Major Clock Source: ";
-	switch ( answer )
+	switch (answer)
 	{
-		case 1000:
-			info += "no answer?\n";
-			break;
-		case 0:
-			info += "Local 40 MHz Clock\n";
-			break;
-		case 1:
-			info += "External Clock\n";
-			break;
-		case 2:
-			info += "RTSI Clock / PXI chassis Clock\n";
-			break;
-		case 3:
-			info += "10 MHz Clock\n";
-			break;
-		default:
-			info += "UNKNOWN!";
+	case 1000:
+		info += "no answer?\n";
+		break;
+	case 0:
+		info += "Local 40 MHz Clock\n";
+		break;
+	case 1:
+		info += "External Clock\n";
+		break;
+	case 2:
+		info += "RTSI Clock / PXI chassis Clock\n";
+		break;
+	case 3:
+		info += "10 MHz Clock\n";
+		break;
+	default:
+		info += "UNKNOWN!";
 	}
 	// this is just a sampling... many more exist.
 	return info;
@@ -295,7 +295,7 @@ std::array<std::array<std::string, 8>, 8> DioSystem::getAllNames()
 
 
 void DioSystem::startDioFPGA(UINT variation)
-{	
+{
 	dioFPGA[variation].arm_trigger();
 	//dioFPGA[variation].trigger();
 	//TODO: make a toggle that sets this in the code.
@@ -305,9 +305,9 @@ void DioSystem::startBoard()
 {
 	DIO64STAT status;
 	DWORD scansAvailable;
-	dioOutStatus( 0, scansAvailable, status );
+	dioOutStatus(0, scansAvailable, status);
 	// start the dio board!
-	dioOutStart( 0 );
+	dioOutStart(0);
 }
 
 
@@ -359,23 +359,19 @@ void DioSystem::unshadeTtls()
 
 void DioSystem::rearrange(UINT width, UINT height, fontMap fonts)
 {
-	ttlTitle.rearrange( width, height, fonts);
-	ttlHold.rearrange( width, height, fonts);
-	zeroTtls.rearrange( width, height, fonts);
+	ttlTitle.rearrange(width, height, fonts);
+	ttlHold.rearrange(width, height, fonts);
+	zeroTtls.rearrange(width, height, fonts);
 	for (auto& row : ttlPushControls)
 	{
 		for (auto& control : row)
 		{
-			control.rearrange( width, height, fonts);
+			control.rearrange(width, height, fonts);
 		}
-	}
-	for (auto& control : ttlNumberLabels)
-	{
-		control.rearrange( width, height, fonts);
 	}
 	for (auto& control : ttlRowLabels)
 	{
-		control.rearrange( width, height, fonts);
+		control.rearrange(width, height, fonts);
 	}
 }
 
@@ -424,53 +420,45 @@ std::pair<UINT, UINT> DioSystem::getTtlBoardSize()
 }
 
 
-void DioSystem::initialize( POINT& loc, cToolTips& toolTips, AuxiliaryWindow* master, int& id )
+void DioSystem::initialize(POINT& loc, cToolTips& toolTips, AuxiliaryWindow* master, int& id)
 {
 	// title
 	ttlTitle.sPos = { loc.x, loc.y, loc.x + 480, loc.y + 25 };
-	ttlTitle.Create( "TTLS", WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER, ttlTitle.sPos, master, id++ );
+	ttlTitle.Create("TTLS", WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER, ttlTitle.sPos, master, id++);
 	ttlTitle.fontType = HeadingFont;
 	// all number numberLabels
 	loc.y += 25;
 	ttlHold.sPos = { loc.x, loc.y, loc.x + 240, loc.y + 20 };
-	ttlHold.Create( "Hold Current Values", WS_TABSTOP | WS_VISIBLE | BS_AUTOCHECKBOX | WS_CHILD | BS_PUSHLIKE,
-					ttlHold.sPos, master, TTL_HOLD );
+	ttlHold.Create("Hold Current Values", WS_TABSTOP | WS_VISIBLE | BS_AUTOCHECKBOX | WS_CHILD | BS_PUSHLIKE,
+		ttlHold.sPos, master, TTL_HOLD);
 	ttlHold.setToolTip("Press this button to change multiple TTLs simultaneously. Press the button, then change the "
-					   "ttls, then press the button again to release it. Upon releasing the button, the TTLs will "
-					   "change.", toolTips, master);
+		"ttls, then press the button again to release it. Upon releasing the button, the TTLs will "
+		"change.", toolTips, master);
 	zeroTtls.sPos = { loc.x + 240, loc.y, loc.x + 480, loc.y + 20 };
-	zeroTtls.Create( "Zero TTLs", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, zeroTtls.sPos, master, 
-					 IDC_ZERO_TTLS );
-	zeroTtls.setToolTip( "Pres this button to set all ttls to their zero (false) state.", toolTips, master );
+	zeroTtls.Create("Zero TTLs", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, zeroTtls.sPos, master,
+		IDC_ZERO_TTLS);
+	zeroTtls.setToolTip("Pres this button to set all ttls to their zero (false) state.", toolTips, master);
 	loc.y += 20;
 
-	for (long ttlNumberInc = 0; ttlNumberInc < long(ttlNumberLabels.size()); ttlNumberInc++)
-	{
-		ttlNumberLabels[ttlNumberInc].sPos = { loc.x + 32 + ttlNumberInc * 28, loc.y,
-			loc.x + 32 + (ttlNumberInc + 1) * 28, loc.y + 20 };
-		ttlNumberLabels[ttlNumberInc].Create( cstr( ttlNumberInc ), WS_CHILD | WS_VISIBLE | SS_SUNKEN,
-											  ttlNumberLabels[ttlNumberInc].sPos, master, id++ );
-	}
-	loc.y += 20;
-	// all row numberLabels
-	for (long row = 0; row < long(ttlPushControls.size()); row++)
-	{
-		ttlRowLabels[row].sPos = { loc.x, loc.y + row * 28, loc.x + 32, loc.y + (row + 1) * 28 };
-
-		ttlRowLabels[row].Create( cstr(row), WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER,
-								  ttlRowLabels[row].sPos, master, id++ );
-	}
 	// all push buttons
 	UINT runningCount = 0;
-	for (UINT row = 0; row < ttlPushControls.size(); row++)
+	int ttlrow, ttlcol, xpos, ypos;
+	for (UINT row = 0; row < 8; row++)
 	{
-		for (UINT number = 0; number < ttlPushControls[row].size(); number++)
+		ttlrow = (row + 1) % 3;
+		ttlcol = (3 - floor((row + 1) / 3) - 1);
+		ypos = ttlrow;
+		ttlRowLabels[row].sPos = { loc.x + ttlcol * (25 + 28 * 8), loc.y + ttlrow * (28 + 25) + 10, loc.x + (ttlcol + 1) * (25 + 28 * 8), loc.y + ttlrow * (28 + 25) + 45};
+		ttlRowLabels[row].Create(cstr(row+1), WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_LEFT, ttlRowLabels[row].sPos, master, id++);
+
+		for (UINT number = 0; number < 8; number++)
 		{
-			ttlPushControls[row][number].sPos = { long( loc.x + 32 + number * 28 ), long( loc.y + row * 28 ),
-											long( loc.x + 32 + (number + 1) * 28 ), long( loc.y + (row + 1) * 28 ) };
-			ttlPushControls[row][number].Create( "", WS_CHILD | WS_VISIBLE | BS_RIGHT | BS_3STATE,
-												 ttlPushControls[row][number].sPos, master, 
-												 TTL_ID_BEGIN + runningCount++ );
+			xpos = ttlcol * 8 + number;
+			ttlPushControls[row][number].sPos = { long(loc.x + 20 + xpos * 28 + 25 * ttlcol), long(loc.y + ypos * 28 + 25 * ttlrow + 15),
+											long(loc.x + 20 + (xpos + 1) * 28 + 25 * ttlcol), long(loc.y + (ypos + 1) * 28 + 25 * ttlrow + 15) };
+			ttlPushControls[row][number].Create("", WS_CHILD | WS_VISIBLE | BS_RIGHT | BS_3STATE,
+				ttlPushControls[row][number].sPos, master,
+				TTL_ID_BEGIN + runningCount++);
 			ttlPushControls[row][number].setToolTip(ttlNames[row][number], toolTips, master);
 		}
 	}
@@ -478,34 +466,34 @@ void DioSystem::initialize( POINT& loc, cToolTips& toolTips, AuxiliaryWindow* ma
 }
 
 
-void DioSystem::handleTtlScriptCommand( std::string command, timeType time, std::string name,
-										std::vector<std::pair<UINT, UINT>>& ttlShadeLocations, 
-										std::vector<variableType>& vars )
+void DioSystem::handleTtlScriptCommand(std::string command, timeType time, std::string name,
+	std::vector<std::pair<UINT, UINT>>& ttlShadeLocations,
+	std::vector<variableType>& vars)
 {
 	// use an empty expression.
-	handleTtlScriptCommand( command, time, name, Expression(), ttlShadeLocations, vars );
+	handleTtlScriptCommand(command, time, name, Expression(), ttlShadeLocations, vars);
 }
 
 
-void DioSystem::handleTtlScriptCommand(std::string command, timeType time, std::string name, Expression pulseLength, 
-									   std::vector<std::pair<UINT, UINT>>& ttlShadeLocations, 
-										std::vector<variableType>& vars )
+void DioSystem::handleTtlScriptCommand(std::string command, timeType time, std::string name, Expression pulseLength,
+	std::vector<std::pair<UINT, UINT>>& ttlShadeLocations,
+	std::vector<variableType>& vars)
 {
 	if (!isValidTTLName(name))
 	{
 		thrower("ERROR: the name " + name + " is not the name of a ttl!");
 	}
 	timeType pulseEndTime = time;
-	UINT row, collumn;
-	int ttlLine = getNameIdentifier(name, row, collumn);
-	ttlShadeLocations.push_back({ row, collumn });
+	UINT row, column;
+	int ttlLine = getNameIdentifier(name, row, column);
+	ttlShadeLocations.push_back({ row, column });
 	if (command == "on:")
 	{
-		ttlOn(row, collumn, time);
+		ttlOn(row, column, time);
 	}
 	else if (command == "off:")
 	{
-		ttlOff(row, collumn, time);
+		ttlOff(row, column, time);
 	}
 	else if (command == "pulseon:" || command == "pulseoff:")
 	{
@@ -515,18 +503,18 @@ void DioSystem::handleTtlScriptCommand(std::string command, timeType time, std::
 		}
 		catch (Error&)
 		{
-			pulseLength.assertValid( vars );
+			pulseLength.assertValid(vars);
 			pulseEndTime.first.push_back(pulseLength);
 		}
 		if (command == "pulseon:")
 		{
-			ttlOn( row, collumn, time );
-			ttlOff( row, collumn, pulseEndTime );
+			ttlOn(row, column, time);
+			ttlOff(row, column, pulseEndTime);
 		}
 		if (command == "pulseoff:")
 		{
-			ttlOff( row, collumn, time );
-			ttlOn( row, collumn, pulseEndTime );
+			ttlOff(row, column, time);
+			ttlOn(row, column, pulseEndTime);
 		}
 	}
 }
@@ -556,7 +544,7 @@ void DioSystem::handleTTLPress(int id)
 	{
 		// figure out row #
 		int row = (id - ttlPushControls.front().front().GetDlgCtrlID()) / ttlPushControls[0].size();
-		// figure out collumn #
+		// figure out column #
 		int number = (id - ttlPushControls.front().front().GetDlgCtrlID()) % ttlPushControls[0].size();
 		// if indeterminante, you can't change it, but that's fine, return true.
 		if (ttlShadeStatus[row][number])
@@ -608,7 +596,7 @@ void DioSystem::handleHoldPress()
 			{
 				if (ttlHoldStatus[rowInc][numberInc])
 				{
-					ttlPushControls[rowInc][numberInc].SetCheck(BST_CHECKED);					
+					ttlPushControls[rowInc][numberInc].SetCheck(BST_CHECKED);
 					ttlStatus[rowInc][numberInc] = true;
 					// actually change the ttl.
 					forceTtl(rowInc, numberInc, 1);
@@ -635,41 +623,41 @@ void DioSystem::handleHoldPress()
 
 
 // prepares some structures for a simple force event. 
-void DioSystem::prepareForce( )
+void DioSystem::prepareForce()
 {
-	ttlSnapshots.resize( 1 );
-	dioFPGA.resize( 1 );
-	loadSkipTtlSnapshots.resize( 1 );
-	ttlCommandList.resize( 1 );
-	formattedTtlSnapshots.resize( 1 );
-	loadSkipFormattedTtlSnapshots.resize( 1 );
-	finalFormatTtlData.resize( 1 );
-	loadSkipFinalFormatTtlData.resize( 1 );
+	ttlSnapshots.resize(1);
+	dioFPGA.resize(1);
+	loadSkipTtlSnapshots.resize(1);
+	ttlCommandList.resize(1);
+	formattedTtlSnapshots.resize(1);
+	loadSkipFormattedTtlSnapshots.resize(1);
+	finalFormatTtlData.resize(1);
+	loadSkipFinalFormatTtlData.resize(1);
 }
 
 
-void DioSystem::resetTtlEvents( )
+void DioSystem::resetTtlEvents()
 {
-	ttlCommandFormList.clear( );
-	ttlSnapshots.clear( );
-	ttlCommandList.clear( );
-	formattedTtlSnapshots.clear( );
-	finalFormatTtlData.clear( );
-	loadSkipTtlSnapshots.clear( );
-	loadSkipFormattedTtlSnapshots.clear( );
-	loadSkipFinalFormatTtlData.clear( );
+	ttlCommandFormList.clear();
+	ttlSnapshots.clear();
+	ttlCommandList.clear();
+	formattedTtlSnapshots.clear();
+	finalFormatTtlData.clear();
+	loadSkipTtlSnapshots.clear();
+	loadSkipFormattedTtlSnapshots.clear();
+	loadSkipFinalFormatTtlData.clear();
 }
 
 
 HBRUSH DioSystem::handleColorMessage(CWnd* window, brushMap brushes, rgbMap rGBs, CDC* cDC)
 {
-	
+
 	int controlID = window->GetDlgCtrlID();
 	if (controlID >= ttlPushControls.front().front().GetDlgCtrlID() && controlID <= ttlPushControls.back().back().GetDlgCtrlID())
 	{
 		// figure out row #
 		int row = (controlID - ttlPushControls.front().front().GetDlgCtrlID()) / ttlPushControls[0].size();
-		// figure out collumn #
+		// figure out column #
 		int number = (controlID - ttlPushControls.front().front().GetDlgCtrlID()) % ttlPushControls[0].size();
 		if (ttlPushControls[row][number].colorState == -1)
 		{
@@ -698,39 +686,33 @@ HBRUSH DioSystem::handleColorMessage(CWnd* window, brushMap brushes, rgbMap rGBs
 		cDC->SetTextColor(rGBs["theme foreground"]);
 		return *brushes["theme BG1"];
 	}
-	else if (controlID >= ttlNumberLabels.front().GetDlgCtrlID() && controlID <= ttlNumberLabels.back().GetDlgCtrlID())
-	{
-		cDC->SetBkColor(rGBs["theme BG1"]);
-		cDC->SetTextColor(rGBs["theme foreground"]);
-		return *brushes["theme BG1"];
-	}
 	else
 	{
 		return NULL;
 	}
 }
 
-bool DioSystem::isValidTTLName( std::string name )
+bool DioSystem::isValidTTLName(std::string name)
 {
 	for (int rowInc = 0; rowInc < getNumberOfTTLRows(); rowInc++)
 	{
 		std::string rowStr;
 		switch (rowInc)
 		{
-			case 0: rowStr = "a"; break;
-			case 1: rowStr = "b"; break;
-			case 2: rowStr = "c"; break;
-			case 3: rowStr = "d"; break;
+		case 0: rowStr = "a"; break;
+		case 1: rowStr = "b"; break;
+		case 2: rowStr = "c"; break;
+		case 3: rowStr = "d"; break;
 		}
 		for (int numberInc = 0; numberInc < getNumberOfTTLsPerRow(); numberInc++)
 		{
 			// check default names
 			UINT row, number;
-			if (name == rowStr + str( numberInc))
+			if (name == rowStr + str(numberInc))
 			{
 				return true;
 			}
-			else if (getNameIdentifier( name, row, number ) != -1)
+			else if (getNameIdentifier(name, row, number) != -1)
 			{
 				return true;
 			}
@@ -754,29 +736,29 @@ void DioSystem::ttlOff(UINT row, UINT column, timeType time)
 }
 
 
-void DioSystem::ttlOnDirect( UINT row, UINT column, double time, UINT variation )
+void DioSystem::ttlOnDirect(UINT row, UINT column, double time, UINT variation)
 {
 	DioCommand command;
 	command.line = { row, column };
 	command.time = time;
 	command.value = true;
-	ttlCommandList[variation].push_back( command );
+	ttlCommandList[variation].push_back(command);
 }
 
 
-void DioSystem::ttlOffDirect( UINT row, UINT column, double time, UINT variation)
+void DioSystem::ttlOffDirect(UINT row, UINT column, double time, UINT variation)
 {
 	DioCommand command;
 	command.line = { row, column };
 	command.time = time;
 	command.value = false;
-	ttlCommandList[variation].push_back( command );
+	ttlCommandList[variation].push_back(command);
 }
 
 
 void DioSystem::stopBoard()
 {
-	dioOutStop( 0 );
+	dioOutStop(0);
 }
 
 double DioSystem::getClockStatus()
@@ -787,14 +769,14 @@ double DioSystem::getClockStatus()
 	DWORD availableScans;
 	try
 	{
-		dioOutStatus( 0, availableScans, stat );
+		dioOutStatus(0, availableScans, stat);
 
-		if ( DIO_SAFEMODE )
+		if (DIO_SAFEMODE)
 		{
-			thrower( "!" );
+			thrower("!");
 		}
 	}
-	catch ( Error& err )
+	catch (Error& err)
 	{
 		//std::string msg = err.what( );
 		//errBox( msg );
@@ -822,7 +804,7 @@ void DioSystem::forceTtl(int row, int number, int state)
 		ttlPushControls[row][number].SetCheck(BST_CHECKED);
 		ttlStatus[row][number] = true;
 	}
-	
+
 	// change the output.
 	int result = 0;
 	std::array<std::bitset<8>, 8> ttlBits;
@@ -833,16 +815,16 @@ void DioSystem::forceTtl(int row, int number, int state)
 			if (ttlStatus[rowInc][numberInc])
 			{
 				// flip bit to 1.
-				ttlBits[rowInc].set( numberInc, true );
+				ttlBits[rowInc].set(numberInc, true);
 			}
 			else
 			{
 				// flip bit to 0.
-				ttlBits[rowInc].set( numberInc, false );
+				ttlBits[rowInc].set(numberInc, false);
 			}
 		}
 	}
-	
+
 	////FROM DIO64 legacy////
 	std::array<unsigned short, 4> tempCommand;
 	tempCommand[0] = static_cast <unsigned short>(ttlBits[0].to_ulong());
@@ -850,7 +832,7 @@ void DioSystem::forceTtl(int row, int number, int state)
 	tempCommand[2] = static_cast <unsigned short>(ttlBits[2].to_ulong());
 	tempCommand[3] = static_cast <unsigned short>(ttlBits[3].to_ulong());
 	//dioForceOutput( 0, tempCommand.data(), 15 );
-    /////////// 
+	/////////// 
 
 	fpgaForceOutput(tempCommand); //Note, .data is a pointer to the first element in the array, hence this is just passing a pointer to the data in teh array. 
 }
@@ -869,22 +851,22 @@ void DioSystem::setName(UINT row, UINT number, std::string name, cToolTips& tool
 
 int DioSystem::getNameIdentifier(std::string name, UINT& row, UINT& number)
 {
-	
+
 	for (UINT rowInc = 0; rowInc < ttlNames.size(); rowInc++)
 	{
 		std::string rowName;
 		switch (rowInc)
 		{
-			case 0: rowName = "a"; break;
-			case 1: rowName = "b"; break;
-			case 2: rowName = "c"; break;
-			case 3: rowName = "d"; break;
+		case 0: rowName = "a"; break;
+		case 1: rowName = "b"; break;
+		case 2: rowName = "c"; break;
+		case 3: rowName = "d"; break;
 		}
 		for (UINT numberInc = 0; numberInc < ttlNames[rowInc].size(); numberInc++)
 		{
 			// check the names array.
-			std::transform( ttlNames[rowInc][numberInc].begin(), ttlNames[rowInc][numberInc].end(),
-							ttlNames[rowInc][numberInc].begin(), ::tolower );
+			std::transform(ttlNames[rowInc][numberInc].begin(), ttlNames[rowInc][numberInc].end(),
+				ttlNames[rowInc][numberInc].begin(), ::tolower);
 			if (ttlNames[rowInc][numberInc] == name)
 			{
 				row = rowInc;
@@ -999,20 +981,20 @@ void DioSystem::writeTtlData(UINT variation, bool loadSkip)
 	status.AIControl = 0;
 	try
 	{
-		dioOutStop( 0 );
+		dioOutStop(0);
 	}
-	catch ( Error& ) { /* if fails it probably just wasn't running before */ } 
+	catch (Error&) { /* if fails it probably just wasn't running before */ }
 
-	dioOutConfig( 0, 0, outputMask, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, scanRate );
-	dioOutStatus( 0, availableScans, status );
-	if ( loadSkip )
+	dioOutConfig(0, 0, outputMask, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, scanRate);
+	dioOutStatus(0, availableScans, status);
+	if (loadSkip)
 	{
-		dioOutWrite( 0, loadSkipFinalFormatTtlData[variation].data( ), 
-					 loadSkipFormattedTtlSnapshots[variation].size( ), status );
+		dioOutWrite(0, loadSkipFinalFormatTtlData[variation].data(),
+			loadSkipFormattedTtlSnapshots[variation].size(), status);
 	}
 	else
 	{
-		dioOutWrite( 0, finalFormatTtlData[variation].data( ), formattedTtlSnapshots[variation].size( ), status );
+		dioOutWrite(0, finalFormatTtlData[variation].data(), formattedTtlSnapshots[variation].size(), status);
 	}
 }
 
@@ -1059,19 +1041,19 @@ void DioSystem::wait(double time)
 void DioSystem::waitTillFinished(UINT variation, bool skipOption)
 {
 	double totalTime;
-	if ( skipOption )
+	if (skipOption)
 	{
-		totalTime = (loadSkipFormattedTtlSnapshots[variation].back( )[0]
-					  + 65535 * loadSkipFormattedTtlSnapshots[variation].back( )[1]) / 10000.0;
+		totalTime = (loadSkipFormattedTtlSnapshots[variation].back()[0]
+			+ 65535 * loadSkipFormattedTtlSnapshots[variation].back()[1]) / 10000.0;
 	}
-	else 
+	else
 	{
-		totalTime = (formattedTtlSnapshots[variation].back( )[0]
-					  + 65535 * formattedTtlSnapshots[variation].back( )[1]) / 10000.0;
+		totalTime = (formattedTtlSnapshots[variation].back()[0]
+			+ 65535 * formattedTtlSnapshots[variation].back()[1]) / 10000.0;
 	}
-	 
+
 	wait(totalTime);
-	
+
 	bool running = true;
 	while (running != false) {
 		running = dioFPGA[variation].runstatus();
@@ -1084,26 +1066,26 @@ void DioSystem::waitTillFinished(UINT variation, bool skipOption)
 double DioSystem::getTotalTime(UINT variation)
 {
 	return (formattedTtlSnapshots[variation].back()[0]
-			 + 65535 * formattedTtlSnapshots[variation].back()[1]) / 10000.0 + 1;
+		+ 65535 * formattedTtlSnapshots[variation].back()[1]) / 10000.0 + 1;
 }
 
 
-void DioSystem::interpretKey( std::vector<variableType>& variables )
+void DioSystem::interpretKey(std::vector<variableType>& variables)
 {
-	UINT variations = variables.front( ).keyValues.size( );
+	UINT variations = variables.front().keyValues.size();
 	if (variations == 0)
 	{
-		variations = 1; 
+		variations = 1;
 	}
 	/// imporantly, this sizes the relevant structures.
-	ttlCommandList = std::vector<std::vector<DioCommand>>( variations );
-	ttlSnapshots = std::vector<std::vector<DioSnapshot>>( variations );
-	dioFPGA = std::vector<RC028>( variations ); //TODO: fix this
-	loadSkipTtlSnapshots = std::vector<std::vector<DioSnapshot>>( variations );
-	formattedTtlSnapshots = std::vector<std::vector<std::array<WORD, 6>>>( variations );
-	loadSkipFormattedTtlSnapshots = std::vector<std::vector<std::array<WORD, 6>>>( variations );
-	finalFormatTtlData = std::vector<std::vector<WORD>>( variations );
-	loadSkipFinalFormatTtlData = std::vector<std::vector<WORD>>( variations );
+	ttlCommandList = std::vector<std::vector<DioCommand>>(variations);
+	ttlSnapshots = std::vector<std::vector<DioSnapshot>>(variations);
+	dioFPGA = std::vector<RC028>(variations); //TODO: fix this
+	loadSkipTtlSnapshots = std::vector<std::vector<DioSnapshot>>(variations);
+	formattedTtlSnapshots = std::vector<std::vector<std::array<WORD, 6>>>(variations);
+	loadSkipFormattedTtlSnapshots = std::vector<std::vector<std::array<WORD, 6>>>(variations);
+	finalFormatTtlData = std::vector<std::vector<WORD>>(variations);
+	loadSkipFinalFormatTtlData = std::vector<std::vector<WORD>>(variations);
 
 	// and interpret the command list for each variation.
 	for (UINT variationNum = 0; variationNum < variations; variationNum++)
@@ -1158,7 +1140,7 @@ void DioSystem::organizeTtlCommands(UINT variation)
 	if (timeOrganizer.size() == 0)
 	{
 		thrower("ERROR: No ttl commands! The Ttl system is the master behind everything in a repetition, and so it "
-				 "must contain something.\r\n");
+			"must contain something.\r\n");
 	}
 
 	ttlSnapshots[variation].clear();
@@ -1180,9 +1162,9 @@ void DioSystem::organizeTtlCommands(UINT variation)
 		// to make sure you access the correct command.
 		UINT row = orderedList[timeOrganizer[0].second[zeroInc]].line.first;
 		UINT column = orderedList[timeOrganizer[0].second[zeroInc]].line.second;
-		ttlSnapshots[variation].back().ttlStatus[row][column]	= orderedList[timeOrganizer[0].second[zeroInc]].value;
+		ttlSnapshots[variation].back().ttlStatus[row][column] = orderedList[timeOrganizer[0].second[zeroInc]].value;
 	}
-	
+
 	// already handled the first case.
 	for (UINT commandInc = 1; commandInc < timeOrganizer.size(); commandInc++)
 	{
@@ -1204,20 +1186,20 @@ void DioSystem::organizeTtlCommands(UINT variation)
 		if (snapshot.time < 0)
 		{
 			thrower("ERROR: The code tried to set a ttl event at a negative time value! This is clearly not allowed."
-					" Aborting.");
+				" Aborting.");
 		}
 	}
 }
 
 
-std::pair<USHORT, USHORT> DioSystem::calcDoubleShortTime( double time )
+std::pair<USHORT, USHORT> DioSystem::calcDoubleShortTime(double time)
 {
 	USHORT lowordTime, hiwordTime;
 	// convert to system clock ticks. Assume that the crate is running on a 10 MHz signal, so multiply by
 	// 10,000,000, but then my time is in milliseconds, so divide that by 1,000, ending with multiply by 10,000
-	lowordTime = ULONGLONG( time * 10000 ) % 65535;
+	lowordTime = ULONGLONG(time * 10000) % 65535;
 	USHORT temp = time * 10000;
-	hiwordTime = ULONGLONG( time * 10000 ) / 65535;
+	hiwordTime = ULONGLONG(time * 10000) / 65535;
 	return { lowordTime, hiwordTime };
 }
 
@@ -1226,13 +1208,13 @@ std::pair<USHORT, USHORT> DioSystem::calcDoubleShortTime( double time )
 
 void DioSystem::formatForFPGA(UINT variation)
 {
-	int snapIndex = 0; 
+	int snapIndex = 0;
 	int val1, val2, fpgaBankCtr;
 	ULONG timeConv = 100000;
 	std::array<int, 8> fpgaBanks;
 	for (auto snapshot : ttlSnapshots[variation])
 	{
-	    fpgaBankCtr = 0;
+		fpgaBankCtr = 0;
 		for (auto bank : snapshot.ttlStatus) //bank here is set of 8 booleans
 		{
 			val1 = 0;//convert first 8 of snap shot to int
@@ -1243,10 +1225,10 @@ void DioSystem::formatForFPGA(UINT variation)
 			val2 = 0;//convert next 8 of snap shot to int
 			for (int j = 0; j < 8; j++)
 			{
-				val2 = val2 + pow(2, j)*bank[j+8];
+				val2 = val2 + pow(2, j)*bank[j + 8];
 			}
 			fpgaBanks[fpgaBankCtr] = val1;
-			fpgaBanks[fpgaBankCtr +1] = val2;
+			fpgaBanks[fpgaBankCtr + 1] = val2;
 			fpgaBankCtr = fpgaBankCtr + 2;
 		}
 		dioFPGA[variation].setPoint(snapIndex, snapshot.time*timeConv, fpgaBanks[0], fpgaBanks[1], fpgaBanks[2], fpgaBanks[3], fpgaBanks[4], fpgaBanks[5], fpgaBanks[6], fpgaBanks[7]);
@@ -1276,26 +1258,26 @@ void DioSystem::convertToFinalFormat(UINT variation)
 {
 	// excessive but just in case.
 	formattedTtlSnapshots[variation].clear();
-	loadSkipFormattedTtlSnapshots[variation].clear( );
-	finalFormatTtlData[variation].clear( );
-	loadSkipFinalFormatTtlData[variation].clear( );
+	loadSkipFormattedTtlSnapshots[variation].clear();
+	finalFormatTtlData[variation].clear();
+	loadSkipFinalFormatTtlData[variation].clear();
 	// do bit arithmetic.
-	for ( auto& snapshot : ttlSnapshots[variation])
+	for (auto& snapshot : ttlSnapshots[variation])
 	{
 		// each major index is a row (A, B, C, D), each minor index is a ttl state (0, 1) in that row.
 		std::array<std::bitset<8>, 8> ttlBits;
-		for (UINT rowInc : range( 8 ) )
+		for (UINT rowInc : range(8))
 		{
-			for (UINT numberInc : range( 8 ) )
+			for (UINT numberInc : range(8))
 			{
-				ttlBits[rowInc].set( numberInc, snapshot.ttlStatus[rowInc][numberInc] );
+				ttlBits[rowInc].set(numberInc, snapshot.ttlStatus[rowInc][numberInc]);
 			}
 		}
 		// I need to put it as an int (just because I'm not actually sure how the bitset gets stored... it'd probably 
 		// work just passing the address of the bitsets, but I'm sure this will work so whatever.)
 		std::array<USHORT, 6> tempCommand;
-		tempCommand[0] = calcDoubleShortTime( snapshot.time ).first;
-		tempCommand[1] = calcDoubleShortTime( snapshot.time ).second;
+		tempCommand[0] = calcDoubleShortTime(snapshot.time).first;
+		tempCommand[1] = calcDoubleShortTime(snapshot.time).second;
 		tempCommand[2] = static_cast <unsigned short>(ttlBits[0].to_ulong());
 		tempCommand[3] = static_cast <unsigned short>(ttlBits[1].to_ulong());
 		tempCommand[4] = static_cast <unsigned short>(ttlBits[2].to_ulong());
@@ -1303,42 +1285,42 @@ void DioSystem::convertToFinalFormat(UINT variation)
 		formattedTtlSnapshots[variation].push_back(tempCommand);
 	}
 	// same loop with the loadSkipSnapshots.
-	for ( auto& snapshot : loadSkipTtlSnapshots[variation] )
+	for (auto& snapshot : loadSkipTtlSnapshots[variation])
 	{
 		// each major index is a row (A, B, C, D), each minor index is a ttl state (0, 1) in that row.
 		std::array<std::bitset<8>, 8> ttlBits;
-		for ( UINT rowInc : range( 8 ) )
+		for (UINT rowInc : range(8))
 		{
-			for ( UINT numberInc : range( 8 ) )
+			for (UINT numberInc : range(8))
 			{
-				ttlBits[rowInc].set( numberInc, snapshot.ttlStatus[rowInc][numberInc] );
+				ttlBits[rowInc].set(numberInc, snapshot.ttlStatus[rowInc][numberInc]);
 			}
 		}
 		// I need to put it as an int (just because I'm not actually sure how the bitset gets stored... it'd probably 
 		// work just passing the address of the bitsets, but I'm sure this will work so whatever.)
 		std::array<USHORT, 6> tempCommand;
-		tempCommand[0] = calcDoubleShortTime( snapshot.time ).first;
-		tempCommand[1] = calcDoubleShortTime( snapshot.time ).second;
-		tempCommand[2] = static_cast <unsigned short>(ttlBits[0].to_ulong( ));
-		tempCommand[3] = static_cast <unsigned short>(ttlBits[1].to_ulong( ));
-		tempCommand[4] = static_cast <unsigned short>(ttlBits[2].to_ulong( ));
-		tempCommand[5] = static_cast <unsigned short>(ttlBits[3].to_ulong( ));
-		loadSkipFormattedTtlSnapshots[variation].push_back( tempCommand );
+		tempCommand[0] = calcDoubleShortTime(snapshot.time).first;
+		tempCommand[1] = calcDoubleShortTime(snapshot.time).second;
+		tempCommand[2] = static_cast <unsigned short>(ttlBits[0].to_ulong());
+		tempCommand[3] = static_cast <unsigned short>(ttlBits[1].to_ulong());
+		tempCommand[4] = static_cast <unsigned short>(ttlBits[2].to_ulong());
+		tempCommand[5] = static_cast <unsigned short>(ttlBits[3].to_ulong());
+		loadSkipFormattedTtlSnapshots[variation].push_back(tempCommand);
 	}
 
 	/// flatten the data.
-	finalFormatTtlData[variation].resize( formattedTtlSnapshots[variation].size( ) * 6 );
+	finalFormatTtlData[variation].resize(formattedTtlSnapshots[variation].size() * 6);
 	int count = 0;
-	for ( auto& element : finalFormatTtlData[variation] )
+	for (auto& element : finalFormatTtlData[variation])
 	{
 		// concatenate
 		element = formattedTtlSnapshots[variation][count / 6][count % 6];
 		count++;
 	}
 	// the arrays are usually not the same length and need to be dealt with separately.
-	loadSkipFinalFormatTtlData[variation].resize( loadSkipFormattedTtlSnapshots[variation].size( ) * 6 );
+	loadSkipFinalFormatTtlData[variation].resize(loadSkipFormattedTtlSnapshots[variation].size() * 6);
 	count = 0;
-	for ( auto& element : loadSkipFinalFormatTtlData[variation] )
+	for (auto& element : loadSkipFinalFormatTtlData[variation])
 	{
 		// concatenate
 		element = loadSkipFormattedTtlSnapshots[variation][count / 6][count % 6];
@@ -1347,21 +1329,21 @@ void DioSystem::convertToFinalFormat(UINT variation)
 }
 
 
-void DioSystem::findLoadSkipSnapshots( double time, std::vector<variableType>& variables, UINT variation )
+void DioSystem::findLoadSkipSnapshots(double time, std::vector<variableType>& variables, UINT variation)
 {
 	// find the splitting time and set the loadSkip snapshots to have everything after that time.
-	for ( auto snapshotInc : range(ttlSnapshots[variation].size() - 1) )
+	for (auto snapshotInc : range(ttlSnapshots[variation].size() - 1))
 	{
-		if ( ttlSnapshots[variation][snapshotInc].time < time && ttlSnapshots[variation][snapshotInc+1].time >= time )
+		if (ttlSnapshots[variation][snapshotInc].time < time && ttlSnapshots[variation][snapshotInc + 1].time >= time)
 		{
-			loadSkipTtlSnapshots[variation] = std::vector<DioSnapshot>( ttlSnapshots[variation].begin( ) 
-																		+ snapshotInc + 1, 
-																		ttlSnapshots[variation].end( ) );
+			loadSkipTtlSnapshots[variation] = std::vector<DioSnapshot>(ttlSnapshots[variation].begin()
+				+ snapshotInc + 1,
+				ttlSnapshots[variation].end());
 			break;
 		}
 	}
 	// need to zero the times.
-	for ( auto& snapshot : loadSkipTtlSnapshots[variation] )
+	for (auto& snapshot : loadSkipTtlSnapshots[variation])
 	{
 		snapshot.time -= time;
 	}
@@ -1369,17 +1351,17 @@ void DioSystem::findLoadSkipSnapshots( double time, std::vector<variableType>& v
 
 
 // counts the number of triggers on a given line.
-UINT DioSystem::countTriggers( UINT row, UINT number, UINT variation )
+UINT DioSystem::countTriggers(UINT row, UINT number, UINT variation)
 {
 	UINT count = 0;
-	if ( ttlSnapshots[variation].size( ) == 0 )
+	if (ttlSnapshots[variation].size() == 0)
 	{
-		thrower( "ERROR: no ttl events in countTriggers?" );
+		thrower("ERROR: no ttl events in countTriggers?");
 	}
-	for ( auto eventInc : range(ttlSnapshots[variation].size()-1) )
+	for (auto eventInc : range(ttlSnapshots[variation].size() - 1))
 	{
-		if ( ttlSnapshots[variation][eventInc].ttlStatus[row][number] == false &&
-			 ttlSnapshots[variation][eventInc+1].ttlStatus[row][number] == true )
+		if (ttlSnapshots[variation][eventInc].ttlStatus[row][number] == false &&
+			ttlSnapshots[variation][eventInc + 1].ttlStatus[row][number] == true)
 		{
 			count++;
 		}
@@ -1388,30 +1370,30 @@ UINT DioSystem::countTriggers( UINT row, UINT number, UINT variation )
 }
 
 
-void DioSystem::checkNotTooManyTimes( UINT variation )
+void DioSystem::checkNotTooManyTimes(UINT variation)
 {
-	if ( formattedTtlSnapshots[variation].size( ) > 4096)
+	if (formattedTtlSnapshots[variation].size() > 4096)
 	{
-		thrower( "ERROR: DIO Data has more than 4096 individual timestamps, which is larger than the DIO64 FIFO Buffer"
-				 ". The DIO64 card can only support 4096 individual time-stamps. If you need more, you need to configure"
-				 " this code to create a thread to continuously write to the DIO64 card as it outputs." );
+		thrower("ERROR: DIO Data has more than 4096 individual timestamps, which is larger than the DIO64 FIFO Buffer"
+			". The DIO64 card can only support 4096 individual time-stamps. If you need more, you need to configure"
+			" this code to create a thread to continuously write to the DIO64 card as it outputs.");
 	}
 }
 
 
-void DioSystem::checkFinalFormatTimes( UINT variation )
+void DioSystem::checkFinalFormatTimes(UINT variation)
 {
 	// loop through all the commands and make sure that no two events have the same time-stamp. Was a common symptom
 	// of a bug when code first created.
-	for ( int dioEventInc = 0; dioEventInc < formattedTtlSnapshots[variation].size( ); dioEventInc++ )
+	for (int dioEventInc = 0; dioEventInc < formattedTtlSnapshots[variation].size(); dioEventInc++)
 	{
-		for ( int dioEventInc2 = 0; dioEventInc2 < dioEventInc; dioEventInc2++ )
+		for (int dioEventInc2 = 0; dioEventInc2 < dioEventInc; dioEventInc2++)
 		{
-			if ( formattedTtlSnapshots[variation][dioEventInc][0] == formattedTtlSnapshots[variation][dioEventInc2][0]
-				 && formattedTtlSnapshots[variation][dioEventInc][1] == formattedTtlSnapshots[variation][dioEventInc2][1] )
+			if (formattedTtlSnapshots[variation][dioEventInc][0] == formattedTtlSnapshots[variation][dioEventInc2][0]
+				&& formattedTtlSnapshots[variation][dioEventInc][1] == formattedTtlSnapshots[variation][dioEventInc2][1])
 			{
-				thrower( "ERROR: Dio system somehow created two events with the same time stamp! This might be caused by"
-						 " ttl events being spaced to close to each other." );
+				thrower("ERROR: Dio system somehow created two events with the same time stamp! This might be caused by"
+					" ttl events being spaced to close to each other.");
 			}
 		}
 	}
@@ -1422,44 +1404,44 @@ std::string DioSystem::getErrorMessage(int errorCode)
 {
 	switch (errorCode)
 	{
-		case -8:
-			return "Illegal board number - the board number must be between 0 and 7.";
-		case -9:
-			return "The requested board number has not been opened.";
-		case -10:
-			return "The buffers have over or under run.";
-		case -12:
-			return "Invalid parameter.";
-		case -13:
-			return "No Driver Interface.";
-		case -14:
-			return "Board does not have the OCXO option installed.";
-		case -15:
-			return "Only available on PXI.";
-		case -16:
-			return "Stop trigger source is invalid.";
-		case -17:
-			return "Port number conflicts. Check the hints used in DIO64_Load().";
-		case -18:
-			return "Missing DIO64.cat file.";
-		case -19:
-			return "Not enough system resources available.";
-		case -20:
-			return "Invalid DIO64.cat file.";
-		case -21:
-			return "Required image not found.";
-		case -22:
-			return "Error programming the FPGA.";
-		case -23:
-			return "File not found.";
-		case -24:
-			return "Board error.";
-		case -25:
-			return "Function call invalid at this time.";
-		case -26:
-			return "Not enough transitions specified for operation.";
-		default:
-			return "Unrecognized DIO64 error code!";
+	case -8:
+		return "Illegal board number - the board number must be between 0 and 7.";
+	case -9:
+		return "The requested board number has not been opened.";
+	case -10:
+		return "The buffers have over or under run.";
+	case -12:
+		return "Invalid parameter.";
+	case -13:
+		return "No Driver Interface.";
+	case -14:
+		return "Board does not have the OCXO option installed.";
+	case -15:
+		return "Only available on PXI.";
+	case -16:
+		return "Stop trigger source is invalid.";
+	case -17:
+		return "Port number conflicts. Check the hints used in DIO64_Load().";
+	case -18:
+		return "Missing DIO64.cat file.";
+	case -19:
+		return "Not enough system resources available.";
+	case -20:
+		return "Invalid DIO64.cat file.";
+	case -21:
+		return "Required image not found.";
+	case -22:
+		return "Error programming the FPGA.";
+	case -23:
+		return "File not found.";
+	case -24:
+		return "Board error.";
+	case -25:
+		return "Function call invalid at this time.";
+	case -26:
+		return "Not enough transitions specified for operation.";
+	default:
+		return "Unrecognized DIO64 error code!";
 	}
 }
 
@@ -1471,7 +1453,7 @@ void DioSystem::zeroBoard()
 	{
 		for (UINT number = 0; number < ttlStatus[row].size(); number++)
 		{
-			forceTtl( row, number, 0 );
+			forceTtl(row, number, 0);
 		}
 	}
 	//disconnectDioFPGA();
@@ -1482,10 +1464,10 @@ void DioSystem::zeroBoard()
 std::string DioSystem::getTtlSequenceMessage(UINT variation)
 {
 	std::string message;
-	if ( ttlSnapshots.size( ) <= variation )
+	if (ttlSnapshots.size() <= variation)
 	{
-		thrower( "ERROR: Attempted to retrieve ttl sequence message from snapshot " + str( variation ) + ", which does not "
-				 "exist!" );
+		thrower("ERROR: Attempted to retrieve ttl sequence message from snapshot " + str(variation) + ", which does not "
+			"exist!");
 	}
 	for (auto snap : ttlSnapshots[variation])
 	{
@@ -1495,18 +1477,18 @@ std::string DioSystem::getTtlSequenceMessage(UINT variation)
 		{
 			switch (rowInc)
 			{
-				case 0:
-					message += "A: ";
-					break;
-				case 1:
-					message += "B: ";
-					break;
-				case 2:
-					message += "C: ";
-					break;
-				case 3:
-					message += "D: ";
-					break;
+			case 0:
+				message += "A: ";
+				break;
+			case 1:
+				message += "B: ";
+				break;
+			case 2:
+				message += "C: ";
+				break;
+			case 3:
+				message += "D: ";
+				break;
 			}
 			rowInc++;
 			for (auto num : row)
@@ -1573,13 +1555,13 @@ void DioSystem::dioClose(WORD board)
 
 
 void DioSystem::dioInStart(WORD board, DWORD ticks, WORD& mask, WORD maskLength, WORD flags, WORD clkControl,
-						   WORD startType, WORD startSource, WORD stopType, WORD stopSource, DWORD AIControl,
-						   double& scanRate)
+	WORD startType, WORD startSource, WORD stopType, WORD stopSource, DWORD AIControl,
+	double& scanRate)
 {
 	if (!DIO_SAFEMODE)
 	{
 		int result = raw_DIO64_In_Start(board, ticks, &mask, maskLength, flags, clkControl, startType, startSource,
-										stopType, stopSource, AIControl, &scanRate);
+			stopType, stopSource, AIControl, &scanRate);
 		if (result)
 		{
 			thrower("dioInStart failed! : (" + str(result) + "): " + getErrorMessage(result));
@@ -1648,17 +1630,17 @@ void DioSystem::fpgaForceOutput(std::array<unsigned short, 4> buffer) //UNTESTED
 
 	dataToForce = buffer; //Array of eight words, each corresponding to a row of 8 ttls. FPGA takes 
 
-	for (int i = 0; i < 8; i+=2)
+	for (int i = 0; i < 8; i += 2)
 	{
-		 xlow = dataToForce[i/2] & 0xff;
-		 xhigh = (dataToForce[i/2] >> 8);
-		 fpgaBanks[i] = (int)xlow;
-		 fpgaBanks[i + 1] = (int)xhigh;
+		xlow = dataToForce[i / 2] & 0xff;
+		xhigh = (dataToForce[i / 2] >> 8);
+		fpgaBanks[i] = (int)xlow;
+		fpgaBanks[i + 1] = (int)xhigh;
 	}
 
- 
-	dioFPGA[0].setPoint(1,10000, fpgaBanks[0], fpgaBanks[1], fpgaBanks[2], fpgaBanks[3], fpgaBanks[4], fpgaBanks[5], fpgaBanks[6], fpgaBanks[7]);
-	dioFPGA[0].setPoint(2, 0, 0,0,0,0,0, 0,0,0);
+
+	dioFPGA[0].setPoint(1, 10000, fpgaBanks[0], fpgaBanks[1], fpgaBanks[2], fpgaBanks[3], fpgaBanks[4], fpgaBanks[5], fpgaBanks[6], fpgaBanks[7]);
+	dioFPGA[0].setPoint(2, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 	//Could call the functions that contain these but this felt more appropriate since this isn't in a standard call  
 	//connectDioFPGA();
 	dioFPGA[0].write();
@@ -1681,14 +1663,14 @@ void DioSystem::dioOutGetInput(WORD board, WORD& buffer)
 
 
 void DioSystem::dioOutConfig(WORD board, DWORD ticks, WORD* mask, WORD maskLength, WORD flags, WORD clkControl,
-							 WORD startType, WORD startSource, WORD stopType, WORD stopSource, DWORD AIControl,
-							 DWORD reps, WORD ntrans, double& scanRate)
+	WORD startType, WORD startSource, WORD stopType, WORD stopSource, DWORD AIControl,
+	DWORD reps, WORD ntrans, double& scanRate)
 {
 	if (!DIO_SAFEMODE)
 	{
 		int result = raw_DIO64_Out_Config(board, ticks, mask, maskLength, flags, clkControl,
-										  startType, startSource, stopType, stopSource, AIControl,
-										  reps, ntrans, &scanRate);
+			startType, startSource, stopType, stopSource, AIControl,
+			reps, ntrans, &scanRate);
 		if (result)
 		{
 			thrower("dioOutConfig failed! : (" + str(result) + "): " + getErrorMessage(result));
