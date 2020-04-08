@@ -43,8 +43,8 @@ class DioSystem
 		void handleHoldPress();
 		HBRUSH handleColorMessage(CWnd* window, brushMap brushes, rgbMap rGBs, CDC* cDC);
 		std::string getSystemInfo();
-		std::array< std::array<bool, 16>, 4 > getFinalSnapshot();
-		void setTtlStatusNoForceOut(std::array< std::array<bool, 16>, 4 > status);
+		std::array< std::array<bool, 8>, 8 > getFinalSnapshot();
+		void setTtlStatusNoForceOut(std::array< std::array<bool, 8>, 8 > status);
 
 		ULONG countDacTriggers(UINT variation );
 		ULONG getNumberEvents(UINT variation );
@@ -61,7 +61,7 @@ class DioSystem
 
 		void setName(UINT row, UINT number, std::string name, cToolTips& toolTips, AuxiliaryWindow* master);
 		std::string getName(UINT row, UINT number);
-		std::array<std::array<std::string, 16>, 4> DioSystem::getAllNames();
+		std::array<std::array<std::string, 8>, 8> DioSystem::getAllNames();
 		// returns -1 if not a name.get
 		int DioSystem::getNameIdentifier(std::string name, UINT& row, UINT& number);
 		bool getTtlStatus(int row, int number);
@@ -104,13 +104,13 @@ class DioSystem
 		Control<CStatic> ttlTitle;
 		Control<CButton> ttlHold;
 		Control<CButton> zeroTtls;
-		std::array< std::array< Control<CButton>, 16 >, 4 > ttlPushControls;
-		std::array< Control<CStatic>, 16 > ttlNumberLabels;
-		std::array< Control<CStatic>, 4 > ttlRowLabels;
-		std::array< std::array<bool, 16>, 4 > ttlStatus;
-		std::array< std::array<bool, 16>, 4 > ttlShadeStatus;
-		std::array< std::array<bool, 16>, 4 > ttlHoldStatus;
-		std::array< std::array<std::string, 16 >, 4> ttlNames;
+		std::array< std::array< Control<CButton>, 8 >, 8 > ttlPushControls;
+		std::array< Control<CStatic>, 8 > ttlNumberLabels;
+		std::array< Control<CStatic>, 8 > ttlRowLabels;
+		std::array< std::array<bool, 8>, 8 > ttlStatus;
+		std::array< std::array<bool, 8>, 8 > ttlShadeStatus;
+		std::array< std::array<bool, 8>, 8 > ttlHoldStatus;
+		std::array< std::array<std::string, 8 >, 8> ttlNames;
 		// tells whether the hold button is down or not.
 		bool holdStatus;
 
@@ -129,7 +129,7 @@ class DioSystem
 		std::vector<std::vector<std::array<WORD, 6>>> formattedTtlSnapshots, loadSkipFormattedTtlSnapshots;
 		// this is just a flattened version of the above snapshots. This is what gets directly sent to the dio64 card.
 		std::vector<std::vector<WORD>> finalFormatTtlData, loadSkipFinalFormatTtlData;
-		std::array<std::array<bool, 16>, 4> defaultTtlState;
+		std::array<std::array<bool, 8>, 8> defaultTtlState;
 
 
 		/* ***********************************************************************************************************

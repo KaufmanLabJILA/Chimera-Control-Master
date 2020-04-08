@@ -58,7 +58,7 @@ public:
 	void passRoundToDac();
 	void loadFriends(MainWindow* mainWin, ScriptingWindow* scriptWin, CameraWindow* camWin);
 	std::string getSystemStatusMsg();
-	std::array<std::array<std::string, 16>, 4> getTtlNames();
+	std::array<std::array<std::string, 8>, 8> getTtlNames();
 	std::array<std::string, 24> getDacNames();
 
 	//void updateAgilent(agilentNames name);

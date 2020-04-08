@@ -23,35 +23,40 @@ BOOL TtlSettingsDialog::OnInitDialog()
 {
 	int id = 345;
 
-	POINT pos = { 65, 0};
+	POINT pos = { 60, 20 };
 
 	for (UINT numberInc = 0; numberInc < edits.front().size(); numberInc++)
 	{
-		numberlabels[numberInc].sPos = { pos.x, pos.y, pos.x += 65, pos.y + 30 };
-		numberlabels[numberInc].Create( cstr(numberInc), WS_CHILD | WS_VISIBLE | SS_SUNKEN | WS_BORDER | 
-									   ES_AUTOHSCROLL | WS_TABSTOP, numberlabels[numberInc].sPos, this, id++);
+		numberlabels[numberInc].sPos = { pos.x, pos.y, pos.x += 60, pos.y + 30 };
+		numberlabels[numberInc].Create(cstr(numberInc), WS_CHILD | WS_VISIBLE | SS_SUNKEN | WS_BORDER |
+			ES_AUTOHSCROLL | WS_TABSTOP, numberlabels[numberInc].sPos, this, id++);
+		pos.x += 5;
 	}
-	
+
 	for (UINT rowInc = 0; rowInc < edits.size(); rowInc++)
 	{
-		pos.y += 30;
-		pos.x = 0;
-		rowLabels[rowInc].sPos = { pos.x, pos.y, pos.x += 65, pos.y + 30 };
+		pos.y += 50;
+		pos.x = 20;
+		rowLabels[rowInc].sPos = { pos.x, pos.y, pos.x += 60, pos.y + 30 };
 		std::string text;
 		switch (rowInc)
 		{
-			case 0: text = "A"; break;
-			case 1: text = "B"; break;
-			case 2: text = "C"; break;
-			case 3: text = "D"; break;
+		case 0: text = "A"; break;
+		case 1: text = "B"; break;
+		case 2: text = "C"; break;
 		}
 		rowLabels[rowInc].Create(cstr(text), WS_CHILD | WS_VISIBLE, rowLabels[rowInc].sPos, this, id++);
+		pos.x -= 25;
 		for (UINT numberInc = 0; numberInc < edits[rowInc].size(); numberInc++)
 		{
-			edits[rowInc][numberInc].sPos = { pos.x, pos.y, pos.x += 65, pos.y + 30 };
-			edits[rowInc][numberInc].Create( WS_CHILD | WS_VISIBLE | SS_SUNKEN | WS_BORDER | ES_AUTOHSCROLL | WS_TABSTOP,
-											 edits[rowInc][numberInc].sPos, this, id++);
-			edits[rowInc][numberInc].SetWindowTextA(cstr(input->ttls->getName(rowInc, numberInc)));
+			pos.x += 5;
+			if (!(numberInc > 15 && rowInc == 0))
+			{
+				edits[rowInc][numberInc].sPos = { pos.x, pos.y, pos.x += 60, pos.y + 30 };
+				edits[rowInc][numberInc].Create(WS_CHILD | WS_VISIBLE | SS_SUNKEN | WS_BORDER | ES_AUTOHSCROLL | WS_TABSTOP,
+					edits[rowInc][numberInc].sPos, this, id++);
+				edits[rowInc][numberInc].SetWindowTextA(cstr(input->ttls->getName(rowInc, numberInc)));
+			}
 		}
 	}
 	return FALSE;

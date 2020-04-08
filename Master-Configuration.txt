@@ -1,13 +1,13 @@
 Version 2.0
-blue3d
+dio60
 0
-rp707
+dio61
 0
-rp679
+dio62
 0
-red3d
+dio62
 0
-andortrig
+dio63
 0
 imag461
 0
@@ -212,4 +212,4 @@ rsb 0.224
 asb 0.04
 carrier_3p0 79.99
 rsbi 0.086
-1 512 1 1 512 1
+75 375 1 100 400 1

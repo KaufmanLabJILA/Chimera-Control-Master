@@ -97,13 +97,13 @@ ULONG DioSystem::countDacTriggers(UINT variation)
 }
 
 
-std::array< std::array<bool, 16>, 4 > DioSystem::getFinalSnapshot()
+std::array< std::array<bool, 8>, 8 > DioSystem::getFinalSnapshot()
 {
 	return ttlSnapshots.back().back().ttlStatus;
 }
 
 
-void DioSystem::setTtlStatusNoForceOut(std::array< std::array<bool, 16>, 4 > status)
+void DioSystem::setTtlStatusNoForceOut(std::array< std::array<bool, 8>, 8 > status)
 {
 	ttlStatus = status;
 
@@ -288,7 +288,7 @@ std::string DioSystem::getSystemInfo()
 	return info;
 }
 
-std::array<std::array<std::string, 16>, 4> DioSystem::getAllNames()
+std::array<std::array<std::string, 8>, 8> DioSystem::getAllNames()
 {
 	return ttlNames;
 }
@@ -457,23 +457,7 @@ void DioSystem::initialize( POINT& loc, cToolTips& toolTips, AuxiliaryWindow* ma
 	{
 		ttlRowLabels[row].sPos = { loc.x, loc.y + row * 28, loc.x + 32, loc.y + (row + 1) * 28 };
 
-		std::string rowName;
-		switch (row)
-		{
-			case 0:
-				rowName = "A";
-				break;
-			case 1:
-				rowName = "B";
-				break;
-			case 2:
-				rowName = "C";
-				break;
-			case 3:
-				rowName = "D";
-				break;
-		}
-		ttlRowLabels[row].Create( cstr(rowName), WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER,
+		ttlRowLabels[row].Create( cstr(row), WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER,
 								  ttlRowLabels[row].sPos, master, id++ );
 	}
 	// all push buttons
@@ -482,25 +466,6 @@ void DioSystem::initialize( POINT& loc, cToolTips& toolTips, AuxiliaryWindow* ma
 	{
 		for (UINT number = 0; number < ttlPushControls[row].size(); number++)
 		{
-			std::string name;
-			switch (row)
-			{
-				case 0:
-					name = "A";
-					break;
-				case 1:
-					name = "B";
-					break;
-				case 2:
-					name = "C";
-					break;
-				case 3:
-					name = "D";
-					break;
-			}
-			name += str( number );
-
-			//ttlNames[row][number] = name;
 			ttlPushControls[row][number].sPos = { long( loc.x + 32 + number * 28 ), long( loc.y + row * 28 ),
 											long( loc.x + 32 + (number + 1) * 28 ), long( loc.y + (row + 1) * 28 ) };
 			ttlPushControls[row][number].Create( "", WS_CHILD | WS_VISIBLE | BS_RIGHT | BS_3STATE,
@@ -509,7 +474,7 @@ void DioSystem::initialize( POINT& loc, cToolTips& toolTips, AuxiliaryWindow* ma
 			ttlPushControls[row][number].setToolTip(ttlNames[row][number], toolTips, master);
 		}
 	}
-	loc.y += 28 * 4;
+	loc.y += 28 * 8;
 }
 
 
@@ -860,10 +825,10 @@ void DioSystem::forceTtl(int row, int number, int state)
 	
 	// change the output.
 	int result = 0;
-	std::array<std::bitset<16>, 4> ttlBits;
+	std::array<std::bitset<8>, 8> ttlBits;
 	for (int rowInc = 0; rowInc < 4; rowInc++)
 	{
-		for (int numberInc = 0; numberInc < 16; numberInc++)
+		for (int numberInc = 0; numberInc < 8; numberInc++)
 		{
 			if (ttlStatus[rowInc][numberInc])
 			{
@@ -1268,7 +1233,7 @@ void DioSystem::formatForFPGA(UINT variation)
 	for (auto snapshot : ttlSnapshots[variation])
 	{
 	    fpgaBankCtr = 0;
-		for (auto bank : snapshot.ttlStatus) //bank here is set of 16 booleans
+		for (auto bank : snapshot.ttlStatus) //bank here is set of 8 booleans
 		{
 			val1 = 0;//convert first 8 of snap shot to int
 			for (int i = 0; i < 8; i++)
@@ -1318,10 +1283,10 @@ void DioSystem::convertToFinalFormat(UINT variation)
 	for ( auto& snapshot : ttlSnapshots[variation])
 	{
 		// each major index is a row (A, B, C, D), each minor index is a ttl state (0, 1) in that row.
-		std::array<std::bitset<16>, 4> ttlBits;
-		for (UINT rowInc : range( 4 ) )
+		std::array<std::bitset<8>, 8> ttlBits;
+		for (UINT rowInc : range( 8 ) )
 		{
-			for (UINT numberInc : range( 16 ) )
+			for (UINT numberInc : range( 8 ) )
 			{
 				ttlBits[rowInc].set( numberInc, snapshot.ttlStatus[rowInc][numberInc] );
 			}
@@ -1341,10 +1306,10 @@ void DioSystem::convertToFinalFormat(UINT variation)
 	for ( auto& snapshot : loadSkipTtlSnapshots[variation] )
 	{
 		// each major index is a row (A, B, C, D), each minor index is a ttl state (0, 1) in that row.
-		std::array<std::bitset<16>, 4> ttlBits;
-		for ( UINT rowInc : range( 4 ) )
+		std::array<std::bitset<8>, 8> ttlBits;
+		for ( UINT rowInc : range( 8 ) )
 		{
-			for ( UINT numberInc : range( 16 ) )
+			for ( UINT numberInc : range( 8 ) )
 			{
 				ttlBits[rowInc].set( numberInc, snapshot.ttlStatus[rowInc][numberInc] );
 			}
@@ -1681,7 +1646,7 @@ void DioSystem::fpgaForceOutput(std::array<unsigned short, 4> buffer) //UNTESTED
 	uint8_t xlow, xhigh;
 	int fpgaBankCtr, val1, val2;
 
-	dataToForce = buffer; //Array of four words, each corresponding to a row of 16 ttls. FPGA takes 
+	dataToForce = buffer; //Array of eight words, each corresponding to a row of 8 ttls. FPGA takes 
 
 	for (int i = 0; i < 8; i+=2)
 	{

@@ -14,10 +14,9 @@ void writeAxisFifo(char* device_str, char* command_str) {
 	strcpy(device_path_c, axis_fifo_path);
 	strcat(device_path_c, device_str);
 
-	fprintf("device_path = %s/n", device_path_c);
+	printf("device_path = %s\n", device_path_c);
 
-
-	seq_fd = open("/dev/axis_fifo_0x0000000080004000", O_RDWR);
+	seq_fd = open(device_path_c, O_RDWR);
 
 	if (seq_fd == -1)
 	{
@@ -145,20 +144,22 @@ void chimeraInterface(int sockfd)
 	char* pch;
 	std::vector<char*> command_pch;
 
-	bzero(buffer, MAX);
-	//printf("buffer: %p\n", buffer);
-	readBuffer(sockfd, buffer, sizeof(buffer));
-
-	pch = strtok(buffer, "_");
-	command_pch.push_back(pch);
-	while (pch != NULL)
+	for (;;)
 	{
-		//printf("%s\n", pch);
-		pch = strtok(NULL, "_");
-		command_pch.push_back(pch);
-	}
+		bzero(buffer, MAX);
+		//printf("buffer: %p\n", buffer);
+		readBuffer(sockfd, buffer, sizeof(buffer));
 
-	writeAxisFifo(command_pch[0], command_pch[1]);
+		pch = strtok(buffer, "_");
+		command_pch.push_back(pch);
+		while (pch != NULL)
+		{
+			//printf("%s\n", pch);
+			pch = strtok(NULL, "_");
+			command_pch.push_back(pch);
+		}
+		writeAxisFifo(command_pch[0], command_pch[1]);
+	}
 }
 
 // Driver function 

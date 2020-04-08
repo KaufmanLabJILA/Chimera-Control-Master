@@ -21,7 +21,7 @@ class TtlSettingsDialog : public CDialog
 	private:
 		DECLARE_MESSAGE_MAP();
 		ttlInputStruct* input;
-		std::array<Control<CStatic>, 16> numberlabels;
-		std::array<Control<CStatic>, 4> rowLabels;
-		std::array<std::array<Control<CEdit>, 16>, 4> edits;
+		std::array<Control<CStatic>, 24> numberlabels;
+		std::array<Control<CStatic>, 3> rowLabels;
+		std::array<std::array<Control<CEdit>, 24>, 3> edits;
 };

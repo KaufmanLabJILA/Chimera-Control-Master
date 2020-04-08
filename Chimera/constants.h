@@ -120,7 +120,7 @@
 	const std::string LIB_PATH = PROJECT_LOCATION + "Waveforms-Library\\dummyLib\\";
 	const std::string DEFAULT_SCRIPT_FOLDER_PATH = PROJECT_LOCATION + "Default Scripts\\";
 	const std::string PROFILES_PATH = PROJECT_LOCATION + "Profiles\\";
-	const std::string DATA_SAVE_LOCATION = DATABASE_LOCATION;
+	const std::string DATA_SAVE_LOCATION = PROJECT_LOCATION + "Data\\";
 	const std::string MUSIC_LOCATION = PROJECT_LOCATION + "Camerawg\\Final Fantasy VII - Victory Fanfare [HQ].mp3";
 	const std::string FUNCTIONS_FOLDER_LOCATION = PROJECT_LOCATION + "Functions\\";
 	const std::string MASTER_CONFIGURATION_FILE_ADDRESS = PROJECT_LOCATION + "Master-Configuration.txt";

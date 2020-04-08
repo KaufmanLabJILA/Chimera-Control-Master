@@ -141,7 +141,7 @@ UINT AuxiliaryWindow::getNumberOfDacs()
 }
 
 
-std::array<std::array<std::string, 16>, 4> AuxiliaryWindow::getTtlNames()
+std::array<std::array<std::string, 8>, 8> AuxiliaryWindow::getTtlNames()
 {
 	return ttlBoard.getAllNames();
 }

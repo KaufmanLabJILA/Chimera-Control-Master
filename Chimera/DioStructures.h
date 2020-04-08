@@ -31,7 +31,7 @@ struct DioSnapshot
 	// the time of the snapshot
 	double time;
 	// all values at this time.
-	std::array< std::array<bool, 16>, 4 > ttlStatus;
+	std::array< std::array<bool, 8>, 8 > ttlStatus;
 };
 
 typedef struct _DIO64STAT 

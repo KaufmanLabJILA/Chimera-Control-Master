@@ -96,12 +96,12 @@ int ZynqTCP::connectTCP(const char ip_address[])
 		if (BytesSent == SOCKET_ERROR)
 		{
 			thrower("Unable to send message to server!");
-			return 0;
+			return 1;
 		}
 		else
 		{
 			memset(buff, 0, sizeof(buff));
-			return sizeof(buff);
+			return 0;
 		}
 		
 	}
