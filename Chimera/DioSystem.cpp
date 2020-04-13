@@ -84,7 +84,7 @@ ULONG DioSystem::countDacTriggers(UINT variation)
 {
 	ULONG triggerCount = 0;
 	// D14
-	std::pair<unsigned short, unsigned short> dacLine = { 0,7 };
+	std::pair<unsigned short, unsigned short> dacLine = { 0, 7 };
 	for (auto command : ttlCommandList[variation])
 	{
 		// count each rising edge.
@@ -1247,10 +1247,10 @@ void DioSystem::formatForFPGA(UINT variation)
 
 		// next set of bits gives the timestamp of the snapshot
 		t = snapshot.time * timeConv;
-		r3 = (snapIndex % (int)pow(256, 3));
+		r3 = ((int)t % (int)pow(256, 3));
 		r2 = r3 % (int)pow(256, 2);
 		r1 = r2 % (int)pow(256, 1);
-		byte_bufs[1][3] = (int)(snapIndex / pow(256, 3));
+		byte_bufs[1][3] = (int)(t / pow(256, 3));
 		byte_bufs[1][2] = (int)(r3 / pow(256, 2));
 		byte_bufs[1][1] = (int)(r2 / pow(256, 1));
 		byte_bufs[1][0] = r1;

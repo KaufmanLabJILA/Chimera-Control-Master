@@ -67,7 +67,7 @@ void writeAxisFifo(char* device_str, char* command_str) {
 
 void writeDIO(int sockfd, int numSnapshots)
 {
-	int seq_fd;
+	int seq_fd, n;
 	char axis_fifo_path[] = "/dev/axis_fifo_0x0000000080004000";
 
 	seq_fd = open(axis_fifo_path, O_RDWR);
@@ -81,18 +81,27 @@ void writeDIO(int sockfd, int numSnapshots)
 	printf("sequencer device open\n");
 
 	char *byte_buf = new char[LEN_BYTE_BUF * 3 * numSnapshots];
+	char byte_buf_block[LEN_BYTE_BUF];
 
-	readBuffer(sockfd, byte_buf, sizeof(byte_buf));
+	readBuffer(sockfd, byte_buf, LEN_BYTE_BUF * 3 * numSnapshots);
 
-	for (int i = 0; i < LEN_BYTE_BUF * 3 * numSnapshots; ++i)
+	for (int i = 0; i < numSnapshots; ++i)
 	{
-		std::bitset<8> bitbuf(byte_buf[i]);
-		std::cout << "char " << i << " = " << bitbuf << "\n";
+		std::cout << "snapshot " << i << "\n";
+		for (int j = 0; j < 3; ++j)
+		{
+			std::cout << "block " << j << "\n";
+			for (int k = 3; k >= 0; --k)
+			{
+				std::bitset<8> bitbuf(byte_buf[i * 12 + j * 4 + k]);
+				std::cout << "byte " << k << ": " << bitbuf << "\n";
+				byte_buf_block[k] = *(byte_buf + (i * 12 + j * 4 + k));
+			}
+			n = write(seq_fd, &(byte_buf_block), LEN_BYTE_BUF);
+			std::cout << "wrote " << n << " bytes" << "\n";
+		}
+		std::cout << "\n";
 	}
-
-	int n;
-	n = write(seq_fd, &byte_buf, LEN_BYTE_BUF * 3 * numSnapshots);
-	printf("%u bytes written to sequencer.\n", n);
 
 	close(seq_fd);
 	printf("sequencer device closed\n");
