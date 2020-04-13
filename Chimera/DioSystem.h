@@ -13,6 +13,7 @@
 //#include <iostream>
 //#include <stdio.h>
 #include "RC028.h"
+#include "ZynqTCP.h"
 //#include <windows.h>
 //#include <chrono>
 /**/
@@ -118,7 +119,10 @@ class DioSystem
 		FT_HANDLE ftHandle;
 		HANDLE m_hSerialComm;
 
-		std::vector<RC028> dioFPGA;
+		//Zynq tcp connection
+		ZynqTCP zynq_tcp;
+
+		std::vector<std::vector<std::array<char[DIO_LEN_BYTE_BUF], 3>>> dioFPGA;
 		std::vector<DioCommandForm> ttlCommandFormList;
 		// Each element of first vector is for each variation.
 		std::vector<std::vector<DioCommand>> ttlCommandList;

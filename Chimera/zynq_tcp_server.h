@@ -13,12 +13,16 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <sstream>
 #include "stdint.h"
+#include <bitset>
 
 
 void writeAxisFifo(char* device_str, char* command_str);
 
-void readBuffer(int socket, char* buffer, int bufferSize);
+void writeDIO(int sockfd, int numSnapshots);
 
-void chimeraInterface(int sockfd);
+std::string readBuffer(int socket, char* buffer, int bufferSize);
+
+int chimeraInterface(int sockfd);
 

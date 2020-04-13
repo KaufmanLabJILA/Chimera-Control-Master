@@ -1,6 +1,5 @@
 #pragma once
 
-#include "stdafx.h"
 #include <stdio.h> 
 #include <stdlib.h> 
 #include <string.h> 
@@ -18,5 +17,6 @@ public:
 	~ZynqTCP();
 	void disconnect();
 	int connectTCP(const char ip_address[]);
+	int writeDIO(std::vector<std::array<char[DIO_LEN_BYTE_BUF], 3>> TtlSnapshots);
 
 };
