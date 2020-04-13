@@ -9,7 +9,7 @@ DacSystem::DacSystem() : dacResolution(10.0 / pow(2, 16))
 {
 	/// set some constants...
 	// Both are 0-INDEXED. D16
-	dacTriggerLine = { 3, 14 }; //NOTE: IF YOU CHANGE THIS YOU NEED TO ALSO CHANGE IN IT THE COUNTDACTRIGGERS FUNCTION WHERE IT IS ALSO HARDCODED FML.
+	dacTriggerLine = { 0, 7 }; //NOTE: IF YOU CHANGE THIS YOU NEED TO ALSO CHANGE IN IT THE COUNTDACTRIGGERS FUNCTION WHERE IT IS ALSO HARDCODED FML.
 	// paraphrasing adam...
 	// Dacs sample at 1 MHz, so 0.5 us is appropriate.
 	// in ms.

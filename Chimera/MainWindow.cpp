@@ -378,9 +378,11 @@ BOOL MainWindow::OnInitDialog( )
 		errBox(err.what());
 	}
 	if (tcp_connect == 0) {
-		char buffer[80];
+		/*char buffer[80];
 		sprintf_s(buffer, 80, "Connected to Zynq server. Sent %u Bytes.\n", tcp_connect);
-		setShortStatus(buffer);
+		setShortStatus(buffer);*/
+		setShortStatus("Connected to Zynq server. Disconnecting now.");
+		zynq_tcp.disconnect();
 	}
 	else
 	{

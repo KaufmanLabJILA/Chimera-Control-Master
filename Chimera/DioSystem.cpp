@@ -84,7 +84,7 @@ ULONG DioSystem::countDacTriggers(UINT variation)
 {
 	ULONG triggerCount = 0;
 	// D14
-	std::pair<unsigned short, unsigned short> dacLine = { 3,14 };
+	std::pair<unsigned short, unsigned short> dacLine = { 0,7 };
 	for (auto command : ttlCommandList[variation])
 	{
 		// count each rising edge.
@@ -296,7 +296,7 @@ std::array<std::array<std::string, 8>, 8> DioSystem::getAllNames()
 
 void DioSystem::startDioFPGA(UINT variation)
 {
-	dioFPGA[variation].arm_trigger();
+	//dioFPGA[variation].arm_trigger();
 	//dioFPGA[variation].trigger();
 	//TODO: make a toggle that sets this in the code.
 }
@@ -448,8 +448,8 @@ void DioSystem::initialize(POINT& loc, cToolTips& toolTips, AuxiliaryWindow* mas
 		ttlrow = (row + 1) % 3;
 		ttlcol = (3 - floor((row + 1) / 3) - 1);
 		ypos = ttlrow;
-		ttlRowLabels[row].sPos = { loc.x + ttlcol * (25 + 28 * 8), loc.y + ttlrow * (28 + 25) + 10, loc.x + (ttlcol + 1) * (25 + 28 * 8), loc.y + ttlrow * (28 + 25) + 45};
-		ttlRowLabels[row].Create(cstr(row+1), WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_LEFT, ttlRowLabels[row].sPos, master, id++);
+		ttlRowLabels[row].sPos = { loc.x + ttlcol * (25 + 28 * 8), loc.y + ttlrow * (28 + 25) + 10, loc.x + (ttlcol + 1) * (25 + 28 * 8), loc.y + ttlrow * (28 + 25) + 45 };
+		ttlRowLabels[row].Create(cstr(row + 1), WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_LEFT, ttlRowLabels[row].sPos, master, id++);
 
 		for (UINT number = 0; number < 8; number++)
 		{
@@ -967,8 +967,29 @@ int DioSystem::disconnectDioFPGA()
 void DioSystem::writeTtlDataToFPGA(UINT variation, bool loadSkip) //arguments unused, just paralleling original DIO structure
 {
 
-	dioFPGA[variation].write();
+	//dioFPGA[variation].write();
+	int tcp_connect;
+	try
+	{
+		tcp_connect = zynq_tcp.connectTCP(ZYNQ_ADDRESS);
+	}
+	catch (Error& err)
+	{
+		tcp_connect = 1;
+		errBox(err.what());
+	}
 
+	if (tcp_connect == 0)
+	{
+		zynq_tcp.writeDIO(dioFPGA[variation]);
+		zynq_tcp.disconnect();
+	}
+	else
+	{
+		throw("connection to zynq failed. can't write Ttl data\n");
+	}
+
+	
 }
 
 void DioSystem::writeTtlData(UINT variation, bool loadSkip)
@@ -1055,10 +1076,10 @@ void DioSystem::waitTillFinished(UINT variation, bool skipOption)
 	wait(totalTime);
 
 	bool running = true;
-	while (running != false) {
+	/*while (running != false) {
 		running = dioFPGA[variation].runstatus();
 		wait(1);
-	}
+	}*/
 	wait(5);//TODO: Fix DAC system and get rid of this.
 }
 
@@ -1080,7 +1101,7 @@ void DioSystem::interpretKey(std::vector<variableType>& variables)
 	/// imporantly, this sizes the relevant structures.
 	ttlCommandList = std::vector<std::vector<DioCommand>>(variations);
 	ttlSnapshots = std::vector<std::vector<DioSnapshot>>(variations);
-	dioFPGA = std::vector<RC028>(variations); //TODO: fix this
+	dioFPGA = std::vector<std::vector<std::array<char[DIO_LEN_BYTE_BUF], 3>>>(variations);
 	loadSkipTtlSnapshots = std::vector<std::vector<DioSnapshot>>(variations);
 	formattedTtlSnapshots = std::vector<std::vector<std::array<WORD, 6>>>(variations);
 	loadSkipFormattedTtlSnapshots = std::vector<std::vector<std::array<WORD, 6>>>(variations);
@@ -1090,7 +1111,7 @@ void DioSystem::interpretKey(std::vector<variableType>& variables)
 	// and interpret the command list for each variation.
 	for (UINT variationNum = 0; variationNum < variations; variationNum++)
 	{
-		dioFPGA[variationNum].init(connType, ftHandle, m_hSerialComm);
+		//dioFPGA[variationNum].init(connType, ftHandle, m_hSerialComm);
 		for (UINT commandInc = 0; commandInc < ttlCommandFormList.size(); commandInc++)
 		{
 			DioCommand tempCommand;
@@ -1158,7 +1179,7 @@ void DioSystem::organizeTtlCommands(UINT variation)
 	ttlSnapshots[variation].back().time = timeOrganizer[0].first;
 	for (UINT zeroInc = 0; zeroInc < timeOrganizer[0].second.size(); zeroInc++)
 	{
-		// make sure to address he correct ttl. the ttl location is located in individuaTTL_CommandList but you need 
+		// make sure to address the correct ttl. the ttl location is located in individuaTTL_CommandList but you need 
 		// to make sure you access the correct command.
 		UINT row = orderedList[timeOrganizer[0].second[zeroInc]].line.first;
 		UINT column = orderedList[timeOrganizer[0].second[zeroInc]].line.second;
@@ -1209,49 +1230,59 @@ std::pair<USHORT, USHORT> DioSystem::calcDoubleShortTime(double time)
 void DioSystem::formatForFPGA(UINT variation)
 {
 	int snapIndex = 0;
-	int val1, val2, fpgaBankCtr;
-	ULONG timeConv = 100000;
-	std::array<int, 8> fpgaBanks;
+	ULONG timeConv = 1000000; // DIO time given in multiples of 10 ns
+	std::array<char[DIO_LEN_BYTE_BUF], 3> byte_bufs;
+	int r1, r2, r3;
+	double t;
+	char c;
 	for (auto snapshot : ttlSnapshots[variation])
 	{
-		fpgaBankCtr = 0;
-		for (auto bank : snapshot.ttlStatus) //bank here is set of 8 booleans
+		// enable byte 3 for DIO (=1), 0 and 1 bytes set the address of instruction,
+		// which should be the snapIndex.
+		
+		byte_bufs[0][3] = 0x01; // enable for DIO
+		byte_bufs[0][2] = 0x00;
+		byte_bufs[0][1] = (int)snapIndex / 256;
+		byte_bufs[0][0] = snapIndex % 256;
+
+		// next set of bits gives the timestamp of the snapshot
+		t = snapshot.time * timeConv;
+		r3 = (snapIndex % (int)pow(256, 3));
+		r2 = r3 % (int)pow(256, 2);
+		r1 = r2 % (int)pow(256, 1);
+		byte_bufs[1][3] = (int)(snapIndex / pow(256, 3));
+		byte_bufs[1][2] = (int)(r3 / pow(256, 2));
+		byte_bufs[1][1] = (int)(r2 / pow(256, 1));
+		byte_bufs[1][0] = r1;
+
+		// for each DIO bank convert the boolean array to a byte (only four banks for now)
+		for (int i = 0; i < 4; i++)
 		{
-			val1 = 0;//convert first 8 of snap shot to int
-			for (int i = 0; i < 8; i++)
-			{
-				val1 = val1 + pow(2, i)*bank[i];
-			}
-			val2 = 0;//convert next 8 of snap shot to int
+			std::array<bool, 8> bank = snapshot.ttlStatus[i]; //bank here is set of 8 booleans
+			c = 0x00;
 			for (int j = 0; j < 8; j++)
 			{
-				val2 = val2 + pow(2, j)*bank[j + 8];
+				c += pow(2, j)*bank[j];
 			}
-			fpgaBanks[fpgaBankCtr] = val1;
-			fpgaBanks[fpgaBankCtr + 1] = val2;
-			fpgaBankCtr = fpgaBankCtr + 2;
+			byte_bufs[2][i] = c;
 		}
-		dioFPGA[variation].setPoint(snapIndex, snapshot.time*timeConv, fpgaBanks[0], fpgaBanks[1], fpgaBanks[2], fpgaBanks[3], fpgaBanks[4], fpgaBanks[5], fpgaBanks[6], fpgaBanks[7]);
-		//errBox("Snapindex: " + str(fpgaBankCtr));
-		//std::cout << "SnapIndex: " << snapIndex << " blah" << std::endl;
+		dioFPGA[variation].push_back(byte_bufs);
 		snapIndex = snapIndex + 1;
 	}
-	dioFPGA[variation].setPoint(snapIndex, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-	//For each snapShot
-	//dioSetpoint(ii, .time, 0;;7, 8;;15, 16...)
+	// termination
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			byte_bufs[i][j] = 0x00;
+			byte_bufs[i][j] = 0x00;
+			byte_bufs[i][j] = 0x00;
+			byte_bufs[i][j] = 0x00;
+		}
+	}
+	dioFPGA[variation].push_back(byte_bufs);
+	
 
-	//dioFPGA.setPoint(0, 0, 1, 1, 0, 0, 0, 0, 0, 0);
-	//dioFPGA.setPoint(1, 10, 0, 0, 0, 0, 0, 0, 0, 0);
-//	dioFPGA.setPoint(2, 20, 1, 1, 0, 0, 0, 0, 0, 0);
-	//dioFPGA.setPoint(3, 40, 0, 0, 0, 0, 0, 0, 0, 0);
-	//dioFPGA.setPoint(4, 50, 1, 1, 0, 0, 0, 0, 0, 0);
-	//dioFPGA.setPoint(5, 80, 0, 0, 0, 0, 0, 0, 0, 0);
-	//dioFPGA.setPoint(6, 90, 1, 1, 0, 0, 0, 0, 0, 0);
-	//dioFPGA.setPoint(7, 130, 0, 0, 0, 0, 0, 0, 0, 0);
-	//dioFPGA.setPoint(8, 140, 1, 1, 0, 0, 0, 0, 0, 0);
-	//dioFPGA.setPoint(9, 190, 0, 0, 0, 0, 0, 0, 0, 0);
-	//dioFPGA.setPoint(10, 250, 0, 0, 0, 0, 0, 0, 0, 0);
-	//dioFPGA.setPoint(11, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 }
 
 void DioSystem::convertToFinalFormat(UINT variation)
@@ -1264,7 +1295,7 @@ void DioSystem::convertToFinalFormat(UINT variation)
 	// do bit arithmetic.
 	for (auto& snapshot : ttlSnapshots[variation])
 	{
-		// each major index is a row (A, B, C, D), each minor index is a ttl state (0, 1) in that row.
+		// each major index is a row, each minor index is a ttl state (0, 1) in that row.
 		std::array<std::bitset<8>, 8> ttlBits;
 		for (UINT rowInc : range(8))
 		{
@@ -1287,7 +1318,7 @@ void DioSystem::convertToFinalFormat(UINT variation)
 	// same loop with the loadSkipSnapshots.
 	for (auto& snapshot : loadSkipTtlSnapshots[variation])
 	{
-		// each major index is a row (A, B, C, D), each minor index is a ttl state (0, 1) in that row.
+		// each major index is a row, each minor index is a ttl state (0, 1) in that row.
 		std::array<std::bitset<8>, 8> ttlBits;
 		for (UINT rowInc : range(8))
 		{
@@ -1639,13 +1670,13 @@ void DioSystem::fpgaForceOutput(std::array<unsigned short, 4> buffer) //UNTESTED
 	}
 
 
-	dioFPGA[0].setPoint(1, 10000, fpgaBanks[0], fpgaBanks[1], fpgaBanks[2], fpgaBanks[3], fpgaBanks[4], fpgaBanks[5], fpgaBanks[6], fpgaBanks[7]);
-	dioFPGA[0].setPoint(2, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-	//Could call the functions that contain these but this felt more appropriate since this isn't in a standard call  
-	//connectDioFPGA();
-	dioFPGA[0].write();
-	dioFPGA[0].arm_trigger();
-	dioFPGA[0].trigger();
+	//dioFPGA[0].setPoint(1, 10000, fpgaBanks[0], fpgaBanks[1], fpgaBanks[2], fpgaBanks[3], fpgaBanks[4], fpgaBanks[5], fpgaBanks[6], fpgaBanks[7]);
+	//dioFPGA[0].setPoint(2, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+	////Could call the functions that contain these but this felt more appropriate since this isn't in a standard call  
+	////connectDioFPGA();
+	//dioFPGA[0].write();
+	//dioFPGA[0].arm_trigger();
+	//dioFPGA[0].trigger();
 	//disconnectDioFPGA();
 }
 

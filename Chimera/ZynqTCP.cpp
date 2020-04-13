@@ -10,11 +10,27 @@ ZynqTCP::ZynqTCP()
 }
 
 ZynqTCP::~ZynqTCP() {
-	disconnect();
+	//disconnect();
 }
 
 void ZynqTCP::disconnect() {
 	if (!ZNYQ_SAFEMODE) {
+		char buff[ZYNQ_MAX_BUFF];
+		memset(buff, 0, sizeof(buff));
+		char end_command[] = "end_0";
+
+		int n = sprintf_s(buff, ZYNQ_MAX_BUFF, "%s", end_command);
+
+		int BytesSent;
+		BytesSent = send(ConnectSocket, buff, sizeof(buff), 0);
+		if (BytesSent == SOCKET_ERROR)
+		{
+			thrower("Unable to send end message to server!");
+		}
+		else
+		{
+			memset(buff, 0, sizeof(buff));
+		}
 		closesocket(ConnectSocket);
 	}
 }
@@ -50,7 +66,7 @@ int ZynqTCP::connectTCP(const char ip_address[])
 		return 1;
 	}
 
-	SOCKET ConnectSocket = INVALID_SOCKET;
+	ConnectSocket = INVALID_SOCKET;
 
 	// Attempt to connect to the first address returned by
 // the call to getaddrinfo
@@ -84,26 +100,56 @@ int ZynqTCP::connectTCP(const char ip_address[])
 	}
 	else
 	{
-		char command[] = "a test command";
-		char buff[ZYNQ_MAX_BUFF];
+		return 0;
+	}
+
+}
+
+int ZynqTCP::writeDIO(std::vector<std::array<char[DIO_LEN_BYTE_BUF], 3>> TtlSnapshots)
+{
+
+	char buff[ZYNQ_MAX_BUFF];
+	char buff_snapshot[DIO_LEN_BYTE_BUF * 3 + 1];
+	memset(buff, 0, sizeof(buff));
+	memset(buff_snapshot, 0, sizeof(buff_snapshot));
+	std::string TtlSnapshot_str;
+
+	int BytesSent = 0;
+
+	sprintf_s(buff, ZYNQ_MAX_BUFF, "DIO_%u", TtlSnapshots.size());
+	//errBox(buff);
+
+	BytesSent = send(ConnectSocket, buff, sizeof(buff), 0);
+	if (BytesSent == SOCKET_ERROR)
+	{
+		thrower("Unable to send message to server!");
+		return 1;
+	}
+	else
+	{
 		memset(buff, 0, sizeof(buff));
 
-		int n;
-		n = sprintf_s(buff, ZYNQ_MAX_BUFF, "4000_%s", command);
+		for (auto TtlSnapshot : TtlSnapshots)
+		{
+			/*strcpy(buff_snapshot, TtlSnapshot[0]);
+			strcat(buff_snapshot, TtlSnapshot[1]);
+			strcat(buff_snapshot, TtlSnapshot[2]);*/
+			//TtlSnapshot_str = std::string(TtlSnapshot[0]) + std::string(TtlSnapshot[1]) + std::string(TtlSnapshot[2]);
+			//sprintf_s(buff_snapshot, DIO_LEN_BYTE_BUF * 3, "%s", TtlSnapshot[0], TtlSnapshot[1], TtlSnapshot[2]);
+			BytesSent = send(ConnectSocket, TtlSnapshot[0], sizeof(TtlSnapshot[0]), 0);
+			BytesSent = send(ConnectSocket, TtlSnapshot[1], sizeof(TtlSnapshot[1]), 0);
+			BytesSent = send(ConnectSocket, TtlSnapshot[2], sizeof(TtlSnapshot[2]), 0);
+			if (BytesSent == SOCKET_ERROR)
+			{
+				thrower("Unable to send message to server!");
+				return 1;
+			}
+		}
 
-		int BytesSent;
-		BytesSent = send(ConnectSocket, buff, sizeof(buff), 0);
-		if (BytesSent == SOCKET_ERROR)
-		{
-			thrower("Unable to send message to server!");
-			return 1;
-		}
-		else
-		{
-			memset(buff, 0, sizeof(buff));
-			return 0;
-		}
-		
+		return 0;
+
 	}
+
+	
 
 }
