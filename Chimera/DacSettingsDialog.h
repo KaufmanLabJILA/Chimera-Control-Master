@@ -27,10 +27,10 @@ class DacSettingsDialog : public CDialog
 		DECLARE_MESSAGE_MAP()
 		
 		//dacInputStruct input;
-		std::array<Control<CStatic>, 24> numberLabels;
-		std::array<Control<CEdit>, 24> nameEdits;
-		std::array<Control<CEdit>, 24> minValEdits;
-		std::array<Control<CEdit>, 24> maxValEdits;
+		std::array<Control<CStatic>, 32> numberLabels;
+		std::array<Control<CEdit>, 32> nameEdits;
+		std::array<Control<CEdit>, 32> minValEdits;
+		std::array<Control<CEdit>, 32> maxValEdits;
 		std::array<Control<CStatic>, 3> dacNumberHeaders;
 		std::array<Control<CStatic>, 3> dacNameHeaders;
 		std::array<Control<CStatic>, 3> dacMinValHeaders;

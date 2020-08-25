@@ -105,7 +105,7 @@ int ZynqTCP::connectTCP(const char ip_address[])
 
 }
 
-int ZynqTCP::writeDIO(std::vector<std::array<char[DIO_LEN_BYTE_BUF], 3>> TtlSnapshots)
+int ZynqTCP::writeDIO(std::vector<std::array<char[DIO_LEN_BYTE_BUF], 1>> TtlSnapshots)
 {
 
 	char buff[ZYNQ_MAX_BUFF];
@@ -137,8 +137,6 @@ int ZynqTCP::writeDIO(std::vector<std::array<char[DIO_LEN_BYTE_BUF], 3>> TtlSnap
 			//TtlSnapshot_str = std::string(TtlSnapshot[0]) + std::string(TtlSnapshot[1]) + std::string(TtlSnapshot[2]);
 			//sprintf_s(buff_snapshot, DIO_LEN_BYTE_BUF * 3, "%s", TtlSnapshot[0], TtlSnapshot[1], TtlSnapshot[2]);
 			BytesSent = send(ConnectSocket, TtlSnapshot[0], DIO_LEN_BYTE_BUF, 0);
-			BytesSent = send(ConnectSocket, TtlSnapshot[1], DIO_LEN_BYTE_BUF, 0);
-			BytesSent = send(ConnectSocket, TtlSnapshot[2], DIO_LEN_BYTE_BUF, 0);
 			if (BytesSent == SOCKET_ERROR)
 			{
 				thrower("Unable to send message to server!");

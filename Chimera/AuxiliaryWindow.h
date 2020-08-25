@@ -59,7 +59,7 @@ public:
 	void loadFriends(MainWindow* mainWin, ScriptingWindow* scriptWin, CameraWindow* camWin);
 	std::string getSystemStatusMsg();
 	std::array<std::array<std::string, 8>, 8> getTtlNames();
-	std::array<std::string, 24> getDacNames();
+	std::array<std::string, 32> getDacNames();
 
 	//void updateAgilent(agilentNames name);
 	//void newAgilentScript(agilentNames name);

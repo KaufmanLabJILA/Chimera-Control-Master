@@ -147,7 +147,7 @@ std::array<std::array<std::string, 8>, 8> AuxiliaryWindow::getTtlNames()
 }
 
 
-std::array<std::string, 24> AuxiliaryWindow::getDacNames()
+std::array<std::string, 32> AuxiliaryWindow::getDacNames()
 {
 	return dacBoards.getAllNames();
 }
@@ -376,7 +376,7 @@ void AuxiliaryWindow::zeroDacs()
 		ttlBoard.resetTtlEvents();
 		dacBoards.prepareForce();
 		ttlBoard.prepareForce();
-		for (int dacInc : range(24))
+		for (int dacInc : range(32))
 		{
 			dacBoards.prepareDacForceChange(dacInc, 0, &ttlBoard);
 		}

@@ -7,6 +7,8 @@ from ad9959 import AD9959
 
 import struct
 
+dioByteLen = 20
+
 class GPIO_seq_point:
   def __init__(self, address, time, output):
     self.address = address
@@ -100,16 +102,26 @@ class sequencer:
 		for point in points:
 		  self.write_dac_point(point)
 
-	def dio_seq_write_points(self):
+	def dio_seq_write_points(self, byte_buf, num_snapshots):
 		points=[]
-		points.append(GPIO_seq_point(address=0,time=0,output=0xFFFFFFFF))
-		points.append(GPIO_seq_point(address=1,time=1000,output=0x00000000))
-		points.append(GPIO_seq_point(address=2,time=2000,output=0xFFFFFFFF))
-		points.append(GPIO_seq_point(address=3,time=40000,output=0x00000000))
-		points.append(GPIO_seq_point(address=4,time=0,output=0x00000000))
+		for ii in range(num_snapshots):
+			[t, out] = self.dio_read_point(byte_buf[ii*dioByteLen: ii*dioByteLen + dioByteLen])
+			points.append(GPIO_seq_point(address=ii,time=t,output=out))
+		points.append(GPIO_seq_point(address=num_snapshots,time=0,output=0x00000000))
+
+		for point in points:
+			print point.address
+			print point.time
+			print point.output
 
 		for point in points:
 		  self.write_dio_point(point)
+
+	def dio_read_point(self, snapshot):
+		snapshot_split = snapshot.split('_')
+		t = int(snapshot_split[0].strip('t'), 16)
+		out = int(snapshot_split[1].strip('b').strip('\0'), 16)
+		return [t, out]
 
 if __name__ == "__main__":
   seq = sequencer()

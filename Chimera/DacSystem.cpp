@@ -46,7 +46,7 @@ DacSystem::DacSystem() : dacResolution(10.0 / pow(2, 16))
 }
 
 
-std::array<double, 24> DacSystem::getDacStatus()
+std::array<double, 32> DacSystem::getDacStatus()
 {
 	return dacValues;
 }
@@ -440,7 +440,7 @@ void DacSystem::handleButtonPress(DioSystem* ttls)
 	dacCommandFormList.clear();
 	prepareForce();
 	ttls->prepareForce();
-	std::array<double, 24> vals;
+	std::array<double, 32> vals;
 	for (UINT dacInc = 0; dacInc < dacLabels.size(); dacInc++)
 	{
 		CString text;
@@ -547,7 +547,7 @@ void DacSystem::findLoadSkipSnapshots( double time, std::vector<variableType>& v
 }
 
 
-std::array<double, 24> DacSystem::getFinalSnapshot()
+std::array<double, 32> DacSystem::getFinalSnapshot()
 {
 	if (dacSnapshots.size() != 0)
 	{
@@ -567,7 +567,7 @@ std::array<double, 24> DacSystem::getFinalSnapshot()
 }
 
 
-std::array<std::string, 24> DacSystem::getAllNames()
+std::array<std::string, 32> DacSystem::getAllNames()
 {
 	return dacNames;
 }
@@ -579,7 +579,7 @@ std::array<std::string, 24> DacSystem::getAllNames()
  * program doesn't change it's internal memory of all of the status of the dacs as the experiment runs. (it can't, 
  * besides it would intensive to keep track of that in real time).
  */
-void DacSystem::setDacStatusNoForceOut(std::array<double, 24> status)
+void DacSystem::setDacStatusNoForceOut(std::array<double, 32> status)
 {
 	// set the internal values
 	dacValues = status;
@@ -641,7 +641,7 @@ void DacSystem::interpretKey( std::vector<variableType>& variables, std::string&
 	dacSnapshots = std::vector<std::vector<DacSnapshot>>( variations );
 	loadSkipDacSnapshots = std::vector<std::vector<DacSnapshot>>( variations );
 	finalFormatDacData = std::vector<std::array<std::vector<double>, 2>>( variations );
-	loadSkipDacFinalFormat = std::vector<std::array<std::vector<double>, 3>>( variations );
+	loadSkipDacFinalFormat = std::vector<std::array<std::vector<double>, 2>>( variations );
 	bool resolutionWarningPosted = false;
 	bool nonIntegerWarningPosted = false;
 	for (UINT variationInc = 0; variationInc < variations; variationInc++)
@@ -970,19 +970,19 @@ void DacSystem::writeDacs(UINT variation, bool loadSkip)
 		return;
 	}
 	if (finalData[0].size() != 16 * snapshots.size() 
-		 || finalData[1].size() != 16 * snapshots.size()
+		 || finalData[1].size() != 16 * snapshots.size())
 	{
 		thrower( "Data array size doesn't match the number of time slices in the experiment!" );
 	}
 	// Should probably run a check on samples written.
 	int32 samplesWritten;
 	//
-	daqWriteAnalogF64( staticDac0, snapshots.size(), false, 0.01, DAQmx_Val_GroupByScanNumber, &finalData[0].front(),
+	/*daqWriteAnalogF64( staticDac0, snapshots.size(), false, 0.01, DAQmx_Val_GroupByScanNumber, &finalData[0].front(),
 					   &samplesWritten );
 	daqWriteAnalogF64( staticDac1, snapshots.size(), false, 0.01, DAQmx_Val_GroupByScanNumber, &finalData[1].front(),
 					   &samplesWritten );
 	daqWriteAnalogF64( staticDac2, snapshots.size(), false, 0.01, DAQmx_Val_GroupByScanNumber, &finalData[2].front(), 
-					   &samplesWritten );
+					   &samplesWritten );*/
 }
 
 
@@ -1035,87 +1035,87 @@ void DacSystem::formatDacDataForSequencer(UINT variation)
 {
 	int snapIndex = 0;
 	ULONG timeConv = 1000000;
-	char[DAC_LEN_BYTE_BUF] byte_buf;
+	char byte_buf[DAC_LEN_BYTE_BUF];
 	std::array<int, 16> dac0Values;
 	std::array<int, 16> dac1Values;
 	int r1, r2, r3;
 	double t;
-	char c;
-	for (auto snapshot : finalFormatDacData[variation])
-	{
-		// enable byte 3 for DIO (=1), 0 and 1 bytes set the address of instruction,
-		// which should be the snapIndex.
-		sprintf_s(buff, DAC_LEN_BYTE_BUF, "DIOseq_%u", TtlSnapshots.size());
-		byte_bufs[0][0][3] = 0x01; // enable for DIO
-		byte_bufs[0][0][2] = 0x00;
-		byte_bufs[0][0][1] = (int)snapIndex / 256;
-		byte_bufs[0][0][0] = snapIndex % 256;
-		byte_bufs[1][0][3] = 0x01; // enable for DIO
-		byte_bufs[1][0][2] = 0x00;
-		byte_bufs[1][0][1] = (int)snapIndex / 256;
-		byte_bufs[1][0][0] = snapIndex % 256;
+	//char c;
+	//for (auto snapshot : finalFormatDacData[variation])
+	//{
+	//	// enable byte 3 for DIO (=1), 0 and 1 bytes set the address of instruction,
+	//	// which should be the snapIndex.
+	//	sprintf_s(buff, DAC_LEN_BYTE_BUF, "DIOseq_%u", TtlSnapshots.size());
+	//	byte_bufs[0][0][3] = 0x01; // enable for DIO
+	//	byte_bufs[0][0][2] = 0x00;
+	//	byte_bufs[0][0][1] = (int)snapIndex / 256;
+	//	byte_bufs[0][0][0] = snapIndex % 256;
+	//	byte_bufs[1][0][3] = 0x01; // enable for DIO
+	//	byte_bufs[1][0][2] = 0x00;
+	//	byte_bufs[1][0][1] = (int)snapIndex / 256;
+	//	byte_bufs[1][0][0] = snapIndex % 256;
 
-		// next set of bits gives the timestamp of the snapshot
-		t = snapshot.time * timeConv;
-		r3 = ((int)t % (int)pow(256, 3));
-		r2 = r3 % (int)pow(256, 2);
-		r1 = r2 % (int)pow(256, 1);
-		byte_bufs[0][1][3] = (int)(t / pow(256, 3));
-		byte_bufs[0][1][2] = (int)(r3 / pow(256, 2));
-		byte_bufs[0][1][1] = (int)(r2 / pow(256, 1));
-		byte_bufs[0][1][0] = r1;
-		byte_bufs[1][1][3] = (int)(t / pow(256, 3));
-		byte_bufs[1][1][2] = (int)(r3 / pow(256, 2));
-		byte_bufs[1][1][1] = (int)(r2 / pow(256, 1));
-		byte_bufs[1][1][0] = r1;
+	//	// next set of bits gives the timestamp of the snapshot
+	//	t = snapshot.time * timeConv;
+	//	r3 = ((int)t % (int)pow(256, 3));
+	//	r2 = r3 % (int)pow(256, 2);
+	//	r1 = r2 % (int)pow(256, 1);
+	//	byte_bufs[0][1][3] = (int)(t / pow(256, 3));
+	//	byte_bufs[0][1][2] = (int)(r3 / pow(256, 2));
+	//	byte_bufs[0][1][1] = (int)(r2 / pow(256, 1));
+	//	byte_bufs[0][1][0] = r1;
+	//	byte_bufs[1][1][3] = (int)(t / pow(256, 3));
+	//	byte_bufs[1][1][2] = (int)(r3 / pow(256, 2));
+	//	byte_bufs[1][1][1] = (int)(r2 / pow(256, 1));
+	//	byte_bufs[1][1][0] = r1;
 
-		for (int i = 0; i < 16; i++)
-		{
-			dac0Values[i] = (int) 128 * 256 + (snapshot[0][i] * 256 * 256 / 20);
-			dac1Values[i] = (int) 128 * 256 + (snapshot[0][i] * 256 * 256 / 20);
-			r3 = ((int)dac0Values[i] % (int)pow(256, 3));
-			r2 = r3 % (int)pow(256, 2);
-			r1 = r2 % (int)pow(256, 1);
-			byte_bufs[0][1][3] = (int)(t / pow(256, 3));
-			byte_bufs[0][1][2] = (int)(r3 / pow(256, 2));
-			byte_bufs[0][1][1] = (int)(r2 / pow(256, 1));
-			byte_bufs[0][1][0] = r1;
-			r3 = ((int)dac1Values[i] % (int)pow(256, 3));
-			r2 = r3 % (int)pow(256, 2);
-			r1 = r2 % (int)pow(256, 1);
-			byte_bufs[0][1][3] = (int)(t / pow(256, 3));
-			byte_bufs[0][1][2] = (int)(r3 / pow(256, 2));
-			byte_bufs[0][1][1] = (int)(r2 / pow(256, 1));
-			byte_bufs[0][1][0] = r1;
-		}
+	//	for (int i = 0; i < 16; i++)
+	//	{
+	//		dac0Values[i] = (int) 128 * 256 + (snapshot[0][i] * 256 * 256 / 20);
+	//		dac1Values[i] = (int) 128 * 256 + (snapshot[0][i] * 256 * 256 / 20);
+	//		r3 = ((int)dac0Values[i] % (int)pow(256, 3));
+	//		r2 = r3 % (int)pow(256, 2);
+	//		r1 = r2 % (int)pow(256, 1);
+	//		byte_bufs[0][1][3] = (int)(t / pow(256, 3));
+	//		byte_bufs[0][1][2] = (int)(r3 / pow(256, 2));
+	//		byte_bufs[0][1][1] = (int)(r2 / pow(256, 1));
+	//		byte_bufs[0][1][0] = r1;
+	//		r3 = ((int)dac1Values[i] % (int)pow(256, 3));
+	//		r2 = r3 % (int)pow(256, 2);
+	//		r1 = r2 % (int)pow(256, 1);
+	//		byte_bufs[0][1][3] = (int)(t / pow(256, 3));
+	//		byte_bufs[0][1][2] = (int)(r3 / pow(256, 2));
+	//		byte_bufs[0][1][1] = (int)(r2 / pow(256, 1));
+	//		byte_bufs[0][1][0] = r1;
+	//	}
 
-		
+	//	
 
-		// for each DIO bank convert the boolean array to a byte (only four banks for now)
-		for (int i = 0; i < 4; i++)
-		{
-			std::array<bool, 8> bank = snapshot.ttlStatus[i]; //bank here is set of 8 booleans
-			c = 0x00;
-			for (int j = 0; j < 8; j++)
-			{
-				c += pow(2, j)*bank[j];
-			}
-			byte_bufs[0][2][i] = c;
-		}
-		dioFPGA[variation].push_back(byte_bufs);
-		snapIndex = snapIndex + 1;
-	}
-	// termination
-	for (int i = 0; i < 3; i++)
-	{
-		for (int j = 0; j < 4; j++)
-		{
-			byte_bufs[i][j] = 0x00;
-			byte_bufs[i][j] = 0x00;
-			byte_bufs[i][j] = 0x00;
-			byte_bufs[i][j] = 0x00;
-		}
-	}
+	//	// for each DIO bank convert the boolean array to a byte (only four banks for now)
+	//	for (int i = 0; i < 4; i++)
+	//	{
+	//		std::array<bool, 8> bank = snapshot.ttlStatus[i]; //bank here is set of 8 booleans
+	//		c = 0x00;
+	//		for (int j = 0; j < 8; j++)
+	//		{
+	//			c += pow(2, j)*bank[j];
+	//		}
+	//		byte_bufs[0][2][i] = c;
+	//	}
+	//	dioFPGA[variation].push_back(byte_bufs);
+	//	snapIndex = snapIndex + 1;
+	//}
+	//// termination
+	//for (int i = 0; i < 3; i++)
+	//{
+	//	for (int j = 0; j < 4; j++)
+	//	{
+	//		byte_bufs[i][j] = 0x00;
+	//		byte_bufs[i][j] = 0x00;
+	//		byte_bufs[i][j] = 0x00;
+	//		byte_bufs[i][j] = 0x00;
+	//	}
+	//}
 }
 
 void DacSystem::handleDacScriptCommand( DacCommandForm command, std::string name, std::vector<UINT>& dacShadeLocations,

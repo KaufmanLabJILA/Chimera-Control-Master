@@ -30,7 +30,7 @@ class DacSystem
 		void setDacCommandForm( DacCommandForm command );
 		void setForceDacEvent( int line, double val, DioSystem* ttls, UINT variation );
 		void handleRoundToDac(CMenu& menu);
-		void setDacStatusNoForceOut(std::array<double, 24> status);
+		void setDacStatusNoForceOut(std::array<double, 32> status);
 		void prepareDacForceChange(int line, double voltage, DioSystem* ttls);
 		void stopDacs();
 		void setDacTriggerEvents( DioSystem* ttls, UINT variation );
@@ -48,7 +48,7 @@ class DacSystem
 		void checkTimingsWork(UINT variation );
 		void setName(int dacNumber, std::string name, cToolTips& toolTips, AuxiliaryWindow* master);
 		std::string getName(int dacNumber);
-		std::array<std::string, 24> getAllNames();
+		std::array<std::string, 32> getAllNames();
 		std::string getErrorMessage(int errorCode);
 		ULONG getNumberEvents(UINT variation );
 		void handleDacScriptCommand( DacCommandForm command, std::string name, std::vector<UINT>& dacShadeLocations, 
@@ -65,8 +65,8 @@ class DacSystem
 		bool isValidDACName(std::string name);
 		HBRUSH handleColorMessage(CWnd* hwnd, brushMap brushes, rgbMap rgbs, CDC* cDC);
 		void resetDacEvents();
-		std::array<double, 24> getDacStatus();
-		std::array<double, 24> getFinalSnapshot();
+		std::array<double, 32> getDacStatus();
+		std::array<double, 32> getFinalSnapshot();
 		void checkValuesAgainstLimits(UINT variation );
 		void prepareForce();
 		double roundToDacResolution(double);

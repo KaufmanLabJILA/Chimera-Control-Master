@@ -11,6 +11,8 @@ from axi_gpio import AXI_GPIO
 
 from dac81416 import DAC81416
 
+dioByteLen = 20
+
 class zynq_tcp_server:
 	def __init__(self):
 		self.seq = sequencer.sequencer()
@@ -65,18 +67,28 @@ class zynq_tcp_server:
 		else:
 			print 'no device selected'
 
+	# def writeDIOseq(self, conn, data_split):
+	# 	num_snapshots = int(data_split[1].strip('\0'))
+	# 	print 'num_bytes = ', 4*3*num_snapshots
+	# 	byte_buf = self.socket_read(conn, 4*3*num_snapshots) #each byte buffer snapshot consists of 3 sets of 4 bytes
+	# 	print hex(ord(byte_buf[0]))
+	# 	for ii in range(num_snapshots):
+	# 		print '\n', 'snapshot', ii
+	# 		for jj in range(3):
+	# 			print 'block', jj
+	# 			for byte in range(4):
+	# 				print 'byte ', byte, ':', format(int(binascii.hexlify(byte_buf[ii*12 + jj*4 + byte]), 16), '08b')
+	# 			self.seq.write_dio(byte_buf[ii*12 + jj*4 : ii*12 + jj*4 + 4])
+
 	def writeDIOseq(self, conn, data_split):
 		num_snapshots = int(data_split[1].strip('\0'))
-		print 'num_bytes = ', 4*3*num_snapshots
-		byte_buf = self.socket_read(conn, 4*3*num_snapshots) #each byte buffer snapshot consists of 3 sets of 4 bytes
-		print hex(ord(byte_buf[0]))
+		print 'num_bytes = ', dioByteLen*num_snapshots
+		byte_buf = self.socket_read(conn, dioByteLen*num_snapshots) #each byte buffer snapshot consists of 3 sets of 4 bytes
+		# print hex(ord(byte_buf[0]))
 		for ii in range(num_snapshots):
 			print '\n', 'snapshot', ii
-			for jj in range(3):
-				print 'block', jj
-				for byte in range(4):
-					print 'byte ', byte, ':', format(int(binascii.hexlify(byte_buf[ii*12 + jj*4 + byte]), 16), '08b')
-				self.seq.write_dio(byte_buf[ii*12 + jj*4 : ii*12 + jj*4 + 4])
+			print byte_buf[ii*dioByteLen: ii*dioByteLen + dioByteLen]
+		self.seq.dio_seq_write_points(byte_buf, num_snapshots)
 
 	def socket_read(self, conn, expected):
 	    """Read expected number of bytes from sock

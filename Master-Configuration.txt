@@ -199,6 +199,30 @@ sidemotpower
 piezomirror
 -10 - 10
 0
+dac24
+-10 - 10
+0
+dac25
+-10 - 10
+0
+dac26
+-10 - 10
+0
+dac27
+-10 - 10
+0
+dac28
+-10 - 10
+0
+dac29
+-10 - 10
+0
+dac30
+-10 - 10
+0
+dac31
+-10 - 10
+0
 12
 xcoilval 0.018
 ycoilval 0.021

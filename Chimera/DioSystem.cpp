@@ -1101,7 +1101,7 @@ void DioSystem::interpretKey(std::vector<variableType>& variables)
 	/// imporantly, this sizes the relevant structures.
 	ttlCommandList = std::vector<std::vector<DioCommand>>(variations);
 	ttlSnapshots = std::vector<std::vector<DioSnapshot>>(variations);
-	dioFPGA = std::vector<std::vector<std::array<char[DIO_LEN_BYTE_BUF], 3>>>(variations);
+	dioFPGA = std::vector<std::vector<std::array<char[DIO_LEN_BYTE_BUF], 1>>>(variations);
 	loadSkipTtlSnapshots = std::vector<std::vector<DioSnapshot>>(variations);
 	formattedTtlSnapshots = std::vector<std::vector<std::array<WORD, 6>>>(variations);
 	loadSkipFormattedTtlSnapshots = std::vector<std::vector<std::array<WORD, 6>>>(variations);
@@ -1230,58 +1230,36 @@ std::pair<USHORT, USHORT> DioSystem::calcDoubleShortTime(double time)
 void DioSystem::formatForFPGA(UINT variation)
 {
 	int snapIndex = 0;
-	ULONG timeConv = 1000000; // DIO time given in multiples of 10 ns
-	std::array<char[DIO_LEN_BYTE_BUF], 3> byte_bufs;
-	int r1, r2, r3;
-	double t;
-	char c;
+	unsigned int timeConv = 1000000; // DIO time given in multiples of 10 ns
+	std::array<char[DIO_LEN_BYTE_BUF], 1> byte_buf;
+	std::array<bool, 8> bank;
+	//char byte_buf[DIO_LEN_BYTE_BUF];
+	unsigned int t;
+	int c;
+
 	for (auto snapshot : ttlSnapshots[variation])
 	{
-		// enable byte 3 for DIO (=1), 0 and 1 bytes set the address of instruction,
-		// which should be the snapIndex.
-		
-		byte_bufs[0][3] = 0x01; // enable for DIO
-		byte_bufs[0][2] = 0x00;
-		byte_bufs[0][1] = (int)snapIndex / 256;
-		byte_bufs[0][0] = snapIndex % 256;
+		t = (unsigned int) (snapshot.time * timeConv);
 
-		// next set of bits gives the timestamp of the snapshot
-		t = snapshot.time * timeConv;
-		r3 = ((int)t % (int)pow(256, 3));
-		r2 = r3 % (int)pow(256, 2);
-		r1 = r2 % (int)pow(256, 1);
-		byte_bufs[1][3] = (int)(t / pow(256, 3));
-		byte_bufs[1][2] = (int)(r3 / pow(256, 2));
-		byte_bufs[1][1] = (int)(r2 / pow(256, 1));
-		byte_bufs[1][0] = r1;
-
-		// for each DIO bank convert the boolean array to a byte (only four banks for now)
-		for (int i = 0; i < 4; i++)
+		//for each DIO bank convert the boolean array to a byte (only four banks for now)
+		c = 0;
+		for (int i = 0; i < 8; i++)
 		{
-			std::array<bool, 8> bank = snapshot.ttlStatus[i]; //bank here is set of 8 booleans
-			c = 0x00;
+			bank = snapshot.ttlStatus[i]; //bank here is set of 8 booleans
 			for (int j = 0; j < 8; j++)
 			{
-				c += pow(2, j)*bank[j];
+				c += pow(256, i)*pow(2, j)*bank[j];
 			}
-			byte_bufs[2][i] = c;
 		}
-		dioFPGA[variation].push_back(byte_bufs);
+
+		sprintf_s(byte_buf[0], DIO_LEN_BYTE_BUF, "t%08X_b%08X", t, c);
+
+
+
+
+		dioFPGA[variation].push_back(byte_buf);
 		snapIndex = snapIndex + 1;
 	}
-	// termination
-	for (int i = 0; i < 3; i++)
-	{
-		for (int j = 0; j < 4; j++)
-		{
-			byte_bufs[i][j] = 0x00;
-			byte_bufs[i][j] = 0x00;
-			byte_bufs[i][j] = 0x00;
-			byte_bufs[i][j] = 0x00;
-		}
-	}
-	dioFPGA[variation].push_back(byte_bufs);
-	
 
 }
 
