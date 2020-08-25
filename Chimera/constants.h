@@ -88,10 +88,11 @@
 	#define DAQMX_SAFEMODE true
 	#define RSG_SAFEMODE true
 	#define ZNYQ_SAFEMODE false
-	#define ZYNQ_ADDRESS "10.0.0.2"
+	#define ZYNQ_ADDRESS "10.10.0.2"
 	#define ZYNQ_PORT "8080"
-	#define ZYNQ_MAX_BUFF 80
+	#define ZYNQ_MAX_BUFF 64
 	#define DIO_LEN_BYTE_BUF 4
+	#define DAC_LEN_BYTE_BUF 18
 	#define DDS_FPGA_ADDRESS "FT1I6IBSB" //Device Serial: FT1I6IBS, Use FT1I6IBSB in C++ to select Channel B
 	#define GIGAMOOG_PORT "COM7"
 	#define TOP_BOTTOM_TEK_SAFEMODE true

@@ -226,55 +226,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 				}
 			}
 			expUpdate("Programming Moog, DDS...\r\n", input->comm, input->quiet);
-			//input->rsg->programRsg( variationInc ); 
-			//input->rsg->setInfoDisp( variationInc ); 
-			//// program devices 
-			//for (auto& agilent : input->agilents) 
-			//{ 
-			//	input->comm->sendColorBox( Intensity, 'Y' ); 
-			//	agilent->setAgilent( variationInc, input->variables ); //TODO: Runs slow, and not actually in use. 
-			//	input->comm->sendColorBox( Intensity, 'G' ); 
-			//} 
-			// check right number of triggers (currently must be done after agilent is set. 
-			//for ( auto& agilent : input->agilents ) 
-			//{ 
-			//	for ( auto chan : range( 2 ) ) 
-			//	{ 
-			//		if ( agilent->getOutputInfo( ).channel[chan].option != 4 ) 
-			//		{ 
-			//			continue; 
-			//		} 
-			//		UINT ttlTrigs; 
-			//		if ( input->runMaster ) 
-			//		{ 
-			//			ttlTrigs = input->ttls->countTriggers( agilent->getTriggerLine( ).first, 
-			//													 agilent->getTriggerLine( ).second, variationInc ); 
-			//		} 
-			//		else 
-			//		{ 
-			//			ttlTrigs = 0; 
-			//		}					  
-			//		UINT agilentExpectedTrigs = agilent->getOutputInfo( ).channel[chan].scriptedArb.wave.getNumTrigs( ); 
-			//		if ( ttlTrigs != agilentExpectedTrigs ) 
-			//		{ 
-			//			warnings += "WARNING: Agilent " + agilent->getName( ) + " is not getting triggered by the " 
-			//				"ttl system the same number of times a trigger command appears in the agilent channel " 
-			//				+ str( chan + 1 ) + " script. There are " + str( agilentExpectedTrigs ) + " triggers in" 
-			//				" the agilent script, and " + str( ttlTrigs ) + " ttl triggers sent to that agilent."; 
-			//		} 
-			//	} 
-			//} 
-			//if (input->runNiawg) 
-			//{ 
-			//	input->niawg->programNiawg( input, output, warnings, variationInc, variations, variedMixedSize, 
-			//								userScriptSubmit ); 
-			//	//if ( foundRearrangement ) 
-			//	//{ 
-			//	//	input->niawg->turnOffRerng( ); 
-			//	//	input->conditionVariableForRearrangement->notify_all( ); 
-			//	//	input->niawg->handleStartingRerng( input, output ); 
-			//	//} 
-			//} 
+
 			if (!DDS_SAFEMODE) {
 				input->dds->loadDDSScript(input->ddsScriptAddress);
 				input->dds->programDDS(input->dds, input->variables, variationInc);

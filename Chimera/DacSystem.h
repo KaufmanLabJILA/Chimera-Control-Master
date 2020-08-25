@@ -37,6 +37,7 @@ class DacSystem
 		void interpretKey( std::vector<variableType>& variables, std::string& warnings );
 		void organizeDacCommands(UINT variation);
 		void makeFinalDataFormat(UINT variation );
+		void formatDacDataForSequencer(UINT variation);
 		void writeDacs( UINT variation, bool loadSkip );
 		void startDacs();
 		void configureClocks( UINT variation, bool loadSkip );
@@ -75,19 +76,21 @@ class DacSystem
 		Control<CStatic> dacTitle;
 		Control<CButton> dacSetButton;
 		Control<CButton> zeroDacs;
-		std::array<Control<CStatic>, 24> dacLabels;
-		std::array<Control<CEdit>, 24> breakoutBoardEdits;
-		std::array<double, 24> dacValues;
-		std::array<std::string, 24> dacNames;
-		std::array<double, 24> dacMinVals;
-		std::array<double, 24> dacMaxVals;
-		std::array<double, 24> defaultVals;
+		std::array<Control<CStatic>, 32> dacLabels;
+		std::array<Control<CEdit>, 32> breakoutBoardEdits;
+		std::array<double, 32> dacValues;
+		std::array<std::string, 32> dacNames;
+		std::array<double, 32> dacMinVals;
+		std::array<double, 32> dacMaxVals;
+		std::array<double, 32> defaultVals;
 		const double dacResolution;
 		std::vector<DacCommandForm> dacCommandFormList;
 		// the first vector is for each variation.
 		std::vector<std::vector<DacCommand>> dacCommandList;
 		std::vector<std::vector<DacSnapshot>> dacSnapshots, loadSkipDacSnapshots;
-		std::vector<std::array<std::vector<double>, 3>> finalFormatDacData, loadSkipDacFinalFormat;
+		std::vector<std::array<std::vector<double>, 2>> finalFormatDacData, loadSkipDacFinalFormat;
+		std::vector<std::vector<char[DAC_LEN_BYTE_BUF]>> seqDac0Data;
+		std::vector<std::vector<char[DAC_LEN_BYTE_BUF]>> seqDac1Data;
 
 		std::pair<USHORT, USHORT> dacTriggerLine;
 

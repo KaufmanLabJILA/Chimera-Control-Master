@@ -30,5 +30,5 @@ struct DacCommand
 struct DacSnapshot
 {
 	double time;
-	std::array<double, 24> dacValues;
+	std::array<double, 32> dacValues;
 };

@@ -116,7 +116,7 @@ int ZynqTCP::writeDIO(std::vector<std::array<char[DIO_LEN_BYTE_BUF], 3>> TtlSnap
 
 	int BytesSent = 0;
 
-	sprintf_s(buff, ZYNQ_MAX_BUFF, "DIO_%u", TtlSnapshots.size());
+	sprintf_s(buff, ZYNQ_MAX_BUFF, "DIOseq_%u", TtlSnapshots.size());
 	//errBox(buff);
 
 	BytesSent = send(ConnectSocket, buff, sizeof(buff), 0);

@@ -786,7 +786,7 @@ double DioSystem::getClockStatus()
 		return GetTickCount();
 	}
 	double timeInSeconds = stat.time[0] + stat.time[1] * 65535;
-	return timeInSeconds / 10000.0;
+	return timeInSeconds / 100000.0;
 	// assuming the clock runs at 10 MHz, return in ms.
 }
 
@@ -1065,12 +1065,12 @@ void DioSystem::waitTillFinished(UINT variation, bool skipOption)
 	if (skipOption)
 	{
 		totalTime = (loadSkipFormattedTtlSnapshots[variation].back()[0]
-			+ 65535 * loadSkipFormattedTtlSnapshots[variation].back()[1]) / 10000.0;
+			+ 65535 * loadSkipFormattedTtlSnapshots[variation].back()[1]) / 100000.0;
 	}
 	else
 	{
 		totalTime = (formattedTtlSnapshots[variation].back()[0]
-			+ 65535 * formattedTtlSnapshots[variation].back()[1]) / 10000.0;
+			+ 65535 * formattedTtlSnapshots[variation].back()[1]) / 100000.0;
 	}
 
 	wait(totalTime);
@@ -1087,7 +1087,7 @@ void DioSystem::waitTillFinished(UINT variation, bool skipOption)
 double DioSystem::getTotalTime(UINT variation)
 {
 	return (formattedTtlSnapshots[variation].back()[0]
-		+ 65535 * formattedTtlSnapshots[variation].back()[1]) / 10000.0 + 1;
+		+ 65535 * formattedTtlSnapshots[variation].back()[1]) / 100000.0 + 1;
 }
 
 
@@ -1218,9 +1218,9 @@ std::pair<USHORT, USHORT> DioSystem::calcDoubleShortTime(double time)
 	USHORT lowordTime, hiwordTime;
 	// convert to system clock ticks. Assume that the crate is running on a 10 MHz signal, so multiply by
 	// 10,000,000, but then my time is in milliseconds, so divide that by 1,000, ending with multiply by 10,000
-	lowordTime = ULONGLONG(time * 10000) % 65535;
-	USHORT temp = time * 10000;
-	hiwordTime = ULONGLONG(time * 10000) / 65535;
+	lowordTime = ULONGLONG(time * 100000) % 65535;
+	USHORT temp = time * 100000;
+	hiwordTime = ULONGLONG(time * 100000) / 65535;
 	return { lowordTime, hiwordTime };
 }
 

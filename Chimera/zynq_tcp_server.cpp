@@ -6,65 +6,6 @@
 #define SA struct sockaddr
 #define LEN_BYTE_BUF 4
 
-void writeAxisFifo(char* device_str, char* command_str) {
-
-	int seq_fd;
-	char axis_fifo_path[] = "/dev/axis_fifo_0x000000008000";
-	char* device_path_c = new char[strlen(device_str) + strlen(axis_fifo_path) + 1];
-	strcpy(device_path_c, axis_fifo_path);
-	strcat(device_path_c, device_str);
-
-	printf("device_path = %s\n", device_path_c);
-
-	seq_fd = open(device_path_c, O_RDWR);
-
-	if (seq_fd == -1)
-	{
-		printf("Cannot open sequencer device");
-		exit(1);
-	}
-
-	char byte_buf[LEN_BYTE_BUF];
-	byte_buf[3] = 0x01; //enable for DIO
-	byte_buf[2] = 0x00;
-	byte_buf[1] = 0x00; //address 0x00
-	byte_buf[0] = 0x00; //address 0x00
-	write(seq_fd, &byte_buf, LEN_BYTE_BUF);
-
-	byte_buf[3] = 0x00; //timestamp (32-bit)
-	byte_buf[2] = 0x00; //timestamp (32-bit)
-	byte_buf[1] = 0x00; //timestamp (32-bit)
-	byte_buf[0] = 0x01; //timestamp (32-bit)
-	write(seq_fd, &byte_buf, LEN_BYTE_BUF);
-
-	byte_buf[3] = 0x00; //output (32-bit)
-	byte_buf[2] = 0x00; //output (32-bit)
-	byte_buf[1] = 0x00; //output (32-bit)
-	byte_buf[0] = 0x02; //output (32-bit)
-	write(seq_fd, &byte_buf, LEN_BYTE_BUF);
-
-	// TERMINATION
-	byte_buf[3] = 0x01; //enable for DIO
-	byte_buf[2] = 0x00;
-	byte_buf[1] = 0x00; //address 0x03
-	byte_buf[0] = 0x04; //address 0x03
-	write(seq_fd, &byte_buf, LEN_BYTE_BUF);
-
-	byte_buf[3] = 0x00; //timestamp (32-bit)
-	byte_buf[2] = 0x00; //timestamp (32-bit)
-	byte_buf[1] = 0x00; //timestamp (32-bit)
-	byte_buf[0] = 0x00; //timestamp (32-bit)
-	write(seq_fd, &byte_buf, LEN_BYTE_BUF);
-
-	byte_buf[3] = 0x00; //output (32-bit)
-	byte_buf[2] = 0x00; //output (32-bit)
-	byte_buf[1] = 0x00; //output (32-bit)
-	byte_buf[0] = 0x00; //output (32-bit)
-	write(seq_fd, &byte_buf, LEN_BYTE_BUF);
-
-	close(seq_fd);
-}
-
 void writeDIO(int sockfd, int numSnapshots)
 {
 	int seq_fd, n;
