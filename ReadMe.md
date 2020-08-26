@@ -99,9 +99,7 @@ or replace Release with Debug to get the debug version. HDF5 will now build, it 
 - upon proper installation, when the code starts it should output a small example gnuplot plot, just checking that it's working.
 
 ## DIO (Comments)
-- You shouldn't have to do anything for installation here, I'm including the DIO64 libraries, and they are searched for through their relative paths. I only have the 32-bit libraries, which causes everything here to be in 32-bit mode.
-- even if you don't have dio libraries, the code should compile fine if you run it in dio_safemode
-- Importantly, if you're actually trying to use an old DIO64 card, this will be tricky with any modern operating system. You will need contact Viewpoint (or I can provide you with the documents they gave me) for some instructions on making such a card "compatible" with new systems. You will also need to make sure that you install an old version of NI-VISA (5.1.2 works), as their solution doesn't seem to work with newer versions.
+Needs Yb update
 
 ## Setting up Visual Studio
 - If you follow the above directions carefully and are a bit lucky, my code my just compile after installing everything. However, some files may have shifted around to different locations during your install process, and you'll need to redirect my project to the proper locations for those files.
@@ -124,10 +122,10 @@ or replace Release with Debug to get the debug version. HDF5 will now build, it 
 # Main Systems Overview
 
 ## TTL System
-We use a Viewpoint DIO64 card for an extensive and important digital output system. We call it the TTL system. the TTL system triggers virtually everything in the system to control the timing of everything in the experiment.
+Needs Yb update 
 
 ## DAC System
-We use 3 (at the moment) national instruments Analog out PXI cards.
+Needs Yb update
 
 ## Agilent System
 We use a series of agilent arbitrary function generators during the experiment. they are programmed via Agilent's VISA protocol on a usb cable.
