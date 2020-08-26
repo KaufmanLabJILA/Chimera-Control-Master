@@ -7,6 +7,8 @@
 #include <Ws2tcpip.h>
 #include <io.h>
 #include "stdint.h"
+#include "DacStructures.h"
+#include "DioStructures.h"
 
 class ZynqTCP
 {
@@ -18,5 +20,5 @@ public:
 	void disconnect();
 	int connectTCP(const char ip_address[]);
 	int writeDIO(std::vector<std::array<char[DIO_LEN_BYTE_BUF], 1>> TtlSnapshots);
-	int writeDACs(std::array<std::vector<char[DAC_LEN_BYTE_BUF]>, 2> dacSnapshots);
+	int writeDACs(std::vector<DacChannelSnapshot> dacSnapshots);
 };

@@ -152,10 +152,10 @@ int ZynqTCP::writeDACs(std::vector<DacChannelSnapshot> dacChannelSnapshots)
 
 	int snapIndex = 0;
 	unsigned int timeConv = 1000000; // SEQ time given in multiples of 10 ns
-	unsigned int dacRes = 65536;
 	char byte_buf[DAC_LEN_BYTE_BUF];
 	unsigned int time, duration;
 	unsigned short channel;
+	int output;
 	double start, end;
 
 	int BytesSent = 0;

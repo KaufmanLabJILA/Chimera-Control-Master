@@ -14,9 +14,9 @@ from dac81416 import DAC81416
 class zynq_tcp_server:
 	def __init__(self):
 		self.seq = sequencer.sequencer()
-		self.chimeraInterface()
 		self.dioByteLen = 20
 		self.dacByteLen = 41
+		self.chimeraInterface()
 
 	#Function that reads commands from Chimera and passes them to the axis-fifo interface of the Zynq FPGA
 	def chimeraInterface(self):
@@ -67,19 +67,6 @@ class zynq_tcp_server:
 		else:
 			print 'no device selected'
 
-	# def writeDIOseq(self, conn, data_split):
-	# 	num_snapshots = int(data_split[1].strip('\0'))
-	# 	print 'num_bytes = ', 4*3*num_snapshots
-	# 	byte_buf = self.socket_read(conn, 4*3*num_snapshots) #each byte buffer snapshot consists of 3 sets of 4 bytes
-	# 	print hex(ord(byte_buf[0]))
-	# 	for ii in range(num_snapshots):
-	# 		print '\n', 'snapshot', ii
-	# 		for jj in range(3):
-	# 			print 'block', jj
-	# 			for byte in range(4):
-	# 				print 'byte ', byte, ':', format(int(binascii.hexlify(byte_buf[ii*12 + jj*4 + byte]), 16), '08b')
-	# 			self.seq.write_dio(byte_buf[ii*12 + jj*4 : ii*12 + jj*4 + 4])
-
 	def writeDIOseq(self, conn, data_split):
 		num_snapshots = int(data_split[1].strip('\0'))
 		print 'num_bytes = ', self.dioByteLen*num_snapshots
@@ -88,23 +75,16 @@ class zynq_tcp_server:
 		for ii in range(num_snapshots):
 			print '\n', 'snapshot', ii
 			print byte_buf[ii*self.dioByteLen: ii*self.dioByteLen + self.dioByteLen]
-		self.seq.dio_seq_write_points(byte_len, byte_buf, num_snapshots)
+		self.seq.dio_seq_write_points(self.dioByteLen, byte_buf, num_snapshots)
 
 	def writeDACseq(self, conn, data_split):
-		num_snapshots0 = int(data_split[1])
-		num_snapshots1 = int(data_split[2].strip('\0'))
-		print 'num_snapshots = ', num_snapshots0,  num_snapshots1
-		byte_buf = self.socket_read(conn, self.dacByteLen*num_snapshots0)
-		for ii in range(num_snapshots0):
+		num_snapshots = int(data_split[1].strip('\0'))
+		print 'num_snapshots = ', num_snapshots
+		byte_buf = self.socket_read(conn, self.dacByteLen*num_snapshots)
+		for ii in range(num_snapshots):
 			print '\n', 'snapshot', ii
 			print byte_buf[ii*self.dacByteLen: ii*self.dacByteLen + self.dacByteLen]
-		self.seq.dac_seq_write_points(byte_len, byte_buf, num_snapshots0, 0)
-
-		byte_buf = self.socket_read(conn, self.dacByteLen*num_snapshots1)
-		for ii in range(num_snapshots1):
-			print '\n', 'snapshot', ii
-			print byte_buf[ii*self.dacByteLen: ii*self.dacByteLen + self.dacByteLen]
-		self.seq.dac_seq_write_points(byte_len, byte_buf, num_snapshots1, 1)
+		self.seq.dac_seq_write_points(self.dacByteLen, byte_buf, num_snapshots)
 
 	def socket_read(self, conn, expected):
 	    """Read expected number of bytes from sock

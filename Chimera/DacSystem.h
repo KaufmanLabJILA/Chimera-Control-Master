@@ -89,7 +89,7 @@ class DacSystem
 		std::vector<std::vector<DacCommand>> dacCommandList;
 		std::vector<std::vector<DacSnapshot>> dacSnapshots, loadSkipDacSnapshots;
 		std::vector<std::array<std::vector<double>, 2>> finalFormatDacData, loadSkipDacFinalFormat;
-		std::vector<std::array<std::vector<std::array<char, DAC_LEN_BYTE_BUF>>,2>> seqDacData;
+		std::vector<std::vector<DacChannelSnapshot>> finalDacSnapshots;
 		//std::vector<std::vector<char[DAC_LEN_BYTE_BUF]>> seqDac1Data;
 
 		//Zynq tcp connection

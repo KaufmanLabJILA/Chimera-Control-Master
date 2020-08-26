@@ -32,3 +32,10 @@ struct DacSnapshot
 	double time;
 	std::array<double, 32> dacValues;
 };
+
+struct DacChannelSnapshot
+{
+	unsigned short channel;
+	double time;
+	double dacValue;
+};
