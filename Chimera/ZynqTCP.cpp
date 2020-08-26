@@ -109,15 +109,12 @@ int ZynqTCP::writeDIO(std::vector<std::array<char[DIO_LEN_BYTE_BUF], 1>> TtlSnap
 {
 
 	char buff[ZYNQ_MAX_BUFF];
-	char buff_snapshot[DIO_LEN_BYTE_BUF * 3 + 1];
 	memset(buff, 0, sizeof(buff));
-	memset(buff_snapshot, 0, sizeof(buff_snapshot));
 	std::string TtlSnapshot_str;
 
 	int BytesSent = 0;
 
 	sprintf_s(buff, ZYNQ_MAX_BUFF, "DIOseq_%u", TtlSnapshots.size());
-	//errBox(buff);
 
 	BytesSent = send(ConnectSocket, buff, sizeof(buff), 0);
 	if (BytesSent == SOCKET_ERROR)
@@ -131,11 +128,6 @@ int ZynqTCP::writeDIO(std::vector<std::array<char[DIO_LEN_BYTE_BUF], 1>> TtlSnap
 
 		for (auto TtlSnapshot : TtlSnapshots)
 		{
-			/*strcpy(buff_snapshot, TtlSnapshot[0]);
-			strcat(buff_snapshot, TtlSnapshot[1]);
-			strcat(buff_snapshot, TtlSnapshot[2]);*/
-			//TtlSnapshot_str = std::string(TtlSnapshot[0]) + std::string(TtlSnapshot[1]) + std::string(TtlSnapshot[2]);
-			//sprintf_s(buff_snapshot, DIO_LEN_BYTE_BUF * 3, "%s", TtlSnapshot[0], TtlSnapshot[1], TtlSnapshot[2]);
 			BytesSent = send(ConnectSocket, TtlSnapshot[0], DIO_LEN_BYTE_BUF, 0);
 			if (BytesSent == SOCKET_ERROR)
 			{
@@ -149,5 +141,50 @@ int ZynqTCP::writeDIO(std::vector<std::array<char[DIO_LEN_BYTE_BUF], 1>> TtlSnap
 	}
 
 	
+
+}
+
+int ZynqTCP::writeDACs(std::array<std::vector<char[DAC_LEN_BYTE_BUF]>,2> dacSnapshots)
+{
+	char buff[ZYNQ_MAX_BUFF];
+	memset(buff, 0, sizeof(buff));
+	std::string TtlSnapshot_str;
+
+	int BytesSent = 0;
+
+	sprintf_s(buff, ZYNQ_MAX_BUFF, "DACseq_%u_%u", dacSnapshots[0].size(), dacSnapshots[1].size());
+
+	BytesSent = send(ConnectSocket, buff, sizeof(buff), 0);
+	if (BytesSent == SOCKET_ERROR)
+	{
+		thrower("Unable to send message to server!");
+		return 1;
+	}
+	else
+	{
+		memset(buff, 0, sizeof(buff));
+
+		for (auto dac0Snapshot : dacSnapshots[0])
+		{
+			BytesSent = send(ConnectSocket, dac0Snapshot, DAC_LEN_BYTE_BUF, 0);
+			if (BytesSent == SOCKET_ERROR)
+			{
+				thrower("Unable to send message to server!");
+				return 1;
+			}
+		}
+
+		for (auto dac1Snapshot : dacSnapshots[1])
+		{
+			BytesSent = send(ConnectSocket, dac1Snapshot, DAC_LEN_BYTE_BUF, 0);
+			if (BytesSent == SOCKET_ERROR)
+			{
+				thrower("Unable to send message to server!");
+				return 1;
+			}
+		}
+
+		return 0;
+	}
 
 }

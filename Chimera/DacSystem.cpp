@@ -961,21 +961,45 @@ void DacSystem::configureClocks(UINT variation, bool loadSkip)
 
 void DacSystem::writeDacs(UINT variation, bool loadSkip)
 {
-	std::vector<DacSnapshot>& snapshots = loadSkip ? loadSkipDacSnapshots[variation] : dacSnapshots[variation];
-	std::array<std::vector<double>, 2>& finalData = loadSkip ? loadSkipDacFinalFormat[variation] 
-															 : finalFormatDacData[variation];
-	if (snapshots.size() <= 1)
+
+	//dioFPGA[variation].write();
+	int tcp_connect;
+	try
 	{
-		// need at least 2 events to run dacs.
-		return;
+		tcp_connect = zynq_tcp.connectTCP(ZYNQ_ADDRESS);
 	}
-	if (finalData[0].size() != 16 * snapshots.size() 
-		 || finalData[1].size() != 16 * snapshots.size())
+	catch (Error& err)
 	{
-		thrower( "Data array size doesn't match the number of time slices in the experiment!" );
+		tcp_connect = 1;
+		errBox(err.what());
 	}
-	// Should probably run a check on samples written.
-	int32 samplesWritten;
+
+	if (tcp_connect == 0)
+	{
+		//zynq_tcp.writeDACs(seqDacData[variation]);
+		//zynq_tcp.writeDAC1(seqDac1Data[variation]);
+		zynq_tcp.disconnect();
+	}
+	else
+	{
+		throw("connection to zynq failed. can't write DAC data\n");
+	}
+
+	//std::vector<DacSnapshot>& snapshots = loadSkip ? loadSkipDacSnapshots[variation] : dacSnapshots[variation];
+	//std::array<std::vector<double>, 2>& finalData = loadSkip ? loadSkipDacFinalFormat[variation] 
+	//														 : finalFormatDacData[variation];
+	//if (snapshots.size() <= 1)
+	//{
+	//	// need at least 2 events to run dacs.
+	//	return;
+	//}
+	//if (finalData[0].size() != 16 * snapshots.size() 
+	//	 || finalData[1].size() != 16 * snapshots.size())
+	//{
+	//	thrower( "Data array size doesn't match the number of time slices in the experiment!" );
+	//}
+	//// Should probably run a check on samples written.
+	//int32 samplesWritten;
 	//
 	/*daqWriteAnalogF64( staticDac0, snapshots.size(), false, 0.01, DAQmx_Val_GroupByScanNumber, &finalData[0].front(),
 					   &samplesWritten );
@@ -983,6 +1007,8 @@ void DacSystem::writeDacs(UINT variation, bool loadSkip)
 					   &samplesWritten );
 	daqWriteAnalogF64( staticDac2, snapshots.size(), false, 0.01, DAQmx_Val_GroupByScanNumber, &finalData[2].front(), 
 					   &samplesWritten );*/
+
+
 }
 
 
@@ -1028,18 +1054,61 @@ void DacSystem::makeFinalDataFormat(UINT variation)
 		}
 	}
 
-	formatDacDataForSequencer(variation);
+	formatDacForFPGA(variation);
 }
 
-void DacSystem::formatDacDataForSequencer(UINT variation)
+void DacSystem::formatDacForFPGA(UINT variation)
 {
 	int snapIndex = 0;
-	ULONG timeConv = 1000000;
+	unsigned int timeConv = 1000000; // DIO time given in multiples of 10 ns
 	char byte_buf[DAC_LEN_BYTE_BUF];
-	std::array<int, 16> dac0Values;
-	std::array<int, 16> dac1Values;
-	int r1, r2, r3;
-	double t;
+	unsigned int time, duration;
+	int output;
+	double start, end;
+
+	for (int i = 0; i < dacSnapshots.size(); ++i)
+	{
+		DacSnapshot snapshotPrev;
+		DacSnapshot snapshot;
+		std::vector<int> channels;
+		
+		if (i == 0) {
+			snapshot = dacSnapshots[variation][0];
+			for (int j = 0; j < 32; ++j) {
+				if (snapshot.dacValues[j] != 0) {
+					channels.push_back(j);
+				}
+			}
+		} else {
+			snapshotPrev = dacSnapshots[variation][i - 1];
+			snapshot = dacSnapshots[variation][i];
+			for (int j = 0; j < 32; ++j) {
+				if (snapshot.dacValues[j] != snapshotPrev.dacValues[j]) {
+					channels.push_back(j);
+				}
+			}
+		}
+
+		time = (unsigned int)(snapshot.time * timeConv);
+
+		//for each channel with a changed voltage add a sequence string
+
+		for (int channel : channels) {
+			start = snapshot.dacValues[channel];
+			end = snapshot.dacValues[channel];
+			duration = 0;
+			if (channel < 16) {
+				sprintf_s(byte_buf, DAC_LEN_BYTE_BUF, "t%08X_c%04X_s%2.3f_e%2.3f_d%08x", time, channel, start, end, duration);
+				seqDacData[variation][0].push_back(byte_buf);
+			} else {
+				int channel1 = channel - 16;
+				sprintf_s(byte_buf, DAC_LEN_BYTE_BUF, "t%08X_c%04X_s%2.3f_e%2.3f_d%08x", time, channel1, start, end, duration);
+				//seqDacData[variation][1].push_back(byte_buf);
+			}
+		}
+		snapIndex = snapIndex + 1;
+	}
+
 	//char c;
 	//for (auto snapshot : finalFormatDacData[variation])
 	//{

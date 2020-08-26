@@ -1225,8 +1225,6 @@ std::pair<USHORT, USHORT> DioSystem::calcDoubleShortTime(double time)
 }
 
 
-
-
 void DioSystem::formatForFPGA(UINT variation)
 {
 	int snapIndex = 0;
@@ -1234,28 +1232,25 @@ void DioSystem::formatForFPGA(UINT variation)
 	std::array<char[DIO_LEN_BYTE_BUF], 1> byte_buf;
 	std::array<bool, 8> bank;
 	//char byte_buf[DIO_LEN_BYTE_BUF];
-	unsigned int t;
-	int c;
+	unsigned int time;
+	int output;
 
 	for (auto snapshot : ttlSnapshots[variation])
 	{
-		t = (unsigned int) (snapshot.time * timeConv);
+		time = (unsigned int) (snapshot.time * timeConv);
 
 		//for each DIO bank convert the boolean array to a byte (only four banks for now)
-		c = 0;
+		output = 0;
 		for (int i = 0; i < 8; i++)
 		{
 			bank = snapshot.ttlStatus[i]; //bank here is set of 8 booleans
 			for (int j = 0; j < 8; j++)
 			{
-				c += pow(256, i)*pow(2, j)*bank[j];
+				output += pow(256, i)*pow(2, j)*bank[j];
 			}
 		}
 
-		sprintf_s(byte_buf[0], DIO_LEN_BYTE_BUF, "t%08X_b%08X", t, c);
-
-
-
+		sprintf_s(byte_buf[0], DIO_LEN_BYTE_BUF, "t%08X_b%08X", time, output);
 
 		dioFPGA[variation].push_back(byte_buf);
 		snapIndex = snapIndex + 1;

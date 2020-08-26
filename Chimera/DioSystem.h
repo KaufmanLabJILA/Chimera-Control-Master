@@ -122,7 +122,7 @@ class DioSystem
 		//Zynq tcp connection
 		ZynqTCP zynq_tcp;
 
-		std::vector<std::vector<std::array<char[DIO_LEN_BYTE_BUF],1>>> dioFPGA;
+		std::vector<std::vector<std::array<char[DIO_LEN_BYTE_BUF], 1>>> dioFPGA;
 		std::vector<DioCommandForm> ttlCommandFormList;
 		// Each element of first vector is for each variation.
 		std::vector<std::vector<DioCommand>> ttlCommandList;

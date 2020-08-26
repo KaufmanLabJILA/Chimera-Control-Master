@@ -37,7 +37,7 @@ class DacSystem
 		void interpretKey( std::vector<variableType>& variables, std::string& warnings );
 		void organizeDacCommands(UINT variation);
 		void makeFinalDataFormat(UINT variation );
-		void formatDacDataForSequencer(UINT variation);
+		void formatDacForFPGA(UINT variation);
 		void writeDacs( UINT variation, bool loadSkip );
 		void startDacs();
 		void configureClocks( UINT variation, bool loadSkip );
@@ -89,8 +89,11 @@ class DacSystem
 		std::vector<std::vector<DacCommand>> dacCommandList;
 		std::vector<std::vector<DacSnapshot>> dacSnapshots, loadSkipDacSnapshots;
 		std::vector<std::array<std::vector<double>, 2>> finalFormatDacData, loadSkipDacFinalFormat;
-		std::vector<std::vector<char[DAC_LEN_BYTE_BUF]>> seqDac0Data;
-		std::vector<std::vector<char[DAC_LEN_BYTE_BUF]>> seqDac1Data;
+		std::vector<std::array<std::vector<std::array<char, DAC_LEN_BYTE_BUF>>,2>> seqDacData;
+		//std::vector<std::vector<char[DAC_LEN_BYTE_BUF]>> seqDac1Data;
+
+		//Zynq tcp connection
+		ZynqTCP zynq_tcp;
 
 		std::pair<USHORT, USHORT> dacTriggerLine;
 
