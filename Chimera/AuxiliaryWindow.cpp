@@ -82,6 +82,7 @@ void AuxiliaryWindow::handleNewConfig(std::ofstream& newFile)
 	configVariables.handleNewConfig(newFile);
 	ttlBoard.handleNewConfig(newFile);
 	dacBoards.handleNewConfig(newFile);
+	ddsBoards.handleNewConfig(newFile);
 	/*for (auto& agilent : agilents)
 	{
 		agilent.handleNewConfig(newFile);
@@ -97,6 +98,7 @@ void AuxiliaryWindow::handleSaveConfig(std::ofstream& saveFile)
 	configVariables.handleSaveConfig(saveFile);
 	ttlBoard.handleSaveConfig(saveFile);
 	dacBoards.handleSaveConfig(saveFile);
+	ddsBoards.handleSaveConfig(saveFile);
 	//for (auto& agilent : agilents)
 	//{
 	//	agilent.handleSavingConfig(saveFile, mainWindowFriend->getProfileSettings().categoryPath,
@@ -110,28 +112,13 @@ void AuxiliaryWindow::handleOpeningConfig(std::ifstream& configFile, int version
 {
 	ttlBoard.prepareForce();
 	dacBoards.prepareForce();
+	ddsBoards.prepareForce();
 
 	configVariables.handleOpenConfig(configFile, versionMajor, versionMinor);
 	ttlBoard.handleOpenConfig(configFile, versionMajor, versionMinor);
 	dacBoards.handleOpenConfig(configFile, versionMajor, versionMinor, &ttlBoard);
+	ddsBoards.handleOpenConfig(configFile, versionMajor, versionMinor);
 
-	//agilents[TopBottom].readConfigurationFile(configFile, versionMajor, versionMinor);
-	//agilents[TopBottom].updateSettingsDisplay(1, mainWindowFriend->getProfileSettings().categoryPath,
-	//	mainWindowFriend->getRunInfo());
-	//agilents[Axial].readConfigurationFile(configFile, versionMajor, versionMinor);
-	//agilents[Axial].updateSettingsDisplay(1, mainWindowFriend->getProfileSettings().categoryPath,
-	//	mainWindowFriend->getRunInfo());
-	//agilents[Flashing].readConfigurationFile(configFile, versionMajor, versionMinor);
-	//agilents[Flashing].updateSettingsDisplay(1, mainWindowFriend->getProfileSettings().categoryPath,
-	//	mainWindowFriend->getRunInfo());
-	//if ((versionMajor == 2 && versionMinor > 6) || versionMajor > 2)
-	//{
-	//	agilents[Microwave].readConfigurationFile(configFile, versionMajor, versionMinor);
-	//	agilents[Microwave].updateSettingsDisplay(1, mainWindowFriend->getProfileSettings().categoryPath,
-	//		mainWindowFriend->getRunInfo());
-	//}
-	//topBottomTek.handleOpeningConfig(configFile, versionMajor, versionMinor);
-	//eoAxialTek.handleOpeningConfig(configFile, versionMajor, versionMinor);
 }
 
 
@@ -172,7 +159,7 @@ void AuxiliaryWindow::ConfigVarsDblClick(NMHDR * pNotifyStruct, LRESULT * result
 	try
 	{
 		mainWindowFriend->updateConfigurationSavedStatus(false);
-		configVariables.updateVariableInfo(scriptList, mainWindowFriend, this, &ttlBoard, &dacBoards);
+		configVariables.updateVariableInfo(scriptList, mainWindowFriend, this, &ttlBoard, &dacBoards, &ddsBoards);
 	}
 	catch (Error& exception)
 	{
@@ -211,7 +198,7 @@ void AuxiliaryWindow::GlobalVarDblClick(NMHDR * pNotifyStruct, LRESULT * result)
 	try
 	{
 		mainWindowFriend->updateConfigurationSavedStatus(false);
-		globalVariables.updateVariableInfo(scriptList, mainWindowFriend, this, &ttlBoard, &dacBoards);
+		globalVariables.updateVariableInfo(scriptList, mainWindowFriend, this, &ttlBoard, &dacBoards, &ddsBoards);
 	}
 	catch (Error& exception)
 	{
@@ -340,6 +327,7 @@ void AuxiliaryWindow::OnSize(UINT nType, int cx, int cy)
 */
 	ttlBoard.rearrange(cx, cy, getFonts());
 	dacBoards.rearrange(cx, cy, getFonts());
+	//ddsBoards.rearrange(cx, cy, getFonts());
 
 	configVariables.rearrange(cx, cy, getFonts());
 	globalVariables.rearrange(cx, cy, getFonts());
@@ -433,6 +421,7 @@ void AuxiliaryWindow::loadMotSettings(MasterThreadInput* input)
 		input->quiet = true;
 		input->ttls = &ttlBoard;
 		input->dacs = &dacBoards;
+		input->ddss = &ddsBoards;
 		input->globalControl = &globalVariables;
 		input->comm = mainWindowFriend->getComm();
 		input->settings = { 0,0,0 };
@@ -467,6 +456,7 @@ void AuxiliaryWindow::fillMasterThreadInput(MasterThreadInput* input)
 {
 	input->ttls = &ttlBoard;
 	input->dacs = &dacBoards;
+	input->ddss = &ddsBoards;
 	input->globalControl = &globalVariables;
 
 	// load the variables. This little loop is for letting configuration variables overwrite the globals.
@@ -515,6 +505,7 @@ void AuxiliaryWindow::handleAbort()
 	//ttlBoard.disconnectDioFPGA();
 	ttlBoard.unshadeTtls();
 	dacBoards.unshadeDacs();
+	//ddsBoards.unshadeDDSs();
 }
 
 
@@ -567,6 +558,24 @@ void AuxiliaryWindow::handleMasterConfigSave(std::stringstream& configStream)
 		configStream << dacBoards.getDefaultValue(dacInc) << "\n";
 	}
 
+	// DDS Names
+	for (UINT ddsInc = 0; ddsInc < ddsBoards.getNumberOfDDSs(); ddsInc++)
+	{
+		std::string name = ddsBoards.getName(ddsInc);
+		std::pair<double, double> minMaxFreq = ddsBoards.getDDSFreqRange(ddsInc);
+		std::pair<double, double> minMaxAmp = ddsBoards.getDDSAmpRange(ddsInc);
+		if (name == "")
+		{
+			// then the name hasn't been set, so create the default name
+			name = "DDS" + str(ddsInc);
+		}
+		configStream << name << "\n";
+		configStream << minMaxFreq.first << " - " << minMaxFreq.second << "\n";
+		configStream << minMaxAmp.first << " - " << minMaxAmp.second << "\n";
+		std::array<double, 2> defaultVals = ddsBoards.getDefaultValue(ddsInc);
+		configStream << defaultVals[0] << " , " << defaultVals[1] << "\n";
+	}
+
 	// Number of Variables
 	configStream << globalVariables.getCurrentNumberOfVariables() << "\n";
 	/// Variables
@@ -587,6 +596,8 @@ void AuxiliaryWindow::handleMasterConfigOpen(std::stringstream& configStream, do
 	//ttlBoard.connectDioFPGA();
 	dacBoards.resetDacEvents();
 	dacBoards.prepareForce();
+	ddsBoards.resetDDSEvents();
+	ddsBoards.prepareForce();
 	// save info
 	for (UINT ttlRowInc : range(ttlBoard.getTtlBoardSize().first))
 	{
@@ -659,6 +670,64 @@ void AuxiliaryWindow::handleMasterConfigOpen(std::stringstream& configStream, do
 		dacBoards.setMinMax(dacInc, min, max);
 		dacBoards.prepareDacForceChange(dacInc, defaultValue, &ttlBoard);
 		dacBoards.setDefaultValue(dacInc, defaultValue);
+	}
+	// getting ddss.
+	for (UINT ddsInc : range(ddsBoards.getNumberOfDDSs()))
+	{
+		std::string name;
+		std::string defaultFreqString;
+		std::string defaultAmpString;
+		double defaultFreq;
+		double defaultAmp;
+		std::string minFreqString;
+		std::string maxFreqString;
+		std::string minAmpString;
+		std::string maxAmpString;
+		double minFreq;
+		double maxFreq;
+		double minAmp;
+		double maxAmp;
+		configStream >> name;
+		configStream >> minFreqString;
+		std::string trash;
+		configStream >> trash;
+		if (trash != "-")
+		{
+			thrower("ERROR: Expected \"-\" in config file between min and max freq values!");
+		}
+		configStream >> maxFreqString;
+		configStream >> minAmpString;
+		configStream >> trash;
+		if (trash != "-")
+		{
+			thrower("ERROR: Expected \"-\" in config file between min and max amp values!");
+		}
+		configStream >> maxAmpString;
+		configStream >> defaultFreqString;
+		configStream >> trash;
+		if (trash != ",")
+		{
+			thrower("ERROR: Expected \",\" in config file between default freq and amp values!");
+		}
+		configStream >> defaultAmpString;
+		try
+		{
+			defaultFreq = std::stod(defaultFreqString);
+			defaultAmp = std::stod(defaultAmpString);
+			minFreq = std::stod(minFreqString);
+			maxFreq = std::stod(maxFreqString);
+			minAmp = std::stod(minAmpString);
+			maxAmp = std::stod(maxAmpString);
+		}
+		catch (std::invalid_argument&)
+		{
+			thrower("ERROR: Failed to load one of the default DAC values!");
+		}
+		ddsBoards.setName(ddsInc, name, toolTips, this);
+		ddsBoards.setFreqMinMax(ddsInc, minFreq, maxFreq);
+		ddsBoards.setAmpMinMax(ddsInc, minAmp, maxAmp);
+		ddsBoards.prepareDDSForceChange(ddsInc, { defaultFreq, defaultAmp });
+		ddsBoards.setDefaultValue(ddsInc, { defaultFreq, defaultAmp });
 	}
 	// variables.
 	if (version >= 1.1)

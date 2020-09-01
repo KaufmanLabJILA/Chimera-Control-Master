@@ -92,7 +92,11 @@
 	#define ZYNQ_PORT "8080"
 	#define ZYNQ_MAX_BUFF 64
 	#define DIO_LEN_BYTE_BUF 20
-	#define DAC_LEN_BYTE_BUF 41
+	#define DAC_LEN_BYTE_BUF 42
+	#define DDS_LEN_BYTE_BUF 47
+	#define DAC_TIME_RESOLUTION 1.6 // in ms
+	#define DDS_TIME_RESOLUTION 1.6 // in ms
+	#define DDS_MAX_AMP 1.25 // in mW
 	#define DDS_FPGA_ADDRESS "FT1I6IBSB" //Device Serial: FT1I6IBS, Use FT1I6IBSB in C++ to select Channel B
 	#define GIGAMOOG_PORT "COM7"
 	#define TOP_BOTTOM_TEK_SAFEMODE true

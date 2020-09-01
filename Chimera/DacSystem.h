@@ -33,7 +33,6 @@ class DacSystem
 		void setDacStatusNoForceOut(std::array<double, 32> status);
 		void prepareDacForceChange(int line, double voltage, DioSystem* ttls);
 		void stopDacs();
-		void setDacTriggerEvents( DioSystem* ttls, UINT variation );
 		void interpretKey( std::vector<variableType>& variables, std::string& warnings );
 		void organizeDacCommands(UINT variation);
 		void makeFinalDataFormat(UINT variation );

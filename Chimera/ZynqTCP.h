@@ -8,6 +8,7 @@
 #include <io.h>
 #include "stdint.h"
 #include "DacStructures.h"
+#include "DDSStructures.h"
 #include "DioStructures.h"
 
 class ZynqTCP
@@ -21,4 +22,6 @@ public:
 	int connectTCP(const char ip_address[]);
 	int writeDIO(std::vector<std::array<char[DIO_LEN_BYTE_BUF], 1>> TtlSnapshots);
 	int writeDACs(std::vector<DacChannelSnapshot> dacSnapshots);
+	int writeDDSs(std::vector<DDSChannelSnapshot> ddsSnapshots);
+	int writeCommand(std::string command);
 };

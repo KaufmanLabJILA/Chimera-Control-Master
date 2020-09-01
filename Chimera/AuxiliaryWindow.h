@@ -6,6 +6,7 @@
 #include "MasterManager.h" 
 #include "DioSystem.h"
 #include "DacSystem.h"
+#include "DDSSystem.h"
 #include "VariableSystem.h"
 #include "Script.h"
 #include "RunInfo.h"
@@ -132,6 +133,7 @@ private:
 
 	DioSystem ttlBoard;
 	DacSystem dacBoards;
+	DDSSystem ddsBoards;
 	MasterConfiguration masterConfig{ MASTER_CONFIGURATION_FILE_ADDRESS };
 	//TektronicsControl topBottomTek, eoAxialTek;
 

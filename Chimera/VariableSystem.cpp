@@ -623,7 +623,7 @@ void VariableSystem::handleDraw(NMHDR* pNMHDR, LRESULT* pResult, rgbMap rgbs)
 
 
 void VariableSystem::updateVariableInfo( std::vector<Script*> scripts, MainWindow* mainWin, AuxiliaryWindow* auxWin,
-										 DioSystem* ttls, DacSystem* dacs )
+										 DioSystem* ttls, DacSystem* dacs, DDSSystem* ddss)
 {
 	/// get the item and subitem
 	POINT cursorPos;
@@ -754,6 +754,10 @@ void VariableSystem::updateVariableInfo( std::vector<Script*> scripts, MainWindo
 			if ( dacs->isValidDACName( newName ) )
 			{
 				thrower( "ERROR: the name " + newName + " is already a dac name!" );
+			}
+			if (ddss->isValidDDSName(newName))
+			{
+				thrower("ERROR: the name " + newName + " is already a dds name!");
 			}
 			// update the info inside
 			currentVariables[varNumber].name = newName;

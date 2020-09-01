@@ -24,6 +24,8 @@ struct DacCommand
 	unsigned short line;
 	double time;
 	double value;
+	double endValue;
+	double rampTime;
 };
 
 
@@ -31,6 +33,8 @@ struct DacSnapshot
 {
 	double time;
 	std::array<double, 32> dacValues;
+	std::array<double, 32> dacEndValues;
+	std::array<double, 32> dacRampTimes;
 };
 
 struct DacChannelSnapshot
@@ -38,4 +42,6 @@ struct DacChannelSnapshot
 	unsigned short channel;
 	double time;
 	double dacValue;
+	double dacEndValue;
+	double dacRampTime;
 };

@@ -50,12 +50,14 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 	//output.waves.resize( 2 ); 
 	std::vector<std::pair<UINT, UINT>> ttlShadeLocs;
 	std::vector<UINT> dacShadeLocs;
+	std::vector<UINT> ddsShadeLocs;
 	bool foundRearrangement = false;
 	/// //////////////////////////// 
 	/// start analysis & experiment 
 	try
 	{
 		UINT variations = determineVariationNumber(input->variables);
+		ZynqTCP zynq_tcp;
 		// finishing sentence from before start I think... 
 		expUpdate("Done.\r\n", input->comm, input->quiet);
 		/// Prep agilents 
@@ -69,35 +71,48 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 		expUpdate("Analyzing Master Script...", input->comm, input->quiet);
 		input->dacs->resetDacEvents();
 		input->ttls->resetTtlEvents();
+		input->ddss->resetDDSEvents();
+
+		//initialize devices
+		int tcp_connect;
+		try
+		{
+			tcp_connect = zynq_tcp.connectTCP(ZYNQ_ADDRESS);
+		}
+		catch (Error& err)
+		{
+			tcp_connect = 1;
+			errBox(err.what());
+		}
+
+		if (tcp_connect == 0)
+		{
+			int initExp = zynq_tcp.writeCommand("initExp");
+			if (initExp == 1) {
+				thrower("failed to initialize devices for experiment.");
+			}
+			zynq_tcp.disconnect();
+		}
+		else
+		{
+			errBox("connection to zynq failed. can't write DAC data\n");
+		}
 		//input->rsg->clearFrequencies(); 
 		if (input->runMaster)
 		{
-			input->thisObj->analyzeMasterScript(input->ttls, input->dacs, ttlShadeLocs, dacShadeLocs,
-				input->variables);
+			input->thisObj->analyzeMasterScript(input->ttls, input->dacs, input->ddss, ttlShadeLocs, 
+				dacShadeLocs, ddsShadeLocs, input->variables);
 		}
 		/// prep Moog 
 		if (input->runMoog) {
 			input->moog->analyzeMoogScript(input->moog, input->variables);
 		}
-		/// prep NIAWG 
-		//if (input->runNiawg) 
-		//{ 
-		//	input->niawg->prepareNiawg(  input, output, niawgFiles, warnings, userScriptSubmit, foundRearrangement,  
-		//									input->rearrangeInfo, input->variables ); 
-		//	input->niawg->writeStaticNiawg( output, input->debugOptions, input->constants ); 
-
-		//} 
-		//if ( input->thisObj->isAborting ) 
-		//{ 
-		//	thrower( abortString ); 
-		//} 
-		/// update ttl and dac looks & interaction based on which ones are used in the experiment. 
+		/// update ttl, dac, and dds looks & interaction based on which ones are used in the experiment. 
 		if (input->runMaster)
 		{
 			input->ttls->shadeTTLs(ttlShadeLocs);
 			input->dacs->shadeDacs(dacShadeLocs);
-
-			//input->ttls->connectDioFPGA(); //This generates addresses that the "interpretKey" step uses, and so much be run first. 
+			//input->ddss->shadeDDSs(ddsShadeLocs);
 		}
 		// go ahead and check if abort was pressed real fast... 
 		if (input->thisObj->isAborting)
@@ -114,6 +129,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 		{
 			input->ttls->interpretKey(input->variables);
 			input->dacs->interpretKey(input->variables, warnings);
+			input->ddss->interpretKey(input->variables, warnings);
 		}
 		//input->rsg->interpretKey( input->variables ); 
 		//input->topBottomTek->interpretKey( input->variables ); 
@@ -135,23 +151,17 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 					variationInc);
 				// organize & format the ttl and dac commands 
 				input->dacs->organizeDacCommands(variationInc);
-				input->dacs->setDacTriggerEvents(input->ttls, variationInc);
 				input->dacs->findLoadSkipSnapshots(currLoadSkipTime, input->variables, variationInc);
 				input->dacs->makeFinalDataFormat(variationInc);
 				input->ttls->organizeTtlCommands(variationInc);
 				input->ttls->findLoadSkipSnapshots(currLoadSkipTime, input->variables, variationInc);
 				input->ttls->convertToFinalFormat(variationInc);
 				input->ttls->formatForFPGA(variationInc); //FPGA FORMATTING from TTLSNAPSHOTS 
-				//input->ttls->connectDioFPGA(variationInc); //open connection at each variation 
+				input->ddss->organizeDDSCommands(variationInc);
+				input->ddss->makeFinalDataFormat(variationInc);
 				// run a couple checks. 
 				input->ttls->checkNotTooManyTimes(variationInc);
 				input->ttls->checkFinalFormatTimes(variationInc);
-				if (input->ttls->countDacTriggers(variationInc) != input->dacs->getNumberSnapshots(variationInc))
-				{
-					thrower("ERROR: number of dac triggers from the ttl system does not match the number of dac snapshots!"
-						" Number of dac triggers was " + str(input->ttls->countDacTriggers(variationInc)) + " while number of dac "
-						"snapshots was " + str(input->dacs->getNumberSnapshots(variationInc)));
-				}
 				input->dacs->checkTimingsWork(variationInc);
 				/*if ( input->runNiawg )
 				{
@@ -227,10 +237,6 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 			}
 			expUpdate("Programming Moog, DDS...\r\n", input->comm, input->quiet);
 
-			if (!DDS_SAFEMODE) {
-				input->dds->loadDDSScript(input->ddsScriptAddress);
-				input->dds->programDDS(input->dds, input->variables, variationInc);
-			}
 			if (!MOOG_SAFEMODE) {
 				input->gmoog->loadMoogScript(input->gmoogScriptAddress);
 				input->gmoog->analyzeMoogScript(input->gmoog, input->variables, variationInc);
@@ -261,6 +267,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 			input->dacs->stopDacs();
 			input->dacs->configureClocks(variationInc, skipOption);
 			input->dacs->writeDacs(variationInc, skipOption);
+			input->ddss->writeDDSs(variationInc, skipOption);
 			input->ttls->writeTtlDataToFPGA(variationInc, skipOption);
 			//input->dacs->startDacs(); 
 
@@ -494,9 +501,6 @@ void MasterManager::startExperimentThread(MasterThreadInput* input)
 		input->moog->loadMoogScript(input->moogScriptAddress);
 
 	}
-	if (!DDS_SAFEMODE) {
-		input->dds->loadDDSScript(input->ddsScriptAddress);
-	}
 	// start thread. 
 	runningThread = AfxBeginThread(experimentThreadProcedure, input, THREAD_PRIORITY_HIGHEST);
 }
@@ -647,8 +651,8 @@ void MasterManager::analyzeFunctionDefinition(std::string defLine, std::string& 
 
 
 void MasterManager::analyzeFunction(std::string function, std::vector<std::string> args, DioSystem* ttls,
-	DacSystem* dacs, std::vector<std::pair<UINT, UINT>>& ttlShades,
-	std::vector<UINT>& dacShades, std::vector<variableType>& vars)
+	DacSystem* dacs, DDSSystem* ddss, std::vector<std::pair<UINT, UINT>>& ttlShades,
+	std::vector<UINT>& dacShades, std::vector<UINT>& ddsShades, std::vector<variableType>& vars)
 {
 	/// load the file 
 	std::fstream functionFile;
@@ -828,18 +832,179 @@ void MasterManager::analyzeFunction(std::string function, std::vector<std::strin
 				thrower(err.whatStr() + "... in \"dacArange:\" command inside function " + function);
 			}
 		}
-		/// Handle RSG calls. 
-		//else if (word == "rsg:") 
-		//{ 
-		//	rsgEventForm info; 
-		//	functionStream >> info.frequency; 
-		//	info.frequency.assertValid( vars ); 
-		//	functionStream >> info.power; 
-		//	info.power.assertValid( vars ); 
-		//	// test frequency 
-		//	info.time = operationTime; 
-		//	rsg->addFrequency( info ); 
-		//} 
+		else if (word == "dacramp:")
+		{
+			DacCommandForm command;
+			std::string name;
+			// get dac name 
+			functionStream >> name;
+			// get ramp initial value 
+			functionStream >> command.initVal;
+			command.initVal.assertValid(vars);
+			// get ramp final value 
+			functionStream >> command.finalVal;
+			command.finalVal.assertValid(vars);
+			// get total ramp time; 
+			functionStream >> command.rampTime;
+			command.rampTime.assertValid(vars);
+			// get ramp point increment. 
+			command.time = operationTime;
+			command.commandName = "dacramp:";
+			// not used here. 
+			command.numSteps.expressionStr = "__NONE__";
+			command.rampInc.expressionStr = "__NONE__";
+			// 
+			try
+			{
+				dacs->handleDacScriptCommand(command, name, dacShades, vars, ttls);
+			}
+			catch (Error& err)
+			{
+				thrower(err.whatStr() + "... in \"dacramp:\" command inside function " + function);
+			}
+		}
+		else if (word == "ddsamp:") //ddsamp: name amp
+		{
+			DDSCommandForm command;
+			std::string name;
+			currentMasterScript >> name;
+			std::string value;
+			currentMasterScript >> command.initVal;
+			command.initVal.assertValid(vars);
+			command.time = operationTime;
+			command.commandName = "ddsamp:";
+			command.finalVal.expressionStr = "__NONE__";
+			command.rampTime.expressionStr = "__NONE__";
+			command.numSteps.expressionStr = "__NONE__";
+			try
+			{
+				ddss->handleDDSScriptCommand(command, name, ddsShades, vars, ttls);
+			}
+			catch (Error& err)
+			{
+				thrower(err.whatStr() + "... in \"ddsamp:\" command inside main script");
+			}
+			}
+			else if (word == "ddsfreq:") //ddsfreq: name freq
+			{
+			DDSCommandForm command;
+			std::string name;
+			currentMasterScript >> name;
+			std::string value;
+			currentMasterScript >> command.initVal;
+			command.initVal.assertValid(vars);
+			command.time = operationTime;
+			command.commandName = "ddsfreq:";
+			command.finalVal.expressionStr = "__NONE__";
+			command.rampTime.expressionStr = "__NONE__";
+			command.numSteps.expressionStr = "__NONE__";
+			try
+			{
+				ddss->handleDDSScriptCommand(command, name, ddsShades, vars, ttls);
+			}
+			catch (Error& err)
+			{
+				thrower(err.whatStr() + "... in \"ddsamp:\" command inside main script");
+			}
+		}
+		else if (word == "ddslinspaceamp:") //ddslinspaceamp: name initAmp finalAmp rampTime numSteps
+		{
+			DDSCommandForm command;
+			std::string name;
+			currentMasterScript >> name;
+			currentMasterScript >> command.initVal;
+			command.initVal.assertValid(vars);
+			currentMasterScript >> command.finalVal;
+			command.finalVal.assertValid(vars);
+			currentMasterScript >> command.rampTime;
+			command.rampTime.assertValid(vars);
+			currentMasterScript >> command.numSteps;
+			command.numSteps.assertValid(vars);
+			command.time = operationTime;
+			command.commandName = "ddslinspaceamp:";
+			try
+			{
+				ddss->handleDDSScriptCommand(command, name, ddsShades, vars, ttls);
+			}
+			catch (Error& err)
+			{
+				thrower(err.whatStr() + "... in \"ddslinspaceamp:\" command inside main script.\r\n");
+			}
+			}
+			else if (word == "ddslinspacefreq:")  //ddslinspacefreq: name initFreq finalFreq rampTime numSteps
+			{
+			DDSCommandForm command;
+			std::string name;
+			currentMasterScript >> name;
+			currentMasterScript >> command.initVal;
+			command.initVal.assertValid(vars);
+			currentMasterScript >> command.finalVal;
+			command.finalVal.assertValid(vars);
+			currentMasterScript >> command.rampTime;
+			command.rampTime.assertValid(vars);
+			currentMasterScript >> command.numSteps;
+			command.numSteps.assertValid(vars);
+			command.time = operationTime;
+			command.commandName = "ddslinspacefreq:";
+			try
+			{
+				ddss->handleDDSScriptCommand(command, name, ddsShades, vars, ttls);
+			}
+			catch (Error& err)
+			{
+				thrower(err.whatStr() + "... in \"ddslinspacefreq:\" command inside main script.\r\n");
+			}
+		}
+		else if (word == "ddsrampamp:") // ddsrampamp: name intiAmp finalAmp rampTime
+		{
+			DDSCommandForm command;
+			std::string name;
+			currentMasterScript >> name;
+			std::string value;
+			currentMasterScript >> command.initVal;
+			command.initVal.assertValid(vars);
+			currentMasterScript >> command.finalVal;
+			command.finalVal.assertValid(vars);
+			currentMasterScript >> command.rampTime;
+			command.rampTime.assertValid(vars);
+			currentMasterScript >> command.numSteps;
+			command.numSteps.assertValid(vars);
+			command.time = operationTime;
+			command.commandName = "ddsrampamp:";
+			try
+			{
+				ddss->handleDDSScriptCommand(command, name, ddsShades, vars, ttls);
+			}
+			catch (Error& err)
+			{
+				thrower(err.whatStr() + "... in \"ddsrampamp:\" command inside main script");
+			}
+			}
+			else if (word == "ddsrampfreq:") // ddsrampfreq: name intiFreq finalFreq rampTime
+			{
+			DDSCommandForm command;
+			std::string name;
+			currentMasterScript >> name;
+			std::string value;
+			currentMasterScript >> command.initVal;
+			command.initVal.assertValid(vars);
+			currentMasterScript >> command.finalVal;
+			command.finalVal.assertValid(vars);
+			currentMasterScript >> command.rampTime;
+			command.rampTime.assertValid(vars);
+			currentMasterScript >> command.numSteps;
+			command.numSteps.assertValid(vars);
+			command.time = operationTime;
+			command.commandName = "ddsrampfreq:";
+			try
+			{
+				ddss->handleDDSScriptCommand(command, name, ddsShades, vars, ttls);
+			}
+			catch (Error& err)
+			{
+				thrower(err.whatStr() + "... in \"ddsrampfreq:\" command inside main script");
+			}
+		}
 		/// deal with function calls. 
 		else if (word == "call")
 		{
@@ -879,7 +1044,7 @@ void MasterManager::analyzeFunction(std::string function, std::vector<std::strin
 			}
 			try
 			{
-				analyzeFunction(functionName, newArgs, ttls, dacs, ttlShades, dacShades, vars);
+				analyzeFunction(functionName, newArgs, ttls, dacs, ddss, ttlShades, dacShades, ddsShades, vars);
 			}
 			catch (Error& err)
 			{
@@ -983,8 +1148,8 @@ bool MasterManager::handleTimeCommands(std::string word, ScriptStream& stream, s
 	return true;
 }
 
-void MasterManager::analyzeMasterScript(DioSystem* ttls, DacSystem* dacs,
-	std::vector<std::pair<UINT, UINT>>& ttlShades, std::vector<UINT>& dacShades,
+void MasterManager::analyzeMasterScript(DioSystem* ttls, DacSystem* dacs, DDSSystem* ddss,
+	std::vector<std::pair<UINT, UINT>>& ttlShades, std::vector<UINT>& dacShades, std::vector<UINT>& ddsShades,
 	std::vector<variableType>& vars)
 {
 	// reset some things. 
@@ -1061,10 +1226,10 @@ void MasterManager::analyzeMasterScript(DioSystem* ttls, DacSystem* dacs,
 			}
 			catch (Error& err)
 			{
-				thrower(err.whatStr() + "... in \"dacArange:\" command inside main script");
+				thrower(err.whatStr() + "... in \"dac:\" command inside main script");
 			}
 		}
-		else if (word == "daclinspace:")
+		else if (word == "daclinspace:") //daclinspace: name initVal finalVal rampTime numSteps
 		{
 			DacCommandForm command;
 			std::string name;
@@ -1088,7 +1253,7 @@ void MasterManager::analyzeMasterScript(DioSystem* ttls, DacSystem* dacs,
 			}
 			catch (Error& err)
 			{
-				thrower(err.whatStr() + "... in \"dacLinSpace:\" command inside main script.\r\n");
+				thrower(err.whatStr() + "... in \"daclinspace:\" command inside main script.\r\n");
 			}
 		}
 		else if (word == "dacarange:")
@@ -1114,7 +1279,175 @@ void MasterManager::analyzeMasterScript(DioSystem* ttls, DacSystem* dacs,
 			}
 			catch (Error& err)
 			{
-				thrower(err.whatStr() + "... in \"dacArange:\" command inside main script");
+				thrower(err.whatStr() + "... in \"dacarange:\" command inside main script");
+			}
+		}
+		else if (word == "dacramp:")
+		{
+			DacCommandForm command;
+			std::string name;
+			currentMasterScript >> name;
+			currentMasterScript >> command.initVal;
+			command.initVal.assertValid(vars);
+			currentMasterScript >> command.finalVal;
+			command.finalVal.assertValid(vars);
+			currentMasterScript >> command.rampTime;
+			command.rampTime.assertValid(vars);
+			command.time = operationTime;
+			command.commandName = "dacramp:";
+			// not used here. 
+			command.numSteps.expressionStr = "__NONE__";
+			command.rampInc.expressionStr = "__NONE__";
+			try
+			{
+				dacs->handleDacScriptCommand(command, name, dacShades, vars, ttls);
+			}
+			catch (Error& err)
+			{
+				thrower(err.whatStr() + "... in \"dacramp:\" command inside main script");
+			}
+		}
+		// Deal with DDS commands
+		else if (word == "ddsamp:") //ddsamp: name amp
+		{
+			DDSCommandForm command;
+			std::string name;
+			currentMasterScript >> name;
+			std::string value;
+			currentMasterScript >> command.initVal;
+			command.initVal.assertValid(vars);
+			command.time = operationTime;
+			command.commandName = "ddsamp:";
+			command.finalVal.expressionStr = "__NONE__";
+			command.rampTime.expressionStr = "__NONE__";
+			command.numSteps.expressionStr = "__NONE__";
+			try
+			{
+				ddss->handleDDSScriptCommand(command, name, ddsShades, vars, ttls);
+			}
+			catch (Error& err)
+			{
+				thrower(err.whatStr() + "... in \"ddsamp:\" command inside main script");
+			}
+		}
+		else if (word == "ddsfreq:") //ddsfreq: name freq
+		{
+			DDSCommandForm command;
+			std::string name;
+			currentMasterScript >> name;
+			std::string value;
+			currentMasterScript >> command.initVal;
+			command.initVal.assertValid(vars);
+			command.time = operationTime;
+			command.commandName = "ddsfreq:";
+			command.finalVal.expressionStr = "__NONE__";
+			command.rampTime.expressionStr = "__NONE__";
+			command.numSteps.expressionStr = "__NONE__";
+			try
+			{
+				ddss->handleDDSScriptCommand(command, name, ddsShades, vars, ttls);
+			}
+			catch (Error& err)
+			{
+				thrower(err.whatStr() + "... in \"ddsamp:\" command inside main script");
+			}
+		}
+		else if (word == "ddslinspaceamp:") //ddslinspaceamp: name initAmp finalAmp rampTime numSteps
+		{
+			DDSCommandForm command;
+			std::string name;
+			currentMasterScript >> name;
+			currentMasterScript >> command.initVal;
+			command.initVal.assertValid(vars);
+			currentMasterScript >> command.finalVal;
+			command.finalVal.assertValid(vars);
+			currentMasterScript >> command.rampTime;
+			command.rampTime.assertValid(vars);
+			currentMasterScript >> command.numSteps;
+			command.numSteps.assertValid(vars);
+			command.time = operationTime;
+			command.commandName = "ddslinspaceamp:";
+			try
+			{
+				ddss->handleDDSScriptCommand(command, name, ddsShades, vars, ttls);
+			}
+			catch (Error& err)
+			{
+				thrower(err.whatStr() + "... in \"ddslinspaceamp:\" command inside main script.\r\n");
+			}
+		}
+		else if (word == "ddslinspacefreq:")  //ddslinspacefreq: name initFreq finalFreq rampTime numSteps
+		{
+			DDSCommandForm command;
+			std::string name;
+			currentMasterScript >> name;
+			currentMasterScript >> command.initVal;
+			command.initVal.assertValid(vars);
+			currentMasterScript >> command.finalVal;
+			command.finalVal.assertValid(vars);
+			currentMasterScript >> command.rampTime;
+			command.rampTime.assertValid(vars);
+			currentMasterScript >> command.numSteps;
+			command.numSteps.assertValid(vars);
+			command.time = operationTime;
+			command.commandName = "ddslinspacefreq:";
+			try
+			{
+				ddss->handleDDSScriptCommand(command, name, ddsShades, vars, ttls);
+			}
+			catch (Error& err)
+			{
+				thrower(err.whatStr() + "... in \"ddslinspacefreq:\" command inside main script.\r\n");
+			}
+		}
+		else if (word == "ddsrampamp:") // ddsrampamp: name intiAmp finalAmp rampTime
+		{
+			DDSCommandForm command;
+			std::string name;
+			currentMasterScript >> name;
+			std::string value;
+			currentMasterScript >> command.initVal;
+			command.initVal.assertValid(vars);
+			currentMasterScript >> command.finalVal;
+			command.finalVal.assertValid(vars);
+			currentMasterScript >> command.rampTime;
+			command.rampTime.assertValid(vars);
+			currentMasterScript >> command.numSteps;
+			command.numSteps.assertValid(vars);
+			command.time = operationTime;
+			command.commandName = "ddsrampamp:";
+			try
+			{
+				ddss->handleDDSScriptCommand(command, name, ddsShades, vars, ttls);
+			}
+			catch (Error& err)
+			{
+				thrower(err.whatStr() + "... in \"ddsrampamp:\" command inside main script");
+			}
+		}
+		else if (word == "ddsrampfreq:") // ddsrampfreq: name intiFreq finalFreq rampTime
+		{
+			DDSCommandForm command;
+			std::string name;
+			currentMasterScript >> name;
+			std::string value;
+			currentMasterScript >> command.initVal;
+			command.initVal.assertValid(vars);
+			currentMasterScript >> command.finalVal;
+			command.finalVal.assertValid(vars);
+			currentMasterScript >> command.rampTime;
+			command.rampTime.assertValid(vars);
+			currentMasterScript >> command.numSteps;
+			command.numSteps.assertValid(vars);
+			command.time = operationTime;
+			command.commandName = "ddsrampfreq:";
+			try
+			{
+				ddss->handleDDSScriptCommand(command, name, ddsShades, vars, ttls);
+			}
+			catch (Error& err)
+			{
+				thrower(err.whatStr() + "... in \"ddsrampfreq:\" command inside main script");
 			}
 		}
 		/// Deal with RSG calls 
@@ -1162,7 +1495,7 @@ void MasterManager::analyzeMasterScript(DioSystem* ttls, DacSystem* dacs,
 			}
 			try
 			{
-				analyzeFunction(functionName, args, ttls, dacs, ttlShades, dacShades, vars);
+				analyzeFunction(functionName, args, ttls, dacs, ddss, ttlShades, dacShades, ddsShades, vars);
 			}
 			catch (Error& err)
 			{
@@ -1244,7 +1577,7 @@ void MasterManager::callCppCodeFunction()
 bool MasterManager::isValidWord(std::string word)
 {
 	if (word == "t" || word == "t++" || word == "t+=" || word == "t=" || word == "on:" || word == "off:"
-		|| word == "dac:" || word == "dacarange:" || word == "daclinspace:" || word == "rsg:" || word == "call"
+		|| word == "dac:" || word == "dacarange:" || word == "daclinspace:" || word == "dacramp:" || word == "rsg:" || word == "call"
 		|| word == "repeat:" || word == "end" || word == "pulseon:" || word == "pulseoff:" || word == "callcppcode")
 	{
 		return true;

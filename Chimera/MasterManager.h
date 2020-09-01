@@ -2,6 +2,7 @@
 
 #include "DioSystem.h"
 #include "DacSystem.h"
+#include "ZynqTCP.h"
 #include "VariableSystem.h"
 //#include "RhodeSchwarz.h"
 //#include "GpibFlume.h"
@@ -39,8 +40,8 @@ class MasterManager
 		std::string getErrorMessage(int errorCode);
 		void loadMasterScript(std::string scriptAddress);
 
-		void analyzeMasterScript( DioSystem* ttls, DacSystem* dacs, 
-								  std::vector<std::pair<UINT, UINT>>& ttlShades, std::vector<UINT>& dacShades, std::vector<variableType>& vars);
+		void analyzeMasterScript( DioSystem* ttls, DacSystem* dacs, DDSSystem* ddss, std::vector<std::pair<UINT, UINT>>& ttlShades,
+								  std::vector<UINT>& dacShades, std::vector<UINT>& ddsShades, std::vector<variableType>& vars);
 		// this function needs the master window in order to gather the relevant parameters for the experiment.
 		void startExperimentThread(MasterThreadInput* input);
 		void loadMotSettings(MasterThreadInput* input);
@@ -66,8 +67,8 @@ class MasterManager
 		ScriptStream currentMasterScript;
 		std::string functionsFolderLocation;
 		// called by analyzeMasterScript functions only.
-		void analyzeFunction( std::string function, std::vector<std::string> args, DioSystem* ttls, DacSystem* dacs,
-							  std::vector<std::pair<UINT, UINT>>& ttlShades, std::vector<UINT>& dacShades, std::vector<variableType>& vars);
+		void analyzeFunction( std::string function, std::vector<std::string> args, DioSystem* ttls, DacSystem* dacs, DDSSystem* ddss,
+							  std::vector<std::pair<UINT, UINT>>& ttlShades, std::vector<UINT>& dacShades, std::vector<UINT>& ddsShades, std::vector<variableType>& vars);
 		// 
 		timeType operationTime;
 		bool experimentIsRunning;
@@ -79,4 +80,7 @@ class MasterManager
 		bool isPaused;
 		std::mutex abortLock;
 		bool isAborting;
+
+		//Zynq tcp connection
+		//ZynqTCP zynq_tcp;
 };

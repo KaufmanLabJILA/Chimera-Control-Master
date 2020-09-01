@@ -86,20 +86,20 @@ class DDS_ramp_tester:
   def mod_report(self):
     print(self.gpio2.read_axi_gpio(channel=1))
 
-  def dac_seq_write_atw_points(self):
+  def dds_seq_write_atw_points(self):
     points=[]
     #these ramps should complete in just under 64 ms
-    points.append(DDS_atw_seq_point(address=0,time=   0,start=1023,steps=1,incr=0,chan=0)) #25% to 75%
+    points.append(DDS_atw_seq_point(address=0,time=   0,start=1023,steps=0,incr=0,chan=0)) #25% to 75%
 #    points.append(DDS_atw_seq_point(address=1,time=1000,start=256,steps=1,incr=0,chan=3)) #25% to 75%
     points.append(DDS_atw_seq_point(address=1,time=   0,start=0,steps=    0,incr=   0,chan=0))
 
     for point in points:
       self.write_atw_point(point)
 
-  def dac_seq_write_ftw_points(self):
+  def dds_seq_write_ftw_points(self):
     points=[]
     #these ramps should complete in just under 64 ms
-    points.append(DDS_ftw_seq_point(address=0,time=0,start=1000000000,steps=1,incr=0,chan=0))
+    points.append(DDS_ftw_seq_point(address=0,time=0,start=500000000,steps=0,incr=0,chan=0))
     # ~ points.append(DDS_ftw_seq_point(address=0,time=   0,start=800000,steps=10000,incr=30000,chan=0)) 
     points.append(DDS_ftw_seq_point(address=1,time=1,start=10000000,steps=1,incr=0,chan=3)) 
     points.append(DDS_ftw_seq_point(address=2,time=   0,start=     0,steps=    0,incr=    0,chan=0))
@@ -120,12 +120,9 @@ class DDS_ramp_tester:
       TS_write_point(self.fifo_main_seq, point)
 
 def program(tester,delay):
-  tester.dac_seq_write_atw_points()
-  tester.dac_seq_write_ftw_points()
+  tester.dds_seq_write_atw_points()
+  tester.dds_seq_write_ftw_points()
   tester.main_seq_write_points(delay)
-
-  with open(fifo_devices['AD9959_0'], "r+b") as character:
-      writeToDDS(character,1,0xD0000000)#PLL mult 20, VCO gain high (for 25MHz crystal, 500 MHz clock)
 
   # ~ print('Next, we need to enable modulation')
   # ~ print('  tester.mod_enable()')
@@ -140,10 +137,12 @@ if __name__ == "__main__":
   from soft_trigger import trigger
   from reset_all import reset
   import sys
+  import dds_lock_pll
 
   tester = DDS_ramp_tester(fifo_devices['AD9959_0'], fifo_devices['AD9959_0_seq_atw'], fifo_devices['AD9959_0_seq_ftw'], fifo_devices['GPIO_seq'])
   tester.mod_disable()
   reset()
+  dds_lock_pll.dds_lock_pll()
   program(tester,int(sys.argv[1]))
   tester.mod_enable()
   trigger()

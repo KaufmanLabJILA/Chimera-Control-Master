@@ -105,12 +105,37 @@ int ZynqTCP::connectTCP(const char ip_address[])
 
 }
 
+int ZynqTCP::writeCommand(std::string command)
+{
+	int n = command.length();
+
+	char commandc[ZYNQ_MAX_BUFF];
+	char buff[ZYNQ_MAX_BUFF];
+	memset(buff, 0, sizeof(buff));
+
+	int BytesSent = 0;
+
+	strcpy_s(commandc, ZYNQ_MAX_BUFF, command.c_str());
+
+	sprintf_s(buff, ZYNQ_MAX_BUFF, commandc);
+
+	BytesSent = send(ConnectSocket, buff, sizeof(buff), 0);
+	if (BytesSent == SOCKET_ERROR)
+	{
+		thrower("Unable to send message to server!");
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
 int ZynqTCP::writeDIO(std::vector<std::array<char[DIO_LEN_BYTE_BUF], 1>> TtlSnapshots)
 {
 
 	char buff[ZYNQ_MAX_BUFF];
 	memset(buff, 0, sizeof(buff));
-	std::string TtlSnapshot_str;
 
 	int BytesSent = 0;
 
@@ -148,10 +173,10 @@ int ZynqTCP::writeDACs(std::vector<DacChannelSnapshot> dacChannelSnapshots)
 {
 	char buff[ZYNQ_MAX_BUFF];
 	memset(buff, 0, sizeof(buff));
-	std::string TtlSnapshot_str;
 
 	int snapIndex = 0;
-	unsigned int timeConv = 1000000; // SEQ time given in multiples of 10 ns
+	unsigned int timeConv = 100000; // SEQ time given in multiples of 10 ns
+	unsigned int timeConvDAC = 1000; // DAC time given multiples of 1 us
 	unsigned int dacRes = 65536;
 	char byte_buf[DAC_LEN_BYTE_BUF];
 	unsigned int time, duration;
@@ -179,11 +204,66 @@ int ZynqTCP::writeDACs(std::vector<DacChannelSnapshot> dacChannelSnapshots)
 			time = (unsigned int)(snapshot.time * timeConv);
 			channel = snapshot.channel;
 			start = snapshot.dacValue;
-			end = snapshot.dacValue;
-			duration = 0;
+			end = snapshot.dacEndValue;
+			duration = (unsigned int)(snapshot.dacRampTime * timeConvDAC);
 
-			sprintf_s(byte_buf, DAC_LEN_BYTE_BUF, "t%08X_c%04X_s%2.3f_e%2.3f_d%08x", time, channel, start, end, duration);
+			sprintf_s(byte_buf, DAC_LEN_BYTE_BUF, "t%08X_c%04X_s%06.3f_e%06.3f_d%08x", time, channel, start, end, duration);
 			BytesSent = send(ConnectSocket, byte_buf, DAC_LEN_BYTE_BUF, 0);
+			if (BytesSent == SOCKET_ERROR)
+			{
+				thrower("Unable to send message to server!");
+				return 1;
+			}
+
+		}
+
+		return 0;
+	}
+
+}
+
+int ZynqTCP::writeDDSs(std::vector<DDSChannelSnapshot> ddsChannelSnapshots)
+{
+	char buff[ZYNQ_MAX_BUFF];
+	memset(buff, 0, sizeof(buff));
+
+	int snapIndex = 0;
+	unsigned int timeConv = 100000; // SEQ time given in multiples of 10 ns
+	unsigned int timeConvDAC = 1000; // DDS time given multiples of 1 us
+	unsigned int dacRes = 65536;
+	char byte_buf[DAC_LEN_BYTE_BUF];
+	unsigned int time, duration;
+	unsigned short channel;
+	char type;
+	double start, end;
+
+	int BytesSent = 0;
+
+	sprintf_s(buff, ZYNQ_MAX_BUFF, "DDSseq_%u", ddsChannelSnapshots.size());
+
+	BytesSent = send(ConnectSocket, buff, sizeof(buff), 0);
+	if (BytesSent == SOCKET_ERROR)
+	{
+		thrower("Unable to send message to server!");
+		return 1;
+	}
+	else
+	{
+		memset(buff, 0, sizeof(buff));
+
+		for (int i = 0; i < ddsChannelSnapshots.size(); ++i)
+		{
+			DDSChannelSnapshot snapshot = ddsChannelSnapshots[i];
+
+			time = (unsigned int)(snapshot.time * timeConv);
+			type = snapshot.ampOrFreq;
+			channel = snapshot.channel;
+			start = snapshot.val;
+			end = snapshot.endVal;
+			duration = (unsigned int)(snapshot.rampTime * timeConvDAC);
+
+			sprintf_s(byte_buf, DDS_LEN_BYTE_BUF, "t%08X_c%04X_%c_s%07.3f_e%07.3f_d%08x", time, channel, type, start, end, duration);
+			BytesSent = send(ConnectSocket, byte_buf, DDS_LEN_BYTE_BUF, 0);
 			if (BytesSent == SOCKET_ERROR)
 			{
 				thrower("Unable to send message to server!");

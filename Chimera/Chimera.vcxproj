@@ -206,6 +206,8 @@
     <ClInclude Include="Communicator.h" />
     <ClInclude Include="DacStructures.h" />
     <ClInclude Include="DdsState.h" />
+    <ClInclude Include="DDSStructures.h" />
+    <ClInclude Include="DDSSystem.h" />
     <ClInclude Include="DDS_SYNTH.h" />
     <ClInclude Include="DebugOptionsControl.h" />
     <ClInclude Include="Expression.h" />
@@ -298,6 +300,7 @@
     <ClCompile Include="cleanString.cpp" />
     <ClCompile Include="ColorBox.cpp" />
     <ClCompile Include="Communicator.cpp" />
+    <ClCompile Include="DDSSystem.cpp" />
     <ClCompile Include="DDS_SYNTH.cpp" />
     <ClCompile Include="DebugOptionsControl.cpp" />
     <ClCompile Include="Expression.cpp" />

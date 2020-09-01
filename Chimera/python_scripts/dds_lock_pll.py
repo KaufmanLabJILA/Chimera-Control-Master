@@ -20,6 +20,19 @@ def writeToDDS(dds_char_dev, address, data):
   for word in words:
     dds_char_dev.write(word)
 
+def dds_lock_pll():
+  print("writing to 5000")
+  with open("/dev/axis_fifo_0x0000000080005000", "r+b") as character:
+    writeToDDS(character,1,0xD0000000)#PLL mult 20, VCO gain high (for 25MHz crystal, 500 MHz clock)
+
+  print("writing to 6000")
+  with open("/dev/axis_fifo_0x0000000080006000", "r+b") as character:
+    writeToDDS(character,1,0xD0000000)#PLL mult 20, VCO gain high (for 25MHz crystal, 500 MHz clock)
+
+  print("writing to 7000")
+  with open("/dev/axis_fifo_0x0000000080007000", "r+b") as character:
+    writeToDDS(character,1,0xD0000000)#PLL mult 20, VCO gain high (for 25MHz crystal, 500 MHz clock)
+
 if __name__ == "__main__":
   print("writing to 5000")
   with open("/dev/axis_fifo_0x0000000080005000", "r+b") as character:

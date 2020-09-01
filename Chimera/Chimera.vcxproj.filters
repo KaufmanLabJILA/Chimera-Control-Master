@@ -196,6 +196,9 @@
     <ClCompile Include="zynq_tcp_server.cpp">
       <Filter>TCP Interface</Filter>
     </ClCompile>
+    <ClCompile Include="DDSSystem.cpp">
+      <Filter>Auxiliary Window</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -454,6 +457,12 @@
     </ClInclude>
     <ClInclude Include="zynq_tcp_server.h">
       <Filter>TCP Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="DDSSystem.h">
+      <Filter>Auxiliary Window</Filter>
+    </ClInclude>
+    <ClInclude Include="DDSStructures.h">
+      <Filter>Auxiliary Window</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

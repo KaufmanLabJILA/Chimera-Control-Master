@@ -2,6 +2,7 @@
 
 #include "DioSystem.h"
 #include "DacSystem.h"
+#include "DDSSystem.h"
 #include "VariableSystem.h"
 //#include "RhodeSchwarz.h"
 #include "GpibFlume.h"
@@ -31,7 +32,6 @@ struct MasterThreadInput
 	std::string moogScriptAddress;
 	gigaMoog* gmoog;
 	std::string gmoogScriptAddress;
-	DDS_SYNTH* dds;
 	std::string ddsScriptAddress;
 
 	EmbeddedPythonHandler* python;
@@ -39,6 +39,7 @@ struct MasterThreadInput
 	profileSettings profile;
 	DioSystem* ttls;
 	DacSystem* dacs;
+	DDSSystem* ddss;
 	UINT repetitionNumber;
 	std::vector<variableType> variables;
 	std::vector<variableType> constants;

@@ -719,7 +719,6 @@ void MainWindow::fillMasterThreadInput(MasterThreadInput* input)
 	input->comm = &comm;
 	input->moog = &moog;
 	input->gmoog = &gmoog;
-	input->dds = &dds;
 
 	VariableSystem::generateKey( input->variables, input->settings.randomizeVariations );
 	// it's important to do this after the key is generated so that the constants have their values.

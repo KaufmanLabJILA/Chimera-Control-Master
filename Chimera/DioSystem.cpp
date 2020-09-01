@@ -1166,7 +1166,7 @@ void DioSystem::organizeTtlCommands(UINT variation)
 
 	ttlSnapshots[variation].clear();
 	// start with the initial status.
-	ttlSnapshots[variation].push_back({ 0, ttlStatus });
+	//ttlSnapshots[variation].push_back({ 0, ttlStatus });
 	if (timeOrganizer[0].first != 0)
 	{
 		// then there were no commands at time 0, so just set the initial state to be exactly the original state before

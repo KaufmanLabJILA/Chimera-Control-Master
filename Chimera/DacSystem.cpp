@@ -520,6 +520,10 @@ void DacSystem::organizeDacCommands(UINT variation)
 			// see description of this command above... update everything that changed at this time.
 			dacSnapshots[variation].back().dacValues[timeOrganizer[commandInc].second[zeroInc].line]
 				= timeOrganizer[commandInc].second[zeroInc].value;
+			dacSnapshots[variation].back().dacEndValues[timeOrganizer[commandInc].second[zeroInc].line]
+				= timeOrganizer[commandInc].second[zeroInc].endValue;
+			dacSnapshots[variation].back().dacRampTimes[timeOrganizer[commandInc].second[zeroInc].line]
+				= timeOrganizer[commandInc].second[zeroInc].rampTime;
 		}
 	}
 }
@@ -708,6 +712,10 @@ void DacSystem::interpretKey( std::vector<variableType>& variables, std::string&
 						" value at the right time.\r\n";
 				}
 				double timeInc = rampTime / steps;
+				if (timeInc < 1.6) {
+					warnings += "Warning: numPoints of " + str(steps) + " results in a time increment of "
+						+ str(rampInc) + " is below the time resolution of the dacs 1.6 ms. Number of steps will be approx (ramp time/1.6 ms).\r\n";
+				}
 				double initTime = tempEvent.time;
 				double currentTime = tempEvent.time;
 				// handle the two directions seperately.
@@ -717,6 +725,8 @@ void DacSystem::interpretKey( std::vector<variableType>& variables, std::string&
 					{
 						tempEvent.value = dacValue;
 						tempEvent.time = currentTime;
+						tempEvent.endValue = dacValue;
+						tempEvent.rampTime = 0;
 						dacCommandList[variationInc].push_back(tempEvent);
 						currentTime += timeInc;
 					}
@@ -727,6 +737,8 @@ void DacSystem::interpretKey( std::vector<variableType>& variables, std::string&
 					{
 						tempEvent.value = dacValue;
 						tempEvent.time = currentTime;
+						tempEvent.endValue = dacValue;
+						tempEvent.rampTime = 0;
 						dacCommandList[variationInc].push_back(tempEvent);
 						currentTime += timeInc;
 					}
@@ -734,6 +746,8 @@ void DacSystem::interpretKey( std::vector<variableType>& variables, std::string&
 				// and get the final value.
 				tempEvent.value = finalValue;
 				tempEvent.time = initTime + rampTime;
+				tempEvent.endValue = finalValue;
+				tempEvent.rampTime = 0;
 				dacCommandList[variationInc].push_back(tempEvent);
 			}
 			else if ( dacCommandFormList[eventInc].commandName == "daclinspace:" )
@@ -760,6 +774,10 @@ void DacSystem::interpretKey( std::vector<variableType>& variables, std::string&
 				// This might be the first not i++ usage of a for loop I've ever done... XD
 				// calculate the time increment:
 				double timeInc = rampTime / numSteps;
+				if (timeInc < 1.6) {
+					warnings += "Warning: numPoints of " + str(numSteps) + " results in a time increment of "
+						+ str(rampInc) + " is below the time resolution of the dacs 1.6 ms. Number of steps will be approx (ramp time/1.6 ms).\r\n";
+				}
 				double initTime = tempEvent.time;
 				double currentTime = tempEvent.time;
 				double val = initValue;
@@ -768,6 +786,8 @@ void DacSystem::interpretKey( std::vector<variableType>& variables, std::string&
 				{
 					tempEvent.value = val;
 					tempEvent.time = currentTime;
+					tempEvent.endValue = val;
+					tempEvent.rampTime = 0;
 					dacCommandList[variationInc].push_back( tempEvent );
 					currentTime += timeInc;
 					val += rampInc;
@@ -775,7 +795,42 @@ void DacSystem::interpretKey( std::vector<variableType>& variables, std::string&
 				// and get the final value. Just use the nums explicitly to avoid rounding error I guess.
 				tempEvent.value = finalValue;
 				tempEvent.time = initTime + rampTime;
+				tempEvent.endValue = finalValue;
+				tempEvent.rampTime = 0;
 				dacCommandList[variationInc].push_back( tempEvent );
+			}
+			else if (dacCommandFormList[eventInc].commandName == "dacramp:")
+			{
+				// interpret ramp time command. I need to know whether it's ramping or not.
+				double rampTime = dacCommandFormList[eventInc].rampTime.evaluate(variables, variationInc);
+				/// many points to be made.
+				// convert initValue and finalValue to doubles to be used 
+				double initValue, finalValue, numSteps;
+				initValue = dacCommandFormList[eventInc].initVal.evaluate(variables, variationInc);
+				// deal with final value;
+				finalValue = dacCommandFormList[eventInc].finalVal.evaluate(variables, variationInc);
+				// set votlage resolution to be maximum allowed by the ramp range and time
+				numSteps = rampTime / DAC_TIME_RESOLUTION;
+				double rampInc = (finalValue - initValue) / numSteps;
+				if ((fabs(rampInc) < 20.0 / pow(2, 16)) && !resolutionWarningPosted)
+				{
+					resolutionWarningPosted = true;
+					warnings += "Warning: numPoints of " + str(numSteps) + " results in a ramp increment of "
+						+ str(rampInc) + " is below the resolution of the dacs (which is 20/2^16 = "
+						+ str(20.0 / pow(2, 16)) + "). Ramp will not run.\r\n";
+				}
+				if (numSteps > 65535) {
+					warnings += "Warning: numPoints of " + str(numSteps) + " is larger than the max time of the DAC ramps. Ramp will be truncated. \r\n";
+				}
+
+				double initTime = tempEvent.time;
+
+				// for dacRamp, pass the ramp points and time directly to a single dacCommandList element
+				tempEvent.value = initValue;
+				tempEvent.endValue = finalValue;
+				tempEvent.time = initTime;
+				tempEvent.rampTime = rampTime;
+				dacCommandList[variationInc].push_back(tempEvent);
 			}
 			else
 			{
@@ -839,20 +894,6 @@ void DacSystem::setDacCommandForm( DacCommandForm command )
 	dacCommandFormList.push_back( command );
 	// you need to set up a corresponding trigger to tell the dacs to change the output at the correct time. 
 	// This is done later on interpretation of ramps etc.
-}
-
-
-// add a ttl trigger event for every unique dac snapshot.
-// MUST interpret key for dac and organize dac commands before setting the trigger events.
-void DacSystem::setDacTriggerEvents(DioSystem* ttls, UINT variation)
-{
-	for ( auto snapshot : dacSnapshots[variation])
-	{
-		// turn them on...
-		ttls->ttlOnDirect( dacTriggerLine.first, dacTriggerLine.second, snapshot.time, variation);
-		// turn them off...
-		ttls->ttlOffDirect( dacTriggerLine.first, dacTriggerLine.second, snapshot.time + dacTriggerTime, variation);
-	}
 }
 
 
@@ -963,26 +1004,27 @@ void DacSystem::configureClocks(UINT variation, bool loadSkip)
 void DacSystem::writeDacs(UINT variation, bool loadSkip)
 {
 
-	//dioFPGA[variation].write();
-	int tcp_connect;
-	try
-	{
-		tcp_connect = zynq_tcp.connectTCP(ZYNQ_ADDRESS);
-	}
-	catch (Error& err)
-	{
-		tcp_connect = 1;
-		errBox(err.what());
-	}
+	if (getNumberEvents(variation) != 0) {
+		int tcp_connect;
+		try
+		{
+			tcp_connect = zynq_tcp.connectTCP(ZYNQ_ADDRESS);
+		}
+		catch (Error& err)
+		{
+			tcp_connect = 1;
+			errBox(err.what());
+		}
 
-	if (tcp_connect == 0)
-	{
-		zynq_tcp.writeDACs(finalDacSnapshots[variation]);
-		zynq_tcp.disconnect();
-	}
-	else
-	{
-		throw("connection to zynq failed. can't write DAC data\n");
+		if (tcp_connect == 0)
+		{
+			zynq_tcp.writeDACs(finalDacSnapshots[variation]);
+			zynq_tcp.disconnect();
+		}
+		else
+		{
+			errBox("connection to zynq failed. can't write DAC data\n");
+		}
 	}
 }
 
@@ -1045,7 +1087,7 @@ void DacSystem::formatDacForFPGA(UINT variation)
 
 		if (i == 0) {
 			for (int j = 0; j < 32; ++j) {
-				if (snapshot.dacValues[j] != 0) {
+				if (snapshot.dacValues[j] != dacValues[j]) {
 					channels.push_back(j);
 				}
 			}
@@ -1063,6 +1105,8 @@ void DacSystem::formatDacForFPGA(UINT variation)
 			channelSnapshot.time = snapshot.time;
 			channelSnapshot.channel = channel;
 			channelSnapshot.dacValue = snapshot.dacValues[channel];
+			channelSnapshot.dacEndValue = snapshot.dacEndValues[channel];
+			channelSnapshot.dacRampTime = snapshot.dacRampTimes[channel];
 			finalDacSnapshots[variation].push_back(channelSnapshot);
 		}
 	}
@@ -1071,7 +1115,7 @@ void DacSystem::formatDacForFPGA(UINT variation)
 void DacSystem::handleDacScriptCommand( DacCommandForm command, std::string name, std::vector<UINT>& dacShadeLocations,
 										std::vector<variableType>& vars, DioSystem* ttls )
 {
-	if ( command.commandName != "dac:" && command.commandName != "dacarange:" && command.commandName != "daclinspace:" )
+	if ( command.commandName != "dac:" && command.commandName != "dacarange:" && command.commandName != "daclinspace:" && command.commandName != "dacramp:")
 	{
 		thrower( "ERROR: dac commandName not recognized!" );
 	}
