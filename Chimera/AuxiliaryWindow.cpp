@@ -366,7 +366,7 @@ void AuxiliaryWindow::zeroDacs()
 		ttlBoard.prepareForce();
 		for (int dacInc : range(32))
 		{
-			dacBoards.prepareDacForceChange(dacInc, 0, &ttlBoard);
+			dacBoards.prepareDacForceChange(dacInc, 0);
 		}
 		dacBoards.organizeDacCommands(0);
 		dacBoards.makeFinalDataFormat(0);
@@ -668,7 +668,7 @@ void AuxiliaryWindow::handleMasterConfigOpen(std::stringstream& configStream, do
 		}
 		dacBoards.setName(dacInc, name, toolTips, this);
 		dacBoards.setMinMax(dacInc, min, max);
-		dacBoards.prepareDacForceChange(dacInc, defaultValue, &ttlBoard);
+		dacBoards.prepareDacForceChange(dacInc, defaultValue);
 		dacBoards.setDefaultValue(dacInc, defaultValue);
 	}
 	// getting ddss.
@@ -776,27 +776,27 @@ void AuxiliaryWindow::SetDacs()
 		dacBoards.resetDacEvents();
 		ttlBoard.resetTtlEvents();
 		sendStatus("Setting Dacs...\r\n");
-		dacBoards.handleButtonPress(&ttlBoard);
+		dacBoards.handleButtonPress();
 		dacBoards.organizeDacCommands(0);
 		dacBoards.makeFinalDataFormat(0);
 		// start the boards which actually sets the dac values.
-		dacBoards.stopDacs();
-		dacBoards.configureClocks(0, false);
-		sendStatus("Writing New Dac Settings...\r\n");
-		dacBoards.writeDacs(0, false);
-		dacBoards.startDacs();
-		ttlBoard.organizeTtlCommands(0);
-		ttlBoard.convertToFinalFormat(0);
+		//dacBoards.stopDacs();
+		//dacBoards.configureClocks(0, false);
+		//sendStatus("Writing New Dac Settings...\r\n");
+		//dacBoards.writeDacs(0, false);
+		//dacBoards.startDacs();
+		//ttlBoard.organizeTtlCommands(0);
+		//ttlBoard.convertToFinalFormat(0);
 
-		//DIO FPGA commands//
-		ttlBoard.formatForFPGA(0);
-		ttlBoard.writeTtlDataToFPGA(0, false);
-		ttlBoard.startDioFPGA(0);
-		/////
+		////DIO FPGA commands//
+		//ttlBoard.formatForFPGA(0);
+		//ttlBoard.writeTtlDataToFPGA(0, false);
+		//ttlBoard.startDioFPGA(0);
+		///////
 
-		ttlBoard.writeTtlData(0, false);
-		ttlBoard.startBoard();
-		ttlBoard.waitTillFinished(0, false);
+		//ttlBoard.writeTtlData(0, false);
+		//ttlBoard.startBoard();
+		//ttlBoard.waitTillFinished(0, false);
 		sendStatus("Finished Setting Dacs.\r\n");
 	}
 	catch (Error& exception)

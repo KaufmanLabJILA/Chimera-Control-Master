@@ -1228,29 +1228,34 @@ std::pair<USHORT, USHORT> DioSystem::calcDoubleShortTime(double time)
 void DioSystem::formatForFPGA(UINT variation)
 {
 	int snapIndex = 0;
-	unsigned int timeConv = 1000000; // DIO time given in multiples of 10 ns
+	unsigned int timeConv = 100000; // DIO time given in multiples of 10 ns
 	std::array<char[DIO_LEN_BYTE_BUF], 1> byte_buf;
-	std::array<bool, 8> bank;
+	std::array<bool, 8> bankA;
+	std::array<bool, 8> bankB;
 	//char byte_buf[DIO_LEN_BYTE_BUF];
 	unsigned int time;
-	int output;
+	int outputA;
+	int outputB;
 
 	for (auto snapshot : ttlSnapshots[variation])
 	{
 		time = (unsigned int) (snapshot.time * timeConv);
 
-		//for each DIO bank convert the boolean array to a byte (only four banks for now)
-		output = 0;
-		for (int i = 0; i < 8; i++)
+		//for each DIO bank convert the boolean array to a byte
+		outputA = 0;
+		outputB = 0;
+		for (int i = 0; i < 4; i++)
 		{
-			bank = snapshot.ttlStatus[i]; //bank here is set of 8 booleans
+			bankA = snapshot.ttlStatus[i]; //bank here is set of 8 booleans
+			bankB = snapshot.ttlStatus[i+4]; //bank here is set of 8 booleans
 			for (int j = 0; j < 8; j++)
 			{
-				output += pow(256, i)*pow(2, j)*bank[j];
+				outputA += pow(256, i)*pow(2, j)*bankA[j];
+				outputB += pow(256, i)*pow(2, j)*bankB[j];
 			}
 		}
 
-		sprintf_s(byte_buf[0], DIO_LEN_BYTE_BUF, "t%08X_b%08X", time, output);
+		sprintf_s(byte_buf[0], DIO_LEN_BYTE_BUF, "t%08X_b%08X%08X", time, outputB, outputA);
 
 		dioFPGA[variation].push_back(byte_buf);
 		snapIndex = snapIndex + 1;

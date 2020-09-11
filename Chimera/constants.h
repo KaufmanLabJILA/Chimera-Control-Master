@@ -91,7 +91,7 @@
 	#define ZYNQ_ADDRESS "10.10.0.2"
 	#define ZYNQ_PORT "8080"
 	#define ZYNQ_MAX_BUFF 64
-	#define DIO_LEN_BYTE_BUF 20
+	#define DIO_LEN_BYTE_BUF 28
 	#define DAC_LEN_BYTE_BUF 42
 	#define DDS_LEN_BYTE_BUF 47
 	#define DAC_TIME_RESOLUTION 1.6 // in ms

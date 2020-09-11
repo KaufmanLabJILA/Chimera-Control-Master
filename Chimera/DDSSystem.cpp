@@ -275,7 +275,7 @@ void DDSSystem::initialize(POINT& pos, cToolTips& toolTips, AuxiliaryWindow* mas
 /*
  * get the text from every edit and prepare a change.
  */
-void DDSSystem::handleButtonPress(DioSystem* ttls)
+void DDSSystem::handleButtonPress()
 {
 	//ddsCommandFormList.clear();
 	//prepareForce();

@@ -24,7 +24,7 @@ class DDSSystem
 		void abort();
 		void initialize( POINT& pos, cToolTips& toolTips, AuxiliaryWindow* master, int& id );
 		std::string getDDSSequenceMessage(UINT variation );
-		void handleButtonPress(DioSystem* ttls);
+		void handleButtonPress();
 		void setDDSCommandForm( DDSCommandForm command );
 		void setForceDDSEvent( int line, std::array<double, 2> val, UINT variation );
 		void setDDSStatusNoForceOut(std::array< std::array<double, 2>, 12> status);

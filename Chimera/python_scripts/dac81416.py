@@ -46,3 +46,9 @@ class DAC81416:
     val = "\x00" + struct.pack('B',channel+16) + struct.pack('>H', value)
     if self.fifo is not None:
       self.fifo.write_axis_fifo(val)
+
+if __name__ == "__main__":
+    from devices import fifo_devices
+    dac = DAC81416(fifo_devices['DAC81416_0'])
+    # print "0"
+    dac.set_DAC(0, 128*256)

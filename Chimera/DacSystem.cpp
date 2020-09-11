@@ -65,7 +65,7 @@ void DacSystem::handleOpenConfig(std::ifstream& openFile, int versionMajor, int 
 		try
 		{
 			double dacValue = std::stod(dacString);
-			prepareDacForceChange(dacInc, dacValue, ttls);
+			prepareDacForceChange(dacInc, dacValue);
 		}
 		catch (std::invalid_argument&)
 		{
@@ -435,11 +435,11 @@ void DacSystem::handleRoundToDac(CMenu& menu)
 /*
  * get the text from every edit and prepare a change.
  */
-void DacSystem::handleButtonPress(DioSystem* ttls)
+void DacSystem::handleButtonPress()
 {
 	dacCommandFormList.clear();
 	prepareForce();
-	ttls->prepareForce();
+
 	std::array<double, 32> vals;
 	for (UINT dacInc = 0; dacInc < dacLabels.size(); dacInc++)
 	{
@@ -458,7 +458,7 @@ void DacSystem::handleButtonPress(DioSystem* ttls)
 				valStr = str(vals[dacInc]);
 			}
 			breakoutBoardEdits[dacInc].SetWindowTextA(cstr(valStr));
-			prepareDacForceChange(dacInc, vals[dacInc], ttls);
+			prepareDacForceChange(dacInc, vals[dacInc]);
 		}
 		catch (std::invalid_argument&)
 		{
@@ -898,7 +898,7 @@ void DacSystem::setDacCommandForm( DacCommandForm command )
 
 
 // this is a function called in preparation for forcing a dac change. Remember, you need to call ___ to actually change things.
-void DacSystem::prepareDacForceChange(int line, double voltage, DioSystem* ttls)
+void DacSystem::prepareDacForceChange(int line, double voltage)
 {
 	// change parameters in the DacSystem object so that the object knows what the current settings are.
 	//std::string volt = str(roundToDacResolution(voltage));
@@ -920,7 +920,7 @@ void DacSystem::prepareDacForceChange(int line, double voltage, DioSystem* ttls)
 	dacValues[line] = voltage;
 	// I'm not sure it's necessary to go through the procedure of doing this and using the DIO to trigger the dacs for a foce out. I'm guessing it's 
 	// possible to tell the DAC to just immediately change without waiting for a trigger.
-	setForceDacEvent( line, voltage, ttls, 0 );
+	setForceDacEvent( line, voltage, 0 );
 }
 
 
@@ -942,7 +942,7 @@ void DacSystem::checkValuesAgainstLimits(UINT variation)
 }
 
 
-void DacSystem::setForceDacEvent( int line, double val, DioSystem* ttls, UINT variation )
+void DacSystem::setForceDacEvent( int line, double val, UINT variation )
 {
 	if (val > dacMaxVals[line] || val < dacMinVals[line])
 	{
@@ -960,9 +960,33 @@ void DacSystem::setForceDacEvent( int line, double val, DioSystem* ttls, UINT va
 	// there might be better ways of dealing with this. 
 	eventInfo.time = 10;
 	dacCommandList[variation].push_back( eventInfo );
-	// you need to set up a corresponding pulse trigger to tell the dacs to change the output at the correct time.
-	ttls->ttlOnDirect( dacTriggerLine.first, dacTriggerLine.second, 1, 0 );
-	ttls->ttlOffDirect( dacTriggerLine.first, dacTriggerLine.second, 1 + dacTriggerTime, 0 );
+
+	std::ostringstream stringStream;
+	stringStream << "DAC_" << line << "_" << std::setprecision(3) << val;
+	std::string command = stringStream.str();
+
+	if (getNumberEvents(variation) != 0) {
+		int tcp_connect;
+		try
+		{
+			tcp_connect = zynq_tcp.connectTCP(ZYNQ_ADDRESS);
+		}
+		catch (Error& err)
+		{
+			tcp_connect = 1;
+			errBox(err.what());
+		}
+
+		if (tcp_connect == 0)
+		{
+			zynq_tcp.writeCommand(command);
+			zynq_tcp.disconnect();
+		}
+		else
+		{
+			errBox("connection to zynq failed. can't write DAC data\n");
+		}
+	}
 }
 
 

@@ -2,6 +2,7 @@
 #include <array>
 #include <string>
 #include <unordered_map>
+#include <iomanip>
 
 #include "Control.h"
 #include "VariableSystem.h"
@@ -26,12 +27,12 @@ class DacSystem
 		void abort();
 		void initialize( POINT& pos, cToolTips& toolTips, AuxiliaryWindow* master, int& id );
 		std::string getDacSequenceMessage(UINT variation );
-		void handleButtonPress(DioSystem* ttls);
+		void handleButtonPress();
 		void setDacCommandForm( DacCommandForm command );
-		void setForceDacEvent( int line, double val, DioSystem* ttls, UINT variation );
+		void setForceDacEvent( int line, double val, UINT variation );
 		void handleRoundToDac(CMenu& menu);
 		void setDacStatusNoForceOut(std::array<double, 32> status);
-		void prepareDacForceChange(int line, double voltage, DioSystem* ttls);
+		void prepareDacForceChange(int line, double voltage);
 		void stopDacs();
 		void interpretKey( std::vector<variableType>& variables, std::string& warnings );
 		void organizeDacCommands(UINT variation);

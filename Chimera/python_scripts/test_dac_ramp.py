@@ -56,9 +56,7 @@ class DAC_ramp_tester:
   def dac_seq_write_points(self):
     points=[]
     #these ramps should complete in just under 64 ms
-    points.append(DAC_seq_point(address=0,time=0,start=256*128,steps=60000,incr=128,chan=0))
-    # ~ points.append(DAC_seq_point(address=1,time=10,start=256*128,steps=65535,incr=512,chan=3))
-    # ~ points.append(DAC_seq_point(address=2,time=10000,start=256*128,steps=65535,incr=128,chan=0))
+    points.append(DAC_seq_point(address=0,time=0,start=256*128,steps=20000,incr=167772-4096,chan=0))
     points.append(DAC_seq_point(address=1, time=0,start=0,steps=0,incr=0,chan=0))
 
     for point in points:

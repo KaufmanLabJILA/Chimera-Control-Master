@@ -18,7 +18,7 @@ from dac81416 import DAC81416
 class zynq_tcp_server:
 	def __init__(self):
 		self.seq = sequencer.sequencer()
-		self.dioByteLen = 20
+		self.dioByteLen = 28
 		self.dacByteLen = 42
 		self.ddsByteLen = 47
 
@@ -45,7 +45,7 @@ class zynq_tcp_server:
 		    try:
 			    print 'connection from', client_address
 
-			    # Receive the data in small chunks and retransmit it
+			    # Receive the data in small chunks
 			    while True:
 			        data = connection.recv(64)
 			        print 'received "%s"' % data
@@ -76,6 +76,8 @@ class zynq_tcp_server:
 			self.writeDDSseq(conn, data_split)
 		elif (dev == 'initExp'):
 			self.seq.initExp()
+		elif (dev == 'DAC'):
+			self.seq.setDAC(data_split[1], data_split[2])
 		else:
 			print 'no device selected'
 

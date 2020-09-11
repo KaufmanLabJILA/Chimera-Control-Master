@@ -967,10 +967,9 @@ void MasterManager::analyzeFunction(std::string function, std::vector<std::strin
 			command.finalVal.assertValid(vars);
 			currentMasterScript >> command.rampTime;
 			command.rampTime.assertValid(vars);
-			currentMasterScript >> command.numSteps;
-			command.numSteps.assertValid(vars);
 			command.time = operationTime;
 			command.commandName = "ddsrampamp:";
+			command.numSteps.expressionStr = "__NONE__";
 			try
 			{
 				ddss->handleDDSScriptCommand(command, name, ddsShades, vars, ttls);
@@ -992,10 +991,9 @@ void MasterManager::analyzeFunction(std::string function, std::vector<std::strin
 			command.finalVal.assertValid(vars);
 			currentMasterScript >> command.rampTime;
 			command.rampTime.assertValid(vars);
-			currentMasterScript >> command.numSteps;
-			command.numSteps.assertValid(vars);
 			command.time = operationTime;
 			command.commandName = "ddsrampfreq:";
+			command.numSteps.expressionStr = "__NONE__";
 			try
 			{
 				ddss->handleDDSScriptCommand(command, name, ddsShades, vars, ttls);
@@ -1412,10 +1410,9 @@ void MasterManager::analyzeMasterScript(DioSystem* ttls, DacSystem* dacs, DDSSys
 			command.finalVal.assertValid(vars);
 			currentMasterScript >> command.rampTime;
 			command.rampTime.assertValid(vars);
-			currentMasterScript >> command.numSteps;
-			command.numSteps.assertValid(vars);
 			command.time = operationTime;
 			command.commandName = "ddsrampamp:";
+			command.numSteps.expressionStr = "__NONE__";
 			try
 			{
 				ddss->handleDDSScriptCommand(command, name, ddsShades, vars, ttls);
@@ -1437,10 +1434,9 @@ void MasterManager::analyzeMasterScript(DioSystem* ttls, DacSystem* dacs, DDSSys
 			command.finalVal.assertValid(vars);
 			currentMasterScript >> command.rampTime;
 			command.rampTime.assertValid(vars);
-			currentMasterScript >> command.numSteps;
-			command.numSteps.assertValid(vars);
 			command.time = operationTime;
 			command.commandName = "ddsrampfreq:";
+			command.numSteps.expressionStr = "__NONE__";
 			try
 			{
 				ddss->handleDDSScriptCommand(command, name, ddsShades, vars, ttls);

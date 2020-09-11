@@ -108,21 +108,21 @@ class DDS_ramp_tester:
       self.write_ftw_point(point)
 
 
-  def main_seq_write_points(self,delay):
+  def main_seq_write_points(self):
     points=[]
-    points.append(GPIO_seq_point(address=0,time=delay,output=0xFFFFFFFF))
-    points.append(GPIO_seq_point(address=1,time=delay+1000,output=0x00000000))
-    points.append(GPIO_seq_point(address=2,time=delay+2000,output=0x00000000))
-    points.append(GPIO_seq_point(address=3,time=delay+6400000,output=0x00000000))
+    points.append(GPIO_seq_point(address=0,time=0,output=0xFFFFFFFF))
+    points.append(GPIO_seq_point(address=1,time=1000,output=0x00000000))
+    points.append(GPIO_seq_point(address=2,time=2000,output=0x00000000))
+    points.append(GPIO_seq_point(address=3,time=6400000,output=0x00000000))
     points.append(GPIO_seq_point(address=4,time=0,output=0x00000000))
 
     for point in points:
       TS_write_point(self.fifo_main_seq, point)
 
-def program(tester,delay):
+def program(tester):
   tester.dds_seq_write_atw_points()
   tester.dds_seq_write_ftw_points()
-  tester.main_seq_write_points(delay)
+  tester.main_seq_write_points()
 
   # ~ print('Next, we need to enable modulation')
   # ~ print('  tester.mod_enable()')
@@ -143,6 +143,6 @@ if __name__ == "__main__":
   tester.mod_disable()
   reset()
   dds_lock_pll.dds_lock_pll()
-  program(tester,int(sys.argv[1]))
+  program(tester)
   tester.mod_enable()
   trigger()

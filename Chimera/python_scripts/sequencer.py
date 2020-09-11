@@ -6,16 +6,19 @@ from dac81416 import DAC81416
 from ad9959 import AD9959
 from test_sequencer import write_point as TS_write_point
 from reset_all import reset
+from writeToSeqGPIO import writeToSeqGPIO
+from getSeqGPIOWords import getSeqGPIOWords
 import dds_lock_pll
 
 import struct
 import math
 
 class GPIO_seq_point:
-  def __init__(self, address, time, output):
+  def __init__(self, address, time, outputA, outputB):
     self.address = address
     self.time = time
-    self.output = output
+    self.outputA = outputA
+    self.outputB = outputB
 
 class DAC_seq_point:
   def __init__(self, address, time, start, steps, incr, chan):
@@ -48,7 +51,8 @@ class sequencer:
 	def __init__(self):
 		self.dacRes = 65536
 		self.dacRange = [-10, 10]
-		self.dacRangeConv = 167772
+		self.dacRangeConv = 167772/self.dacRes
+		self.dacIncrMax = 268435456
 		self.dacTimeRes = 1.6e3 # in us
 		self.ddsAmpRange = [0, 5]
 		self.ddsFreqRange = [0, 500]
@@ -84,7 +88,8 @@ class sequencer:
 	  #01XXAAAA TTTTTTTT DDDDDDDD
 	  self.fifo_dio_seq.write_axis_fifo("\x01\x00" + struct.pack('>H', point.address))
 	  self.fifo_dio_seq.write_axis_fifo(struct.pack('>I', point.time))
-	  self.fifo_dio_seq.write_axis_fifo(struct.pack('>I', point.output))
+	  self.fifo_dio_seq.write_axis_fifo(struct.pack('>I', point.outputA))
+	  self.fifo_dio_seq.write_axis_fifo(struct.pack('>I', point.outputB))
 
 	def write_dio(self, byte_buf):
 	  #01XXAAAA TTTTTTTT DDDDDDDD
@@ -139,6 +144,15 @@ class sequencer:
 	def reset_DAC(self):
 		self.dac = DAC81416(device) # initialize DAC
 
+	def set_DAC(self, channel, value):
+		print "channel = ", channel, ", value = ", value
+		assert channel>=0 and channel<=31, 'Invalid channel for DAC81416 in set_DAC'
+		if (channel > 15):
+			channel = channel-16
+			self.dac1.set_DAC(channel, value)
+		else:
+			self.dac0.set_DAC(channel, value)
+
 	def mod_enable(self):
 		self.gpio2.set_bit(0, channel=1)
 
@@ -152,13 +166,14 @@ class sequencer:
 		points=[]
 		for ii in range(num_snapshots):
 			[t, chan, s, end, duration] = self.dac_read_point(byte_buf[ii*byte_len: ii*byte_len + byte_len])
-			num_steps = duration/self.dacTimeRes
+			num_steps = (duration/self.dacTimeRes) - 1 
 			if (num_steps == 0):
 				ramp_inc = 0
 			else:
-				ramp_inc = int((end-s)/num_steps)
+				ramp_inc = int((end-s)*self.dacRangeConv/num_steps)
 			if (ramp_inc < 0):
-				ramp_inc = int(self.dacRangeConv + ramp_inc)
+				ramp_inc = int(self.dacIncrMax + ramp_inc)
+			print ramp_inc
 			points.append(DAC_seq_point(address=ii,time=t,start=s,steps=duration,incr=ramp_inc,chan=chan))
 		points.append(DAC_seq_point(address=num_snapshots, time=0,start=0,steps=0,incr=0,chan=0))
 		points.append(DAC_seq_point(address=num_snapshots, time=0,start=0,steps=0,incr=0,chan=16))
@@ -183,7 +198,7 @@ class sequencer:
 		atw_points=[]
 		for ii in range(num_snapshots):
 			[t, channel, aorf, s, end, duration] = self.dds_read_point(byte_buf[ii*byte_len: ii*byte_len + byte_len])
-			num_steps = duration/self.ddsTimeRes
+			num_steps = (duration/self.ddsTimeRes)-1
 			if (num_steps == 0):
 				ramp_inc = 0
 			else:
@@ -254,48 +269,42 @@ class sequencer:
 	def dio_seq_write_points(self, byte_len, byte_buf, num_snapshots):
 		points=[]
 		for ii in range(num_snapshots):
-			[t, out] = self.dio_read_point(byte_buf[ii*byte_len: ii*byte_len + byte_len])
-			points.append(GPIO_seq_point(address=ii,time=t,output=out))
-		points.append(GPIO_seq_point(address=num_snapshots,time=6400000,output=0x00000000))
-		points.append(GPIO_seq_point(address=num_snapshots+1,time=0,output=0x00000000))
+			[t, outA, outB] = self.dio_read_point(byte_buf[ii*byte_len: ii*byte_len + byte_len])
+			points.append(GPIO_seq_point(address=ii,time=t,outputA=outA,outputB=outB))
+		points.append(GPIO_seq_point(address=num_snapshots,time=6400000,outputA=0x00000000,outputB=0x00000000))
+		points.append(GPIO_seq_point(address=num_snapshots+1,time=0,outputA=0x00000000,outputB=0x00000000))
 
 		for point in points:
 			print "add: ", point.address
 			print "time: ", point.time
-			print "output: ", point.output
+			print "outputA: ", point.outputA
+			print "outputB: ", point.outputB
 
+		# with open("/dev/axis_fifo_0x0000000080004000", "r+b") as character:
 		for point in points:
-		  self.write_dio_point(point)
-
-	def main_seq_write_points(self,delay):
-		points=[]
-		points.append(GPIO_seq_point(address=0,time=delay,output=0xFFFFFFFF))
-		points.append(GPIO_seq_point(address=1,time=delay+1000,output=0x00000000))
-		points.append(GPIO_seq_point(address=2,time=delay+2000,output=0x00000000))
-		points.append(GPIO_seq_point(address=3,time=delay+6400000,output=0x00000000))
-		points.append(GPIO_seq_point(address=4,time=0,output=0x00000000))
-
-		for point in points:
-			print "add: ", point.address
-			print "time: ", point.time
-			print "output: ", point.output
-			TS_write_point(self.fifo_main_seq, point)
+				# writeToSeqGPIO(character, point)
+			seqWords = getSeqGPIOWords(point)
+			for word in  seqWords:
+				# print word
+				self.fifo_dio_seq.write_axis_fifo(word[0], MSB_first=False)
 
 	def dio_read_point(self, snapshot):
 		print snapshot
 		snapshot_split = snapshot.split('_')
 		t = int(snapshot_split[0].strip('t'), 16)
-		out = int(snapshot_split[1].strip('b').strip('\0'), 16)
-		return [t, out]
+		out = snapshot_split[1].strip('b').strip('\0')
+		outB = int(out[:8], 16)
+		outA = int(out[8:], 16)
+		return [t, outA, outB]
 
 	def dac_read_point(self, snapshot):
 		snapshot_split = snapshot.split('_')
 		t = int(snapshot_split[0].strip('t'), 16)
 		chan = int(snapshot_split[1].strip('c'), 16)
-		start = int((float(snapshot_split[2].strip('s')) - self.dacRange[0])
-			/(self.dacRange[1]-self.dacRange[0])*self.dacRes)
-		end = int((float(snapshot_split[3].strip('e')) - self.dacRange[0])
-			/(self.dacRange[1]-self.dacRange[0])*self.dacRes)
+		start = int(self.dacRes*(float(snapshot_split[2].strip('s')) - self.dacRange[0])
+			/(self.dacRange[1]-self.dacRange[0]))
+		end = int(self.dacRes*(float(snapshot_split[3].strip('e')) - self.dacRange[0])
+			/(self.dacRange[1]-self.dacRange[0]))
 		duration = int(snapshot_split[4].strip('d').strip('\0'), 16)
 		return [t, chan, start, end, duration]
 
@@ -318,19 +327,18 @@ if __name__ == "__main__":
 	from reset_all import reset
 	import dds_lock_pll
 	
-	byte_buf_dio = 't00000000_b00000001\0t000003E8_b00000000\0t000007D0_b00000000\0'
+	byte_buf_dio = 't00000000_b8000000100000001\0t000003E8_b0000000000000000\0t000007D0_b0000000000000000\0'
 	byte_buf0 = 't00000064_c0000_a_s000.500_e000.000_d00000000\0'
 	byte_buf1 = 't00000064_c0000_f_s080.000_e000.000_d00000000\0'
 
 	seq = sequencer()
-	seq.mod_disable()
+	# seq.mod_disable()
 	reset()
-	dds_lock_pll.dds_lock_pll()
-	seq.dds_seq_write_points(47, byte_buf0, 1)
-	seq.dds_seq_write_points(47, byte_buf1, 1)
+	# dds_lock_pll.dds_lock_pll()
+	# seq.dds_seq_write_points(47, byte_buf0, 1)
+	# seq.dds_seq_write_points(47, byte_buf1, 1)
 	# seq.dds_seq_write_atw_points()
 	# seq.dds_seq_write_ftw_points()
-	# seq.main_seq_write_points(0)
-	seq.dio_seq_write_points(20, byte_buf_dio, 3)
-	seq.mod_enable()
-	trigger()
+	seq.dio_seq_write_points(28, byte_buf_dio, 3)
+	# seq.mod_enable()
+	# trigger()
