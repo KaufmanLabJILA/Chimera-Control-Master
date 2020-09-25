@@ -467,7 +467,7 @@ void DacSystem::handleButtonPress()
 				valStr = str(vals[dacInc]);
 			}
 			breakoutBoardEdits[dacInc].SetWindowTextA(cstr(valStr));
-			prepareDacForceChange(dacInc, vals[dacInc]);
+			//prepareDacForceChange(dacInc, vals[dacInc]);
 		}
 		catch (std::invalid_argument&)
 		{
@@ -929,7 +929,7 @@ void DacSystem::prepareDacForceChange(int line, double voltage)
 	dacValues[line] = voltage;
 	// I'm not sure it's necessary to go through the procedure of doing this and using the DIO to trigger the dacs for a foce out. I'm guessing it's 
 	// possible to tell the DAC to just immediately change without waiting for a trigger.
-	setForceDacEvent( line, voltage, 0 );
+	//setForceDacEvent( line, voltage, 0 );
 }
 
 
@@ -1061,6 +1061,44 @@ void DacSystem::writeDacs(UINT variation, bool loadSkip)
 	}
 }
 
+void DacSystem::setDACs()
+{
+	int tcp_connect;
+	try
+	{
+		tcp_connect = zynq_tcp.connectTCP(ZYNQ_ADDRESS);
+	}
+	catch (Error& err)
+	{
+		tcp_connect = 1;
+		errBox(err.what());
+	}
+
+	if (tcp_connect == 0)
+	{
+		std::ostringstream stringStream;
+		std::string command;
+		for (int line = 0; line < dacValues.size(); ++line) {
+			stringStream.str("");
+			stringStream << "DAC_" << line << "_" << std::setprecision(3) << dacValues[line];
+			command = stringStream.str();
+			zynq_tcp.writeCommand(command);
+		}
+		zynq_tcp.disconnect();
+	}
+	else
+	{
+		errBox("connection to zynq failed. can't trigger the sequence or new settings\n");
+	}
+}
+
+void DacSystem::zeroDACValues()
+{
+	for (int line = 0; line < dacValues.size(); ++line)
+	{
+		dacValues[line] = 0;
+	}
+}
 
 void DacSystem::startDacs()
 {

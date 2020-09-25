@@ -39,6 +39,8 @@ class DacSystem
 		void makeFinalDataFormat(UINT variation );
 		void formatDacForFPGA(UINT variation);
 		void writeDacs( UINT variation, bool loadSkip );
+		void setDACs();
+		void zeroDACValues();
 		void startDacs();
 		void configureClocks( UINT variation, bool loadSkip );
 		void setDefaultValue(UINT dacNum, double val);

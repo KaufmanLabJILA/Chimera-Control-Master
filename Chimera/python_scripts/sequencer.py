@@ -145,13 +145,13 @@ class sequencer:
 		self.dac = DAC81416(device) # initialize DAC
 
 	def set_DAC(self, channel, value):
-		print "channel = ", channel, ", value = ", value
+		valueInt = int((value-self.dacRange[0])*self.dacRes/(self.dacRange[1]-self.dacRange[0]))
 		assert channel>=0 and channel<=31, 'Invalid channel for DAC81416 in set_DAC'
 		if (channel > 15):
 			channel = channel-16
-			self.dac1.set_DAC(channel, value)
+			self.dac1.set_DAC(channel, valueInt)
 		else:
-			self.dac0.set_DAC(channel, value)
+			self.dac0.set_DAC(channel, valueInt)
 
 	def mod_enable(self):
 		self.gpio2.set_bit(0, channel=1)
@@ -339,6 +339,6 @@ if __name__ == "__main__":
 	# seq.dds_seq_write_points(47, byte_buf1, 1)
 	# seq.dds_seq_write_atw_points()
 	# seq.dds_seq_write_ftw_points()
-	seq.dio_seq_write_points(28, byte_buf_dio, 3)
+	seq.set_DAC(0, 0)
 	# seq.mod_enable()
 	# trigger()
