@@ -74,6 +74,8 @@ class DacSystem
 		void handleEditChange( UINT dacNumber );
 	private:
 		Control<CStatic> dacTitle;
+		Control<CStatic> dac0Title;
+		Control<CStatic> dac1Title;
 		Control<CButton> dacSetButton;
 		Control<CButton> zeroDacs;
 		std::array<Control<CStatic>, 32> dacLabels;

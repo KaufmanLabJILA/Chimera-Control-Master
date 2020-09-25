@@ -363,32 +363,41 @@ double DacSystem::getDefaultValue(UINT dacNum)
 void DacSystem::initialize(POINT& pos, cToolTips& toolTips, AuxiliaryWindow* master, int& id)
 {
 	// title
-	dacTitle.sPos = { pos.x, pos.y, pos.x + 480, pos.y += 25 };
+	dacTitle.sPos = { pos.x, pos.y, pos.x + 340, pos.y += 25 };
 	dacTitle.Create("DACS", WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER, dacTitle.sPos, master, id++);
 	dacTitle.fontType = HeadingFont;
 	// 
-	dacSetButton.sPos = { pos.x, pos.y, pos.x + 240, pos.y + 25};
+	dacSetButton.sPos = { pos.x, pos.y, pos.x + 340, pos.y += 25};
 	dacSetButton.Create( "Set New DAC Values", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, 
 						 dacSetButton.sPos, master, ID_DAC_SET_BUTTON );
 	dacSetButton.setToolTip("Press this button to attempt force all DAC values to the values currently recorded in the"
 							 " edits below.", toolTips, master);
 	//
-	zeroDacs.sPos = { pos.x + 240, pos.y, pos.x + 480, pos.y += 25 };
+	zeroDacs.sPos = { pos.x, pos.y, pos.x + 340, pos.y += 25 };
 	zeroDacs.Create( "Zero Dacs", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, zeroDacs.sPos, master, IDC_ZERO_DACS );
 	zeroDacs.setToolTip( "Press this button to set all dac values to zero.", toolTips, master );
 	int collumnInc = 0;
+	pos.y += 15;
+
+	// DAC board labels
+	dac0Title.sPos = { pos.x, pos.y, pos.x + 160, pos.y + 25 };
+	dac0Title.Create("DAC 0", WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER, dac0Title.sPos, master, id++);
+	dac0Title.fontType = HeadingFont;
+	dac1Title.sPos = { pos.x + 180, pos.y, pos.x + 340, pos.y += 25 };
+	dac1Title.Create("DAC 1", WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER, dac1Title.sPos, master, id++);
+	dac1Title.fontType = HeadingFont;
 	
 	// there's a single label first, hence the +1.
 	for (UINT dacInc = 0; dacInc < breakoutBoardEdits.size(); dacInc++)
 	{
-		if (dacInc == breakoutBoardEdits.size() / 3 || dacInc == 2 * breakoutBoardEdits.size() / 3)
+		if (dacInc == breakoutBoardEdits.size() / 2)
 		{
 			collumnInc++;
 			// go to second or third collumn
-			pos.y -= 25 * breakoutBoardEdits.size() / 3;
+			pos.y -= 25 * breakoutBoardEdits.size() / 2;
 		}
 
-		breakoutBoardEdits[dacInc].sPos = { pos.x + 20 + collumnInc * 160, pos.y, pos.x + 160 + collumnInc * 160,
+		breakoutBoardEdits[dacInc].sPos = { pos.x + 20 + collumnInc * 180, pos.y, pos.x + 160 + collumnInc * 180,
 												pos.y += 25 };
 		breakoutBoardEdits[dacInc].colorState = 0;
 		breakoutBoardEdits[dacInc].Create( WS_CHILD | WS_VISIBLE | WS_BORDER, breakoutBoardEdits[dacInc].sPos,
@@ -398,19 +407,19 @@ void DacSystem::initialize(POINT& pos, cToolTips& toolTips, AuxiliaryWindow* mas
 	}
 
 	collumnInc = 0;
-	pos.y -= 25 * breakoutBoardEdits.size() / 3;
+	pos.y -= 25 * breakoutBoardEdits.size() / 2;
 
 	for (UINT dacInc = 0; dacInc < dacLabels.size(); dacInc++)
 	{
-		if (dacInc == dacLabels.size() / 3 || dacInc == 2 * dacLabels.size() / 3)
+		if (dacInc == dacLabels.size() / 2)
 		{
 			collumnInc++;
-			// go to second or third collumn
-			pos.y -= 25 * dacLabels.size() / 3;
+			// go to second column
+			pos.y -= 25 * dacLabels.size() / 2;
 		}
 		// create label
-		dacLabels[dacInc].sPos = { pos.x + collumnInc * 160, pos.y, pos.x + 20 + collumnInc * 160, pos.y += 25 };
-		dacLabels[dacInc].Create(cstr(dacInc), WS_CHILD | WS_VISIBLE | SS_CENTER,
+		dacLabels[dacInc].sPos = { pos.x + collumnInc * 180, pos.y, pos.x + 20 + collumnInc * 180, pos.y += 25 };
+		dacLabels[dacInc].Create(cstr(dacInc - collumnInc*16), WS_CHILD | WS_VISIBLE | SS_CENTER,
 								 dacLabels[dacInc].sPos, master, ID_DAC_FIRST_EDIT + dacInc);
 		dacLabels[dacInc].setToolTip(dacNames[dacInc], toolTips, master);
 	}

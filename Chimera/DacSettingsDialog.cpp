@@ -53,7 +53,7 @@ BOOL DacSettingsDialog::OnInitDialog()
 	//input = *(dacInputStruct*)lParam;
 	POINT loc = { 0,0 };
 	// headers
-	for (int columnInc = 0; columnInc < 3; columnInc++)
+	for (int columnInc = 0; columnInc < 2; columnInc++)
 	{
 		dacNumberHeaders[columnInc].sPos = { loc.x, loc.y, loc.x + 20, loc.y + 20 };
 		loc.x += 20;
@@ -75,15 +75,15 @@ BOOL DacSettingsDialog::OnInitDialog()
 	}
 
 	loc.y += 25;
-	loc.x -= 380 * 3;
+	loc.x -= 380 * 2;
 
 	for (UINT dacInc = 0; dacInc < nameEdits.size(); dacInc++)
 	{
-		if (dacInc == nameEdits.size() / 3 || dacInc == 2 * nameEdits.size() / 3)
+		if (dacInc == nameEdits.size() / 2)
 		{
-			// go to second or third collumn
+			// go to second collumn
 			loc.x += 380;
-			loc.y -= 25 * nameEdits.size() / 3;
+			loc.y -= 25 * nameEdits.size() / 2;
 		}
 		// create label
 		numberLabels[dacInc].sPos = { loc.x, loc.y, loc.x += 20, loc.y + 20 };
