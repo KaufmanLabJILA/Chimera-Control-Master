@@ -31,6 +31,8 @@ class DacSettingsDialog : public CDialog
 		std::array<Control<CEdit>, 32> nameEdits;
 		std::array<Control<CEdit>, 32> minValEdits;
 		std::array<Control<CEdit>, 32> maxValEdits;
+		Control<CStatic> dac0BoardHeader;
+		Control<CStatic> dac1BoardHeader;
 		std::array<Control<CStatic>, 2> dacNumberHeaders;
 		std::array<Control<CStatic>, 2> dacNameHeaders;
 		std::array<Control<CStatic>, 2> dacMinValHeaders;

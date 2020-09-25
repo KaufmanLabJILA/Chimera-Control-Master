@@ -53,8 +53,21 @@ BOOL DacSettingsDialog::OnInitDialog()
 	//input = *(dacInputStruct*)lParam;
 	POINT loc = { 0,0 };
 	// headers
+
+	dac0BoardHeader.sPos = { loc.x, loc.y, loc.x + 380, loc.y + 20 };
+	dac0BoardHeader.Create("DAC 0", WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER | WS_BORDER,
+		dac0BoardHeader.sPos, this);
+	loc.x += 400;
+	dac1BoardHeader.sPos = { loc.x, loc.y, loc.x + 380, loc.y + 20 };
+	dac1BoardHeader.Create("DAC 1", WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER | WS_BORDER,
+		dac1BoardHeader.sPos, this);
+
+	loc.x = 0;
+	loc.y += 20;
+
 	for (int columnInc = 0; columnInc < 2; columnInc++)
 	{
+
 		dacNumberHeaders[columnInc].sPos = { loc.x, loc.y, loc.x + 20, loc.y + 20 };
 		loc.x += 20;
 		dacNumberHeaders[columnInc].Create("#", WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER | WS_BORDER,
@@ -63,7 +76,8 @@ BOOL DacSettingsDialog::OnInitDialog()
 		dacNameHeaders[columnInc].sPos = { loc.x, loc.y, loc.x + 120, loc.y + 20 };
 		loc.x += 120;
 		dacNameHeaders[columnInc].Create("Dac Name", WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER | WS_BORDER,
-										 dacNameHeaders[columnInc].sPos, this);
+			dacNameHeaders[columnInc].sPos, this);
+
 		dacMinValHeaders[columnInc].sPos = { loc.x, loc.y, loc.x + 120, loc.y + 20 };
 		loc.x += 120;
 		dacMinValHeaders[columnInc].Create("Min Value", WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER | WS_BORDER,
@@ -72,22 +86,34 @@ BOOL DacSettingsDialog::OnInitDialog()
 		loc.x += 120;
 		dacMaxValHeaders[columnInc].Create("Max Value", WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER | WS_BORDER,
 										   dacMaxValHeaders[columnInc].sPos, this);
+
+		loc.x += 20;
 	}
 
 	loc.y += 25;
-	loc.x -= 380 * 2;
-
+	loc.x = 0;
+	int dacLabel;
+	
 	for (UINT dacInc = 0; dacInc < nameEdits.size(); dacInc++)
 	{
+		if (dacInc < 16) 
+		{
+			dacLabel = dacInc;
+		}
+		else 
+		{
+			dacLabel = dacInc - 16;
+		}
+		
 		if (dacInc == nameEdits.size() / 2)
 		{
 			// go to second collumn
-			loc.x += 380;
+			loc.x += 400;
 			loc.y -= 25 * nameEdits.size() / 2;
 		}
 		// create label
 		numberLabels[dacInc].sPos = { loc.x, loc.y, loc.x += 20, loc.y + 20 };
-		numberLabels[dacInc].Create(cstr(dacInc), WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER, 
+		numberLabels[dacInc].Create(cstr(dacLabel), WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER,
 									numberLabels[dacInc].sPos, this);
 
 		nameEdits[dacInc].sPos = { loc.x, loc.y, loc.x += 120, loc.y + 20 };

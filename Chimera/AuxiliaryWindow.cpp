@@ -362,30 +362,10 @@ void AuxiliaryWindow::zeroDacs()
 	{
 		dacBoards.resetDacEvents();
 		ttlBoard.resetTtlEvents();
-		/*dacBoards.prepareForce();
-		ttlBoard.prepareForce();*/
+
 		dacBoards.zeroDACValues();
 		dacBoards.setDACs();
-		/*dacBoards.organizeDacCommands(0);
-		dacBoards.makeFinalDataFormat(0);
-		dacBoards.stopDacs();
-		dacBoards.configureClocks(0, false);
-		dacBoards.writeDacs(0, false);
-		dacBoards.startDacs();
-		ttlBoard.organizeTtlCommands(0);
-		ttlBoard.convertToFinalFormat(0);*/
 
-
-		//DIO FPGA commands//
-		/*ttlBoard.formatForFPGA(0);
-		ttlBoard.writeTtlData(0, false);
-		ttlBoard.writeTtlDataToFPGA(0, false);
-		ttlBoard.startDioFPGA(0);*/
-		/////
-
-		/*ttlBoard.writeTtlData(0, false);
-		ttlBoard.startBoard();
-		ttlBoard.waitTillFinished(0, false);*/
 		sendStatus("Zero'd DACs.\r\n");
 	}
 	catch (Error& exception)
@@ -774,29 +754,10 @@ void AuxiliaryWindow::SetDacs()
 		dacBoards.resetDacEvents();
 		ttlBoard.resetTtlEvents();
 		sendStatus("Setting Dacs...\r\n");
+
 		dacBoards.handleButtonPress();
-		/*dacBoards.organizeDacCommands(0);
-		dacBoards.makeFinalDataFormat(0);
-		dacBoards.writeDacs(1, false);*/
 		dacBoards.setDACs();
-		// start the boards which actually sets the dac values.
-		//dacBoards.stopDacs();
-		//dacBoards.configureClocks(0, false);
-		//sendStatus("Writing New Dac Settings...\r\n");
-		//dacBoards.writeDacs(0, false);
-		//dacBoards.startDacs();
-		//ttlBoard.organizeTtlCommands(0);
-		//ttlBoard.convertToFinalFormat(0);
 
-		////DIO FPGA commands//
-		//ttlBoard.formatForFPGA(0);
-		//ttlBoard.writeTtlDataToFPGA(0, false);
-		//ttlBoard.startDioFPGA(0);
-		///////
-
-		//ttlBoard.writeTtlData(0, false);
-		//ttlBoard.startBoard();
-		//ttlBoard.waitTillFinished(0, false);
 		sendStatus("Finished Setting Dacs.\r\n");
 	}
 	catch (Error& exception)
