@@ -217,58 +217,67 @@ std::array<double, 2> DDSSystem::getDefaultValue(UINT ddsNum)
 // this function returns the end location of the set of controls. This can be used for the location for the next control beneath it.
 void DDSSystem::initialize(POINT& pos, cToolTips& toolTips, AuxiliaryWindow* master, int& id)
 {
-	//// title
-	//ddsTitle.sPos = { pos.x, pos.y, pos.x + 480, pos.y += 25 };
-	//ddsTitle.Create("DACS", WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER, dacTitle.sPos, master, id++);
-	//ddsTitle.fontType = HeadingFont;
-	//// 
-	//ddsSetButton.sPos = { pos.x, pos.y, pos.x + 240, pos.y + 25};
-	//ddsSetButton.Create( "Set New DAC Values", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, 
-	//					 dacSetButton.sPos, master, ID_DAC_SET_BUTTON );
-	//ddsSetButton.setToolTip("Press this button to attempt force all DAC values to the values currently recorded in the"
-	//						 " edits below.", toolTips, master);
-	////
-	//zeroDDSs.sPos = { pos.x + 240, pos.y, pos.x + 480, pos.y += 25 };
-	//zeroDDSs.Create( "Zero Dacs", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, zeroDacs.sPos, master, IDC_ZERO_DACS );
-	//zeroDDSs.setToolTip( "Press this button to set all dac values to zero.", toolTips, master );
-	//int collumnInc = 0;
+	// title
+	ddsTitle.sPos = { pos.x, pos.y, pos.x + 480, pos.y += 25 };
+	ddsTitle.Create("DDSS", WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER, ddsTitle.sPos, master, id++);
+	ddsTitle.fontType = HeadingFont;
+	// 
+	ddsSetButton.sPos = { pos.x, pos.y, pos.x + 240, pos.y += 25};
+	ddsSetButton.Create( "Set New DDS Values", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, 
+						 ddsSetButton.sPos, master, ID_DAC_SET_BUTTON );
+	ddsSetButton.setToolTip("Press this button to attempt force all DAC values to the values currently recorded in the"
+							 " edits below.", toolTips, master);
+
+	// DDS board labels
+	dds0Title.sPos = { pos.x, pos.y, pos.x + 160, pos.y + 25 };
+	dds0Title.Create("DDS 0", WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER, dds0Title.sPos, master, id++);
+	dds0Title.fontType = HeadingFont;
+	dds1Title.sPos = { pos.x + 180, pos.y, pos.x + 340, pos.y + 25 };
+	dds1Title.Create("DDS 1", WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER, dds1Title.sPos, master, id++);
+	dds1Title.fontType = HeadingFont;
+	dds2Title.sPos = { pos.x + 360, pos.y, pos.x + 520, pos.y += 25 };
+	dds2Title.Create("DDS 2", WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER, dds2Title.sPos, master, id++);
+	dds2Title.fontType = HeadingFont;
+
 	//
-	//// there's a single label first, hence the +1.
-	//for (UINT ddsInc = 0; ddsInc < breakoutBoardEdits.size(); dacInc++)
-	//{
-	//	if (ddsInc == breakoutBoardEdits.size() / 3 || dacInc == 2 * breakoutBoardEdits.size() / 3)
-	//	{
-	//		collumnInc++;
-	//		// go to second or third collumn
-	//		pos.y -= 25 * breakoutBoardEdits.size() / 3;
-	//	}
+	int collumnInc = 0;
+	
+	// there's a single label first, hence the +1.
+	for (UINT ddsInc = 0; ddsInc < breakoutBoardAmpEdits.size(); ddsInc++)
+	{
+		if (ddsInc == breakoutBoardAmpEdits.size() / 3 || ddsInc == 2 * breakoutBoardAmpEdits.size() / 3)
+		{
+			collumnInc++;
+			// go to second or third collumn
+			pos.y -= 25 * breakoutBoardAmpEdits.size() / 3;
+		}
 
-	//	breakoutBoardEdits[dacInc].sPos = { pos.x + 20 + collumnInc * 160, pos.y, pos.x + 160 + collumnInc * 160,
-	//											pos.y += 25 };
-	//	breakoutBoardEdits[dacInc].colorState = 0;
-	//	breakoutBoardEdits[dacInc].Create( WS_CHILD | WS_VISIBLE | WS_BORDER, breakoutBoardEdits[dacInc].sPos,
-	//									   master, id++ );
-	//	breakoutBoardEdits[dacInc].SetWindowText("0");
-	//	breakoutBoardEdits[dacInc].setToolTip(dacNames[dacInc], toolTips, master);
-	//}
+		breakoutBoardAmpEdits[ddsInc].sPos = { pos.x + 20 + collumnInc * 160, pos.y, pos.x + 160 + collumnInc * 160,
+												pos.y += 25 };
+		breakoutBoardAmpEdits[ddsInc].colorState = 0;
+		breakoutBoardAmpEdits[ddsInc].Create( WS_CHILD | WS_VISIBLE | WS_BORDER, breakoutBoardAmpEdits[ddsInc].sPos,
+										   master, id++ );
+		breakoutBoardAmpEdits[ddsInc].SetWindowText("0");
+		breakoutBoardAmpEdits[ddsInc].setToolTip(ddsNames[ddsInc], toolTips, master);
+	}
 
-	//collumnInc = 0;
-	//pos.y -= 25 * breakoutBoardEdits.size() / 3;
+	collumnInc = 0;
+	pos.y -= 25 * breakoutBoardAmpEdits.size() / 3;
 
-	//for (UINT dacInc = 0; dacInc < dacLabels.size(); dacInc++)
-	//{
-	//	if (dacInc == dacLabels.size() / 3 || dacInc == 2 * dacLabels.size() / 3)
-	//	{
-	//		collumnInc++;
-	//		// go to second or third collumn
-	//		pos.y -= 25 * dacLabels.size() / 3;
-	//	}
-	//	// create label
-	//	dacLabels[dacInc].sPos = { pos.x + collumnInc * 160, pos.y, pos.x + 20 + collumnInc * 160, pos.y += 25 };
-	//	dacLabels[dacInc].Create(cstr(dacInc), WS_CHILD | WS_VISIBLE | SS_CENTER,
-	//							 dacLabels[dacInc].sPos, master, ID_DAC_FIRST_EDIT + dacInc);
-	//	dacLabels[dacInc].setToolTip(dacNames[dacInc], toolTips, master);
-	//}
+	for (UINT ddsInc = 0; ddsInc < ddsLabels.size(); ddsInc++)
+	{
+		if (ddsInc == ddsLabels.size() / 3 || ddsInc == 2 * ddsLabels.size() / 3)
+		{
+			collumnInc++;
+			// go to second or third collumn
+			pos.y -= 25 * ddsLabels.size() / 3;
+		}
+		// create label
+		ddsLabels[ddsInc].sPos = { pos.x + collumnInc * 160, pos.y, pos.x + 20 + collumnInc * 160, pos.y += 25 };
+		ddsLabels[ddsInc].Create(cstr(ddsInc), WS_CHILD | WS_VISIBLE | SS_CENTER,
+								 ddsLabels[ddsInc].sPos, master, ID_DAC_FIRST_EDIT + ddsInc);
+		ddsLabels[ddsInc].setToolTip(ddsNames[ddsInc], toolTips, master);
+	}
 }
 
 

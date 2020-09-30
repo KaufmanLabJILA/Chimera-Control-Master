@@ -9,6 +9,7 @@ from reset_all import reset
 from writeToSeqGPIO import writeToSeqGPIO
 from getSeqGPIOWords import getSeqGPIOWords
 import dds_lock_pll
+from soft_trigger import trigger
 
 import struct
 import math
@@ -83,6 +84,9 @@ class sequencer:
 		self.mod_disable()
 		reset()
 		dds_lock_pll.dds_lock_pll() 
+
+	def soft_trigger(self):
+		trigger()
 
 	def write_dio_point(self, point):
 	  #01XXAAAA TTTTTTTT DDDDDDDD
@@ -271,7 +275,7 @@ class sequencer:
 		for ii in range(num_snapshots):
 			[t, outA, outB] = self.dio_read_point(byte_buf[ii*byte_len: ii*byte_len + byte_len])
 			points.append(GPIO_seq_point(address=ii,time=t,outputA=outA,outputB=outB))
-		points.append(GPIO_seq_point(address=num_snapshots,time=6400000,outputA=0x00000000,outputB=0x00000000))
+		points.append(GPIO_seq_point(address=num_snapshots,time=6400000,outputA=outA,outputB=outB))
 		points.append(GPIO_seq_point(address=num_snapshots+1,time=0,outputA=0x00000000,outputB=0x00000000))
 
 		for point in points:
@@ -327,18 +331,19 @@ if __name__ == "__main__":
 	from reset_all import reset
 	import dds_lock_pll
 	
-	byte_buf_dio = 't00000000_b8000000100000001\0t000003E8_b0000000000000000\0t000007D0_b0000000000000000\0'
+	byte_buf_dio = 't00000000_b8000000100000001\0t000003E8_b0000000000000000\0t000007D0_b0000000000000001\0'
 	byte_buf0 = 't00000064_c0000_a_s000.500_e000.000_d00000000\0'
 	byte_buf1 = 't00000064_c0000_f_s080.000_e000.000_d00000000\0'
 
 	seq = sequencer()
 	# seq.mod_disable()
 	reset()
+	seq.dio_seq_write_points(28, byte_buf_dio, 3)
 	# dds_lock_pll.dds_lock_pll()
 	# seq.dds_seq_write_points(47, byte_buf0, 1)
 	# seq.dds_seq_write_points(47, byte_buf1, 1)
 	# seq.dds_seq_write_atw_points()
 	# seq.dds_seq_write_ftw_points()
-	seq.set_DAC(0, 0)
-	# seq.mod_enable()
+	# seq.set_DAC(0, 0)
+	seq.mod_enable()
 	# trigger()

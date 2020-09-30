@@ -597,7 +597,7 @@ void AuxiliaryWindow::handleMasterConfigOpen(std::stringstream& configStream, do
 			}
 
 			ttlBoard.setName(ttlRowInc, ttlNumberInc, name, toolTips, this);
-			ttlBoard.forceTtl(ttlRowInc, ttlNumberInc, status);
+			//ttlBoard.forceTtl(ttlRowInc, ttlNumberInc, status);
 			ttlBoard.updateDefaultTtl(ttlRowInc, ttlNumberInc, status);
 		}
 	}
@@ -929,23 +929,9 @@ BOOL AuxiliaryWindow::OnInitDialog()
 		statusBox.initialize(controlLocation, id, this, 480, toolTips);
 		ttlBoard.initialize(controlLocation, toolTips, this, id);
 		dacBoards.initialize(controlLocation, toolTips, this, id);
+		ddsBoards.initialize(controlLocation, toolTips, this, id);
 
 		POINT statusLoc = { 960, 0 };
-		/*topBottomTek.initialize(statusLoc, this, id, "Top-Bottom-Tek", "Top", "Bottom", 480,
-		{ TOP_BOTTOM_PROGRAM, TOP_ON_OFF, TOP_FSK, BOTTOM_ON_OFF, BOTTOM_FSK });
-		eoAxialTek.initialize(statusLoc, this, id, "EO / Axial", "EO", "Axial", 480, { EO_AXIAL_PROGRAM,
-			EO_ON_OFF, EO_FSK, AXIAL_ON_OFF, AXIAL_FSK });
-		RhodeSchwarzGenerator.initialize(controlLocation, toolTips, this, id);
-		controlLocation = POINT{ 480, 0 };
-
-		agilents[TopBottom].initialize(480, controlLocation, toolTips, this, id, "Top-Bottom-Agilent", 100,
-			mainWindowFriend->getRgbs()["theme BG1"]);
-		agilents[Axial].initialize(480, controlLocation, toolTips, this, id, "Microwave-Axial-Agilent", 100,
-			mainWindowFriend->getRgbs()["theme BG1"]);
-		agilents[Flashing].initialize(480, controlLocation, toolTips, this, id,
-			"Flashing-Agilent", 100, mainWindowFriend->getRgbs()["theme BG1"]);
-		agilents[Microwave].initialize(480, controlLocation, toolTips, this, id, "Microwave-Agilent", 100,
-			mainWindowFriend->getRgbs()["theme BG1"]);*/
 
 		controlLocation = POINT{ 1440, 0 };
 		globalVariables.initialize(controlLocation, toolTips, this, id, "GLOBAL VARIABLES",

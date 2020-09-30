@@ -81,6 +81,8 @@ class zynq_tcp_server:
 			self.seq.initExp()
 		elif (dev == 'DAC'):
 			self.seq.set_DAC(int(data_split[1]), float(data_split[2]))
+		elif (dev == 'trigger'):
+			self.seq.soft_trigger()
 		else:
 			print 'no device selected'
 

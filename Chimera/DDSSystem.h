@@ -68,6 +68,9 @@ class DDSSystem
 
 	private:
 		Control<CStatic> ddsTitle;
+		Control<CStatic> dds0Title;
+		Control<CStatic> dds1Title;
+		Control<CStatic> dds2Title;
 		Control<CButton> ddsSetButton;
 		//Control<CButton> zeroDSSs;
 		std::array<Control<CStatic>, 12> ddsLabels;
