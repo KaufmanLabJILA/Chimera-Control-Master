@@ -61,14 +61,16 @@ if __name__ == "__main__":
     #note that this sequence leaves all signals high when complete.
     #that makes it easy to verify that all outputs are OK for testing
     #high
-    writeToSeqGPIO(character,0x0000,0x00000000,0x80000000,0x00000001)
+    writeToSeqGPIO(character,0x0000,0x00000000,0x00000001,0x00000001)
     sleep(0.05)
     #low after 1 us
     writeToSeqGPIO(character,0x0001,0x00000064,0x00000000,0x00000000)
     sleep(0.05)
     #high another us later
-    writeToSeqGPIO(character,0x0002,0x000000C8,0x80000000,0x00000001)
+    writeToSeqGPIO(character,0x0002,0x000000C8,0x00000001,0x00000001)
+    sleep(0.05)
+    writeToSeqGPIO(character,0x0003,0x000001C8,0x00000000,0x00000000)
     sleep(0.05)
     #terminate sequence
-    writeToSeqGPIO(character,0x0003,0x00000000,0x00000000,0x00000000)
+    writeToSeqGPIO(character,0x0004,0x00000000,0x00000000,0x00000000)
     sleep(0.05)

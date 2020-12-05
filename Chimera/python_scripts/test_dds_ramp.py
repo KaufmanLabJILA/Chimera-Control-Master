@@ -89,7 +89,7 @@ class DDS_ramp_tester:
   def dds_seq_write_atw_points(self):
     points=[]
     #these ramps should complete in just under 64 ms
-    points.append(DDS_atw_seq_point(address=0,time=   0,start=1023,steps=0,incr=0,chan=0)) #25% to 75%
+    points.append(DDS_atw_seq_point(address=0,time=   0,start=500,steps=0,incr=0,chan=0)) #25% to 75%
 #    points.append(DDS_atw_seq_point(address=1,time=1000,start=256,steps=1,incr=0,chan=3)) #25% to 75%
     points.append(DDS_atw_seq_point(address=1,time=   0,start=0,steps=    0,incr=   0,chan=0))
 
@@ -99,9 +99,9 @@ class DDS_ramp_tester:
   def dds_seq_write_ftw_points(self):
     points=[]
     #these ramps should complete in just under 64 ms
-    points.append(DDS_ftw_seq_point(address=0,time=0,start=500000000,steps=0,incr=0,chan=0))
-    # ~ points.append(DDS_ftw_seq_point(address=0,time=   0,start=800000,steps=10000,incr=30000,chan=0)) 
-    points.append(DDS_ftw_seq_point(address=1,time=1,start=10000000,steps=1,incr=0,chan=3)) 
+    points.append(DDS_ftw_seq_point(address=0,time=0,start=5000000,steps=0,incr=0,chan=0))
+    # points.append(DDS_ftw_seq_point(address=0,time=   0, start=80000,steps=1,incr=3000,chan=0)) 
+    # points.append(DDS_ftw_seq_point(address=1,time=1,start=1000000,steps=1,incr=0,chan=3)) 
     points.append(DDS_ftw_seq_point(address=2,time=   0,start=     0,steps=    0,incr=    0,chan=0))
 
     for point in points:

@@ -17,7 +17,7 @@ class DAC81416:
     self.fifo.write_axis_fifo("\x00\x03\x0A\x84")
     #GEN config
     #activate internal ref
-    self.fifo.write_axis_fifo("\x00\x04\x3F\x00")
+    self.fifo.write_axis_fifo("\x00\x04\x3F\x00") #note channels 0/1 are set to differential now
     #BRDCONFIG - disable broadcast mode
     self.fifo.write_axis_fifo("\x00\x05\x00\x00")
     #SYNCCONFIG - leave at default
@@ -40,7 +40,7 @@ class DAC81416:
     self.fifo.write_axis_fifo("\x00\x09\x00\x00")
     
     for channel in range(16):
-		self.set_DAC(channel, 256*128)
+	   self.set_DAC(channel, 256*128)
 
   def set_DAC(self, channel, value):
     assert channel>=0 and channel<=15, 'Invalid channel for DAC81416 in set_DAC'

@@ -5,7 +5,7 @@ with open("/dev/axis_fifo_0x0000000080002000", "r+b") as character:
     #SPI config register
     writewords.append("\x84\x0A\x03\x00")
     #GEN config
-    writewords.append("\x00\x01\x04\x00")
+    writewords.append("\x80\x01\x04\x00")
     #power down control
     writewords.append("\x00\x00\x09\x00")
     #DACRANGE

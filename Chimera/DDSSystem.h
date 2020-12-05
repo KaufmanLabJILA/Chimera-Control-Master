@@ -71,6 +71,8 @@ class DDSSystem
 		Control<CStatic> dds0Title;
 		Control<CStatic> dds1Title;
 		Control<CStatic> dds2Title;
+		std::array < Control<CStatic>, 3> ampLabels;
+		std::array < Control<CStatic>, 3> freqLabels;
 		Control<CButton> ddsSetButton;
 		//Control<CButton> zeroDSSs;
 		std::array<Control<CStatic>, 12> ddsLabels;

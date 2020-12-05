@@ -9,8 +9,14 @@ import struct
 import soft_trigger
 import reset_all
 
-from test_sequencer import GPIO_seq_point
-from test_sequencer import write_point as TS_write_point
+from getSeqGPIOWords import getSeqGPIOWords
+
+class GPIO_seq_point:
+  def __init__(self, address, time, outputA, outputB):
+    self.address = address
+    self.time = time
+    self.outputA = outputA
+    self.outputB = outputB
 
 class DAC_seq_point:
   def __init__(self, address, time, start, steps, incr, chan):
@@ -56,27 +62,40 @@ class DAC_ramp_tester:
   def dac_seq_write_points(self):
     points=[]
     #these ramps should complete in just under 64 ms
-    points.append(DAC_seq_point(address=0,time=0,start=256*128,steps=20000,incr=167772-4096,chan=0))
-    points.append(DAC_seq_point(address=1, time=0,start=0,steps=0,incr=0,chan=0))
+    #points.append(DAC_seq_point(address=0,time=0,start=256*128,steps=20000,incr=4096,chan=0))
+    points.append(DAC_seq_point(address=0,time=0,start=256*128,steps=10000,incr=4096,chan=0))
+    points.append(DAC_seq_point(address=1,time=2000000,start=256*255,steps=10000,incr=268431360,chan=0))
+    points.append(DAC_seq_point(address=2, time=0,start=0,steps=0,incr=0,chan=0))
 
     for point in points:
       self.write_point(point)
 
-  def main_seq_write_points(self):
+  def dio_seq_write_points(self):
     points=[]
-    points.append(GPIO_seq_point(address=0,time=0,output=0xFFFFFFFF))
-    points.append(GPIO_seq_point(address=1,time=1000,output=0x00000000))
-    points.append(GPIO_seq_point(address=2,time=2000,output=0xFFFFFFFF))
-    points.append(GPIO_seq_point(address=3,time=40000,output=0x00000000))
-    points.append(GPIO_seq_point(address=4,time=0,output=0x00000000))
+    points.append(GPIO_seq_point(address=0,time=0,outputA=0x00000001,outputB=0x00000001))
+    points.append(GPIO_seq_point(address=1,time=20000,outputA=0x00000000,outputB=0x00000000))
+    points.append(GPIO_seq_point(address=2,time=40000,outputA=0x00000001,outputB=0x00000001))
+    points.append(GPIO_seq_point(address=3,time=6400000,outputA=0x00000001,outputB=0x00000001))
+    points.append(GPIO_seq_point(address=4,time=0,outputA=0x00000000,outputB=0x00000000))
 
     for point in points:
-      TS_write_point(self.fifo_main_seq, point)
+      print "add: ", point.address
+      print "time: ", point.time
+      print "outputA: ", point.outputA
+      print "outputB: ", point.outputB
+
+    # with open("/dev/axis_fifo_0x0000000080004000", "r+b") as character:
+    for point in points:
+        # writeToSeqGPIO(character, point)
+      seqWords = getSeqGPIOWords(point)
+      for word in  seqWords:
+        # print word
+        self.fifo_main_seq.write_axis_fifo(word[0], MSB_first=False)
 
 def program(tester):
   # tester.fifo_dac_seq.write_axis_fifo("\x00\x0A\x01\x01")
   tester.dac_seq_write_points()
-  tester.main_seq_write_points()
+  tester.dio_seq_write_points()
   
   # ~ print('Next, we need to enable modulation')
   # ~ print('  tester.mod_enable()')
@@ -88,9 +107,10 @@ def program(tester):
   # ~ print('  tester.mod_disable()')
 
 if __name__ == "__main__":
+  
   tester = DAC_ramp_tester(fifo_devices['DAC81416_0'], fifo_devices['DAC81416_0_seq'], fifo_devices['GPIO_seq'])
   program(tester)
-  # ~ tester.mod_enable()
-  # ~ soft_trigger.trigger()
+  tester.mod_enable()
+  soft_trigger.trigger()
   # ~ reset_all.reset()
   # ~ tester.mod_disable()

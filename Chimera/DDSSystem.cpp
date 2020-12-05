@@ -228,9 +228,11 @@ void DDSSystem::initialize(POINT& pos, cToolTips& toolTips, AuxiliaryWindow* mas
 	ddsSetButton.setToolTip("Press this button to attempt force all DAC values to the values currently recorded in the"
 							 " edits below.", toolTips, master);
 
+	pos.y += 15;
+
 	// DDS board labels
 	dds0Title.sPos = { pos.x, pos.y, pos.x + 160, pos.y + 25 };
-	dds0Title.Create("DDS 0", WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER, dds0Title.sPos, master, id++);
+	dds0Title.Create("DDS 0\n Amp Freq", WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER, dds0Title.sPos, master, id++);
 	dds0Title.fontType = HeadingFont;
 	dds1Title.sPos = { pos.x + 180, pos.y, pos.x + 340, pos.y + 25 };
 	dds1Title.Create("DDS 1", WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER, dds1Title.sPos, master, id++);
@@ -239,8 +241,19 @@ void DDSSystem::initialize(POINT& pos, cToolTips& toolTips, AuxiliaryWindow* mas
 	dds2Title.Create("DDS 2", WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER, dds2Title.sPos, master, id++);
 	dds2Title.fontType = HeadingFont;
 
+	
+
 	//
 	int collumnInc = 0;
+
+	for (collumnInc = 0; collumnInc < 3; ++collumnInc)
+	{
+		ampLabels[0].sPos = { pos.x + collumnInc * 180, pos.y, pos.x + 160 + collumnInc * 180, pos.y + 25 };
+		ampLabels[0].Create("Amplitude (dBm)", WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER, dds0Title.sPos, master, id++);
+		ampLabels[0].fontType = HeadingFont;
+	}
+	
+	collumnInc = 0;
 	
 	// there's a single label first, hence the +1.
 	for (UINT ddsInc = 0; ddsInc < breakoutBoardAmpEdits.size(); ddsInc++)
@@ -252,13 +265,21 @@ void DDSSystem::initialize(POINT& pos, cToolTips& toolTips, AuxiliaryWindow* mas
 			pos.y -= 25 * breakoutBoardAmpEdits.size() / 3;
 		}
 
-		breakoutBoardAmpEdits[ddsInc].sPos = { pos.x + 20 + collumnInc * 160, pos.y, pos.x + 160 + collumnInc * 160,
-												pos.y += 25 };
+		breakoutBoardAmpEdits[ddsInc].sPos = { pos.x + 20 + collumnInc * 180, pos.y, pos.x + 90 + collumnInc * 180,
+												pos.y + 25 };
 		breakoutBoardAmpEdits[ddsInc].colorState = 0;
 		breakoutBoardAmpEdits[ddsInc].Create( WS_CHILD | WS_VISIBLE | WS_BORDER, breakoutBoardAmpEdits[ddsInc].sPos,
 										   master, id++ );
 		breakoutBoardAmpEdits[ddsInc].SetWindowText("0");
 		breakoutBoardAmpEdits[ddsInc].setToolTip(ddsNames[ddsInc], toolTips, master);
+
+		breakoutBoardFreqEdits[ddsInc].sPos = { pos.x + 90 + collumnInc * 180, pos.y, pos.x + 160 + collumnInc * 180,
+												pos.y += 25 };
+		breakoutBoardFreqEdits[ddsInc].colorState = 0;
+		breakoutBoardFreqEdits[ddsInc].Create(WS_CHILD | WS_VISIBLE | WS_BORDER, breakoutBoardFreqEdits[ddsInc].sPos,
+			master, id++);
+		breakoutBoardFreqEdits[ddsInc].SetWindowText("80");
+		breakoutBoardFreqEdits[ddsInc].setToolTip(ddsNames[ddsInc], toolTips, master);
 	}
 
 	collumnInc = 0;
@@ -273,8 +294,8 @@ void DDSSystem::initialize(POINT& pos, cToolTips& toolTips, AuxiliaryWindow* mas
 			pos.y -= 25 * ddsLabels.size() / 3;
 		}
 		// create label
-		ddsLabels[ddsInc].sPos = { pos.x + collumnInc * 160, pos.y, pos.x + 20 + collumnInc * 160, pos.y += 25 };
-		ddsLabels[ddsInc].Create(cstr(ddsInc), WS_CHILD | WS_VISIBLE | SS_CENTER,
+		ddsLabels[ddsInc].sPos = { pos.x + collumnInc * 180, pos.y, pos.x + 20 + collumnInc * 180, pos.y += 25 };
+		ddsLabels[ddsInc].Create(cstr(ddsInc - collumnInc * 4), WS_CHILD | WS_VISIBLE | SS_CENTER,
 								 ddsLabels[ddsInc].sPos, master, ID_DAC_FIRST_EDIT + ddsInc);
 		ddsLabels[ddsInc].setToolTip(ddsNames[ddsInc], toolTips, master);
 	}
