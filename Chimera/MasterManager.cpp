@@ -75,10 +75,10 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 			input->thisObj->analyzeMasterScript( input->ttls, input->dacs, ttlShadeLocs, dacShadeLocs,
 												 input->variables );
 		}
-		/// prep Moog
-		if (input->runMoog) {
-			input->moog->analyzeMoogScript(input->moog, input->variables);
-		}
+		///// prep Moog
+		//if (input->runMoog) {
+		//	input->moog->analyzeMoogScript(input->moog, input->variables, 0);
+		//}
 		/// prep NIAWG
 		//if (input->runNiawg)
 		//{
@@ -281,6 +281,10 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 			if (!MOOG_SAFEMODE) {
 				input->gmoog->loadMoogScript(input->gmoogScriptAddress);
 				input->gmoog->analyzeMoogScript(input->gmoog, input->variables, variationInc);
+			}
+			if (input->runMoog) {
+				input->moog->loadMoogScript(input->moogScriptAddress);
+				input->moog->analyzeMoogScript(input->moog, input->variables, variationInc);
 			}
 
 			input->comm->sendError( warnings );

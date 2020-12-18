@@ -1,26 +1,19 @@
 % Master-Script See the "?" for info on commands.
-def imageshort():
+
+def imageshort_temp():
   dac: bluetune bluetune_imag
   dac: imagingPow .3
-  %on: andorshut %%%PUT BACK!!!
-
-
-%  on: blowawayshutter
-
-%  on: blueshut
-%  t += 4
 %  on: imag461
 %  t += .02
 %  off: imag461
 %  t += .02
   on: andortrig
-  on: imagshut
 %  off: tweezerAO
   t += .0005
 %  on: imag461
   on: blowawayttl
-  t += .02
-  %t += 8 % .2  %1, was 5ms 
+%  t += .05
+  t += 1.5 % .2  %1, was 5ms 
   off: blowawayttl
   off: imagshut
   off: slower
@@ -36,3 +29,5 @@ def imageshort():
   off: blueshut
 
   t += 100
+
+

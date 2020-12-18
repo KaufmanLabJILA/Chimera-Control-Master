@@ -1,5 +1,5 @@
 def magicfields515_axial():
-  dac: x1coil bx_scan
+  dac: x1coil -.31
   dac: y1coil 0.7
   dac: y2coil 0.7
   dac: z1coil 0

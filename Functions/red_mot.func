@@ -1,22 +1,48 @@
 def red_mot(loadTime):
   on: red3d
+
+  dac: bigzcoil .15
+  dac: red3dpow .4 %.5
+  
+  %dac: x1coil .01  %.005
+  %dac: y1coil .013  %.018
+  %dac: y2coil .013  %.018
+  %dac: z1coil .021  %.025 
+
   dac: x1coil rmbx
   dac: y1coil rmby
   dac: y2coil rmby
   dac: z1coil rmbz
-  dac: motcoils .5
 
   t += loadTime
 
+
+  %daclinspace: red3dpow 1.5 .5 10 20
+  %t += 10
+
+  %t += 10
   %on: blueshut
   %t += 6
   off: red3d
-  % Additional cooling with narrow-line red MOT
-  on: red3dnarrow
-  t += 20
-  off: red3dnarrow
-  %dac: red3dpow .15
-  %t += 30
+  dac: latticepow lattice_zero
 
-  t += .01
-  
+  %dac: motcoils .5
+  %dac: red3dpow .5
+
+  % Additional cooling with narrow-line red MOT
+  %dac: x1coil rmbx
+  %dac: y1coil rmby
+  %dac: y2coil rmby
+  %dac: z1coil rmbz 
+
+  on: red3dnarrow
+  t += 90
+  %%%%%%%%%%%%%%%%%%%%%%%
+  %on: andorshut
+  %on: imagshut
+  %t += 4
+  %%%%%%%%%%%%%%%%%%%%%%%
+  off: red3dnarrow
+ %dac: red3dpow .15
+  %t += 30
+  %t += 20

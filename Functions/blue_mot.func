@@ -1,27 +1,41 @@
 def blue_mot(loadTime):
 
-  dac: blue3dpow 0.3
+  dac: blue3dpow .3
   on: red3d
+  dac: red3dpow 1.5
   on: blue3d
-  on: rp707
-  on: rp679
   on: slower
 
-  dac: x1coil bluecoilx
-  dac: y1coil bluecoily
-  dac: y2coil bluecoily
-  dac: z1coil bluecoilz
+  dac: bigzcoil 1
 
-  dac: motcoils 4
+  dac: x1coil -.06
+  dac: y1coil .01
+  dac: y2coil .01
+  dac: z1coil .0
+
+
+%  dac: x1coil -0.08
+%  dac: y1coil 0.03
+%  dac: y2coil 0.03
+%  dac: z1coil 0.1
 
   t += loadTime
-  
-  %Drop power for additional cooling
-  dac: blue3dpow .03
-  t += 3
-  dac: blue3dpow 0.3
+
+  %Drop power for additional cooling 
+%  dac: x1coil -0.07
+%  dac: y1coil .02
+%  dac: y2coil .02
+%  dac: z1coil .1
+
+  daclinspace: blue3dpow .3 0.01 12 15
+%  daclinspace: bigzcoil 1 0.5 12 15
+  t += 12
+%  dac: blue3dpow 0.02 %.06 %0.077
+%  t += 2
+
+  %Try compressing the mot
   off: blue3d
-  off: rp707
-  off: rp679
+%  off: rp707
+%  off: rp679
   t += 0.01
 

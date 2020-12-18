@@ -1,18 +1,54 @@
 % Master-Script See the "?" for info on commands.
 def bluemot_steadystate():
   on: slower
-  dac: x1coil bluecoilx
+  %dac: x1coil bluecoilx
   %dac: x2coil bluecoilx
-  dac: y1coil bluecoily
-  dac: y2coil bluecoily
-  dac: z1coil bluecoilz
+  %dac: y1coil bluecoily %+.15
+  %dac: y2coil bluecoily %+.15
+  %dac: z1coil bluecoilz %-.25
   %dac: z2coil bluecoilz
-  dac: motcoils 4
-  dac: blue3dpow 0.3
+
+%  dac: x1coil bluecoilx+.05 %+.01
+%  dac: y1coil bluecoily-.02 %+.15
+%  dac: y2coil bluecoily-.02 %+.15
+%  dac: z1coil bluecoilz+.05 %-.25 %-0.07  
+
+  %on: shut688
+  %on: red3d
+  %on: rp688
+
+  %dac: x1coil -0.08
+  %dac: y1coil 0.03
+  %dac: y2coil 0.03
+  %dac: z1coil 0.1
+
+
+  %dac: x1coil -0.08
+  %dac: y1coil .03
+  %dac: y2coil .03
+  %dac: z1coil 0.1
+
+  %dac: x1coil -.08
+  %dac: y1coil .03
+  %dac: y2coil .03
+  %dac: z1coil .1
+
+  %dac: motcoils 4
+
+  dac: bigzcoil 1
+
+  dac: x1coil -.06
+  dac: y1coil .01
+  dac: y2coil .01
+  dac: z1coil .0
+
+  dac: blue3dpow 0.26
   on: blueshut
   on: blowawayshutter
   on: blue3d
   on: red3d
   on: rp707
   on: rp679
+  on: shut707
+  on: shut679
 	

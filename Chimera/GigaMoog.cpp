@@ -163,18 +163,18 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vari
 		}
 		else if (word == "test") {
 
-			for (int channel = 0; channel < 15; channel++) {
+			for (int channel = 0; channel < 16; channel++) {
 				Message m = Message::make().destination(MessageDestination::KA007)
 					.DAC(MessageDAC::DAC0).channel(channel)
 					.setting(MessageSetting::MOVEFREQUENCY)
-					.frequencyMHz(218+channel/15).amplitudePercent(50).phaseDegrees(180.0).instantFTW(1).ATWIncr(-100).stepSequenceID(0).FTWIncr(1).phaseJump(0);
+					.frequencyMHz(120+channel/16).amplitudePercent(70).phaseDegrees(180.0).instantFTW(1).ATWIncr(-100).stepSequenceID(0).FTWIncr(-1).phaseJump(0);
 				ms.enqueue(m);
 			}
-			for (int channel = 0; channel < 15; channel++) {
+			for (int channel = 0; channel < 20; channel++) {
 				Message m = Message::make().destination(MessageDestination::KA007)
 					.DAC(MessageDAC::DAC1).channel(channel)
 					.setting(MessageSetting::MOVEFREQUENCY)
-					.frequencyMHz(218 + channel/15).amplitudePercent(50).phaseDegrees(180.0).instantFTW(1).ATWIncr(-100).stepSequenceID(0).FTWIncr(1).phaseJump(0);
+					.frequencyMHz(120 + channel/2).amplitudePercent(70).phaseDegrees(180.0).instantFTW(1).ATWIncr(-100).stepSequenceID(0).FTWIncr(-1).phaseJump(0);
 				ms.enqueue(m);
 			};
 			//for (int channel = 0; channel < 8

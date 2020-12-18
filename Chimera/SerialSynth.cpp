@@ -87,7 +87,7 @@ void SerialSynth::loadMoogScript(std::string scriptAddress)
 	scriptFile.close();
 }
 
-void SerialSynth::analyzeMoogScript(SerialSynth* moog, std::vector<variableType>& vars)
+void SerialSynth::analyzeMoogScript(SerialSynth* moog, std::vector<variableType>& variables, UINT variation)
 {
 	currentMoogScriptText = currentMoogScript.str();
 	if (currentMoogScript.str() == "")
@@ -126,7 +126,7 @@ void SerialSynth::analyzeMoogScript(SerialSynth* moog, std::vector<variableType>
 			currentMoogScript >> start;
 			currentMoogScript >> step;
 
-			linLoop(funcstr, stoul(channelstart, nullptr), stoul(channelstop, nullptr), start.evaluate(), step.evaluate());
+			linLoop(funcstr, stoul(channelstart, nullptr), stoul(channelstop, nullptr), start.evaluate(variables, variation), step.evaluate(variables, variation));
 		}
 		else if (word == "onoff") {
 			std::string onoffstr;
@@ -152,35 +152,35 @@ void SerialSynth::analyzeMoogScript(SerialSynth* moog, std::vector<variableType>
 			Expression startfreq;
 			currentMoogScript >> channel;
 			currentMoogScript >> startfreq;
-			writeStartFreq(startfreq.evaluate(), stoi(channel, nullptr));
+			writeStartFreq(startfreq.evaluate(variables, variation), stoi(channel, nullptr));
 		}
 		else if (word == "stopfreq") {
 			std::string channel;
 			Expression stopfreq;
 			currentMoogScript >> channel;
 			currentMoogScript >> stopfreq;
-			writeStopFreq(stopfreq.evaluate(), stoi(channel, nullptr));
+			writeStopFreq(stopfreq.evaluate(variables, variation), stoi(channel, nullptr));
 		}
 		else if (word == "gain") {
 			std::string channel;
 			Expression gain;
 			currentMoogScript >> channel;
 			currentMoogScript >> gain;
-			writeGain(gain.evaluate(), stoi(channel, nullptr));
+			writeGain(gain.evaluate(variables, variation), stoi(channel, nullptr));
 		}
 		else if (word == "loadphase") {
 			std::string channel;
 			Expression lphase;
 			currentMoogScript >> channel;
 			currentMoogScript >> lphase;
-			writeLoadPhase(lphase.evaluate(), stoi(channel, nullptr));
+			writeLoadPhase(lphase.evaluate(variables, variation), stoi(channel, nullptr));
 		}
 		else if (word == "movephase") {
 			std::string channel;
 			Expression mphase;
 			currentMoogScript >> channel;
 			currentMoogScript >> mphase;
-			writeLoadPhase(mphase.evaluate(), stoi(channel, nullptr));
+			writeLoadPhase(mphase.evaluate(variables, variation), stoi(channel, nullptr));
 		}
 		else if (word == "move") {
 			move();

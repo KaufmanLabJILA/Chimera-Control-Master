@@ -1,8 +1,8 @@
 % Master-Script See the "?" for info on commands.
 def ttlReset():
   
-  off: rp707
-  off: rp679
+  %off: rp707
+  %off: rp679
 
   off: axial
   off: radial
@@ -12,12 +12,33 @@ def ttlReset():
   off: imag461
   off: blowawayttl
   off: tweezermod
+  off: tweezerhold
 
   off: imagshut
   off: andorshut
-  off: blowawayshutter
+  %off: blowawayshutter
+  %off: repumpshut
 
   off: mako1
-  off: mmload
+%  off: mmload
   off: stepdds
   off: resetdds
+
+on: blowawayshutter
+on: blueshut
+on: tweezershut
+on: tweezerAO
+on: tweezer813ao
+on: lat813ao
+on: axlatTTL
+on: axlatshut
+on: shut689
+on: slower
+off: imagshut
+off: shut688
+off: rp688
+off: uvaottl
+on: bigzantihelm
+
+on: metertrig %meter trigger on falling edge
+off: pi407

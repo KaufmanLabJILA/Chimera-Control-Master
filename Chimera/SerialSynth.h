@@ -31,7 +31,7 @@ public:
 	void linLoop(std::string funcstr, UINT channelstart, UINT channelstop, double start, double step);
 	//Attempt to parse moog script
 	void loadMoogScript(std::string scriptAddress);
-	void analyzeMoogScript(SerialSynth* moog, std::vector<variableType>& vars);
+	void analyzeMoogScript(SerialSynth* moog, std::vector<variableType>& variables, UINT variation);
 	virtual bool start();
 	virtual void stop();
 	virtual void load();

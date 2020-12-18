@@ -277,7 +277,7 @@ namespace commonFunctions
 				try
 				{
 					commonFunctions::prepareMasterThread( ID_RUNMENU_RUNMASTER, scriptWin, mainWin, camWin, auxWin, 
-														  input, false, false, true );
+														  input, false, true, true );
 					commonFunctions::startMaster( mainWin, input );
 				}
 				catch (Error& err)

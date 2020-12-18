@@ -1,28 +1,58 @@
 % Master-Script See the "?" for info on commands.
 def imageLat():
-  dac: bluetune bluetune_imag
-  dac: imagingPow imagpow
-  on: andorshut
-  on: imagshut
-  t += 4
-  on: andortrig
-  t += .2
-  repeat: 110
-    on: imag461
-    t += .1
-    off: imag461
-    on: radial
-    t += .3
-    off: radial
-    on: axial
-    t += .3
-    off: axial
-    on: radial2
-    t += .3
-    off: radial2
-  end
-  off: andortrig
-  off: andorshut   
-  off: imag461
-  off: imagshut
-  t += .01
+%  dac: bluetune bluetune_imag
+%  dac: imagingPow imagpow
+%  on: andorshut
+%  on: imagshut
+%  t += 4
+%  on: andortrig
+%  t += .2
+%  repeat: 110
+%    on: imag461
+%    t += .1
+%    off: imag461
+%    on: radial
+%    t += .3
+%    off: radial
+%    on: axial
+%    t += .3
+%    off: axial
+%    on: radial2
+%    t += .3
+%    off: radial2
+%  end
+%  off: andortrig
+%  off: andorshut   
+%  off: imag461
+%  off: imagshut
+%  t += .01
+dac: imagingPow imagpowscan
+on: imagshut
+%on: shut707
+%on: shut679
+on: andorshut
+t += 4
+on: andortrig
+t += .2
+
+on: imag461
+%on: red3dnarrow
+%on: rp707
+%on: rp679
+on: radial
+on: axial
+t += 400
+off: imag461
+off: axial
+off: radial
+off: red3dnarrow
+off: rp707
+off: rp679
+off: shut707
+off: shut679
+
+off: andortrig
+off: andorshut   
+off: imagshut
+t += .01
+

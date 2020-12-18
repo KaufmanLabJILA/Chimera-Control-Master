@@ -1,0 +1,13 @@
+% Master-Script See the "?" for info on commands.
+def grafanaSnapshot():
+  %%% DO NOT LEAVE THIS ON.
+  on: imagshut
+  dac: imagingPow imagpow
+  on: blueshut
+  on: red3d
+  on: imag461
+  on: slower
+  on: blue3d
+  on: tweezerao
+  on: rp707
+  on: rp679

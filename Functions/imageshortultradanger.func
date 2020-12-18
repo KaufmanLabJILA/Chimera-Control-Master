@@ -1,5 +1,9 @@
 % Master-Script See the "?" for info on commands.
-def imageshort():
+def imageshortULTRADANGER():
+%%% THIS IMAGES WITH BLUE3D
+%%% DO NOT USE UNLESS YOU ARE 100% SURE VERTICAL BLUE BEAMS ARE BLOCKED
+
+
   dac: bluetune bluetune_imag
   dac: imagingPow .3
   %on: andorshut %%%PUT BACK!!!
@@ -18,8 +22,9 @@ def imageshort():
 %  off: tweezerAO
   t += .0005
 %  on: imag461
-  on: blowawayttl
-  t += .02
+  off: blowawayttl
+%  on: blue3d
+  t += .1
   %t += 8 % .2  %1, was 5ms 
   off: blowawayttl
   off: imagshut

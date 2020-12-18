@@ -17,9 +17,9 @@ def imagef():
     on: axial
     t += .25
     off: axial
-    on: radial2
-    t += .25
-    off: radial2
+    %on: radial2
+    %t += .25
+    %off: radial2
   end
   off: andortrig
   off: andorshut   

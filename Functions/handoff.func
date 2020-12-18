@@ -1,0 +1,30 @@
+% Master-Script See the "?" for info on commands.
+def handoff(holdtime):
+  %off: tweezer813ao
+  daclinspace: latticepow lattice_zero lattice_pow 5 25
+  t += 10
+  daclinspace: tweezerpow tweezer_pow tweezer_zero 5 25
+  t += 10
+
+  pulseon: gmmove .007
+  t += .1
+  %t += 10
+  
+  %off: axlatTTL
+  %off: tweezerao
+  %repeat: 10
+  %  t += holdtime
+  %  pulseon: D0 .1
+  %end
+  t += holdtime
+  %on: tweezerao
+  %on: axlatTTL
+  %t += 10
+  
+  pulseon: gmload .007
+  t += 5
+  daclinspace: tweezerpow tweezer_zero tweezer_pow 5 25
+  t += 10
+  daclinspace: latticepow lattice_pow lattice_zero 5 25
+  t += 10
+  %on: tweezer813ao

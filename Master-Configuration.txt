@@ -23,7 +23,7 @@ resetdds
 0
 stepdds
 0
-mmload
+a12
 0
 shut689
 0
@@ -47,25 +47,25 @@ imagshut
 0
 blueshut
 0
-b8
+shut707
 0
-b9
+axlatshut
 0
-b10
+shut679
 0
-b11
+tweezershut
 0
-b12
+tweezerhold
 0
-b13
+axlatttl
 0
-repump448
+lat813ao
 0
-b15
+tweezer813ao
 0
-c0
+mmload
 0
-c1
+mmmove
 0
 c2
 0
@@ -73,15 +73,15 @@ c3
 0
 c4
 0
-c5
+pi407
 0
-c6
+rp688
 0
-c7
+uvaottl
 0
 andorshut
 0
-c9
+bigzantihelm
 0
 c10
 0
@@ -97,9 +97,9 @@ c15
 0
 testport
 0
-d1
+rigoltrig
 0
-d2
+metertrig
 0
 d3
 0
@@ -107,9 +107,9 @@ d4
 0
 d5
 0
-d6
+shutuv
 0
-d7
+shut688
 0
 gmload
 0
@@ -145,11 +145,11 @@ z1coil
 z2coil
 -10 - 10
 0
-motcoils
--10 - 10
+bigzcoil
+0 - 1
 0
-nc
--10 - 10
+uvpow
+-1 - 3
 0
 imagingpow
 -10 - 10
@@ -167,19 +167,19 @@ intensity698
 -10 - 10
 0
 tweezerpow
--1 - 10
+-10 - 3
 0
 bluetune
--0.1 - 0.1
+-0.2 - 0.5
 0
 blue3dpow
 -10 - 10
 0
 axial_piezo
--10 - 0
+-7.5 - 0
 0
-freq795
--10 - 10
+test
+0 - 5
 0
 mirror_x
 0 - 3.3
@@ -190,10 +190,10 @@ mirror_y
 latticepow
 -10 - 0
 0
-repumpfreq
--10 - 10
+red3dpow
+0 - 10
 0
-sidemotpower
+blowfreq
 -10 - 10
 0
 piezomirror
@@ -203,8 +203,8 @@ piezomirror
 xcoilval 0.018
 ycoilval 0.021
 zcoilval 0.0055
-bluecoilx -0.02
-bluecoily 0.04
+bluecoilx -0.1
+bluecoily -0.025
 bluecoilz 0.025
 motcoils 4
 carrier_3p1_cons 79.946
@@ -212,4 +212,4 @@ rsb 0.224
 asb 0.04
 carrier_3p0_cons 79.99
 rsbi 0.086
-100 400 1 125 425 1
+75 375 1 100 400 1

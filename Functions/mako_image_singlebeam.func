@@ -1,0 +1,18 @@
+% Master-Script See the "?" for info on commands.
+def mako_image_singleBeam(imageLength):
+  %Image red MOT:
+  on: imagShut %%Needs to be turned on earlier but added here to remind. 
+  on: mako1
+  %on: blowawayttl
+  t += .001
+  %on: imag461
+  %on: slower
+  %on: blowawayttl
+  %t += .25
+  dac: blowFreq -1
+  on: blowawayttl
+  t += imageLength
+  off: blowawayttl
+  off: mako1
+  off: imagShut
+ 

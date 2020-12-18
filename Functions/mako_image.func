@@ -1,20 +1,24 @@
 % Master-Script See the "?" for info on commands.
 def mako_image():
   %Image red MOT:
-  %on: blueshut
-  %t += 5  
+  %on: blueshut %reminder that this needed to be on earlier
+  %t += 4  
   %on: imag461
   %on: slower
+  dac: blue3dpow 0.3
   on: mako1
   %on: blowawayttl
-  t += .025
+  t += .001
   %on: imag461
   %on: slower
-  %on: blowawayttl
+ 
   %t += .25
   on: blue3d
-  t += 5
+  %on: blowawayttl
+  %t += .25
+  t += 2
   off: blowawayttl
+  off: imag461
   off: mako1
   off: blue3d
   off: blueshut
