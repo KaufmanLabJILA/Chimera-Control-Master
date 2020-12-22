@@ -1,0 +1,474 @@
+[33mcommit 0025d0ced1151c1d248657d67b91ad41fd655905[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m)[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Fri Dec 18 13:22:09 2020 -0700
+
+    commit before AWG integration
+
+[33mcommit 4a54b14e3a0aa8370754a324962fedbcc1d01d70[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Mon Nov 25 17:21:56 2019 -0700
+
+    commit before adding time frisbee
+
+[33mcommit a7657df3ba9a95e815c8bb1f925a79aac2be54a8[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Fri Nov 15 18:03:56 2019 -0700
+
+    Just after starting 532 imaging - commiting old functions (magic field, imagef modified
+
+[33mcommit ed23d13b600bc76cbd38d2a249420d8fc8800f4e[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Thu Aug 15 10:54:35 2019 -0600
+
+    gmoog variable bug fixed. Last commit before attempting modulation.
+
+[33mcommit 23dadd365513c1486987de76db070c22f84575a0[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Fri Aug 9 14:13:24 2019 -0600
+
+    commit before changing gmoog variable handling
+
+[33mcommit 50032492e2065274052035e78e5feae64d7ff526[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Thu May 16 17:25:11 2019 -0600
+
+    pushing config files after weird failure
+
+[33mcommit a24031af4f47255a23bb5c94bd7828d17af1c099[m[33m ([m[1;32mrepeated_imaging[m[33m)[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Wed Apr 17 19:08:09 2019 -0600
+
+    gmoog fully integrated
+
+[33mcommit a00d415664b760e45ca8ee592b39d60243312101[m
+Merge: 8767f38 1a943ca
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Wed Apr 17 15:20:28 2019 -0600
+
+    Merge remote-tracking branch 'origin/lite_version' into repeated_imaging
+
+[33mcommit 8767f389267c04d7705721c7bf80b8362c4d070e[m[33m ([m[1;31morigin/repeated_imaging[m[33m)[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Wed Apr 17 14:37:55 2019 -0600
+
+    commit repeated_imaging before merge
+
+[33mcommit 1a943ca7a0559b3e2b0d85d3ad775e6e9ed6f1c2[m
+Author: kaufmanlabjila <kaufmanlabjila@gmail.com>
+Date:   Wed Apr 17 14:31:23 2019 -0600
+
+    gmoog scripts fully integrated
+
+[33mcommit da850677d2f05887892f014e59e976fb08ab5df3[m
+Author: kaufmanlabjila <kaufmanlabjila@gmail.com>
+Date:   Wed Apr 17 11:37:03 2019 -0600
+
+    adding in gmoog script
+
+[33mcommit e3498400ed1009916173513843c7ac640a9029b4[m
+Merge: 21416fe 573cf76
+Author: KaufmanLabJILA <32526364+KaufmanLabJILA@users.noreply.github.com>
+Date:   Mon Apr 15 10:20:20 2019 -0600
+
+    Merge pull request #1 from JILAelec/lite_version
+    
+    Async Serial using Boost
+
+[33mcommit 573cf7601cacd561856f435a935292cb70d28b6f[m
+Author: FelixVi <Felix.Vietmeyer@gmail.com>
+Date:   Tue Apr 9 13:58:10 2019 -0600
+
+    Boost-based async serial for KA007
+
+[33mcommit 21416fee4e383e6db8ceeba6e838856cdc0230ed[m
+Author: kaufmanlabjila <kaufmanlabjila@gmail.com>
+Date:   Thu Mar 21 16:56:15 2019 -0600
+
+    test config
+
+[33mcommit 0eaf5c548d51815c414005ac2487f854780e2a79[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Thu Mar 14 19:37:48 2019 -0600
+
+    dsf
+
+[33mcommit dd1feed7711dc8aa5ad3d90e3fab22e584951ee6[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Wed Mar 13 19:19:22 2019 -0600
+
+    various minor fixed, correct button handling for temperature off and picsperrep
+
+[33mcommit b463e6fc6ba0704fe1c53338e5ba7c9d738b3224[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Wed Mar 13 18:32:31 2019 -0600
+
+    progress bar and cedit updates working
+
+[33mcommit e07bdf57b5bb176a8d2853ea991a96121fe3ebb8[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Wed Mar 13 17:33:24 2019 -0600
+
+    Working repeated images, progress bar broken
+
+[33mcommit d5e8f7789c17a81c41437338dd3da9478434922e[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Tue Mar 12 17:12:00 2019 -0600
+
+    variable system broken
+
+[33mcommit 47b859bfa46258c2345ca5a9e4e5f1db22a4f1e3[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Mon Mar 11 19:44:23 2019 -0600
+
+    Almost there, but plotting issue.
+
+[33mcommit 3386b74ec6c5ce8edf65aea42a5abed5f18fd6f2[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Mon Mar 11 18:18:24 2019 -0600
+
+    commit before repeated imaging changes
+
+[33mcommit 733ed5ec5e2c22ca426f8462ad386b579f4040df[m
+Author: kaufmanlabjila <kaufmanlabjila@gmail.com>
+Date:   Fri Mar 8 11:08:36 2019 -0700
+
+    Successful compile with no visa on PAL
+
+[33mcommit 2140ca9223a7851c4f9d52cfcee8c816815239be[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Fri Mar 1 11:28:02 2019 -0700
+
+    CM before trying to run on PAL
+
+[33mcommit 1a5a4b60009564b2f976c3f35f34c2238cea66c5[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Tue Jan 1 16:16:37 2019 -0700
+
+    data logger now saves DDS, Moog scripts, as well as functions and global vars
+
+[33mcommit c3eefdecf0f1c4304b2add8892536df9cc8ad41c[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Tue Jan 1 14:27:11 2019 -0700
+
+    checkpoint before HDF5 modifications
+
+[33mcommit 113f90758abd61ab2aa388b114c735a52ce77629[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Fri Sep 14 17:41:57 2018 -0600
+
+    safety push
+
+[33mcommit 8a2017293743aade49f1dbb4868c4515761de750[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Mon Aug 27 18:25:38 2018 -0600
+
+    double image crash fix
+
+[33mcommit e8a5bd22862583dbf6fe733294564c635f5684ba[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Fri Jul 13 11:39:45 2018 -0600
+
+    New DDS script working (reset, end, specify target values, not step sizes)
+
+[33mcommit 351556c64f7c2a2794c8f88cbcef37f7a385fbb5[m[33m ([m[1;31morigin/andor_integration[m[33m)[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Thu Jul 12 17:50:47 2018 -0600
+
+    before merge
+
+[33mcommit 1f860094ca755a0ee65d9fb9dc55c591db445b5b[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Mon Jul 2 13:08:07 2018 -0600
+
+    .
+
+[33mcommit 727d219f12055969f0848f517ef985c72be48cc1[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Tue Jun 26 10:06:41 2018 -0600
+
+    Incremental changes, DDS serial comm minor changes. Starting DDS Script overhaul.
+
+[33mcommit 3e58fba04762d1a3099bb9c06c48de48c12423d8[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Tue Jun 12 07:42:35 2018 -0600
+
+    commit before adding phase tuning word remotely
+
+[33mcommit 40708218e4055bc65fc1b6448b27dee0ce8838bf[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Mon Jun 4 12:20:58 2018 -0600
+
+    Andor fully functional (added shutter control)
+
+[33mcommit dc8bdce95a260bebcfe11e8958e5f4ad012af300[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Thu May 31 18:07:01 2018 -0600
+
+    Changed color palette because I'm a silly obsessive person.
+
+[33mcommit 597934d7a4c4d892f7a9e6e2340e4fb2fcdf345d[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Thu May 31 15:27:52 2018 -0600
+
+    Andor working
+
+[33mcommit a173edd8ee5d73b9a969ed06fb9139e6ae70eb4c[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Thu May 31 10:32:53 2018 -0600
+
+    DIO signalling funcitonality fully integrated.
+
+[33mcommit c329b94e4eb2d2754a9dc447e9356f4622c2845b[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Wed May 30 20:34:31 2018 -0600
+
+    Now reads running state of DIO to set wait time. Seems to run very stably!
+
+[33mcommit 5fd30547a0b411d17851b8cc8b34442da23b22d3[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Wed May 30 13:37:54 2018 -0600
+
+    Megamoog system fix (be careful of various UINT classes)
+
+[33mcommit c7ebe6907931445cb3d7df16d207b758180600ba[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Tue May 29 15:17:50 2018 -0600
+
+    commit before andor integration
+
+[33mcommit 8429a438207145b08dbe2114e1d25979b675bc67[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Thu May 17 15:26:15 2018 -0600
+
+    closing log file early (without Andor on)
+
+[33mcommit ef9b40618890ac6f56ce72f00ab0642bda92c4f0[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Fri May 11 17:29:50 2018 -0600
+
+    minor fixes, commit before trying to mess with experiment thread
+
+[33mcommit 56f628fcf3449399452585677059e1ede55d5201[m
+Merge: 622b68b 1f5a487
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Thu Apr 26 13:51:49 2018 -0600
+
+    Fully functional DDS code, including access to all channels (issue was explicitly declaring that hexidecimal values are unsigned long e.g. 0x00ffUL)
+
+[33mcommit 1f5a4876244646be94ff260377b57683ae9e9807[m[33m ([m[1;32mDDSfuncs[m[33m)[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Mon Apr 16 10:07:11 2018 -0600
+
+    local commit of DDSfuncs, not sure why necessary
+
+[33mcommit 622b68b0df85ce9846e4921ea671469378cd1432[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Mon Apr 16 09:58:27 2018 -0600
+
+    master commit before DDS merge
+
+[33mcommit a41dca8fd7c2416c013af0371a19f2f9121dac61[m[33m ([m[1;31morigin/DDSfuncs[m[33m)[m
+Author: Aaron Young <boot1994@gmail.com>
+Date:   Mon Apr 16 09:49:48 2018 -0600
+
+    first iteration of FPGA-DDS control functionality
+
+[33mcommit ec405e549d3360a82f11c6ce75aeb06139671c8c[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Mon Apr 9 13:41:26 2018 -0600
+
+    DIO arming functionality
+
+[33mcommit a01d7d267192db4cb71e9788bdccc1cd3ca857b2[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Wed Apr 4 19:47:13 2018 -0600
+
+    various experiment functions and configs.
+
+[33mcommit 89113fd9f453d2cf324e52e96234116d6324c35b[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Fri Mar 16 12:37:45 2018 -0600
+
+    Save all hotkey fix. Careful of potential issues with config system though.
+
+[33mcommit 943a0318df1cde85c9c99ee2cf7e7129aac6ee27[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Wed Mar 14 19:46:32 2018 -0600
+
+    Variable entry now grabs attention, added configuration folder.
+
+[33mcommit 3af64b4351a63589c37f0c52a32aba49b428fb2d[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Thu Mar 8 19:22:23 2018 -0700
+
+    single shot functionality (fixed minor bug with unshading TTLs after run)
+
+[33mcommit 1df8141df0cddcea7a2ecb68390ab7f3686e95cc[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Thu Mar 8 19:08:30 2018 -0700
+
+    single shot functionality.
+
+[33mcommit dc74727e1af82d5e6208628953af2984a631cdc4[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Thu Mar 8 18:33:23 2018 -0700
+
+    Dio FPGA connect and disconnect moved all the way out, to diosystem constructor and destructor.
+
+[33mcommit c3838395867e1c98540d059aeeb2c3a6530c517f[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Thu Mar 8 17:19:25 2018 -0700
+
+    Dio FPGA fixed, connect and disconnects all outside of loops now.
+
+[33mcommit f325be4889b8a9bf7777726bd842bf048b55f7b7[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Thu Mar 8 14:58:58 2018 -0700
+
+    DIO connect/disconnect moved from repetition loop to variation loop. Next step: move out of variation loop entirely.
+
+[33mcommit 780c9e71ee401556b40b67bd0d8e30e5387bfe4c[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Thu Mar 8 13:06:51 2018 -0700
+
+    minor reorganization to DIO system
+
+[33mcommit e9b6b6a0eec3063a0057115ff24d7f5391f0a860[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Thu Mar 8 10:59:32 2018 -0700
+
+    Commit before restructuring DIO system.
+
+[33mcommit 4708338d49aa84e8e4ec995343a832954bb23cb2[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Mon Mar 5 19:50:29 2018 -0700
+
+    push to try to fix issue with atmcd64m.lib on remote
+
+[33mcommit 815c94c30b8462b4268fa5b65889ebc6c6f50220[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Fri Mar 2 17:36:54 2018 -0700
+
+    mot funcs
+
+[33mcommit 00a2e385bc94352f0fc4905478303d6726d53d72[m
+Author: KaufmanLabJILA <KaufmanLabJILA@gmail.com>
+Date:   Fri Mar 2 09:13:22 2018 -0700
+
+    Aaron's edits working on getting release mode to work, presently does not compile
+
+[33mcommit 2289def33368f39befc24abe0425068a98a5fb5a[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Thu Mar 1 13:54:27 2018 -0700
+
+    f4 accelerator added
+
+[33mcommit 970f336b1d5caa098d67299e6372ee384787a479[m
+Merge: 6d7f646 be9033c
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Mon Feb 26 17:30:53 2018 -0700
+
+    Full merge of moog and DIO functionality. That really sucked.
+
+[33mcommit be9033ce063e6b81a9f99400e02e2744be5110a6[m[33m ([m[1;31morigin/fpga_integration[m[33m)[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Mon Feb 26 14:48:29 2018 -0700
+
+    fpga_integration totally screwed
+
+[33mcommit 99b488051cf8009920990ff1d9a7d314a4c65c63[m
+Author: KaufmanLabJILA <KaufmanLabJILA@gmail.com>
+Date:   Mon Feb 26 11:13:50 2018 -0700
+
+    base megamoog functionality. Some GUI elements still missing (e.g. activity box)
+
+[33mcommit cda9059a397fa728b931a9914293b71843b935be[m
+Author: KaufmanLabJILA <KaufmanLabJILA@gmail.com>
+Date:   Thu Feb 22 19:11:28 2018 -0700
+
+    moog scripting complete, working on looping functionality
+
+[33mcommit 6d7f646fd696bd0b3b17ab530c8a4a1c1cc15453[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Wed Feb 21 17:11:01 2018 -0700
+
+    Working fixes for DIO system and DACs.
+
+[33mcommit 76a69be3c7645fa83c9e3d3505b5a17395828b8c[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Mon Feb 19 16:25:11 2018 -0700
+
+    .
+
+[33mcommit f531d850da32c9dee6e6c0060827ec424c607460[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Mon Feb 19 15:58:38 2018 -0700
+
+    .
+
+[33mcommit 5f363e9ce679edefb72f9f63103c07d42d71b422[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Mon Feb 19 12:15:29 2018 -0700
+
+    .
+
+[33mcommit 2c41d0dc3328f1c636247c08710244ff63ca0f22[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Mon Feb 19 12:13:15 2018 -0700
+
+    moog script implemented, but not saving properly.
+
+[33mcommit 47fce37ccd045f7456f08d77a215d2522702bd24[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Thu Feb 15 16:58:33 2018 -0700
+
+    serial_synth integration without connection to scripting language.
+
+[33mcommit 7be4e4cf61ac6ce17bb0ace6b44cf60ba8518e22[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Wed Feb 14 11:27:23 2018 -0700
+
+    snapshot before integrating serial_synth class.
+
+[33mcommit 1d643f84236446b4c77f1e7eac8281da56d094a6[m
+Author: KaufmanLabJILA <KaufmanLabJILA@gmail.com>
+Date:   Thu Jan 11 17:59:13 2018 -0700
+
+    removed rearrangement functionality
+
+[33mcommit 442ac079400a13d0094f55062658320f0c7485a8[m
+Author: KaufmanLabJILA <KaufmanLabJILA@gmail.com>
+Date:   Tue Jan 9 14:30:08 2018 -0700
+
+    test2
+
+[33mcommit 04e291d9cc4ad38547f702252ece13544064fb16[m
+Author: KaufmanLabJILA <KaufmanLabJILA@gmail.com>
+Date:   Tue Jan 9 14:29:10 2018 -0700
+
+    test
+
+[33mcommit 94d1f0598aa1d95dac91178c26ab54719929ac0c[m
+Author: KaufmanLabJILA <KaufmanLabJILA@gmail.com>
+Date:   Tue Jan 9 14:13:39 2018 -0700
+
+    fpga 1
+
+[33mcommit 9e75ff89d33f8c45dc66db794f5481c71d2f8910[m
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Fri Jan 5 18:50:32 2018 -0700
+
+    DIO clone integration
+
+[33mcommit cb1ce177394343ff20b7d2ac34b96da41c85aab9[m
+Merge: 603e294 750e7f9
+Author: KaufmanLabJILA_GLaDOS <KaufmanLabJILA@gmail.com>
+Date:   Thu Nov 2 16:58:44 2017 -0600
+
+    Merge branch 'Master' of https://github.com/omarkb93/Chimera-Control
+
+[33mcommit 750e7f923638bc09c2c9486ae03a82546e6e9e7f[m
+Author: Mark Brown <o.mark.brown@gmail.com>
+Date:   Thu Nov 2 14:41:59 2017 -0600
+
+    Remove texter "enter email & password" which wasn't functional any more
