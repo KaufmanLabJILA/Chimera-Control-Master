@@ -861,7 +861,7 @@ namespace commonFunctions
 
 	void prepareMasterThread( int msgID, ScriptingWindow* scriptWin, MainWindow* mainWin, CameraWindow* camWin, 
 		AuxiliaryWindow* auxWin, ExperimentInput& input,
-		bool single, bool runMoog, bool runTtls )
+		bool single, bool runAWG, bool runTtls )
 	{
 		Communicator* comm = mainWin->getComm();
 		profileSettings profile = mainWin->getProfileSettings();
@@ -881,7 +881,7 @@ namespace commonFunctions
 		mainWin->checkProfileReady();
 		scriptWin->checkScriptSaves( );
 		std::string beginInfo = "Current Settings:\r\n=============================\r\n\r\n";
-		if (runMoog)
+		if (runAWG)
 		{
 			scriptInfo<std::string> scriptNames = scriptWin->getScriptNames();
 			// ordering matters here, make sure you get the correct script name.
@@ -973,7 +973,7 @@ namespace commonFunctions
 		}
 		if (areYouSure == 0)
 		{
-			if (runMoog)
+			if (runAWG)
 			{
 				mainWin->getComm()->sendStatus("Performing Initial Analysis and Writing and Loading Non-Varying Waveforms to Moog...\r\n");
 				//mainWin->getComm()->sendColorBox(Moog, 'Y');
@@ -996,8 +996,8 @@ namespace commonFunctions
 			input.masterInput->comm = mainWin->getComm();
 			input.masterInput->profile = profile;
 
-			input.masterInput->runMoog = runMoog;
-			if (runMoog) {
+			input.masterInput->runAWG = runAWG;
+			if (runAWG) {
 				scriptInfo<std::string> addresses = scriptWin->getScriptAddresses();
 				//mainWin->setMoogRunningState(true);
 			}

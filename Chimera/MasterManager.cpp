@@ -76,7 +76,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 												 input->variables );
 		}
 		///// prep Moog
-		//if (input->runMoog) {
+		//if (input->runAWG) {
 		//	input->moog->analyzeMoogScript(input->moog, input->variables, 0);
 		//}
 		/// prep NIAWG
@@ -282,7 +282,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 				input->gmoog->loadMoogScript(input->gmoogScriptAddress);
 				input->gmoog->analyzeMoogScript(input->gmoog, input->variables, variationInc);
 			}
-			if (input->runMoog && !AWG_SAFEMODE) {
+			if (input->runAWG && !AWG_SAFEMODE) {
 				//input->moog->loadMoogScript(input->moogScriptAddress);
 				//input->moog->analyzeMoogScript(input->moog, input->variables, variationInc);
 				input->awg->loadAWGScript(input->awgScriptAddress);
@@ -542,7 +542,7 @@ void MasterManager::startExperimentThread(MasterThreadInput* input)
 		loadMasterScript( input->masterScriptAddress );
 		input->gmoog->loadMoogScript(input->gmoogScriptAddress);
 	}
-	if (input->runMoog)
+	if (input->runAWG)
 	{
 		//input->moog->loadMoogScript(input->moogScriptAddress);
 		input->awg->loadAWGScript(input->awgScriptAddress);

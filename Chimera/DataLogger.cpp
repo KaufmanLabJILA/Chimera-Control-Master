@@ -369,8 +369,8 @@ void DataLogger::logDDSParameters(MasterThreadInput* input)
 //			return;
 //		}
 //		H5::Group runParametersGroup(file.createGroup("/Moog-Parameters"));
-//		writeDataSet(input->runMoog, "Run-Moog", runParametersGroup);
-//		if (input->runMoog)
+//		writeDataSet(input->runAWG, "Run-Moog", runParametersGroup);
+//		if (input->runAWG)
 //		{
 //			std::ifstream moogScript(input->moogScriptAddress);
 //			if (!moogScript.is_open())
@@ -403,8 +403,8 @@ void DataLogger::logAWGParameters(MasterThreadInput* input)
 			return;
 		}
 		H5::Group runParametersGroup(file.createGroup("/AWG-Parameters"));
-		writeDataSet(input->runMoog, "Run-AWG", runParametersGroup);
-		if (input->runMoog)
+		writeDataSet(input->runAWG, "Run-AWG", runParametersGroup);
+		if (input->runAWG)
 		{
 			std::ifstream awgScript(input->awgScriptAddress);
 			if (!awgScript.is_open())

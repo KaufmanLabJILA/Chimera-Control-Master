@@ -11,18 +11,18 @@ amplin   3 0 30 100 100
 freqlin  3 0 30 .1 .5 1 0
 
 setsteps 3 1 60 90
-amplin   3 60 90 100 0
+amplin   3 60 90 100 scan
 freqlin  3 60 90 .5 .1 0 0
 
 % program channel
 program 3
 
 setsteps 0 1 0 2
-amplin   0 0 2 50 50
+amplin   0 0 2 50 50 %DO NOT EXCEED 50% amp.
 freqlin  0 0 2 180 180 1 0
 % at this point could program other channels
 
 program 0
 
 % Software trigger for testing
-trigger
+%trigger

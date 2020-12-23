@@ -13,7 +13,7 @@ namespace commonFunctions
 	/// Run Menu
 	void prepareCamera( MainWindow* mainWin, CameraWindow* camWin, ExperimentInput& input );
 	void prepareMasterThread( int msgID, ScriptingWindow* scriptWin, MainWindow* mainWin, CameraWindow* camWin,
-							  AuxiliaryWindow* auxWin, ExperimentInput& input, bool single, bool runMoog, bool runTtls );
+							  AuxiliaryWindow* auxWin, ExperimentInput& input, bool single, bool runAWG, bool runTtls );
 	void abortRearrangement( MainWindow* mainWin, CameraWindow* camWin );
 	void startMaster(MainWindow* mainWin, ExperimentInput& input);
 
