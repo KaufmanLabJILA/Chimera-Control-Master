@@ -23,6 +23,7 @@
 #include "SerialSynth.h"
 #include "DDS_SYNTH.h"
 #include "GigaMoog.h"
+#include "fpgaAWG.h"
 
 
 class ScriptingWindow;
@@ -129,7 +130,8 @@ class MainWindow : public CDialog
 		
 		//rerngControl rearrangeControl;
 		//NiawgController niawg;
-		SerialSynth moog;
+		//SerialSynth moog;
+		fpgaAWG awg;
 		gigaMoog gmoog;
 		DDS_SYNTH dds;
 

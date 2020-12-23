@@ -14,7 +14,8 @@ class AuxiliaryWindow;
 template <typename type> struct scriptInfo
 {
 	//type verticalNIAWG;
-	type moog;
+	//type moog;
+	type awg;
 	type gmoog;
 	//type horizontalNIAWG;
 	//type intensityAgilent;
@@ -66,12 +67,19 @@ class ScriptingWindow : public CDialog
 		//void saveIntensityScriptAs(CWnd* parent);
 		//void agilentEditChange();
 
-		void newMoogScript();
-		void openMoogScript(CWnd* parent);
-		void openMoogScript(std::string name);
-		void saveMoogScript();
-		void saveMoogScriptAs(CWnd* parent);
-		void moogEditChange();
+		//void newMoogScript();
+		//void openMoogScript(CWnd* parent);
+		//void openMoogScript(std::string name);
+		//void saveMoogScript();
+		//void saveMoogScriptAs(CWnd* parent);
+		//void moogEditChange();
+
+		void newAWGScript();
+		void openAWGScript(CWnd* parent);
+		void openAWGScript(std::string name);
+		void saveAWGScript();
+		void saveAWGScriptAs(CWnd* parent);
+		void awgEditChange();
 
 		void newGmoogScript();
 		void openGmoogScript(CWnd* parent);
@@ -120,7 +128,8 @@ class ScriptingWindow : public CDialog
 		void OnSize(UINT nType, int cx, int cy);
 
 		//void handleIntensityButtons( UINT id );
-		void handleMoogScriptComboChange();
+		//void handleMoogScriptComboChange();
+		void handleAWGScriptComboChange();
 		void handleGmoogScriptComboChange();
 		//void handleHorizontalScriptComboChange();
 		//void handleVerticalScriptComboChange();
@@ -140,7 +149,7 @@ class ScriptingWindow : public CDialog
 		//
 		cToolTips tooltips;
 
-		Script masterScript, moogScript, gmoogScript, ddsScript /*verticalNiawgScript*/ /*horizontalNiawgScript*/;
+		Script masterScript, awgScript, gmoogScript, ddsScript /*moogScript*/ /*verticalNiawgScript*/ /*horizontalNiawgScript*/;
 		ColorBox statusBox;
 		ProfileIndicator profileDisplay;
 

@@ -181,6 +181,9 @@
     <ClCompile Include="GigaMoog.cpp">
       <Filter>Main Window</Filter>
     </ClCompile>
+    <ClCompile Include="fpgaAWG.cpp">
+      <Filter>Main Window</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -426,6 +429,12 @@
       <Filter>Serial</Filter>
     </ClInclude>
     <ClInclude Include="GigaMoog.h">
+      <Filter>Main Window</Filter>
+    </ClInclude>
+    <ClInclude Include="fpgaAWG.h">
+      <Filter>Main Window</Filter>
+    </ClInclude>
+    <ClInclude Include="awgCommand.h">
       <Filter>Main Window</Filter>
     </ClInclude>
   </ItemGroup>

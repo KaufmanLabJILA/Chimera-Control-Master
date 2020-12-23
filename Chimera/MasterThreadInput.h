@@ -17,6 +17,7 @@
 #include "SerialSynth.h"
 #include "DDS_SYNTH.h"
 #include "GigaMoog.h"
+#include "fpgaAWG.h"
 
 #include "rerngParams.h"
 
@@ -27,8 +28,10 @@ class MasterManager;
 struct MasterThreadInput
 {
 	//for moog test:
-	SerialSynth* moog;
-	std::string moogScriptAddress;
+	//SerialSynth* moog;
+	//std::string moogScriptAddress;
+	fpgaAWG* awg;
+	std::string awgScriptAddress;
 	gigaMoog* gmoog;
 	std::string gmoogScriptAddress;
 	DDS_SYNTH* dds;

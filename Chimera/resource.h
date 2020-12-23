@@ -159,13 +159,17 @@
 #define ID_RUNMENU_RUNSINGLESHOT        40134
 #define MENU_ID_RANGE_END               40134
 #define ID_SCRIPTS_FUNCTIONS            40142
+#define ID_FILE_MY_AWG_OPEN             40148
+#define ID_FILE_MY_AWG_SAVE             40149
+#define ID_FILE_MY_AWG_SAVEAS           40150
+#define ID_FILE_MY_AWG_NEW              40151
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        134
-#define _APS_NEXT_COMMAND_VALUE         40148
+#define _APS_NEXT_COMMAND_VALUE         40152
 #define _APS_NEXT_CONTROL_VALUE         1032
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

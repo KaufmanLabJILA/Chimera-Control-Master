@@ -38,9 +38,13 @@ void Script::initialize( int width, int height, POINT& startingLocation, cToolTi
 	{
 		extension = str( "." ) + MASTER_SCRIPT_EXTENSION;
 	}
-	else if (deviceTypeInput == "Moog")
+	//else if (deviceTypeInput == "Moog")
+	//{
+	//	extension = str(".") + MOOG_SCRIPT_EXTENSION;
+	//}
+	else if (deviceTypeInput == "AWG")
 	{
-		extension = str(".") + MOOG_SCRIPT_EXTENSION;
+		extension = str(".") + AWG_SCRIPT_EXTENSION;
 	}
 	else if (deviceTypeInput == "Gmoog")
 	{
@@ -217,18 +221,46 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 	//	}
 	//}
 	// Check Moog-specific commands
-	if (editType == "Moog") {
-		if (word == "startfreq"|| word == "stopfreq"|| word == "gain"|| word == "loadphase"|| word == "movephase"|| word == "onoff"|| word == "step")
+	//if (editType == "Moog") {
+	//	if (word == "startfreq"|| word == "stopfreq"|| word == "gain"|| word == "loadphase"|| word == "movephase"|| word == "onoff"|| word == "step")
+	//	{
+	//		return rgbs["theme purple"];
+	//	}
+	//	// check logic
+	//	if (word == "linloop"|| word=="customsequence")
+	//	{
+	//		return rgbs["theme blue"];
+	//	}
+	//	// check software triggers
+	//	if (word == "load" || word == "move")
+	//	{
+	//		return rgbs["theme green"];
+	//	}
+	//	// check variable
+	//	else if (word == "{" || word == "}")
+	//	{
+	//		return rgbs["theme aqua"];
+	//	}
+	//	if (word.size() > 8)
+	//	{
+	//		if (word.substr(word.size() - 8, 8) == ".moogScript")
+	//		{
+	//			return rgbs["theme yellow"];
+	//		}
+	//	}
+	//}
+	if (editType == "AWG") {
+		if (word == "setsteps" || word == "amplin" || word == "freqlin")
 		{
 			return rgbs["theme purple"];
 		}
 		// check logic
-		if (word == "linloop"|| word=="customsequence")
+		if (word == "customsequence")
 		{
 			return rgbs["theme blue"];
 		}
 		// check software triggers
-		if (word == "load" || word == "move")
+		if (word == "reset" || word == "trigger" || word == "program")
 		{
 			return rgbs["theme green"];
 		}
@@ -239,7 +271,7 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 		}
 		if (word.size() > 8)
 		{
-			if (word.substr(word.size() - 8, 8) == ".moogScript")
+			if (word.substr(word.size() - 8, 8) == ".awgScript")
 			{
 				return rgbs["theme yellow"];
 			}
@@ -654,9 +686,13 @@ void Script::handleToolTip( NMHDR * pNMHDR, LRESULT * pResult )
 		{
 			pTTT->lpszText = (LPSTR)AGILENT_INFO_TEXT;
 		}
-		else if (deviceType == "Moog")
+		//else if (deviceType == "Moog")
+		//{
+		//	pTTT->lpszText = (LPSTR)MOOG_INFO_TEXT;
+		//}
+		else if (deviceType == "AWG")
 		{
-			pTTT->lpszText = (LPSTR)MOOG_INFO_TEXT;
+			pTTT->lpszText = (LPSTR)AWG_INFO_TEXT;
 		}
 		else if (deviceType == "Gmoog")
 		{
@@ -1015,9 +1051,13 @@ void Script::newScript()
 	{
 		tempName += "DEFAULT_MASTER_SCRIPT.mScript";
 	}	
-	else if (deviceType == "Moog")
+	//else if (deviceType == "Moog")
+	//{
+	//	tempName += "DEFAULT_MOOG_SCRIPT.moogScript";
+	//}
+	else if (deviceType == "AWG")
 	{
-		tempName += "DEFAULT_MOOG_SCRIPT.moogScript";
+		tempName += "DEFAULT_AWG_SCRIPT.awgScript";
 	}
 	else if (deviceType == "Gmoog")
 	{
@@ -1066,25 +1106,32 @@ void Script::openParentScript(std::string parentScriptFileAndPath, std::string c
 			thrower("ERROR: Attempted to open non-master script from master script control!");
 		}
 	}
-	else if (deviceType == "Moog")
+	//else if (deviceType == "Moog")
+	//{
+	//	if (extStr != str(".") + MOOG_SCRIPT_EXTENSION)
+	//	{
+	//		thrower("ERROR: Attempted to open non-moog script from moog script control!");
+	//	}
+	//}
+	else if (deviceType == "AWG")
 	{
-		if (extStr != str(".") + MOOG_SCRIPT_EXTENSION)
+		if (extStr != str(".") + AWG_SCRIPT_EXTENSION)
 		{
-			thrower("ERROR: Attempted to open non-moog script from moog script control!");
+			thrower("ERROR: Attempted to open non-awg script from awg script control!");
 		}
 	}
 	else if (deviceType == "Gmoog")
 	{
 		if (extStr != str(".") + GIGAMOOG_SCRIPT_EXTENSION)
 		{
-			thrower("ERROR: Attempted to open non-moog script from moog script control!");
+			thrower("ERROR: Attempted to open non-gmoog script from gmoog script control!");
 		}
 	}
 	else if (deviceType == "DDS")
 	{
 		if (extStr != str(".") + DDS_SCRIPT_EXTENSION)
 		{
-			thrower("ERROR: Attempted to open non-moog script from moog script control!");
+			thrower("ERROR: Attempted to open non-dds script from dds script control!");
 		}
 	}
 	else

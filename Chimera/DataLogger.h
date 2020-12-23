@@ -21,7 +21,8 @@ class DataLogger
 		void logMasterParameters( MasterThreadInput* input);
 		void logFunctions(H5::Group& group);
 		void logDDSParameters(MasterThreadInput* input);
-		void logMoogParameters(MasterThreadInput* input);
+		void logAWGParameters(MasterThreadInput* input);
+		//void logMoogParameters(MasterThreadInput* input);
 		void logMiscellaneous();
 		void logAndorSettings( AndorRunSettings settings, bool on );
 		//void logNiawgSettings( MasterThreadInput* input );

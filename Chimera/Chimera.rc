@@ -239,12 +239,12 @@ BEGIN
             MENUITEM "&Rename Script",              ID_MASTERSCRIPT_RENAME
             MENUITEM "&Delete Script",              ID_MASTERSCRIPT_DELETE
         END
-        POPUP "&Moog Script"
+        POPUP "&AWG Script"
         BEGIN
-            MENUITEM "Ne&w Moog Script",            ID_FILE_MY_MOOG_NEW
-            MENUITEM "Op&en Moog Script",           ID_FILE_MY_MOOG_OPEN
-            MENUITEM "&Save Moog Script",           ID_FILE_MY_MOOG_SAVE
-            MENUITEM "Save Moog Script &As",        ID_FILE_MY_MOOG_SAVEAS
+            MENUITEM "Ne&w AWG Script",             ID_FILE_MY_AWG_NEW
+            MENUITEM "Op&en AWG Script",            ID_FILE_MY_AWG_OPEN
+            MENUITEM "&Save AWG Script",            ID_FILE_MY_AWG_SAVE
+            MENUITEM "Save AWG Script &As",         ID_FILE_MY_AWG_SAVEAS
         END
         POPUP "G&igamoog Script"
         BEGIN

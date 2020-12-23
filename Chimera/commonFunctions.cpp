@@ -319,7 +319,8 @@ namespace commonFunctions
 				{
 					//scriptWin->saveHorizontalScript( );
 					//scriptWin->saveVerticalScript( );
-					scriptWin->saveMoogScript();
+					//scriptWin->saveMoogScript();
+					scriptWin->saveAWGScript();
 					scriptWin->saveGmoogScript();
 					//scriptWin->saveIntensityScript( );
 					scriptWin->saveDdsScript();
@@ -487,24 +488,44 @@ namespace commonFunctions
 				scriptWin->saveVerticalScriptAs(parent);
 				break;
 			}*/
-			case ID_FILE_MY_MOOG_NEW:
+			//case ID_FILE_MY_MOOG_NEW:
+			//{
+			//	scriptWin->newMoogScript();
+			//	break;
+			//}
+			//case ID_FILE_MY_MOOG_OPEN:
+			//{
+			//	scriptWin->openMoogScript(parent);
+			//	break;
+			//}
+			//case ID_FILE_MY_MOOG_SAVE:
+			//{
+			//	scriptWin->saveMoogScript();
+			//	break;
+			//}
+			//case ID_FILE_MY_MOOG_SAVEAS:
+			//{
+			//	scriptWin->saveMoogScriptAs(parent);
+			//	break;
+			//}
+			case ID_FILE_MY_AWG_NEW:
 			{
-				scriptWin->newMoogScript();
+				scriptWin->newAWGScript();
 				break;
 			}
-			case ID_FILE_MY_MOOG_OPEN:
+			case ID_FILE_MY_AWG_OPEN:
 			{
-				scriptWin->openMoogScript(parent);
+				scriptWin->openAWGScript(parent);
 				break;
 			}
-			case ID_FILE_MY_MOOG_SAVE:
+			case ID_FILE_MY_AWG_SAVE:
 			{
-				scriptWin->saveMoogScript();
+				scriptWin->saveAWGScript();
 				break;
 			}
-			case ID_FILE_MY_MOOG_SAVEAS:
+			case ID_FILE_MY_AWG_SAVEAS:
 			{
-				scriptWin->saveMoogScriptAs(parent);
+				scriptWin->saveAWGScriptAs(parent);
 				break;
 			}
 			case ID_FILE_MY_DDS_NEW:
@@ -864,7 +885,8 @@ namespace commonFunctions
 		{
 			scriptInfo<std::string> scriptNames = scriptWin->getScriptNames();
 			// ordering matters here, make sure you get the correct script name.
-			std::string moogNameString(scriptNames.moog);
+			//std::string moogNameString(scriptNames.moog);
+			std::string awgNameString(scriptNames.awg);
 			//std::string horizontalNameString( scriptNames.horizontalNIAWG );
 			//std::string verticalNameString( scriptNames.verticalNIAWG );
 			//std::string intensityNameString( scriptNames.intensityAgilent );
@@ -882,8 +904,10 @@ namespace commonFunctions
 				//{
 				//	beginInfo += " SAVED\r\n";
 				//}
-				beginInfo += "Moog Script Name:........ " + str(moogNameString);
-				if (scriptSavedStatus.moog)
+				//beginInfo += "Moog Script Name:........ " + str(moogNameString);
+				beginInfo += "AWG Script Name:........ " + str(awgNameString);
+				//if (scriptSavedStatus.moog)
+				if (scriptSavedStatus.awg)
 				{
 					beginInfo += " SAVED\r\n";
 				}
@@ -1122,7 +1146,8 @@ namespace commonFunctions
 		logger->logAndorSettings( input.camSettings, takeAndorPictures );
 		logger->logMasterParameters( input.masterInput );
 		logger->logDDSParameters(input.masterInput);
-		logger->logMoogParameters(input.masterInput);
+		//logger->logMoogParameters(input.masterInput);
+		logger->logAWGParameters(input.masterInput);
 		logger->logMiscellaneous();
 		//logger->closeFile(); //TODO: May have to remove this once andor is integrated.
 	}
