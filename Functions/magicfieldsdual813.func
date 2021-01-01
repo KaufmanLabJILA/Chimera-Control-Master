@@ -1,0 +1,7 @@
+% Master-Script See the "?" for info on commands.
+def magicFieldsDual813():
+  daclinspace: y1coil .7 .7*.83 15 10
+  daclinspace: y2coil .7 .7*.83 15 10
+  dac: x1coil .45*.83
+  dac: z1coil .4
+  t += 10

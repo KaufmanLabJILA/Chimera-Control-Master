@@ -11,12 +11,12 @@ amps  0 100 UVaopow 100 0 6 16 6
 % SPECTROSCOPY
 snapshot 0 reps 2
 freqs 80 c_3p0+.2 80 80 spec3p1 spec3p1 spec3p1 spec3p1
-amps  0 100 UVaopow 100 0 3 3 8
+amps  0 100 UVaopow 100 0 2.5 3 8
 
 % IMAGE
 snapshot 1 reps 2
 freqs 80 c_3p0 80 80 c_3p1+f_3d c_3p1+fcool c_3p1+faxcool c_3p1+fcool+.001
-amps  0 100 5 1 18 11 15 3
+amps  0 100 5 1 18 10 15 3
 
 %%%
 % MOT
@@ -26,12 +26,21 @@ amps  0 100 0 0 18 0 0 0
 
 % SB COOL LATTICE
 snapshot 3 reps 2
-freqs 80 c_3p0+.2 80 80 79.74 c_3p1+f_rad c_3p1+faxcool c_3p1+f_813rad
-amps  0 100 UVaopow 100 0 6 16 10
+freqs 80 c_3p0+.2 80 80 79.74 c_3p1+f_rad c_3p1+f_ax_lat c_3p1+f_813rad
+amps  0 100 UVaopow 100 0 6 3 10
 
 % spectroscopy2
 snapshot 4 reps 2
 freqs 80 c_3p0+spec3p0/1000 80 80 79.74 c_3p1+f_813rad c_3p1+faxcool_813 c_3p1
 amps  0 100 UVaopow 100 0 6 3 30
+
+%Parametric heating
+snapshot 5 reps 2
+freqs 80+.75 80 75 80 spec3p1 spec3p1 spec3p1 spec3p1
+amps 10 100 100 100 0 8 4 5
+
+snapshot 6 reps 5000
+freqs 80+.65 80 75 80 spec3p1 spec3p1 spec3p1 spec3p1
+amps  10 100 100 100 0 8 4 5
 
 end

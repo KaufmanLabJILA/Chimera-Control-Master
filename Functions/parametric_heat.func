@@ -1,37 +1,56 @@
 def parametric_heat():
 %DDS state: Parametric heating
-pulseon: resetdds .1
-t += .2 
-repeat: 6 
- pulseon: stepdds 0.007 
- t += .2 
-end 
-t += .1 
+%pulseon: resetdds .1
+%t += .2 
+%repeat: 6 
+% pulseon: stepdds 0.007 
+% t += .2 
+%end 
+%t += .1 
 
-pulseon: stepdds 0.007 
-t += .1 
+%pulseon: stepdds 0.007 
+%t += .1 
 
-t += 50 
+%t += 50 
 
-%DDS state: SB cooling 
-pulseon: resetdds .1 
-t += .2 
+%%DDS state: SB cooling 
+%pulseon: resetdds .1 
+%t += .2 
 
-t += 5 
+%t += 5 
 
-daclinspace: axialpow ax_lattice_pow ax_lattice_zero 15 15 
-t += 20 
+%daclinspace: axialpow ax_lattice_pow ax_lattice_zero 15 15 
+%t += 20 
 
-daclinspace: tweezerpow tweezer_pow filter_pow 5 15 
-t += 15 
+%daclinspace: tweezerpow tweezer_pow filter_pow 5 15 
+%t += 15 
 
 %off: tweezerao
 %off: axlatttl
-t += .03
-on: tweezerao
-on: axlatttl
+%t += .03
+%on: tweezerao
+%on: axlatttl
 
-t += 10
+%t += 10
 
-daclinspace: tweezerpow filter_pow tweezer_pow 5 15 
-t += 10
+%daclinspace: tweezerpow filter_pow tweezer_pow 5 15 
+%t += 10
+
+%%% Parametric heating
+
+pulseon: resetdds .1
+t += .2
+repeat: 7
+ pulseon: stepdds 0.007
+ t += .1
+end
+
+t += 100
+pulseon: resetdds .1
+t += .2
+
+%off: tweezerao
+%off: axlatTTL
+%t += .01
+%on: tweezerao
+%on: axlatTTL

@@ -37,10 +37,11 @@ def red_mot(loadTime):
 
   on: red3dnarrow
   t += 90
+
   %%%%%%%%%%%%%%%%%%%%%%%
-  %on: andorshut
-  %on: imagshut
-  %t += 4
+  on: andorshut
+  on: imagshut
+  t += 4
   %%%%%%%%%%%%%%%%%%%%%%%
   off: red3dnarrow
  %dac: red3dpow .15

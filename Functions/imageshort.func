@@ -4,7 +4,6 @@ def imageshort():
   dac: imagingPow .3
   %on: andorshut %%%PUT BACK!!!
 
-
 %  on: blowawayshutter
 
 %  on: blueshut
