@@ -224,7 +224,7 @@ void DDSSystem::initialize(POINT& pos, cToolTips& toolTips, AuxiliaryWindow* mas
 	// 
 	ddsSetButton.sPos = { pos.x, pos.y, pos.x + 240, pos.y += 25};
 	ddsSetButton.Create( "Set New DDS Values", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, 
-						 ddsSetButton.sPos, master, ID_DAC_SET_BUTTON );
+						 ddsSetButton.sPos, master, ID_DDS_SET_BUTTON );
 	ddsSetButton.setToolTip("Press this button to attempt force all DAC values to the values currently recorded in the"
 							 " edits below.", toolTips, master);
 

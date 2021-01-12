@@ -34,14 +34,14 @@ if __name__ == "__main__":
   print("writing to 5000")
   with open("/dev/axis_fifo_0x0000000080005000", "r+b") as character:
     # ~ writeWords(character)
-    writeToDDS(character,4,0x28F5C378) # 0x28F5C378
+    writeToDDS(character,4,0x271DE698) # (80 MHz: 0x28F5C378) (76.45 MHZ: 0x271DE698)
 
   print("writing to 6000")
   with open("/dev/axis_fifo_0x0000000080006000", "r+b") as character:
     # ~ writeWords(character)
-    writeToDDS(character,4,0x110624DD) #1/250 of DDS clock
+    writeToDDS(character,4,0x3AE145D0) # 115 MHz
 
   print("writing to 7000")
   with open("/dev/axis_fifo_0x0000000080007000", "r+b") as character:
     # ~ writeWords(character)
-    writeToDDS(character,4,0x110624DD) #1/250 of DDS clock
+    writeToDDS(character,4,0x23D70898) # 70 MHz
