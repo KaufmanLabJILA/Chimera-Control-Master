@@ -521,7 +521,7 @@ void DacSystem::organizeDacCommands(UINT variation)
 	}
 	dacSnapshots[variation].clear();
 	// first copy the initial settings so that things that weren't changed remain unchanged.
-	dacSnapshots[variation].push_back({ 0, dacValues });
+	dacSnapshots[variation].push_back({ 0, dacValues});
 	for (UINT commandInc = 0; commandInc < timeOrganizer.size(); commandInc++)
 	{
 		// first copy the last set so that things that weren't changed remain unchanged.
@@ -689,6 +689,8 @@ void DacSystem::interpretKey( std::vector<variableType>& variables, std::string&
 				////////////////
 				// deal with value
 				tempEvent.value = dacCommandFormList[eventInc].finalVal.evaluate( variables, variationInc );
+				tempEvent.endValue = tempEvent.value;
+				tempEvent.rampTime = 0;
 				dacCommandList[variationInc].push_back(tempEvent);
 			}
 			else if ( dacCommandFormList[eventInc].commandName == "dacarange:")
@@ -1161,14 +1163,14 @@ void DacSystem::formatDacForFPGA(UINT variation)
 
 		if (i == 0) {
 			for (int j = 0; j < 32; ++j) {
-				if (snapshot.dacValues[j] != dacValues[j]) {
+				if (snapshot.dacValues[j] != dacValues[j] || (snapshot.dacValues[j] == dacValues[j] && snapshot.dacRampTimes[j] != 0)) {
 					channels.push_back(j);
 				}
 			}
 		} else {
 			snapshotPrev = dacSnapshots[variation][i - 1];
 			for (int j = 0; j < 32; ++j) {
-				if (snapshot.dacValues[j] != snapshotPrev.dacValues[j]) {
+				if (snapshot.dacValues[j] != snapshotPrev.dacValues[j] || (snapshot.dacValues[j] == snapshotPrev.dacValues[j] && snapshot.dacRampTimes[j] != 0)) {
 					channels.push_back(j);
 				}
 			}

@@ -17,7 +17,7 @@ class DAC81416:
     self.fifo.write_axis_fifo("\x00\x03\x0A\x84")
     #GEN config
     #activate internal ref
-    self.fifo.write_axis_fifo("\x00\x04\x3F\x00") #note channels 0/1 are set to differential now
+    self.fifo.write_axis_fifo("\x00\x04\x3F\x00")
     #BRDCONFIG - disable broadcast mode
     self.fifo.write_axis_fifo("\x00\x05\x00\x00")
     #SYNCCONFIG - leave at default

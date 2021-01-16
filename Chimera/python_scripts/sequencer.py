@@ -52,8 +52,8 @@ class sequencer:
 	def __init__(self):
 		self.dacRes = 65536
 		self.dacRange = [-10, 10]
-		self.dacRangeConv = 167772/self.dacRes
-		self.dacIncrMax = 268435456
+		self.dacRangeConv = float(167772)/self.dacRes
+		self.dacIncrMax = 268435455
 		self.dacTimeRes = 1.6e3 # in us
 		self.ddsAmpRange = [0, 5]
 		self.ddsFreqRange = [0, 500]
@@ -63,6 +63,9 @@ class sequencer:
 		# initialize DACs
 		self.dac0 = DAC81416(fifo_devices['DAC81416_0'])
 		self.dac1 = DAC81416(fifo_devices['DAC81416_1'])
+		self.dds0 = AD9959(fifo_devices['AD9959_0'])
+		self.dds1 = AD9959(fifo_devices['AD9959_1'])
+		self.dds2 = AD9959(fifo_devices['AD9959_2'])
 		self.fifo_dac0_seq = AXIS_FIFO(fifo_devices['DAC81416_0_seq'])
 		self.fifo_dac1_seq = AXIS_FIFO(fifo_devices['DAC81416_1_seq'])
 		# initialize DDSs
@@ -113,30 +116,7 @@ class sequencer:
 		fifo.write_axis_fifo(struct.pack('>I', point.time))
 		fifo.write_axis_fifo(struct.pack('>I', point.start*256*256 + point.steps))
 		fifo.write_axis_fifo(struct.pack('>I', point.incr*16+point.chan))
-		
-		# address_bytes = "\x01\x00" + struct.pack('>H', point.address)
-		# time_bytes = struct.pack('>I', point.time)
-		# start_bytes = struct.pack('>I', point.start*256*256 + point.steps)
-		# incr_bytes = struct.pack('>I', point.incr*16+point.chan)
 
-		# words = []
-		# words.append([])
-		# #address
-		# words[0].append(self.getWord(address_bytes))
-		# #time
-		# words.append([])
-		# words[1].append(self.getWord(time_bytes))
-		# #start
-		# words.append([])
-		# words[2].append(self.getWord(start_bytes))
-		# #incr
-		# words.append([])
-		# words[3].append(self.getWord(incr_bytes))
-
-		# for word in words:
-		# 	fifo.write_axis_fifo(word[0], MSB_first=False)
-
-		
 
 	def write_atw_point(self, fifo, point):
 		#01XXAAAA TTTTTTTT DDDDDDDD DDDDDDDD
@@ -183,46 +163,86 @@ class sequencer:
 		else:
 			self.dac0.set_DAC(channel, valueInt)
 
+	def set_DDS(slef, channel, amp, freq):
+		ampValueInt = amp*self.ddsAmpRangeConv
+		freqValueInt = amp*self.ddsFreqRangeConv
+		assert channel>=0 and channel<=11, 'Invalid channel for AD9959 in set_DDS'
+		if (channel > 7):
+			channel = channel-8
+			self.dds2.set_DDS(channel, ampValueInt, freqValueInt)
+		elif (3 < channel < 8):
+			channel = channel-4
+			self.dds1.set_DDS(channel, ampValueInt, freqValueInt)
+		else:
+			self.dds0.set_DDS(channel, ampValueInt, freqValueInt)
+
 	def mod_enable(self):
 		self.gpio2.set_bit(0, channel=1)
 
 	def mod_disable(self):
 		self.gpio2.clear_bit(0, channel=1)
 
+	def reset_disable_mod(self):
+		self.gpio2.write_axi_gpio(0xffff0000,channel=2)
+		self.gpio2.write_axi_gpio(0x0000ffff,channel=2)
+		self.mod_disable()
+
 	def mod_report(self):
 		print(self.gpio2.read_axi_gpio(channel=1))
 
 	def dac_seq_write_points(self, byte_len, byte_buf, num_snapshots):
 		print 'DAC points'
-		points=[]
+		points0 = []
+		points1 = []
 		for ii in range(num_snapshots):
 			[t, chan, s, end, duration] = self.dac_read_point(byte_buf[ii*byte_len: ii*byte_len + byte_len])
-			num_steps = (duration/self.dacTimeRes) - 1 
-			if (num_steps == 0):
+			num_steps = duration/self.dacTimeRes
+			if (int(num_steps) <= 1):
 				ramp_inc = 0
 			else:
-				ramp_inc = int((end-s)*self.dacRangeConv/num_steps)
-			if (ramp_inc < 0):
+				ramp_inc = int((end-s)*self.dacRangeConv/(num_steps))
+				# print(s, end, num_steps, ramp_inc)
+			if (ramp_inc < -0.1):
 				ramp_inc = int(self.dacIncrMax + ramp_inc)
-			# print ramp_inc
-			points.append(DAC_seq_point(address=ii,time=t,start=s,steps=duration,incr=ramp_inc,chan=chan))
-		points.append(DAC_seq_point(address=num_snapshots, time=0,start=0,steps=0,incr=0,chan=0))
-		# points.append(DAC_seq_point(address=num_snapshots, time=0,start=0,steps=0,incr=0,chan=16))
+			print "ramp_inc = ", ramp_inc, " num_steps = ", num_steps, " dacRangeConv = ", self.dacRangeConv
+			if (chan < 16):
+				points0.append(DAC_seq_point(address=len(points0),time=t,start=s,steps=duration,incr=ramp_inc,chan=chan))
+			else:
+				points1.append(DAC_seq_point(address=len(points1),time=t,start=s,steps=duration,incr=ramp_inc,chan=chan-16))
+		if (len(points0) != 0):
+			points0.append(DAC_seq_point(address=len(points0), time=0,start=0,steps=0,incr=0,chan=0))
+		if (len(points1) != 0):
+			points1.append(DAC_seq_point(address=len(points1), time=0,start=0,steps=0,incr=0,chan=0))
 
-		for point in points:
+		for i in range(1, len(points0)):
+			for j in range(i):
+				# print(i,j)
+				if (points0[i].time == points0[j].time):
+					points0[i].time = points0[i].time + 1
+
+		for i in range(1, len(points1)):
+			for j in range(i):
+				if (points1[i].time == points1[j].time):
+					points1[i].time = points1[i].time + 1
+
+		for point in points0:
 			print "add: ", point.address
 			print "time: ", point.time
 			print "start: ", point.start
 			print "steps: ", point.steps
 			print "incr: ", point.incr
-			print "chan: ", point.chan 
-			if (point.chan < 16):
-				fifo = self.fifo_dac0_seq
-			else:
-				point.chan = point.chan - 16
-				fifo = self.fifo_dac1_seq
+			print "chan: ", point.chan
+			self.write_dac_point(self.fifo_dac0_seq, point)
 
-		  	self.write_dac_point(fifo, point)
+		for point in points1:
+			print "add: ", point.address
+			print "time: ", point.time
+			print "start: ", point.start
+			print "steps: ", point.steps
+			print "incr: ", point.incr
+			print "chan: ", point.chan
+			self.write_dac_point(self.fifo_dac1_seq, point)
+
 
 	def dds_seq_write_points(self, byte_len, byte_buf, num_snapshots):
 		ftw_points=[]
@@ -301,8 +321,8 @@ class sequencer:
 		for ii in range(num_snapshots):
 			[t, outA, outB] = self.dio_read_point(byte_buf[ii*byte_len: ii*byte_len + byte_len])
 			points.append(GPIO_seq_point(address=ii,time=t,outputA=outA,outputB=outB))
-		points.append(GPIO_seq_point(address=num_snapshots,time=6400000,outputA=0x00000000,outputB=0x00000000))
-		points.append(GPIO_seq_point(address=num_snapshots+1,time=0,outputA=0x00000000,outputB=0x00000000))
+		# points.append(GPIO_seq_point(address=num_snapshots,time=6400000,outputA=0x00000000,outputB=0x00000000))
+		points.append(GPIO_seq_point(address=num_snapshots,time=0,outputA=0x00000000,outputB=0x00000000))
 
 		for point in points:
 			print "add: ", point.address

@@ -35,6 +35,7 @@ BEGIN_MESSAGE_MAP(AuxiliaryWindow, CDialog)
 
 	ON_COMMAND(TTL_HOLD, &handlTtlHoldPush)
 	ON_COMMAND(ID_DAC_SET_BUTTON, &SetDacs)
+	ON_COMMAND(ID_DDS_SET_BUTTON, &SetDDSs)
 	ON_COMMAND(IDC_ZERO_TTLS, &zeroTtls)
 	ON_COMMAND(IDC_ZERO_DACS, &zeroDacs)
 	ON_COMMAND(IDOK, &handleEnter)
@@ -759,6 +760,31 @@ void AuxiliaryWindow::SetDacs()
 		dacBoards.setDACs();
 
 		sendStatus("Finished Setting Dacs.\r\n");
+	}
+	catch (Error& exception)
+	{
+		errBox(exception.what());
+		sendStatus(": " + exception.whatStr() + "\r\n");
+		sendErr(exception.what());
+	}
+	mainWindowFriend->updateConfigurationSavedStatus(false);
+}
+
+void AuxiliaryWindow::SetDDSs()
+{
+	// have the dds values change
+	try
+	{
+		mainWindowFriend->updateConfigurationSavedStatus(false);
+		sendStatus("----------------------\r\n");
+		/*dacBoards.resetDacEvents();
+		ttlBoard.resetTtlEvents();*/
+		sendStatus("Setting DDSs...\r\n");
+
+		ddsBoards.handleButtonPress();
+		ddsBoards.setDDSs();
+
+		sendStatus("Finished Setting DDSs.\r\n");
 	}
 	catch (Error& exception)
 	{

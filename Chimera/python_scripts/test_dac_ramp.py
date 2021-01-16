@@ -28,13 +28,14 @@ class DAC_seq_point:
     self.chan = chan
 
 class DAC_ramp_tester:
-  def __init__(self, device, device_seq, main_seq):
+  def __init__(self, device, device_seq0, device_seq1, main_seq):
     self.dac = DAC81416(device) # initialize DAC
     self.gpio2 = AXI_GPIO(gpio_devices['axi_gpio_2'])
-    self.fifo_dac_seq = AXIS_FIFO(device_seq)
+    self.fifo_dac_seq0 = AXIS_FIFO(device_seq0)
+    self.fifo_dac_seq1 = AXIS_FIFO(device_seq1)
     self.fifo_main_seq = AXIS_FIFO(main_seq)
 
-  def write_point(self, point):
+  def write_point(self, fifo, point):
     #01XXAAAA TTTTTTTT DDDDDDDD DDDDDDDD
     #phase acc shifts by 12 bit => 4096
     #acc_start   <= gpio_in(63 downto 48);
@@ -42,10 +43,10 @@ class DAC_ramp_tester:
     #acc_incr    <= gpio_in(31 downto  4);
     #acc_chan    <= to_integer(unsigned(gpio_in( 3 downto  0)));
 
-    self.fifo_dac_seq.write_axis_fifo("\x01\x00" + struct.pack('>H', point.address))
-    self.fifo_dac_seq.write_axis_fifo(struct.pack('>I', point.time))
-    self.fifo_dac_seq.write_axis_fifo(struct.pack('>I', point.start*256*256 + point.steps))
-    self.fifo_dac_seq.write_axis_fifo(struct.pack('>I', point.incr*16+point.chan))
+    fifo.write_axis_fifo("\x01\x00" + struct.pack('>H', point.address))
+    fifo.write_axis_fifo(struct.pack('>I', point.time))
+    fifo.write_axis_fifo(struct.pack('>I', point.start*256*256 + point.steps))
+    fifo.write_axis_fifo(struct.pack('>I', point.incr*16+point.chan))
 
   def reset_DAC(self):
     self.dac = DAC81416(device) # initialize DAC
@@ -60,22 +61,29 @@ class DAC_ramp_tester:
     print(self.gpio2.read_axi_gpio(channel=1))
 
   def dac_seq_write_points(self):
-    points=[]
+    points0=[]
+    points1=[]
     #these ramps should complete in just under 64 ms
     #points.append(DAC_seq_point(address=0,time=0,start=256*128,steps=20000,incr=4096,chan=0))
-    points.append(DAC_seq_point(address=0,time=0,start=256*128,steps=10000,incr=4096,chan=0))
-    points.append(DAC_seq_point(address=1,time=2000000,start=256*255,steps=10000,incr=268431360,chan=0))
-    points.append(DAC_seq_point(address=2, time=0,start=0,steps=0,incr=0,chan=0))
+    points0.append(DAC_seq_point(address=0,time=1,start=256*128,steps=10000,incr=50,chan=0))
+    # points0.append(DAC_seq_point(address=2,time=160000,start=256*134,steps=0,incr=0,chan=0))
+    points0.append(DAC_seq_point(address=1, time=0,start=0,steps=0,incr=0,chan=0))
 
-    for point in points:
-      self.write_point(point)
+    # points1.append(DAC_seq_point(address=0,time=1,start=256*200,steps=1,incr=0,chan=0))
+    # points1.append(DAC_seq_point(address=1,time=500000,start=256*128,steps=1,incr=0,chan=0))
+    # points1.append(DAC_seq_point(address=2, time=0,start=0,steps=0,incr=0,chan=0))
+
+    for point in points0:
+      self.write_point(self.fifo_dac_seq0, point)
+    for point in points1:
+      self.write_point(self.fifo_dac_seq1, point)
 
   def dio_seq_write_points(self):
     points=[]
-    points.append(GPIO_seq_point(address=0,time=0,outputA=0x00000001,outputB=0x00000001))
+    points.append(GPIO_seq_point(address=0,time=1,outputA=0x00000001,outputB=0x00000001))
     points.append(GPIO_seq_point(address=1,time=20000,outputA=0x00000000,outputB=0x00000000))
     points.append(GPIO_seq_point(address=2,time=40000,outputA=0x00000001,outputB=0x00000001))
-    points.append(GPIO_seq_point(address=3,time=6400000,outputA=0x00000001,outputB=0x00000001))
+    points.append(GPIO_seq_point(address=3,time=6400000,outputA=0x00000000,outputB=0x00000000))
     points.append(GPIO_seq_point(address=4,time=0,outputA=0x00000000,outputB=0x00000000))
 
     for point in points:
@@ -108,7 +116,7 @@ def program(tester):
 
 if __name__ == "__main__":
   
-  tester = DAC_ramp_tester(fifo_devices['DAC81416_0'], fifo_devices['DAC81416_0_seq'], fifo_devices['GPIO_seq'])
+  tester = DAC_ramp_tester(fifo_devices['DAC81416_0'], fifo_devices['DAC81416_0_seq'], fifo_devices['DAC81416_1_seq'], fifo_devices['GPIO_seq'])
   program(tester)
   tester.mod_enable()
   soft_trigger.trigger()

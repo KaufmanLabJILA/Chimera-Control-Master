@@ -309,39 +309,49 @@ void DDSSystem::handleButtonPress()
 {
 	//ddsCommandFormList.clear();
 	//prepareForce();
-	//ttls->prepareForce();
-	//std::array<double, 32> vals;
-	//for (UINT dacInc = 0; dacInc < ddsLabels.size(); dacInc++)
-	//{
-	//	CString text;
-	//	breakoutBoardEdits[dacInc].GetWindowTextA(text);
-	//	try
-	//	{
-	//		vals[dacInc] = std::stod(str(text));
-	//		std::string valStr;
-	//		if (roundToDacPrecision)
-	//		{
-	//			valStr = str(roundToDacResolution(vals[dacInc]), 13, true);
-	//		}
-	//		else
-	//		{
-	//			valStr = str(vals[dacInc]);
-	//		}
-	//		breakoutBoardEdits[dacInc].SetWindowTextA(cstr(valStr));
-	//		prepareDacForceChange(dacInc, vals[dacInc], ttls);
-	//	}
-	//	catch (std::invalid_argument&)
-	//	{
-	//		thrower("ERROR: value entered in DAC #" + str(dacInc) + " (" + text.GetString() + ") failed to convert to a double!");
-	//	}
-	//}
-	//// wait until after all this to actually do this to make sure things get through okay.
-	//ddsValues = vals;
-	//for (UINT dacInc = 0; dacInc < ddsLabels.size(); dacInc++)
-	//{
-	//	breakoutBoardEdits[dacInc].colorState = 0;
-	//	breakoutBoardEdits[dacInc].RedrawWindow();
-	//}
+
+	std::array< std::array<double, 2>, 12> vals;
+	for (UINT ddsInc = 0; ddsInc < ddsLabels.size(); ddsInc++)
+	{
+		CString ampText;
+		CString freqText;
+		breakoutBoardAmpEdits[ddsInc].GetWindowTextA(ampText);
+		breakoutBoardFreqEdits[ddsInc].GetWindowTextA(freqText);
+		try
+		{
+			vals[ddsInc][0] = std::stod(str(ampText));
+			vals[ddsInc][1] = std::stod(str(freqText));
+			std::string ampValStr;
+			std::string freqValStr;
+			if (roundToDDSPrecision)
+			{
+				std::array<double, 2> valRound;
+				valRound = roundToDDSResolution(vals[ddsInc]);
+				ampValStr = str(valRound[0], 13, true);
+				freqValStr = str(valRound[1], 13, true);
+			}
+			else
+			{
+				ampValStr = str(vals[ddsInc][0]);
+				freqValStr = str(vals[ddsInc][1]);
+			}
+			breakoutBoardAmpEdits[ddsInc].SetWindowTextA(cstr(ampValStr));
+			breakoutBoardFreqEdits[ddsInc].SetWindowTextA(cstr(freqValStr));
+		}
+		catch (std::invalid_argument&)
+		{
+			thrower("ERROR: value entered in DDS #" + str(ddsInc) + " (" + ampText.GetString() + " or " + freqText.GetString() + " ) failed to convert to a double!");
+		}
+	}
+	// wait until after all this to actually do this to make sure things get through okay.
+	ddsValues = vals;
+	for (UINT ddsInc = 0; ddsInc < ddsLabels.size(); ddsInc++)
+	{
+		breakoutBoardAmpEdits[ddsInc].colorState = 0;
+		breakoutBoardFreqEdits[ddsInc].colorState = 0;
+		breakoutBoardAmpEdits[ddsInc].RedrawWindow();
+		breakoutBoardFreqEdits[ddsInc].RedrawWindow();
+	}
 }
 
 
@@ -722,6 +732,37 @@ void DDSSystem::setDDSCommandForm( DDSCommandForm command )
 	ddsCommandFormList.push_back( command );
 	// you need to set up a corresponding trigger to tell the dacs to change the output at the correct time. 
 	// This is done later on interpretation of ramps etc.
+}
+
+void DDSSystem::setDDSs()
+{
+	int tcp_connect;
+	try
+	{
+		tcp_connect = zynq_tcp.connectTCP(ZYNQ_ADDRESS);
+	}
+	catch (Error& err)
+	{
+		tcp_connect = 1;
+		errBox(err.what());
+	}
+
+	if (tcp_connect == 0)
+	{
+		std::ostringstream stringStream;
+		std::string command;
+		for (int line = 0; line < ddsValues.size(); ++line) {
+			stringStream.str("");
+			stringStream << "DDS_" << line << "_" << std::setprecision(3) << ddsValues[line][0] << "_" << std::setprecision(3) << ddsValues[line][1];
+			command = stringStream.str();
+			zynq_tcp.writeCommand(command);
+		}
+		zynq_tcp.disconnect();
+	}
+	else
+	{
+		errBox("connection to zynq failed. can't trigger the sequence or new settings\n");
+	}
 }
 
 

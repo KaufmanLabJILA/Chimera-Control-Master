@@ -65,6 +65,7 @@ class DDSSystem
 		void prepareDDSForceChange(int line, std::array<double, 2> val);
 		std::array<double, 2> roundToDDSResolution(std::array<double, 2> num);
 		void handleEditChange( UINT ddsNumber );
+		void setDDSs();
 
 	private:
 		Control<CStatic> ddsTitle;
