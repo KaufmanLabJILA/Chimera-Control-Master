@@ -80,7 +80,8 @@ class zynq_tcp_server:
 		elif (dev == 'initExp'):
 			self.seq.initExp()
 		elif (dev == 'disableSeq'):
-			print('disabling mod')
+			self.seq.reset_disable_mod()
+		elif (dev == 'disableMod'):
 			self.seq.mod_disable()
 		elif (dev == 'DAC'):
 			self.seq.set_DAC(int(data_split[1]), float(data_split[2]))

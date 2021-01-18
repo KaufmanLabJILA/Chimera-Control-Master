@@ -57,6 +57,7 @@ class MasterManager
 		static void handleDebugPlots( debugInfo debugOptions, Communicator* comm, DioSystem* ttls, DacSystem* dacs,
 									  bool quiet, EmbeddedPythonHandler* python );
 		static double convertToTime( timeType time, std::vector<variableType> variables, UINT variation );
+		void sendZynqCommand(ZynqTCP zynq_tcp, std::string command);
 
 	private:
 		timeType loadSkipTime;

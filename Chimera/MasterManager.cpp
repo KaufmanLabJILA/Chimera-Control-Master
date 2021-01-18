@@ -54,6 +54,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 	bool foundRearrangement = false;
 
 	ZynqTCP zynq_tcp;
+	
 	/// //////////////////////////// 
 	/// start analysis & experiment 
 	try
@@ -75,29 +76,8 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 		input->ddss->resetDDSEvents();
 
 		//initialize devices
-		int tcp_connect;
-		try
-		{
-			tcp_connect = zynq_tcp.connectTCP(ZYNQ_ADDRESS);
-		}
-		catch (Error& err)
-		{
-			tcp_connect = 1;
-			errBox(err.what());
-		}
-
-		if (tcp_connect == 0)
-		{
-			int initExp = zynq_tcp.writeCommand("initExp");
-			if (initExp == 1) {
-				thrower("failed to initialize devices for experiment.");
-			}
-			zynq_tcp.disconnect();
-		}
-		else
-		{
-			errBox("connection to zynq failed. can't write init DATA\n");
-		}
+		input->thisObj->sendZynqCommand(zynq_tcp, "initExp");
+		
 		//input->rsg->clearFrequencies(); 
 		if (input->runMaster)
 		{
@@ -337,28 +317,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 		input->comm->sendNormalFinish();
 
 		//disable device mod
-		try
-		{
-			tcp_connect = zynq_tcp.connectTCP(ZYNQ_ADDRESS);
-		}
-		catch (Error& err)
-		{
-			tcp_connect = 1;
-			errBox(err.what());
-		}
-
-		if (tcp_connect == 0)
-		{
-			int disableSeq = zynq_tcp.writeCommand("disableSeq");
-			if (disableSeq == 1) {
-				thrower("failed to disable sequence mod after experiment finished.");
-			}
-			zynq_tcp.disconnect();
-		}
-		else
-		{
-			errBox("connection to zynq failed. can't write disable mod data\n");
-		}
+		input->thisObj->sendZynqCommand(zynq_tcp, "disableSeq");
 	}
 	catch (Error& exception)
 	{
@@ -388,30 +347,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 			input->comm->sendError(exception.what());
 			input->comm->sendFatalError("Exited main experiment thread abnormally.");
 		}
-		//disable device 
-		int tcp_connect;
-		try
-		{
-			tcp_connect = zynq_tcp.connectTCP(ZYNQ_ADDRESS);
-		}
-		catch (Error& err)
-		{
-			tcp_connect = 1;
-			errBox(err.what());
-		}
-
-		if (tcp_connect == 0)
-		{
-			int disableSeq = zynq_tcp.writeCommand("disableSeq");
-			if (disableSeq == 1) {
-				thrower("failed to disable sequence mod after experiment finished.");
-			}
-			zynq_tcp.disconnect();
-		}
-		else
-		{
-			errBox("connection to zynq failed. can't write disable mod data\n");
-		}
+		input->thisObj->sendZynqCommand(zynq_tcp, "disableSeq");
 	}
 	std::chrono::time_point<chronoClock> endTime(chronoClock::now());
 	expUpdate("Experiment took " + str(std::chrono::duration<double>((endTime - startTime)).count())
@@ -531,6 +467,32 @@ void MasterManager::startExperimentThread(MasterThreadInput* input)
 	}
 	// start thread. 
 	runningThread = AfxBeginThread(experimentThreadProcedure, input, THREAD_PRIORITY_HIGHEST);
+}
+
+void MasterManager::sendZynqCommand(ZynqTCP zynq_tcp, std::string command) {
+	int tcp_connect;
+	try
+	{
+		tcp_connect = zynq_tcp.connectTCP(ZYNQ_ADDRESS);
+	}
+	catch (Error& err)
+	{
+		tcp_connect = 1;
+		errBox(err.what());
+	}
+
+	if (tcp_connect == 0)
+	{
+		int zynq_write = zynq_tcp.writeCommand(command);
+		if (zynq_write == 1) {
+			thrower("failed to write command {" + command + "} to Zynq.");
+		}
+		zynq_tcp.disconnect();
+	}
+	else
+	{
+		errBox("connection to zynq failed. can't write disable mod data\n");
+	}
 }
 
 

@@ -1102,6 +1102,7 @@ void DacSystem::zeroDACValues()
 	for (int line = 0; line < dacValues.size(); ++line)
 	{
 		dacValues[line] = 0;
+		breakoutBoardEdits[line].SetWindowText("0");
 	}
 }
 
@@ -1170,7 +1171,8 @@ void DacSystem::formatDacForFPGA(UINT variation)
 		} else {
 			snapshotPrev = dacSnapshots[variation][i - 1];
 			for (int j = 0; j < 32; ++j) {
-				if (snapshot.dacValues[j] != snapshotPrev.dacValues[j] || (snapshot.dacValues[j] == snapshotPrev.dacValues[j] && snapshot.dacRampTimes[j] != 0)) {
+				if (snapshot.dacValues[j] != snapshotPrev.dacValues[j] || 
+					(snapshot.dacValues[j] == snapshotPrev.dacValues[j] && snapshot.dacRampTimes[j] != 0 && snapshotPrev.dacRampTimes[j] == 0)) {
 					channels.push_back(j);
 				}
 			}

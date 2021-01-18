@@ -183,6 +183,7 @@ class sequencer:
 		self.gpio2.clear_bit(0, channel=1)
 
 	def reset_disable_mod(self):
+		print 'disabling mod and resetting sequencers'
 		self.gpio2.write_axi_gpio(0xffff0000,channel=2)
 		self.gpio2.write_axi_gpio(0x0000ffff,channel=2)
 		self.mod_disable()

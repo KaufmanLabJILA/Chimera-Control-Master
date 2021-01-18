@@ -846,6 +846,7 @@ void DioSystem::forceTtl(int row, int number, int state)
 	if (tcp_connect == 0)
 	{
 		zynq_tcp.writeCommand("trigger");
+		zynq_tcp.writeCommand("disableMod");
 		zynq_tcp.disconnect();
 	}
 	else
