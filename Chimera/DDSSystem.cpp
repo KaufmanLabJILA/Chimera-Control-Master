@@ -217,58 +217,88 @@ std::array<double, 2> DDSSystem::getDefaultValue(UINT ddsNum)
 // this function returns the end location of the set of controls. This can be used for the location for the next control beneath it.
 void DDSSystem::initialize(POINT& pos, cToolTips& toolTips, AuxiliaryWindow* master, int& id)
 {
-	//// title
-	//ddsTitle.sPos = { pos.x, pos.y, pos.x + 480, pos.y += 25 };
-	//ddsTitle.Create("DACS", WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER, dacTitle.sPos, master, id++);
-	//ddsTitle.fontType = HeadingFont;
-	//// 
-	//ddsSetButton.sPos = { pos.x, pos.y, pos.x + 240, pos.y + 25};
-	//ddsSetButton.Create( "Set New DAC Values", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, 
-	//					 dacSetButton.sPos, master, ID_DAC_SET_BUTTON );
-	//ddsSetButton.setToolTip("Press this button to attempt force all DAC values to the values currently recorded in the"
-	//						 " edits below.", toolTips, master);
-	////
-	//zeroDDSs.sPos = { pos.x + 240, pos.y, pos.x + 480, pos.y += 25 };
-	//zeroDDSs.Create( "Zero Dacs", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, zeroDacs.sPos, master, IDC_ZERO_DACS );
-	//zeroDDSs.setToolTip( "Press this button to set all dac values to zero.", toolTips, master );
-	//int collumnInc = 0;
+	// title
+	ddsTitle.sPos = { pos.x, pos.y, pos.x + 480, pos.y += 25 };
+	ddsTitle.Create("DDSS", WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER, ddsTitle.sPos, master, id++);
+	ddsTitle.fontType = HeadingFont;
+	// 
+	ddsSetButton.sPos = { pos.x, pos.y, pos.x + 240, pos.y += 25};
+	ddsSetButton.Create( "Set New DDS Values", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, 
+						 ddsSetButton.sPos, master, ID_DDS_SET_BUTTON );
+	ddsSetButton.setToolTip("Press this button to attempt force all DAC values to the values currently recorded in the"
+							 " edits below.", toolTips, master);
+
+	pos.y += 15;
+
+	// DDS board labels
+	dds0Title.sPos = { pos.x, pos.y, pos.x + 160, pos.y + 25 };
+	dds0Title.Create("DDS 0\n Amp Freq", WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER, dds0Title.sPos, master, id++);
+	dds0Title.fontType = HeadingFont;
+	dds1Title.sPos = { pos.x + 180, pos.y, pos.x + 340, pos.y + 25 };
+	dds1Title.Create("DDS 1", WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER, dds1Title.sPos, master, id++);
+	dds1Title.fontType = HeadingFont;
+	dds2Title.sPos = { pos.x + 360, pos.y, pos.x + 520, pos.y += 25 };
+	dds2Title.Create("DDS 2", WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER, dds2Title.sPos, master, id++);
+	dds2Title.fontType = HeadingFont;
+
+	
+
 	//
-	//// there's a single label first, hence the +1.
-	//for (UINT ddsInc = 0; ddsInc < breakoutBoardEdits.size(); dacInc++)
-	//{
-	//	if (ddsInc == breakoutBoardEdits.size() / 3 || dacInc == 2 * breakoutBoardEdits.size() / 3)
-	//	{
-	//		collumnInc++;
-	//		// go to second or third collumn
-	//		pos.y -= 25 * breakoutBoardEdits.size() / 3;
-	//	}
+	int collumnInc = 0;
 
-	//	breakoutBoardEdits[dacInc].sPos = { pos.x + 20 + collumnInc * 160, pos.y, pos.x + 160 + collumnInc * 160,
-	//											pos.y += 25 };
-	//	breakoutBoardEdits[dacInc].colorState = 0;
-	//	breakoutBoardEdits[dacInc].Create( WS_CHILD | WS_VISIBLE | WS_BORDER, breakoutBoardEdits[dacInc].sPos,
-	//									   master, id++ );
-	//	breakoutBoardEdits[dacInc].SetWindowText("0");
-	//	breakoutBoardEdits[dacInc].setToolTip(dacNames[dacInc], toolTips, master);
-	//}
+	for (collumnInc = 0; collumnInc < 3; ++collumnInc)
+	{
+		ampLabels[0].sPos = { pos.x + collumnInc * 180, pos.y, pos.x + 160 + collumnInc * 180, pos.y + 25 };
+		ampLabels[0].Create("Amplitude (dBm)", WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER, dds0Title.sPos, master, id++);
+		ampLabels[0].fontType = HeadingFont;
+	}
+	
+	collumnInc = 0;
+	
+	// there's a single label first, hence the +1.
+	for (UINT ddsInc = 0; ddsInc < breakoutBoardAmpEdits.size(); ddsInc++)
+	{
+		if (ddsInc == breakoutBoardAmpEdits.size() / 3 || ddsInc == 2 * breakoutBoardAmpEdits.size() / 3)
+		{
+			collumnInc++;
+			// go to second or third collumn
+			pos.y -= 25 * breakoutBoardAmpEdits.size() / 3;
+		}
 
-	//collumnInc = 0;
-	//pos.y -= 25 * breakoutBoardEdits.size() / 3;
+		breakoutBoardAmpEdits[ddsInc].sPos = { pos.x + 20 + collumnInc * 180, pos.y, pos.x + 90 + collumnInc * 180,
+												pos.y + 25 };
+		breakoutBoardAmpEdits[ddsInc].colorState = 0;
+		breakoutBoardAmpEdits[ddsInc].Create( WS_CHILD | WS_VISIBLE | WS_BORDER, breakoutBoardAmpEdits[ddsInc].sPos,
+										   master, id++ );
+		breakoutBoardAmpEdits[ddsInc].SetWindowText("0");
+		breakoutBoardAmpEdits[ddsInc].setToolTip(ddsNames[ddsInc], toolTips, master);
 
-	//for (UINT dacInc = 0; dacInc < dacLabels.size(); dacInc++)
-	//{
-	//	if (dacInc == dacLabels.size() / 3 || dacInc == 2 * dacLabels.size() / 3)
-	//	{
-	//		collumnInc++;
-	//		// go to second or third collumn
-	//		pos.y -= 25 * dacLabels.size() / 3;
-	//	}
-	//	// create label
-	//	dacLabels[dacInc].sPos = { pos.x + collumnInc * 160, pos.y, pos.x + 20 + collumnInc * 160, pos.y += 25 };
-	//	dacLabels[dacInc].Create(cstr(dacInc), WS_CHILD | WS_VISIBLE | SS_CENTER,
-	//							 dacLabels[dacInc].sPos, master, ID_DAC_FIRST_EDIT + dacInc);
-	//	dacLabels[dacInc].setToolTip(dacNames[dacInc], toolTips, master);
-	//}
+		breakoutBoardFreqEdits[ddsInc].sPos = { pos.x + 90 + collumnInc * 180, pos.y, pos.x + 160 + collumnInc * 180,
+												pos.y += 25 };
+		breakoutBoardFreqEdits[ddsInc].colorState = 0;
+		breakoutBoardFreqEdits[ddsInc].Create(WS_CHILD | WS_VISIBLE | WS_BORDER, breakoutBoardFreqEdits[ddsInc].sPos,
+			master, id++);
+		breakoutBoardFreqEdits[ddsInc].SetWindowText("80");
+		breakoutBoardFreqEdits[ddsInc].setToolTip(ddsNames[ddsInc], toolTips, master);
+	}
+
+	collumnInc = 0;
+	pos.y -= 25 * breakoutBoardAmpEdits.size() / 3;
+
+	for (UINT ddsInc = 0; ddsInc < ddsLabels.size(); ddsInc++)
+	{
+		if (ddsInc == ddsLabels.size() / 3 || ddsInc == 2 * ddsLabels.size() / 3)
+		{
+			collumnInc++;
+			// go to second or third collumn
+			pos.y -= 25 * ddsLabels.size() / 3;
+		}
+		// create label
+		ddsLabels[ddsInc].sPos = { pos.x + collumnInc * 180, pos.y, pos.x + 20 + collumnInc * 180, pos.y += 25 };
+		ddsLabels[ddsInc].Create(cstr(ddsInc - collumnInc * 4), WS_CHILD | WS_VISIBLE | SS_CENTER,
+								 ddsLabels[ddsInc].sPos, master, ID_DAC_FIRST_EDIT + ddsInc);
+		ddsLabels[ddsInc].setToolTip(ddsNames[ddsInc], toolTips, master);
+	}
 }
 
 
@@ -279,39 +309,49 @@ void DDSSystem::handleButtonPress()
 {
 	//ddsCommandFormList.clear();
 	//prepareForce();
-	//ttls->prepareForce();
-	//std::array<double, 32> vals;
-	//for (UINT dacInc = 0; dacInc < ddsLabels.size(); dacInc++)
-	//{
-	//	CString text;
-	//	breakoutBoardEdits[dacInc].GetWindowTextA(text);
-	//	try
-	//	{
-	//		vals[dacInc] = std::stod(str(text));
-	//		std::string valStr;
-	//		if (roundToDacPrecision)
-	//		{
-	//			valStr = str(roundToDacResolution(vals[dacInc]), 13, true);
-	//		}
-	//		else
-	//		{
-	//			valStr = str(vals[dacInc]);
-	//		}
-	//		breakoutBoardEdits[dacInc].SetWindowTextA(cstr(valStr));
-	//		prepareDacForceChange(dacInc, vals[dacInc], ttls);
-	//	}
-	//	catch (std::invalid_argument&)
-	//	{
-	//		thrower("ERROR: value entered in DAC #" + str(dacInc) + " (" + text.GetString() + ") failed to convert to a double!");
-	//	}
-	//}
-	//// wait until after all this to actually do this to make sure things get through okay.
-	//ddsValues = vals;
-	//for (UINT dacInc = 0; dacInc < ddsLabels.size(); dacInc++)
-	//{
-	//	breakoutBoardEdits[dacInc].colorState = 0;
-	//	breakoutBoardEdits[dacInc].RedrawWindow();
-	//}
+
+	std::array< std::array<double, 2>, 12> vals;
+	for (UINT ddsInc = 0; ddsInc < ddsLabels.size(); ddsInc++)
+	{
+		CString ampText;
+		CString freqText;
+		breakoutBoardAmpEdits[ddsInc].GetWindowTextA(ampText);
+		breakoutBoardFreqEdits[ddsInc].GetWindowTextA(freqText);
+		try
+		{
+			vals[ddsInc][0] = std::stod(str(ampText));
+			vals[ddsInc][1] = std::stod(str(freqText));
+			std::string ampValStr;
+			std::string freqValStr;
+			if (roundToDDSPrecision)
+			{
+				std::array<double, 2> valRound;
+				valRound = roundToDDSResolution(vals[ddsInc]);
+				ampValStr = str(valRound[0], 13, true);
+				freqValStr = str(valRound[1], 13, true);
+			}
+			else
+			{
+				ampValStr = str(vals[ddsInc][0]);
+				freqValStr = str(vals[ddsInc][1]);
+			}
+			breakoutBoardAmpEdits[ddsInc].SetWindowTextA(cstr(ampValStr));
+			breakoutBoardFreqEdits[ddsInc].SetWindowTextA(cstr(freqValStr));
+		}
+		catch (std::invalid_argument&)
+		{
+			thrower("ERROR: value entered in DDS #" + str(ddsInc) + " (" + ampText.GetString() + " or " + freqText.GetString() + " ) failed to convert to a double!");
+		}
+	}
+	// wait until after all this to actually do this to make sure things get through okay.
+	ddsValues = vals;
+	for (UINT ddsInc = 0; ddsInc < ddsLabels.size(); ddsInc++)
+	{
+		breakoutBoardAmpEdits[ddsInc].colorState = 0;
+		breakoutBoardFreqEdits[ddsInc].colorState = 0;
+		breakoutBoardAmpEdits[ddsInc].RedrawWindow();
+		breakoutBoardFreqEdits[ddsInc].RedrawWindow();
+	}
 }
 
 
@@ -692,6 +732,37 @@ void DDSSystem::setDDSCommandForm( DDSCommandForm command )
 	ddsCommandFormList.push_back( command );
 	// you need to set up a corresponding trigger to tell the dacs to change the output at the correct time. 
 	// This is done later on interpretation of ramps etc.
+}
+
+void DDSSystem::setDDSs()
+{
+	int tcp_connect;
+	try
+	{
+		tcp_connect = zynq_tcp.connectTCP(ZYNQ_ADDRESS);
+	}
+	catch (Error& err)
+	{
+		tcp_connect = 1;
+		errBox(err.what());
+	}
+
+	if (tcp_connect == 0)
+	{
+		std::ostringstream stringStream;
+		std::string command;
+		for (int line = 0; line < ddsValues.size(); ++line) {
+			stringStream.str("");
+			stringStream << "DDS_" << line << "_" << std::setprecision(3) << ddsValues[line][0] << "_" << std::setprecision(3) << ddsValues[line][1];
+			command = stringStream.str();
+			zynq_tcp.writeCommand(command);
+		}
+		zynq_tcp.disconnect();
+	}
+	else
+	{
+		errBox("connection to zynq failed. can't trigger the sequence or new settings\n");
+	}
 }
 
 

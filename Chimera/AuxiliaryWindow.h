@@ -75,6 +75,7 @@ public:
 	void changeBoxColor(systemInfo<char> colors);
 	void DacEditChange(UINT id);
 	void SetDacs();
+	void SetDDSs();
 
 	fontMap getFonts();
 

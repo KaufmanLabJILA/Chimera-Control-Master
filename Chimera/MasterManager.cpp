@@ -52,12 +52,14 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 	std::vector<UINT> dacShadeLocs;
 	std::vector<UINT> ddsShadeLocs;
 	bool foundRearrangement = false;
+
+	ZynqTCP zynq_tcp;
+	
 	/// //////////////////////////// 
 	/// start analysis & experiment 
 	try
 	{
 		UINT variations = determineVariationNumber(input->variables);
-		ZynqTCP zynq_tcp;
 		// finishing sentence from before start I think... 
 		expUpdate("Done.\r\n", input->comm, input->quiet);
 		/// Prep agilents 
@@ -74,29 +76,8 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 		input->ddss->resetDDSEvents();
 
 		//initialize devices
-		int tcp_connect;
-		try
-		{
-			tcp_connect = zynq_tcp.connectTCP(ZYNQ_ADDRESS);
-		}
-		catch (Error& err)
-		{
-			tcp_connect = 1;
-			errBox(err.what());
-		}
-
-		if (tcp_connect == 0)
-		{
-			int initExp = zynq_tcp.writeCommand("initExp");
-			if (initExp == 1) {
-				thrower("failed to initialize devices for experiment.");
-			}
-			zynq_tcp.disconnect();
-		}
-		else
-		{
-			errBox("connection to zynq failed. can't write DAC data\n");
-		}
+		input->thisObj->sendZynqCommand(zynq_tcp, "initExp");
+		
 		//input->rsg->clearFrequencies(); 
 		if (input->runMaster)
 		{
@@ -299,8 +280,10 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 					//input->dacs->writeDacs(variationInc, skipOption); 
 					input->dacs->startDacs();
 					input->ttls->startDioFPGA(variationInc);
+					input->thisObj->sendZynqCommand(zynq_tcp, "trigger");
 					input->ttls->waitTillFinished(variationInc, skipOption);
 					input->dacs->stopDacs();
+
 				}
 			}
 			//input->ttls->disconnectDioFPGA(variationInc); 
@@ -334,31 +317,13 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 		//								   input->settings.dontActuallyGenerate ); 
 		//} 
 		input->comm->sendNormalFinish();
+
+		//disable device mod
+		input->thisObj->sendZynqCommand(zynq_tcp, "disableSeq");
 	}
 	catch (Error& exception)
 	{
-		//if (input->runNiawg) 
-		//{ 
-		//	for (const auto& sequenceInc : range( input->profile.sequenceConfigNames.size() )) 
-		//	{ 
-		//		for (const auto& axis : AXES) 
-		//		{ 
-		//			/*if (niawgFiles[axis].size() != 0) 
-		//			{ 
-		//				if (niawgFiles[axis][sequenceInc].is_open()) 
-		//				{ 
-		//					niawgFiles[axis][sequenceInc].close(); 
-		//				} 
-		//			}*/ 
-		//		} 
-		//	} 
-		//	// clear out some niawg stuff 
-		//	//for (auto& wave : output.waves) 
-		//	//{ 
-		//	//	wave.core.waveVals.clear(); 
-		//	//	wave.core.waveVals.shrink_to_fit(); 
-		//	//} 
-		//} 
+
 		input->thisObj->experimentIsRunning = false;
 		{
 			std::lock_guard<std::mutex> locker(input->thisObj->abortLock);
@@ -384,6 +349,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 			input->comm->sendError(exception.what());
 			input->comm->sendFatalError("Exited main experiment thread abnormally.");
 		}
+		input->thisObj->sendZynqCommand(zynq_tcp, "disableSeq");
 	}
 	std::chrono::time_point<chronoClock> endTime(chronoClock::now());
 	expUpdate("Experiment took " + str(std::chrono::duration<double>((endTime - startTime)).count())
@@ -503,6 +469,32 @@ void MasterManager::startExperimentThread(MasterThreadInput* input)
 	}
 	// start thread. 
 	runningThread = AfxBeginThread(experimentThreadProcedure, input, THREAD_PRIORITY_HIGHEST);
+}
+
+void MasterManager::sendZynqCommand(ZynqTCP zynq_tcp, std::string command) {
+	int tcp_connect;
+	try
+	{
+		tcp_connect = zynq_tcp.connectTCP(ZYNQ_ADDRESS);
+	}
+	catch (Error& err)
+	{
+		tcp_connect = 1;
+		errBox(err.what());
+	}
+
+	if (tcp_connect == 0)
+	{
+		int zynq_write = zynq_tcp.writeCommand(command);
+		if (zynq_write == 1) {
+			thrower("failed to write command {" + command + "} to Zynq.");
+		}
+		zynq_tcp.disconnect();
+	}
+	else
+	{
+		errBox("connection to zynq failed. can't write disable mod data\n");
+	}
 }
 
 
@@ -979,8 +971,8 @@ void MasterManager::analyzeFunction(std::string function, std::vector<std::strin
 				thrower(err.whatStr() + "... in \"ddsrampamp:\" command inside main script");
 			}
 			}
-			else if (word == "ddsrampfreq:") // ddsrampfreq: name intiFreq finalFreq rampTime
-			{
+		else if (word == "ddsrampfreq:") // ddsrampfreq: name intiFreq finalFreq rampTime
+		{
 			DDSCommandForm command;
 			std::string name;
 			currentMasterScript >> name;

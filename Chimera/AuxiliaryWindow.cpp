@@ -35,6 +35,7 @@ BEGIN_MESSAGE_MAP(AuxiliaryWindow, CDialog)
 
 	ON_COMMAND(TTL_HOLD, &handlTtlHoldPush)
 	ON_COMMAND(ID_DAC_SET_BUTTON, &SetDacs)
+	ON_COMMAND(ID_DDS_SET_BUTTON, &SetDDSs)
 	ON_COMMAND(IDC_ZERO_TTLS, &zeroTtls)
 	ON_COMMAND(IDC_ZERO_DACS, &zeroDacs)
 	ON_COMMAND(IDOK, &handleEnter)
@@ -362,32 +363,10 @@ void AuxiliaryWindow::zeroDacs()
 	{
 		dacBoards.resetDacEvents();
 		ttlBoard.resetTtlEvents();
-		dacBoards.prepareForce();
-		ttlBoard.prepareForce();
-		for (int dacInc : range(32))
-		{
-			dacBoards.prepareDacForceChange(dacInc, 0);
-		}
-		dacBoards.organizeDacCommands(0);
-		dacBoards.makeFinalDataFormat(0);
-		dacBoards.stopDacs();
-		dacBoards.configureClocks(0, false);
-		dacBoards.writeDacs(0, false);
-		dacBoards.startDacs();
-		ttlBoard.organizeTtlCommands(0);
-		ttlBoard.convertToFinalFormat(0);
 
+		dacBoards.zeroDACValues();
+		dacBoards.setDACs();
 
-		//DIO FPGA commands//
-		ttlBoard.formatForFPGA(0);
-		ttlBoard.writeTtlData(0, false);
-		ttlBoard.writeTtlDataToFPGA(0, false);
-		ttlBoard.startDioFPGA(0);
-		/////
-
-		ttlBoard.writeTtlData(0, false);
-		ttlBoard.startBoard();
-		ttlBoard.waitTillFinished(0, false);
 		sendStatus("Zero'd DACs.\r\n");
 	}
 	catch (Error& exception)
@@ -619,7 +598,7 @@ void AuxiliaryWindow::handleMasterConfigOpen(std::stringstream& configStream, do
 			}
 
 			ttlBoard.setName(ttlRowInc, ttlNumberInc, name, toolTips, this);
-			ttlBoard.forceTtl(ttlRowInc, ttlNumberInc, status);
+			//ttlBoard.forceTtl(ttlRowInc, ttlNumberInc, status);
 			ttlBoard.updateDefaultTtl(ttlRowInc, ttlNumberInc, status);
 		}
 	}
@@ -776,28 +755,36 @@ void AuxiliaryWindow::SetDacs()
 		dacBoards.resetDacEvents();
 		ttlBoard.resetTtlEvents();
 		sendStatus("Setting Dacs...\r\n");
+
 		dacBoards.handleButtonPress();
-		dacBoards.organizeDacCommands(0);
-		dacBoards.makeFinalDataFormat(0);
-		// start the boards which actually sets the dac values.
-		//dacBoards.stopDacs();
-		//dacBoards.configureClocks(0, false);
-		//sendStatus("Writing New Dac Settings...\r\n");
-		//dacBoards.writeDacs(0, false);
-		//dacBoards.startDacs();
-		//ttlBoard.organizeTtlCommands(0);
-		//ttlBoard.convertToFinalFormat(0);
+		dacBoards.setDACs();
 
-		////DIO FPGA commands//
-		//ttlBoard.formatForFPGA(0);
-		//ttlBoard.writeTtlDataToFPGA(0, false);
-		//ttlBoard.startDioFPGA(0);
-		///////
-
-		//ttlBoard.writeTtlData(0, false);
-		//ttlBoard.startBoard();
-		//ttlBoard.waitTillFinished(0, false);
 		sendStatus("Finished Setting Dacs.\r\n");
+	}
+	catch (Error& exception)
+	{
+		errBox(exception.what());
+		sendStatus(": " + exception.whatStr() + "\r\n");
+		sendErr(exception.what());
+	}
+	mainWindowFriend->updateConfigurationSavedStatus(false);
+}
+
+void AuxiliaryWindow::SetDDSs()
+{
+	// have the dds values change
+	try
+	{
+		mainWindowFriend->updateConfigurationSavedStatus(false);
+		sendStatus("----------------------\r\n");
+		/*dacBoards.resetDacEvents();
+		ttlBoard.resetTtlEvents();*/
+		sendStatus("Setting DDSs...\r\n");
+
+		ddsBoards.handleButtonPress();
+		ddsBoards.setDDSs();
+
+		sendStatus("Finished Setting DDSs.\r\n");
 	}
 	catch (Error& exception)
 	{
@@ -968,23 +955,9 @@ BOOL AuxiliaryWindow::OnInitDialog()
 		statusBox.initialize(controlLocation, id, this, 480, toolTips);
 		ttlBoard.initialize(controlLocation, toolTips, this, id);
 		dacBoards.initialize(controlLocation, toolTips, this, id);
+		ddsBoards.initialize(controlLocation, toolTips, this, id);
 
 		POINT statusLoc = { 960, 0 };
-		/*topBottomTek.initialize(statusLoc, this, id, "Top-Bottom-Tek", "Top", "Bottom", 480,
-		{ TOP_BOTTOM_PROGRAM, TOP_ON_OFF, TOP_FSK, BOTTOM_ON_OFF, BOTTOM_FSK });
-		eoAxialTek.initialize(statusLoc, this, id, "EO / Axial", "EO", "Axial", 480, { EO_AXIAL_PROGRAM,
-			EO_ON_OFF, EO_FSK, AXIAL_ON_OFF, AXIAL_FSK });
-		RhodeSchwarzGenerator.initialize(controlLocation, toolTips, this, id);
-		controlLocation = POINT{ 480, 0 };
-
-		agilents[TopBottom].initialize(480, controlLocation, toolTips, this, id, "Top-Bottom-Agilent", 100,
-			mainWindowFriend->getRgbs()["theme BG1"]);
-		agilents[Axial].initialize(480, controlLocation, toolTips, this, id, "Microwave-Axial-Agilent", 100,
-			mainWindowFriend->getRgbs()["theme BG1"]);
-		agilents[Flashing].initialize(480, controlLocation, toolTips, this, id,
-			"Flashing-Agilent", 100, mainWindowFriend->getRgbs()["theme BG1"]);
-		agilents[Microwave].initialize(480, controlLocation, toolTips, this, id, "Microwave-Agilent", 100,
-			mainWindowFriend->getRgbs()["theme BG1"]);*/
 
 		controlLocation = POINT{ 1440, 0 };
 		globalVariables.initialize(controlLocation, toolTips, this, id, "GLOBAL VARIABLES",

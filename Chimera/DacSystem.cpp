@@ -363,32 +363,41 @@ double DacSystem::getDefaultValue(UINT dacNum)
 void DacSystem::initialize(POINT& pos, cToolTips& toolTips, AuxiliaryWindow* master, int& id)
 {
 	// title
-	dacTitle.sPos = { pos.x, pos.y, pos.x + 480, pos.y += 25 };
+	dacTitle.sPos = { pos.x, pos.y, pos.x + 340, pos.y += 25 };
 	dacTitle.Create("DACS", WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER, dacTitle.sPos, master, id++);
 	dacTitle.fontType = HeadingFont;
 	// 
-	dacSetButton.sPos = { pos.x, pos.y, pos.x + 240, pos.y + 25};
+	dacSetButton.sPos = { pos.x, pos.y, pos.x + 340, pos.y += 25};
 	dacSetButton.Create( "Set New DAC Values", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, 
 						 dacSetButton.sPos, master, ID_DAC_SET_BUTTON );
 	dacSetButton.setToolTip("Press this button to attempt force all DAC values to the values currently recorded in the"
 							 " edits below.", toolTips, master);
 	//
-	zeroDacs.sPos = { pos.x + 240, pos.y, pos.x + 480, pos.y += 25 };
+	zeroDacs.sPos = { pos.x, pos.y, pos.x + 340, pos.y += 25 };
 	zeroDacs.Create( "Zero Dacs", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, zeroDacs.sPos, master, IDC_ZERO_DACS );
 	zeroDacs.setToolTip( "Press this button to set all dac values to zero.", toolTips, master );
 	int collumnInc = 0;
+	pos.y += 15;
+
+	// DAC board labels
+	dac0Title.sPos = { pos.x, pos.y, pos.x + 160, pos.y + 25 };
+	dac0Title.Create("DAC 0", WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER, dac0Title.sPos, master, id++);
+	dac0Title.fontType = HeadingFont;
+	dac1Title.sPos = { pos.x + 180, pos.y, pos.x + 340, pos.y += 25 };
+	dac1Title.Create("DAC 1", WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER, dac1Title.sPos, master, id++);
+	dac1Title.fontType = HeadingFont;
 	
 	// there's a single label first, hence the +1.
 	for (UINT dacInc = 0; dacInc < breakoutBoardEdits.size(); dacInc++)
 	{
-		if (dacInc == breakoutBoardEdits.size() / 3 || dacInc == 2 * breakoutBoardEdits.size() / 3)
+		if (dacInc == breakoutBoardEdits.size() / 2)
 		{
 			collumnInc++;
 			// go to second or third collumn
-			pos.y -= 25 * breakoutBoardEdits.size() / 3;
+			pos.y -= 25 * breakoutBoardEdits.size() / 2;
 		}
 
-		breakoutBoardEdits[dacInc].sPos = { pos.x + 20 + collumnInc * 160, pos.y, pos.x + 160 + collumnInc * 160,
+		breakoutBoardEdits[dacInc].sPos = { pos.x + 20 + collumnInc * 180, pos.y, pos.x + 160 + collumnInc * 180,
 												pos.y += 25 };
 		breakoutBoardEdits[dacInc].colorState = 0;
 		breakoutBoardEdits[dacInc].Create( WS_CHILD | WS_VISIBLE | WS_BORDER, breakoutBoardEdits[dacInc].sPos,
@@ -398,22 +407,25 @@ void DacSystem::initialize(POINT& pos, cToolTips& toolTips, AuxiliaryWindow* mas
 	}
 
 	collumnInc = 0;
-	pos.y -= 25 * breakoutBoardEdits.size() / 3;
+	pos.y -= 25 * breakoutBoardEdits.size() / 2;
 
 	for (UINT dacInc = 0; dacInc < dacLabels.size(); dacInc++)
 	{
-		if (dacInc == dacLabels.size() / 3 || dacInc == 2 * dacLabels.size() / 3)
+		if (dacInc == dacLabels.size() / 2)
 		{
 			collumnInc++;
-			// go to second or third collumn
-			pos.y -= 25 * dacLabels.size() / 3;
+			// go to second column
+			pos.y -= 25 * dacLabels.size() / 2;
 		}
 		// create label
-		dacLabels[dacInc].sPos = { pos.x + collumnInc * 160, pos.y, pos.x + 20 + collumnInc * 160, pos.y += 25 };
-		dacLabels[dacInc].Create(cstr(dacInc), WS_CHILD | WS_VISIBLE | SS_CENTER,
+		dacLabels[dacInc].sPos = { pos.x + collumnInc * 180, pos.y, pos.x + 20 + collumnInc * 180, pos.y += 25 };
+		dacLabels[dacInc].Create(cstr(dacInc - collumnInc*16), WS_CHILD | WS_VISIBLE | SS_CENTER,
 								 dacLabels[dacInc].sPos, master, ID_DAC_FIRST_EDIT + dacInc);
 		dacLabels[dacInc].setToolTip(dacNames[dacInc], toolTips, master);
 	}
+
+	pos.x += 500;
+	pos.y -= 25 * breakoutBoardEdits.size() / 2 + 5*25;
 }
 
 
@@ -458,7 +470,7 @@ void DacSystem::handleButtonPress()
 				valStr = str(vals[dacInc]);
 			}
 			breakoutBoardEdits[dacInc].SetWindowTextA(cstr(valStr));
-			prepareDacForceChange(dacInc, vals[dacInc]);
+			//prepareDacForceChange(dacInc, vals[dacInc]);
 		}
 		catch (std::invalid_argument&)
 		{
@@ -509,7 +521,7 @@ void DacSystem::organizeDacCommands(UINT variation)
 	}
 	dacSnapshots[variation].clear();
 	// first copy the initial settings so that things that weren't changed remain unchanged.
-	dacSnapshots[variation].push_back({ 0, dacValues });
+	dacSnapshots[variation].push_back({ 0, dacValues});
 	for (UINT commandInc = 0; commandInc < timeOrganizer.size(); commandInc++)
 	{
 		// first copy the last set so that things that weren't changed remain unchanged.
@@ -677,6 +689,8 @@ void DacSystem::interpretKey( std::vector<variableType>& variables, std::string&
 				////////////////
 				// deal with value
 				tempEvent.value = dacCommandFormList[eventInc].finalVal.evaluate( variables, variationInc );
+				tempEvent.endValue = tempEvent.value;
+				tempEvent.rampTime = 0;
 				dacCommandList[variationInc].push_back(tempEvent);
 			}
 			else if ( dacCommandFormList[eventInc].commandName == "dacarange:")
@@ -920,7 +934,7 @@ void DacSystem::prepareDacForceChange(int line, double voltage)
 	dacValues[line] = voltage;
 	// I'm not sure it's necessary to go through the procedure of doing this and using the DIO to trigger the dacs for a foce out. I'm guessing it's 
 	// possible to tell the DAC to just immediately change without waiting for a trigger.
-	setForceDacEvent( line, voltage, 0 );
+	//setForceDacEvent( line, voltage, 0 );
 }
 
 
@@ -1052,6 +1066,45 @@ void DacSystem::writeDacs(UINT variation, bool loadSkip)
 	}
 }
 
+void DacSystem::setDACs()
+{
+	int tcp_connect;
+	try
+	{
+		tcp_connect = zynq_tcp.connectTCP(ZYNQ_ADDRESS);
+	}
+	catch (Error& err)
+	{
+		tcp_connect = 1;
+		errBox(err.what());
+	}
+
+	if (tcp_connect == 0)
+	{
+		std::ostringstream stringStream;
+		std::string command;
+		for (int line = 0; line < dacValues.size(); ++line) {
+			stringStream.str("");
+			stringStream << "DAC_" << line << "_" << std::setprecision(3) << dacValues[line];
+			command = stringStream.str();
+			zynq_tcp.writeCommand(command);
+		}
+		zynq_tcp.disconnect();
+	}
+	else
+	{
+		errBox("connection to zynq failed. can't trigger the sequence or new settings\n");
+	}
+}
+
+void DacSystem::zeroDACValues()
+{
+	for (int line = 0; line < dacValues.size(); ++line)
+	{
+		dacValues[line] = 0;
+		breakoutBoardEdits[line].SetWindowText("0");
+	}
+}
 
 void DacSystem::startDacs()
 {
@@ -1111,14 +1164,16 @@ void DacSystem::formatDacForFPGA(UINT variation)
 
 		if (i == 0) {
 			for (int j = 0; j < 32; ++j) {
-				if (snapshot.dacValues[j] != dacValues[j]) {
+				if (snapshot.dacValues[j] != dacValues[j] || (snapshot.dacValues[j] == dacValues[j] && snapshot.dacRampTimes[j] != 0)) {
 					channels.push_back(j);
 				}
 			}
 		} else {
 			snapshotPrev = dacSnapshots[variation][i - 1];
 			for (int j = 0; j < 32; ++j) {
-				if (snapshot.dacValues[j] != snapshotPrev.dacValues[j]) {
+				if (snapshot.dacValues[j] != snapshotPrev.dacValues[j] || 
+					snapshot.dacValues[j] != snapshotPrev.dacEndValues[j] ||
+					(snapshot.dacValues[j] == snapshotPrev.dacValues[j] && snapshot.dacRampTimes[j] != 0 && snapshotPrev.dacRampTimes[j] == 0)) {
 					channels.push_back(j);
 				}
 			}

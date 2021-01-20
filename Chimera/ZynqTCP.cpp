@@ -4,7 +4,7 @@
 ZynqTCP::ZynqTCP()
 {
 	if (!ZNYQ_SAFEMODE) {
-		//connectTCP(ip_address);
+		ConnectSocket = INVALID_SOCKET;
 	}
 
 }

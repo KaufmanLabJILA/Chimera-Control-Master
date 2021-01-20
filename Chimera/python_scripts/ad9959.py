@@ -14,18 +14,18 @@ class AD9959:
       self.fifo = AXIS_FIFO(device)
 
     #Function Register 1 (FR1)
-    self.fifo.write_axis_fifo("\x00\x81\x00\xD0")
-    self.fifo.write_axis_fifo("\x00\xC1\x00\x00")
+    # self.fifo.write_axis_fifo("\x00\x81\x00\xD0")
+    # self.fifo.write_axis_fifo("\x00\xC1\x00\x00")
 
     # initialize PLL multipliers to 20 (500 MHz clock), set VCO gain high 
-    with open(fifo_devices['AD9959_0'], "r+b") as character:
-      writeToDDS(character,1,0xD0000000)
+    # with open(fifo_devices['AD9959_0'], "r+b") as character:
+    #   writeToDDS(character,1,0xD0000000)
 
-    with open(fifo_devices['AD9959_1'], "r+b") as character:
-      writeToDDS(character,1,0xD0000000)
+    # with open(fifo_devices['AD9959_1'], "r+b") as character:
+    #   writeToDDS(character,1,0xD0000000)
 
-    with open(fifo_devices['AD9959_2'], "r+b") as character:
-      writeToDDS(character,1,0xD0000000)
+    # with open(fifo_devices['AD9959_2'], "r+b") as character:
+    #   writeToDDS(character,1,0xD0000000)
 
 
 def writeToDDS(dds_char_dev, address, data):
@@ -45,3 +45,9 @@ def writeToDDS(dds_char_dev, address, data):
 
   for word in words:
     dds_char_dev.write(word)
+
+def set_DDS(self, channel, amp, freq):
+  assert channel>=0 and channel<=3, 'Invalid channel for AD9959 in set_DDS'
+  with open("/dev/axis_fifo_0x0000000080005000", "r+b") as character:
+    # ~ writeWords(character)
+    writeToDDS(character,4,0x271DE698)

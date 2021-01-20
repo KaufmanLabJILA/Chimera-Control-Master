@@ -2,6 +2,7 @@ import socket
 import errno
 import sys
 import binascii
+import time
 
 import sequencer
 from axis_fifo import AXIS_FIFO
@@ -49,12 +50,12 @@ class zynq_tcp_server:
 			    while True:
 			        data = connection.recv(64)
 			        print 'received "%s"' % data
-			        print(len(data))
+			        # print(len(data))
 			        if data:
 			            self.writeDevice(connection, data)
 			            # connection.sendall(data)
 			        else:
-			            print 'no more data from', client_address
+			            # print 'no more data from', client_address
 			            break
 		    except socket.error as error:
 		    	print error
@@ -72,16 +73,26 @@ class zynq_tcp_server:
 			self.seq.mod_enable()
 		elif (dev == 'DACseq'):
 			self.writeDACseq(conn, data_split)
+			self.seq.mod_enable()
 		elif (dev == 'DDSseq'):
 			self.writeDDSseq(conn, data_split)
+			self.seq.mod_enable()
 		elif (dev == 'initExp'):
 			self.seq.initExp()
+		elif (dev == 'disableSeq'):
+			self.seq.reset_disable_mod()
+		elif (dev == 'disableMod'):
+			self.seq.mod_disable()
 		elif (dev == 'DAC'):
-			self.seq.setDAC(data_split[1], data_split[2])
+			self.seq.set_DAC(int(data_split[1]), float(data_split[2]))
+		elif (dev == 'DDS'):
+			self.seq.set_DDS(int(data_split[1]), float(data_split[2]), float(data_split[3]))
+		elif (dev == 'trigger'):
+			self.seq.soft_trigger()
 		else:
 			print 'no device selected'
 
-		self.seq.mod_enable()
+		
 
 	def writeDIOseq(self, conn, data_split):
 		num_snapshots = int(data_split[1])

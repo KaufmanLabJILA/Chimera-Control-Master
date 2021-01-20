@@ -1,5 +1,6 @@
 from axis_fifo import AXIS_FIFO
 import struct
+import sys
 
 class DAC81416:
   """Class to control DAC81416 in project KA012.
@@ -39,7 +40,7 @@ class DAC81416:
     self.fifo.write_axis_fifo("\x00\x09\x00\x00")
     
     for channel in range(16):
-		self.set_DAC(channel, 256*128)
+	   self.set_DAC(channel, 256*128)
 
   def set_DAC(self, channel, value):
     assert channel>=0 and channel<=15, 'Invalid channel for DAC81416 in set_DAC'
@@ -49,6 +50,8 @@ class DAC81416:
 
 if __name__ == "__main__":
     from devices import fifo_devices
+    print 'setting dac0 0'
     dac = DAC81416(fifo_devices['DAC81416_0'])
     # print "0"
-    dac.set_DAC(0, 128*256)
+    valInt = int((float(sys.argv[1])+10)*256*256/20)
+    dac.set_DAC(0, valInt)
