@@ -5,6 +5,7 @@
 #include "DioSystem.h" 
 #include "DacSystem.h" 
 #include "AuxiliaryWindow.h" 
+//#include "makoCamera.h"
 //#include "NiawgWaiter.h" 
 #include "Expression.h" 
 
@@ -54,6 +55,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 	bool foundRearrangement = false;
 
 	ZynqTCP zynq_tcp;
+	//makoCamera mot3Dcamera(1);
 	
 	/// //////////////////////////// 
 	/// start analysis & experiment 
@@ -74,6 +76,8 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 		input->dacs->resetDacEvents();
 		input->ttls->resetTtlEvents();
 		input->ddss->resetDDSEvents();
+
+
 
 		//initialize devices
 		input->thisObj->sendZynqCommand(zynq_tcp, "initExp");
