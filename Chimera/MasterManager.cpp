@@ -280,8 +280,10 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 					//input->dacs->writeDacs(variationInc, skipOption); 
 					input->dacs->startDacs();
 					input->ttls->startDioFPGA(variationInc);
+					input->thisObj->sendZynqCommand(zynq_tcp, "trigger");
 					input->ttls->waitTillFinished(variationInc, skipOption);
 					input->dacs->stopDacs();
+
 				}
 			}
 			//input->ttls->disconnectDioFPGA(variationInc); 

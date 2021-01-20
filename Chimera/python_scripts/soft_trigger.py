@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 from axi_gpio import AXI_GPIO
 from devices import gpio_devices
 import struct

@@ -1,13 +1,13 @@
 Version 2.0
-dio1.0
+scopetrigger
 0
-dio1.1
+mot3dcamera
 0
-dio1.2
+pushbeam
 0
-dio1.3
+blue3dmot
 0
-dio1.4
+green3dmot
 0
 dio1.5
 0
@@ -127,22 +127,22 @@ dio8.6
 0
 dio8.7
 0
-x1coil
--10 - 10
+motcoil
+0 - 2.55
 0
-x2coil
+x1coil
 -10 - 10
 0
 y1coil
 -10 - 10
 0
-y2coil
--10 - 10
-0
 z1coil
 -10 - 10
 0
-z2coil
+na1
+-10 - 10
+0
+na2
 -10 - 10
 0
 motcoils
@@ -178,13 +178,13 @@ blue3dpow
 lspower
 -10 - 10
 0
-freq795
+x2coil
 -10 - 10
 0
-power795
+y2coil
 -10 - 10
 0
-dac19
+z2coil
 -10 - 10
 0
 motfreq

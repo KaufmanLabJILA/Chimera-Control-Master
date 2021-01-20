@@ -1172,6 +1172,7 @@ void DacSystem::formatDacForFPGA(UINT variation)
 			snapshotPrev = dacSnapshots[variation][i - 1];
 			for (int j = 0; j < 32; ++j) {
 				if (snapshot.dacValues[j] != snapshotPrev.dacValues[j] || 
+					snapshot.dacValues[j] != snapshotPrev.dacEndValues[j] ||
 					(snapshot.dacValues[j] == snapshotPrev.dacValues[j] && snapshot.dacRampTimes[j] != 0 && snapshotPrev.dacRampTimes[j] == 0)) {
 					channels.push_back(j);
 				}

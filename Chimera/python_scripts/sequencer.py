@@ -340,7 +340,7 @@ class sequencer:
 				self.fifo_dio_seq.write_axis_fifo(word[0], MSB_first=False)
 
 	def dio_read_point(self, snapshot):
-		print snapshot
+		# print snapshot
 		snapshot_split = snapshot.split('_')
 		t = int(snapshot_split[0].strip('t'), 16)
 		out = snapshot_split[1].strip('b').strip('\0')

@@ -31,4 +31,4 @@ if __name__ == "__main__":
 
   with open("/dev/axis_fifo_0x0000000080005000", "r+b") as character:
     # ~ writeWords(character)
-    writeToDDS(character,6,0x20080000) #
+    writeToDDS(character,6,0x00001440) # 
