@@ -5,7 +5,7 @@
 #include "DioSystem.h" 
 #include "DacSystem.h" 
 #include "AuxiliaryWindow.h" 
-//#include "makoCamera.h"
+#include "makoCamera.h"
 //#include "NiawgWaiter.h" 
 #include "Expression.h" 
 
@@ -55,7 +55,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 	bool foundRearrangement = false;
 
 	ZynqTCP zynq_tcp;
-	//makoCamera mot3Dcamera(1);
+	makoCamera mot3Dcamera(1);
 	
 	/// //////////////////////////// 
 	/// start analysis & experiment 

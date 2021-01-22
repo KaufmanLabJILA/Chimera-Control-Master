@@ -25,6 +25,7 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =============================================================================*/
+#include "stdafx.h"
 
 #include <string>
 #include <cstring>

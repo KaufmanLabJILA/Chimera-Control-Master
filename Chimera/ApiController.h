@@ -31,7 +31,6 @@
 #define AVT_VMBAPI_EXAMPLES_APICONTROLLER
 
 #include <string>
-
 #include "VimbaCPP/Include/VimbaCPP.h"
 
 namespace AVT {

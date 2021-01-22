@@ -199,13 +199,13 @@
     <ClCompile Include="DDSSystem.cpp">
       <Filter>Auxiliary Window</Filter>
     </ClCompile>
-    <ClCompile Include="Bitmap.cpp">
-      <Filter>Vimba</Filter>
-    </ClCompile>
     <ClCompile Include="ApiController.cpp">
       <Filter>Vimba</Filter>
     </ClCompile>
-    <ClCompile Include="program.cpp">
+    <ClCompile Include="Bitmap.cpp">
+      <Filter>Vimba</Filter>
+    </ClCompile>
+    <ClCompile Include="makoCamera.cpp">
       <Filter>Vimba</Filter>
     </ClCompile>
   </ItemGroup>
@@ -479,6 +479,9 @@
     <ClInclude Include="Bitmap.h">
       <Filter>Vimba</Filter>
     </ClInclude>
+    <ClInclude Include="makoCamera.h">
+      <Filter>Vimba</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Icon2.ico">
@@ -565,6 +568,9 @@
     <None Include="ftd2xx64.dll" />
     <None Include="ftlang.dll" />
     <None Include="ftserui2.dll" />
+    <None Include="VimbaCPP.dll">
+      <Filter>Vimba</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Library Include="ftd2xx.lib" />
