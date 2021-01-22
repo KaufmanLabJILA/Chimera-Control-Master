@@ -407,7 +407,6 @@
     <None Include="ftd2xx64.dll" />
     <None Include="ftlang.dll" />
     <None Include="ftserui2.dll" />
-    <None Include="VimbaCPP.dll" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="ftd2xx.lib" />

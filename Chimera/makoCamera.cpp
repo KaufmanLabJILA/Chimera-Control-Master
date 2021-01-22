@@ -4,19 +4,20 @@
 
 makoCamera::makoCamera(int cameraIndex)
 {
+
 	err = apiController.StartUp();
 	if (VmbErrorSuccess != err)
 	{
 		std::string strError = apiController.ErrorCodeToMessage(err);
-		thrower("An error occurred: " + strError + "\n");
+		thrower("An error occurred: " + strError);
 	}
 
 	AVT::VmbAPI::CameraPtrVector cameras = apiController.GetCameraList();
-	if (cameras.size() <= cameraIndex + 1)
+	if (cameras.size() < cameraIndex + 1)
 	{
 		err = VmbErrorNotFound;
 		std::string strError = apiController.ErrorCodeToMessage(err);
-		thrower("An error occurred: " + strError + "\n");
+		thrower("An error occurred. Number cameras found = " + std::to_string(cameras.size()));
 	}
 	else
 	{
@@ -27,6 +28,10 @@ makoCamera::makoCamera(int cameraIndex)
 makoCamera::~makoCamera()
 {
 	apiController.ShutDown();
+}
+
+std::string makoCamera::getCameraStr() {
+	return strCameraID;
 }
 
 VmbErrorType makoCamera::saveFrame(const char * fileName) {

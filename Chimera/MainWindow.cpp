@@ -6,6 +6,7 @@
 #include "AuxiliaryWindow.h"
 #include <future>
 #include "resource.h"
+#include "makoCamera.h"
 //#include "TestWin.cpp"
 
 MainWindow::MainWindow(UINT id, CDialog* splash) : CDialog(id), profile(PROFILES_PATH), 
@@ -388,6 +389,7 @@ BOOL MainWindow::OnInitDialog( )
 	{
 		setShortStatus("Connection to Zynq server failed.\n");
 	}
+
 	updateConfigurationSavedStatus( true );
 	return TRUE;
 }

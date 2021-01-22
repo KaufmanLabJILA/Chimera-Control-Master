@@ -55,12 +55,21 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 	bool foundRearrangement = false;
 
 	ZynqTCP zynq_tcp;
-	makoCamera mot3Dcamera(1);
 	
 	/// //////////////////////////// 
 	/// start analysis & experiment 
 	try
 	{
+		makoCamera mot3Dcamera(1);
+		std::string cameraStr = mot3Dcamera.getCameraStr();
+		expUpdate("camera = " + cameraStr, input->comm, input->quiet);
+		
+		std::string imagePath = DATABASE_LOCATION + "test.bmp";
+		const char * pSaveName = imagePath.c_str();
+
+		mot3Dcamera.saveFrame(pSaveName);
+
+
 		UINT variations = determineVariationNumber(input->variables);
 		// finishing sentence from before start I think... 
 		expUpdate("Done.\r\n", input->comm, input->quiet);

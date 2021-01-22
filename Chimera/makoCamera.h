@@ -13,11 +13,13 @@ public:
 	makoCamera(int cameraIndex);
 	~makoCamera();
 	VmbErrorType saveFrame(const char * fileName);
-
-private:
-	std::string strCameraID;
+	std::string getCameraStr();
 	AVT::VmbAPI::Examples::ApiController apiController;
 	VmbErrorType err;
+	std::string strCameraID;
+
+private:
+	
 };
 
 
