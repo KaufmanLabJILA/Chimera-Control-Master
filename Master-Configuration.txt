@@ -7,9 +7,9 @@ pushbeam
 0
 blue3dmot
 0
-green3dmot
+greenbroad
 0
-dio1.5
+greennarrow
 0
 dio1.6
 0

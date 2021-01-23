@@ -9,9 +9,15 @@ from ad9959 import AD9959
 import struct
 import math
 
-from test_sequencer import GPIO_seq_point
-from test_sequencer import write_point as TS_write_point
 from dds_lock_pll import writeToDDS
+from getSeqGPIOWords import getSeqGPIOWords
+
+class GPIO_seq_point:
+  def __init__(self, address, time, outputA, outputB):
+    self.address = address
+    self.time = time
+    self.outputA = outputA
+    self.outputB = outputB
 
 class DDS_atw_seq_point:
   def __init__(self, address, time, start, steps, incr, chan):
@@ -89,9 +95,9 @@ class DDS_ramp_tester:
   def dds_seq_write_atw_points(self):
     points=[]
     #these ramps should complete in just under 64 ms
-    points.append(DDS_atw_seq_point(address=0,time=   0,start=500,steps=0,incr=0,chan=3)) #25% to 75%
+    points.append(DDS_atw_seq_point(address=0,time=10000,start=1023,steps=0,incr=0,chan=1)) #25% to 75%
 #    points.append(DDS_atw_seq_point(address=1,time=1000,start=256,steps=1,incr=0,chan=3)) #25% to 75%
-    points.append(DDS_atw_seq_point(address=1,time=   0,start=0,steps=    0,incr=   0,chan=0))
+    points.append(DDS_atw_seq_point(address=1,time=0,start=0,steps=    0,incr=   0,chan=0))
 
     for point in points:
       self.write_atw_point(point)
@@ -99,30 +105,41 @@ class DDS_ramp_tester:
   def dds_seq_write_ftw_points(self):
     points=[]
     #these ramps should complete in just under 64 ms
-    points.append(DDS_ftw_seq_point(address=0,time=0,start=5000000,steps=0,incr=0,chan=3))
-    # points.append(DDS_ftw_seq_point(address=0,time=   0, start=80000,steps=1,incr=3000,chan=0)) 
+    points.append(DDS_ftw_seq_point(address=0,time=0,start=5000000,steps=0,incr=0,chan=1))
+    points.append(DDS_ftw_seq_point(address=1,time=   20000, start=4000000,steps=0,incr=0,chan=2)) 
     # points.append(DDS_ftw_seq_point(address=1,time=1,start=1000000,steps=1,incr=0,chan=3)) 
-    points.append(DDS_ftw_seq_point(address=1,time=   0,start=     0,steps=    0,incr=    0,chan=0))
+    points.append(DDS_ftw_seq_point(address=2,time=   0,start=     0,steps=    0,incr=    0,chan=0))
 
     for point in points:
       self.write_ftw_point(point)
 
 
-  def main_seq_write_points(self):
-    points=[]
-    points.append(GPIO_seq_point(address=0,time=0,output=0xFFFFFFFF))
-    points.append(GPIO_seq_point(address=1,time=1000,output=0x00000000))
-    points.append(GPIO_seq_point(address=2,time=20000,output=0xFFFFFFFF))
-    points.append(GPIO_seq_point(address=3,time=6000000,output=0x00000000))
-    points.append(GPIO_seq_point(address=4,time=0,output=0x00000000))
+  def dio_seq_write_points(self):
+      points=[]
+      points.append(GPIO_seq_point(address=0,time=1,outputA=0x00000001,outputB=0x00000001))
+      points.append(GPIO_seq_point(address=1,time=20000,outputA=0x00000000,outputB=0x00000000))
+      points.append(GPIO_seq_point(address=2,time=40000,outputA=0x00000001,outputB=0x00000001))
+      points.append(GPIO_seq_point(address=3,time=6400000,outputA=0x00000000,outputB=0x00000000))
+      points.append(GPIO_seq_point(address=4,time=0,outputA=0x00000000,outputB=0x00000000))
 
-    for point in points:
-      TS_write_point(self.fifo_main_seq, point)
+      for point in points:
+        print "add: ", point.address
+        print "time: ", point.time
+        print "outputA: ", point.outputA
+        print "outputB: ", point.outputB
+
+      # with open("/dev/axis_fifo_0x0000000080004000", "r+b") as character:
+      for point in points:
+          # writeToSeqGPIO(character, point)
+        seqWords = getSeqGPIOWords(point)
+        for word in  seqWords:
+          # print word
+          self.fifo_main_seq.write_axis_fifo(word[0], MSB_first=False)
 
 def program(tester):
   tester.dds_seq_write_atw_points()
-  # tester.dds_seq_write_ftw_points()
-  tester.main_seq_write_points()
+  tester.dds_seq_write_ftw_points()
+  tester.dio_seq_write_points()
 
   # ~ print('Next, we need to enable modulation')
   # ~ print('  tester.mod_enable()')

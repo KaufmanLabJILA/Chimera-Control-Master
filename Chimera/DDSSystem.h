@@ -92,6 +92,7 @@ class DDSSystem
 		std::vector<std::vector<DDSCommand>> ddsCommandList;
 		std::vector<std::vector<DDSSnapshot>> ddsSnapshots;
 		std::vector<std::vector<DDSChannelSnapshot>> ddsChannelSnapshots;
+		std::vector<std::pair<double, std::vector<DDSCommand>>> timeOrganizer;
 
 		//Zynq tcp connection
 		ZynqTCP zynq_tcp;

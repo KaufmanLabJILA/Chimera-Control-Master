@@ -360,7 +360,8 @@ void DDSSystem::organizeDDSCommands(UINT variation)
 	// each element of this is a different time (the double), and associated with each time is a vector which locates 
 	// which commands were at this time, for
 	// ease of retrieving all of the values in a moment.
-	std::vector<std::pair<double, std::vector<DDSCommand>>> timeOrganizer;
+	timeOrganizer.clear();
+
 	std::vector<DDSCommand> tempEvents(ddsCommandList[variation]);
 	// sort the events by time. using a lambda here.
 	std::sort( tempEvents.begin(), tempEvents.end(), 
@@ -389,7 +390,7 @@ void DDSSystem::organizeDDSCommands(UINT variation)
 	}
 	ddsSnapshots[variation].clear();
 	// first copy the initial settings so that things that weren't changed remain unchanged.
-	ddsSnapshots[variation].push_back({ 0, ddsValues });
+	ddsSnapshots[variation].push_back({ 0, ddsValues, ddsValues, 0 });
 	for (UINT commandInc = 0; commandInc < timeOrganizer.size(); commandInc++)
 	{
 		// first copy the last set so that things that weren't changed remain unchanged.
@@ -534,6 +535,8 @@ void DDSSystem::interpretKey( std::vector<variableType>& variables, std::string&
 				////////////////
 				// deal with amp
 				tempEvent.amp = ddsCommandFormList[eventInc].initVal.evaluate( variables, variationInc );
+				tempEvent.endAmp = tempEvent.amp;
+				tempEvent.rampTime = 0;
 				tempEvent.freq = 0;
 				ddsCommandList[variationInc].push_back(tempEvent);
 			}
@@ -543,6 +546,8 @@ void DDSSystem::interpretKey( std::vector<variableType>& variables, std::string&
 				////////////////
 				// deal with amp
 				tempEvent.freq = ddsCommandFormList[eventInc].initVal.evaluate(variables, variationInc);
+				tempEvent.endFreq = tempEvent.freq;
+				tempEvent.rampTime = 0;
 				tempEvent.amp = 0;
 				ddsCommandList[variationInc].push_back(tempEvent);
 			}
@@ -894,48 +899,27 @@ void DDSSystem::writeDDSs(UINT variation, bool loadSkip)
 
 void DDSSystem::makeFinalDataFormat(UINT variation)
 {
-	for (int i = 0; i < ddsSnapshots[variation].size(); ++i)
-	{
-		DDSSnapshot snapshotPrev;
-		DDSSnapshot snapshot;
-		DDSChannelSnapshot channelSnapshot;
-		std::vector<int> channels;
+	DDSChannelSnapshot channelSnapshot;
 
-		snapshot = ddsSnapshots[variation][i];
-
-		if (i == 0) {
-			for (int j = 0; j < 12; ++j) {
-				if (snapshot.ddsValues[j] != ddsValues[j]) {
-					channels.push_back(j);
-				}
-			}
-		}
-		else {
-			snapshotPrev = ddsSnapshots[variation][i - 1];
-			for (int j = 0; j < 12; ++j) {
-				if (snapshot.ddsValues[j] != snapshotPrev.ddsValues[j]) {
-					channels.push_back(j);
-				}
-			}
-		}
-
-		//for each channel with a changed amp or freq add a ddsSnapshot to the final list
-		for (int channel : channels) {
-			if (snapshot.ddsValues[channel][0] == 0) {
+	//for each channel with a changed amp or freq add a ddsSnapshot to the final list
+	for (UINT commandInc = 0; commandInc < timeOrganizer.size(); commandInc++) {
+		for (UINT zeroInc = 0; zeroInc < timeOrganizer[commandInc].second.size(); zeroInc++)
+		{
+			if (timeOrganizer[commandInc].second[zeroInc].freq == 0) {
 				channelSnapshot.ampOrFreq = 'a'; // amp change
-				channelSnapshot.val = snapshot.ddsValues[channel][1];
-				channelSnapshot.endVal = snapshot.ddsEndValues[channel][1];
+				channelSnapshot.val = timeOrganizer[commandInc].second[zeroInc].amp;
+				channelSnapshot.endVal = timeOrganizer[commandInc].second[zeroInc].endAmp;
 			}
 			else
 			{
 				channelSnapshot.ampOrFreq = 'f'; //freq change
-				channelSnapshot.val = snapshot.ddsValues[channel][0];
-				channelSnapshot.endVal = snapshot.ddsEndValues[channel][0];
+				channelSnapshot.val = timeOrganizer[commandInc].second[zeroInc].freq;
+				channelSnapshot.endVal = timeOrganizer[commandInc].second[zeroInc].endFreq;
 			}
-			channelSnapshot.time = snapshot.time;
-			channelSnapshot.channel = channel;
-			
-			channelSnapshot.rampTime = snapshot.ddsRampTimes[channel];
+			channelSnapshot.time = timeOrganizer[commandInc].first;
+			channelSnapshot.channel = timeOrganizer[commandInc].second[zeroInc].line;
+
+			channelSnapshot.rampTime = timeOrganizer[commandInc].second[zeroInc].rampTime;
 			ddsChannelSnapshots[variation].push_back(channelSnapshot);
 		}
 	}

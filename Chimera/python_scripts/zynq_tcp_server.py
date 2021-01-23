@@ -21,7 +21,7 @@ class zynq_tcp_server:
 		self.seq = sequencer.sequencer()
 		self.dioByteLen = 28
 		self.dacByteLen = 42
-		self.ddsByteLen = 47
+		self.ddsByteLen = 46
 
 		self.chimeraInterface()
 
