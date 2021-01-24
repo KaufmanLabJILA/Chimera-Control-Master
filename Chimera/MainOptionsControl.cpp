@@ -14,14 +14,24 @@ void MainOptionsControl::initialize( int& id, POINT& loc, CWnd* parent, cToolTip
 	randomizeVariationsButton.sPos = { loc.x, loc.y, loc.x + 480 , loc.y += 25 };
 	randomizeVariationsButton.Create( "Randomize Variations?", NORM_CHECK_OPTIONS, randomizeVariationsButton.sPos, 
 									  parent, id++ );
-	atomThresholdForSkipText.sPos = { loc.x, loc.y, loc.x + 240 , loc.y + 25 };
+	saveMakoButton.sPos = { loc.x, loc.y, loc.x + 480 , loc.y += 25 };
+	saveMakoButton.Create("Save Mako images?", NORM_CHECK_OPTIONS, saveMakoButton.sPos,
+		parent, id++);
+	makoImageText.sPos = { loc.x, loc.y, loc.x + 240 , loc.y + 25 };
+	makoImageText.Create("Mako image filename:", NORM_STATIC_OPTIONS, makoImageText.sPos,
+		parent, id++);
+	makoImageEdit.sPos = { loc.x + 240, loc.y, loc.x + 480 , loc.y += 25 };
+	makoImageEdit.Create(NORM_EDIT_OPTIONS, makoImageEdit.sPos, parent, id++);
+	atomThresholdForSkipText.sPos = { loc.x, loc.y += 5, loc.x + 240 , loc.y + 25 };
 	atomThresholdForSkipText.Create("Atom Threshold for skip:", NORM_STATIC_OPTIONS, atomThresholdForSkipText.sPos,
 									 parent, id++ );
 	atomThresholdForSkipEdit.sPos = { loc.x + 240, loc.y, loc.x + 480 , loc.y += 25 };
 	atomThresholdForSkipEdit.Create( NORM_EDIT_OPTIONS, atomThresholdForSkipEdit.sPos, parent, id++ );
+	loc.y += 10;
 
 	currentOptions.randomizeReps = false;
-	currentOptions.randomizeVariations = true;
+	currentOptions.randomizeVariations = false;
+	currentOptions.saveMakoImages = false;
 }
 
 void MainOptionsControl::rearrange( int width, int height, fontMap fonts )

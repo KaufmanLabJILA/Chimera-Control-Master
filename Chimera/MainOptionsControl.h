@@ -9,6 +9,8 @@ struct mainOptions
 	bool dontActuallyGenerate;
 	bool randomizeVariations;
 	bool randomizeReps;
+	bool saveMakoImages;
+	std::string makoImageName = "image";
 	UINT atomThresholdForSkip=UINT_MAX;
 };
 
@@ -26,6 +28,9 @@ class MainOptionsControl
 		Control<CStatic> header;
 		Control<CButton> randomizeVariationsButton;
 		Control<CButton> randomizeRepsButton;
+		Control<CButton> saveMakoButton;
+		Control<CStatic> makoImageText;
+		Control<CEdit> makoImageEdit;
 		Control<CStatic> atomThresholdForSkipText;
 		Control<CEdit> atomThresholdForSkipEdit;
 		mainOptions currentOptions;

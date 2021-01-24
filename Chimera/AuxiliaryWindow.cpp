@@ -655,17 +655,11 @@ void AuxiliaryWindow::handleMasterConfigOpen(std::stringstream& configStream, do
 	{
 		std::string name;
 		std::string defaultFreqString;
-		std::string defaultAmpString;
 		double defaultFreq;
-		double defaultAmp;
 		std::string minFreqString;
 		std::string maxFreqString;
-		std::string minAmpString;
-		std::string maxAmpString;
 		double minFreq;
 		double maxFreq;
-		double minAmp;
-		double maxAmp;
 		configStream >> name;
 		configStream >> minFreqString;
 		std::string trash;
@@ -675,36 +669,19 @@ void AuxiliaryWindow::handleMasterConfigOpen(std::stringstream& configStream, do
 			thrower("ERROR: Expected \"-\" in config file between min and max freq values!");
 		}
 		configStream >> maxFreqString;
-		configStream >> minAmpString;
-		configStream >> trash;
-		if (trash != "-")
-		{
-			thrower("ERROR: Expected \"-\" in config file between min and max amp values!");
-		}
-		configStream >> maxAmpString;
 		configStream >> defaultFreqString;
-		configStream >> trash;
-		if (trash != ",")
-		{
-			thrower("ERROR: Expected \",\" in config file between default freq and amp values!");
-		}
-		configStream >> defaultAmpString;
 		try
 		{
 			defaultFreq = std::stod(defaultFreqString);
-			defaultAmp = std::stod(defaultAmpString);
 			minFreq = std::stod(minFreqString);
 			maxFreq = std::stod(maxFreqString);
-			minAmp = std::stod(minAmpString);
-			maxAmp = std::stod(maxAmpString);
 		}
 		catch (std::invalid_argument&)
 		{
-			thrower("ERROR: Failed to load one of the default DAC values!");
+			thrower("ERROR: Failed to load one of the default DDS values!");
 		}
 		ddsBoards.setName(ddsInc, name, toolTips, this);
 		ddsBoards.setFreqMinMax(ddsInc, minFreq, maxFreq);
-		ddsBoards.setAmpMinMax(ddsInc, minAmp, maxAmp);
 		//ddsBoards.prepareDDSForceChange(ddsInc, defaultFreq);
 		ddsBoards.setDefaultValue(ddsInc, defaultFreq);
 	}
