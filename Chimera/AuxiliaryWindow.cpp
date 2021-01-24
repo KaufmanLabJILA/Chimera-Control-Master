@@ -542,7 +542,6 @@ void AuxiliaryWindow::handleMasterConfigSave(std::stringstream& configStream)
 	{
 		std::string name = ddsBoards.getName(ddsInc);
 		std::pair<double, double> minMaxFreq = ddsBoards.getDDSFreqRange(ddsInc);
-		std::pair<double, double> minMaxAmp = ddsBoards.getDDSAmpRange(ddsInc);
 		if (name == "")
 		{
 			// then the name hasn't been set, so create the default name
@@ -550,7 +549,6 @@ void AuxiliaryWindow::handleMasterConfigSave(std::stringstream& configStream)
 		}
 		configStream << name << "\n";
 		configStream << minMaxFreq.first << " - " << minMaxFreq.second << "\n";
-		configStream << minMaxAmp.first << " - " << minMaxAmp.second << "\n";
 		double defaultVals = ddsBoards.getDefaultValue(ddsInc);
 		configStream << defaultVals << "\n";
 	}

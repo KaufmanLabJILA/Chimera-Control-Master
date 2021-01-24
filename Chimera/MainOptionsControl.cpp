@@ -41,6 +41,9 @@ void MainOptionsControl::rearrange( int width, int height, fontMap fonts )
 	randomizeVariationsButton.rearrange( width, height, fonts );
 	atomThresholdForSkipText.rearrange( width, height, fonts );
 	atomThresholdForSkipEdit.rearrange( width, height, fonts );
+	makoImageText.rearrange(width, height, fonts);
+	makoImageEdit.rearrange(width, height, fonts);
+	saveMakoButton.rearrange(width, height, fonts);
 }
 
 
@@ -115,6 +118,7 @@ mainOptions MainOptionsControl::getOptions()
 {
 	currentOptions.randomizeReps = randomizeRepsButton.GetCheck();
 	currentOptions.randomizeVariations = randomizeVariationsButton.GetCheck();
+	currentOptions.saveMakoImages = saveMakoButton.GetCheck();
 	CString txt;
 	atomThresholdForSkipEdit.GetWindowTextA( txt );
 	try
@@ -124,6 +128,16 @@ mainOptions MainOptionsControl::getOptions()
 	catch ( std::invalid_argument& )
 	{
 		thrower( "ERROR: failed to convert atom threshold for skip to an unsigned long!" );
+	}
+	CString makotxt;
+	makoImageEdit.GetWindowTextA(makotxt);
+	try
+	{
+		currentOptions.makoImageName = makotxt;
+	}
+	catch (std::invalid_argument&)
+	{
+		thrower("ERROR: failed to get valid mako image save filename");
 	}
 	return currentOptions;
 }

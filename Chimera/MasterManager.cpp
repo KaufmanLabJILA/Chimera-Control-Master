@@ -60,15 +60,16 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 	/// start analysis & experiment 
 	try
 	{
-		makoCamera mot3Dcamera(1);
-		std::string cameraStr = mot3Dcamera.getCameraStr();
-		expUpdate("camera = " + cameraStr, input->comm, input->quiet);
-		
-		std::string imagePath = DATABASE_LOCATION + "test.bmp";
-		const char * pSaveName = imagePath.c_str();
+		if (input->settings.saveMakoImages == true) {
+			makoCamera mot3Dcamera(1);
+			std::string cameraStr = mot3Dcamera.getCameraStr();
+			expUpdate("camera = " + cameraStr, input->comm, input->quiet);
 
-		mot3Dcamera.saveFrame(pSaveName);
+			std::string imagePath = DATABASE_LOCATION + input->settings.makoImageName + ".bmp";
+			const char * pSaveName = imagePath.c_str();
 
+			mot3Dcamera.saveFrame(pSaveName);
+		}
 
 		UINT variations = determineVariationNumber(input->variables);
 		// finishing sentence from before start I think... 
@@ -157,16 +158,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 				input->ttls->checkNotTooManyTimes(variationInc);
 				input->ttls->checkFinalFormatTimes(variationInc);
 				input->dacs->checkTimingsWork(variationInc);
-				/*if ( input->runNiawg )
-				{
-					if ( input->ttls->countTriggers( input->niawg->getTrigLines( ).first,
-													 input->niawg->getTrigLines( ).second, variationInc ) !=
-						 input->niawg->getNumberTrigsInScript( ) )
-					{
-						warnings += "WARNING: NIAWG is not getting triggered by the ttl system the same number of times a"
-							" trigger command appears in the NIAWG script.";
-					}
-				}*/
+
 			}
 			//input->rsg->orderEvents( variationInc ); 
 		}
