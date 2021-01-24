@@ -320,6 +320,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 
 		//disable device mod
 		input->thisObj->sendZynqCommand(zynq_tcp, "disableSeq");
+		input->ddss->setDDSs();
 	}
 	catch (Error& exception)
 	{

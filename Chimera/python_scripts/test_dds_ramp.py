@@ -105,10 +105,10 @@ class DDS_ramp_tester:
   def dds_seq_write_ftw_points(self):
     points=[]
     #these ramps should complete in just under 64 ms
-    points.append(DDS_ftw_seq_point(address=0,time=0,start=5000000,steps=0,incr=0,chan=1))
-    points.append(DDS_ftw_seq_point(address=1,time=   20000, start=4000000,steps=0,incr=0,chan=2)) 
+    points.append(DDS_ftw_seq_point(address=0,time=0,start=472446000,steps=0,incr=0,chan=0))
+    #points.append(DDS_ftw_seq_point(address=1,time=   20000, start=4000000,steps=0,incr=0,chan=0)) 
     # points.append(DDS_ftw_seq_point(address=1,time=1,start=1000000,steps=1,incr=0,chan=3)) 
-    points.append(DDS_ftw_seq_point(address=2,time=   0,start=     0,steps=    0,incr=    0,chan=0))
+    points.append(DDS_ftw_seq_point(address=1,time=   0,start=     0,steps=    0,incr=    0,chan=0))
 
     for point in points:
       self.write_ftw_point(point)
@@ -137,7 +137,7 @@ class DDS_ramp_tester:
           self.fifo_main_seq.write_axis_fifo(word[0], MSB_first=False)
 
 def program(tester):
-  tester.dds_seq_write_atw_points()
+  #tester.dds_seq_write_atw_points()
   tester.dds_seq_write_ftw_points()
   tester.dio_seq_write_points()
 
@@ -156,7 +156,7 @@ if __name__ == "__main__":
   import sys
   import dds_lock_pll
 
-  tester = DDS_ramp_tester(fifo_devices['AD9959_0'], fifo_devices['AD9959_0_seq_atw'], fifo_devices['AD9959_0_seq_ftw'], fifo_devices['GPIO_seq'])
+  tester = DDS_ramp_tester(fifo_devices['AD9959_1'], fifo_devices['AD9959_1_seq_atw'], fifo_devices['AD9959_1_seq_ftw'], fifo_devices['GPIO_seq'])
   tester.mod_disable()
   reset()
   dds_lock_pll.dds_lock_pll()

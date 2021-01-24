@@ -2,32 +2,6 @@ from axis_fifo import AXIS_FIFO
 from devices import fifo_devices
 import struct
 
-class AD9959:
-  """Class to control AD9959 in project KA012.
-  Very simple class just used for testing.
-  """
-
-  def __init__(self, device=None):
-    if device is None:
-      self.fifo = AXIS_FIFO()
-    else:
-      self.fifo = AXIS_FIFO(device)
-
-    #Function Register 1 (FR1)
-    # self.fifo.write_axis_fifo("\x00\x81\x00\xD0")
-    # self.fifo.write_axis_fifo("\x00\xC1\x00\x00")
-
-    # initialize PLL multipliers to 20 (500 MHz clock), set VCO gain high 
-    # with open(fifo_devices['AD9959_0'], "r+b") as character:
-    #   writeToDDS(character,1,0xD0000000)
-
-    # with open(fifo_devices['AD9959_1'], "r+b") as character:
-    #   writeToDDS(character,1,0xD0000000)
-
-    # with open(fifo_devices['AD9959_2'], "r+b") as character:
-    #   writeToDDS(character,1,0xD0000000)
-
-
 def writeToDDS(dds_char_dev, address, data):
   data_bytes = struct.pack('<I', data)
   print(struct.unpack('<I', data_bytes))
@@ -46,8 +20,33 @@ def writeToDDS(dds_char_dev, address, data):
   for word in words:
     dds_char_dev.write(word)
 
-def set_DDS(self, channel, amp, freq):
-  assert channel>=0 and channel<=3, 'Invalid channel for AD9959 in set_DDS'
-  with open("/dev/axis_fifo_0x0000000080005000", "r+b") as character:
-    # ~ writeWords(character)
-    writeToDDS(character,4,0x271DE698)
+class AD9959:
+  """Class to control AD9959 in project KA012.
+  Very simple class just used for testing.
+  """
+
+  def __init__(self, device=None):
+    self.device = device
+    if device is None:
+      self.fifo = AXIS_FIFO()
+    else:
+      self.fifo = AXIS_FIFO(device)
+
+  def set_DDS(self, channel, freq):
+    assert channel>=0 and channel<=3, 'Invalid channel for AD9959 in set_DDS'
+    with open(self.device, "r+b") as character:
+      # ~ writeWords(character)
+      freqConv = int((2**32 - 1)*freq/500)
+      chanConv = int(2**channel)
+      writeToDDS(character,0,chanConv*268435456)
+      writeToDDS(character,4,freqConv)
+      writeToDDS(character,0,0x00000000)
+
+
+if __name__ == "__main__":
+  from dds_lock_pll import dds_lock_pll 
+  dds = AD9959(fifo_devices['AD9959_0'])
+  freq = 85
+  chan = 1
+  dds_lock_pll()
+  dds.set_DDS(chan, freq)

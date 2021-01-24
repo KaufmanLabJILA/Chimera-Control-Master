@@ -86,7 +86,7 @@ class zynq_tcp_server:
 		elif (dev == 'DAC'):
 			self.seq.set_DAC(int(data_split[1]), float(data_split[2]))
 		elif (dev == 'DDS'):
-			self.seq.set_DDS(int(data_split[1]), float(data_split[2]), float(data_split[3]))
+			self.seq.set_DDS(int(data_split[1]), float(data_split[2]))
 		elif (dev == 'trigger'):
 			self.seq.soft_trigger()
 		else:

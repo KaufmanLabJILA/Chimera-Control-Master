@@ -551,8 +551,8 @@ void AuxiliaryWindow::handleMasterConfigSave(std::stringstream& configStream)
 		configStream << name << "\n";
 		configStream << minMaxFreq.first << " - " << minMaxFreq.second << "\n";
 		configStream << minMaxAmp.first << " - " << minMaxAmp.second << "\n";
-		std::array<double, 2> defaultVals = ddsBoards.getDefaultValue(ddsInc);
-		configStream << defaultVals[0] << " , " << defaultVals[1] << "\n";
+		double defaultVals = ddsBoards.getDefaultValue(ddsInc);
+		configStream << defaultVals << "\n";
 	}
 
 	// Number of Variables
@@ -705,8 +705,8 @@ void AuxiliaryWindow::handleMasterConfigOpen(std::stringstream& configStream, do
 		ddsBoards.setName(ddsInc, name, toolTips, this);
 		ddsBoards.setFreqMinMax(ddsInc, minFreq, maxFreq);
 		ddsBoards.setAmpMinMax(ddsInc, minAmp, maxAmp);
-		ddsBoards.prepareDDSForceChange(ddsInc, { defaultFreq, defaultAmp });
-		ddsBoards.setDefaultValue(ddsInc, { defaultFreq, defaultAmp });
+		//ddsBoards.prepareDDSForceChange(ddsInc, defaultFreq);
+		ddsBoards.setDefaultValue(ddsInc, defaultFreq);
 	}
 	// variables.
 	if (version >= 1.1)

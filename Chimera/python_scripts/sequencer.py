@@ -163,18 +163,17 @@ class sequencer:
 		else:
 			self.dac0.set_DAC(channel, valueInt)
 
-	def set_DDS(slef, channel, amp, freq):
-		ampValueInt = amp*self.ddsAmpRangeConv
-		freqValueInt = amp*self.ddsFreqRangeConv
+	def set_DDS(self, channel, freq):
 		assert channel>=0 and channel<=11, 'Invalid channel for AD9959 in set_DDS'
+		dds_lock_pll.dds_lock_pll() 
 		if (channel > 7):
 			channel = channel-8
-			self.dds2.set_DDS(channel, ampValueInt, freqValueInt)
+			self.dds2.set_DDS(channel, freq)
 		elif (3 < channel < 8):
 			channel = channel-4
-			self.dds1.set_DDS(channel, ampValueInt, freqValueInt)
+			self.dds1.set_DDS(channel, freq)
 		else:
-			self.dds0.set_DDS(channel, ampValueInt, freqValueInt)
+			self.dds0.set_DDS(channel, freq)
 
 	def mod_enable(self):
 		self.gpio2.set_bit(0, channel=1)
@@ -259,8 +258,10 @@ class sequencer:
 				if (channel < 4):
 					ftw_points0.append(DDS_ftw_seq_point(address=len(ftw_points0), time=t, start=s, steps=duration, incr=ramp_inc, chan=channel))
 				elif (4 <= channel < 8):
+					channel = channel-4
 					ftw_points1.append(DDS_ftw_seq_point(address=len(ftw_points1), time=t, start=s, steps=duration, incr=ramp_inc, chan=channel))
 				else:
+					channel = channel-8
 					ftw_points2.append(DDS_ftw_seq_point(address=len(ftw_points2), time=t, start=s, steps=duration, incr=ramp_inc, chan=channel))
 			elif (aorf == 'a'):
 				if (ramp_inc < 0):
@@ -268,29 +269,37 @@ class sequencer:
 				if (channel < 4):
 					atw_points0.append(DDS_atw_seq_point(address=len(atw_points0), time=t, start=s, steps=duration, incr=ramp_inc, chan=channel))
 				elif (4 <= channel < 8):
+					channel = channel-4
 					atw_points1.append(DDS_atw_seq_point(address=len(atw_points1), time=t, start=s, steps=duration, incr=ramp_inc, chan=channel))
 				else:
+					channel = channel-8
 					atw_points2.append(DDS_atw_seq_point(address=len(atw_points2), time=t, start=s, steps=duration, incr=ramp_inc, chan=channel))
 			else:
 				print "invalid dds type. set to 'f' for freq or 'a' for amp"
 		if (len(atw_points0) != 0):
-			atw_points0.append(DDS_ftw_seq_point(address=len(atw_points0), time=0, start=0, steps=0, incr=0, chan=0))
+			atw_points0.append(DDS_ftw_seq_point(address=len(ftw_points0), time=0, start=0, steps=0, incr=0, chan=0))
 		if (len(atw_points1) != 0):
-			atw_points1.append(DDS_atw_seq_point(address=len(atw_points1), time=0, start=0, steps=0, incr=0, chan=0))
+			atw_points1.append(DDS_atw_seq_point(address=len(ftw_points1), time=0, start=0, steps=0, incr=0, chan=0))
 		if (len(atw_points2) != 0):
-			atw_points2.append(DDS_ftw_seq_point(address=len(atw_points2), time=0, start=0, steps=0, incr=0, chan=0))
+			atw_points2.append(DDS_ftw_seq_point(address=len(ftw_points2), time=0, start=0, steps=0, incr=0, chan=0))
 		if (len(ftw_points0) != 0):
-			ftw_points0.append(DDS_ftw_seq_point(address=len(ftw_points0), time=0, start=0, steps=0, incr=0, chan=0))
+			ftw_points0.append(DDS_ftw_seq_point(address=len(atw_points0), time=0, start=0, steps=0, incr=0, chan=0))
 		if (len(ftw_points1) != 0):
-			ftw_points1.append(DDS_atw_seq_point(address=len(ftw_points1), time=0, start=0, steps=0, incr=0, chan=0))
+			ftw_points1.append(DDS_atw_seq_point(address=len(atw_points1), time=0, start=0, steps=0, incr=0, chan=0))
 		if (len(ftw_points2) != 0):
-			ftw_points2.append(DDS_ftw_seq_point(address=len(ftw_points2), time=0, start=0, steps=0, incr=0, chan=0))
+			ftw_points2.append(DDS_ftw_seq_point(address=len(atw_points2), time=0, start=0, steps=0, incr=0, chan=0))
 
 		for point in ftw_points0:
+			print "dds0"
+			print point.address, point.time, point.chan
 			self.write_ftw_point(self.fifo_dds0_ftw_seq, point)
 		for point in ftw_points1:
+			print "dds1"
+			print point.address, point.time, point.chan
 			self.write_ftw_point(self.fifo_dds1_ftw_seq, point)
 		for point in ftw_points2:
+			print "dds2"
+			print point.address, point.time, point.chan
 			self.write_ftw_point(self.fifo_dds2_ftw_seq, point)
 
 		for point in atw_points0:

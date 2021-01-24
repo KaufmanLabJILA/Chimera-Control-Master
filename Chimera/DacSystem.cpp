@@ -381,10 +381,10 @@ void DacSystem::initialize(POINT& pos, cToolTips& toolTips, AuxiliaryWindow* mas
 
 	// DAC board labels
 	dac0Title.sPos = { pos.x, pos.y, pos.x + 160, pos.y + 25 };
-	dac0Title.Create("DAC 0", WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER, dac0Title.sPos, master, id++);
+	dac0Title.Create("DAC 0 (V)", WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER, dac0Title.sPos, master, id++);
 	dac0Title.fontType = HeadingFont;
 	dac1Title.sPos = { pos.x + 180, pos.y, pos.x + 340, pos.y += 25 };
-	dac1Title.Create("DAC 1", WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER, dac1Title.sPos, master, id++);
+	dac1Title.Create("DAC 1 (V)", WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER, dac1Title.sPos, master, id++);
 	dac1Title.fontType = HeadingFont;
 	
 	// there's a single label first, hence the +1.
