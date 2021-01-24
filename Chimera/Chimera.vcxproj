@@ -23,7 +23,7 @@
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>NIPXIe5451ArbWvFmGen20</RootNamespace>
     <ProjectName>Chimera</ProjectName>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -172,18 +172,17 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32; NO_WARN_MBCS_MFC_DEPRECATION;NDEBUG;_CONSOLE;_LIB;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <AdditionalIncludeDirectories>D:\Program Files\boost_1_60_0</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Public\Documents\Allied Vision\Vimba_4.2\VimbaCPP_Examples;C:\Program Files\Allied Vision\Vimba_4.2\ThirdParty\TinyXML\Include;C:\Program Files\Allied Vision\Vimba_4.2;C:\Program Files\Allied Vision\Vimba_4.2\VimbaCPP\Bin\Win64</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
-      <AdditionalDependencies>atmcd64m.lib;python36.lib;libhdf5_cpp.lib;libhdf5.lib;libzlib.lib;libszip.lib;NIDAQmx.lib;ws2_32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Program Files\Allied Vision\Vimba_4.2\VimbaCPP\Lib\Win64;C:\Program Files\Allied Vision\Vimba_4.2\ThirdParty\TinyXML\Lib\Win64;C:\Program Files\Allied Vision\Vimba_4.2\VimbaCPP\Bin\Win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>atmcd64m.lib;python36.lib;libhdf5_cpp.lib;libhdf5.lib;libzlib.lib;libszip.lib;NIDAQmx.lib;ws2_32.lib;VimbaCPP.lib</AdditionalDependencies>
       <HeapReserveSize>
       </HeapReserveSize>
     </Link>
@@ -191,10 +190,12 @@
   <ItemGroup>
     <ClInclude Include="AlertSystem.h" />
     <ClInclude Include="AndorRunSettings.h" />
+    <ClInclude Include="ApiController.h" />
     <ClInclude Include="ATMCD32D.H" />
     <ClInclude Include="atomCruncherInput.h" />
     <ClInclude Include="atomGrid.h" />
     <ClInclude Include="beginningSettingsDialogProc.h" />
+    <ClInclude Include="Bitmap.h" />
     <ClInclude Include="BoostAsyncSerial.h" />
     <ClInclude Include="CameraImageDimensions.h" />
     <ClInclude Include="cameraPositions.h" />
@@ -212,6 +213,7 @@
     <ClInclude Include="DebugOptionsControl.h" />
     <ClInclude Include="Expression.h" />
     <ClInclude Include="GigaMoog.h" />
+    <ClInclude Include="makoCamera.h" />
     <ClInclude Include="MessagePrinter.h" />
     <ClInclude Include="MessageSender.h" />
     <ClInclude Include="Messagetypes.h" />
@@ -292,7 +294,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AlertSystem.cpp" />
+    <ClCompile Include="ApiController.cpp" />
     <ClCompile Include="beginningSettingsDialogProc.cpp" />
+    <ClCompile Include="Bitmap.cpp" />
     <ClCompile Include="BoostAsyncSerial.cpp" />
     <ClCompile Include="CameraImageDimensions.cpp" />
     <ClCompile Include="CameraSettingsControl.cpp" />
@@ -305,6 +309,7 @@
     <ClCompile Include="DebugOptionsControl.cpp" />
     <ClCompile Include="Expression.cpp" />
     <ClCompile Include="GigaMoog.cpp" />
+    <ClCompile Include="makoCamera.cpp" />
     <ClCompile Include="MessagePrinter.cpp" />
     <ClCompile Include="MessageSender.cpp" />
     <ClCompile Include="openWithExplorer.cpp" />
