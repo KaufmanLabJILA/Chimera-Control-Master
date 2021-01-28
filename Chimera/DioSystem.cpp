@@ -1001,21 +1001,20 @@ void DioSystem::writeTtlDataToFPGA(UINT variation, bool loadSkip) //arguments un
 	try
 	{
 		tcp_connect = zynq_tcp.connectTCP(ZYNQ_ADDRESS);
+		if (tcp_connect == 0)
+		{
+			zynq_tcp.writeDIO(dioFPGA[variation]);
+			zynq_tcp.disconnect();
+		}
+		else
+		{
+			throw("connection to zynq failed. can't write Ttl data\n");
+		}
 	}
 	catch (Error& err)
 	{
 		tcp_connect = 1;
 		errBox(err.what());
-	}
-
-	if (tcp_connect == 0)
-	{
-		zynq_tcp.writeDIO(dioFPGA[variation]);
-		zynq_tcp.disconnect();
-	}
-	else
-	{
-		throw("connection to zynq failed. can't write Ttl data\n");
 	}
 
 	
