@@ -11,10 +11,12 @@ def shelve3p0(reptime):
   
   on: rp707
   on: rp688
-  on: radial
+  %on: radial
+  on: axial
   t += reptime
   
-  off: radial
+  %off: radial
+  off: axial
   off: rp688
   off: rp707
   off: shut688

@@ -2,18 +2,18 @@
 def imageshort():
   dac: bluetune bluetune_imag
   dac: imagingPow .3
-  %on: andorshut %%%PUT BACK!!!
+  on: andorshut %%%PUT BACK!!!
+  on: imagshut
 
 %  on: blowawayshutter
 
 %  on: blueshut
-%  t += 4
+  t += 4
 %  on: imag461
 %  t += .02
 %  off: imag461
 %  t += .02
   on: andortrig
-  on: imagshut
 %  off: tweezerAO
   t += .0005
 %  on: imag461

@@ -2,28 +2,44 @@
 reset
 
 % set channel, steps size, start and end time all in us:
-setsteps 3 1 0 30
+%setsteps 0 1 0 30
 % linear amplitude ramp:
 % channel, start end time us, start end amp % 
-amplin   3 0 30 100 100
+%amplin   0 0 30 100 100
 % linear frequency ramp:
 % channel, start end time us, start end freq MHz, phase toggle, start phase
-freqlin  3 0 30 .1 .5 1 0
+%freqlin  0 0 30 .1 .5 1 0
 
-setsteps 3 1 60 90
-amplin   3 60 90 100 0
-freqlin  3 60 90 .5 .1 0 0
+setsteps 0 1 0 90
+amplin   0 0 90 45 45
+freqlin  0 0 90 ryd_freq ryd_freq 1 0
 
 % program channel. Must be called before other channels get programmed.
-program 3
+%program 3
 
 % at this point could program other channels
 
-setsteps 0 1 0 2
-amplin   0 0 2 50 50 %DO NOT EXCEED 50% amp.
-freqlin  0 0 2 180 180 1 0
+%setsteps 0 1000 0 uvtime
+
+%amplin   0 0 2000 0 45 %DO NOT EXCEED 50% amp.
+%freqlin  0 0 2000 ryd_freq ryd_freq 1 0
+
+%amplin   0 2000 uvtime-2000 45 45 %DO NOT EXCEED 50% amp.
+%freqlin  0 2000 uvtime-2000 ryd_freq ryd_freq 1 0
+
+%amplin   0 uvtime-2000 uvtime 45 0 %DO NOT EXCEED 50% amp.
+%freqlin  0 uvtime-2000 uvtime ryd_freq ryd_freq 1 0
+
+%setsteps 0 .006 0 .012 %clock runs at 153 MHz = (6.5 ns)^-1
+%amplin 0 0 .012 0 45 
+%freqlin 0 0 .012 ryd_freq ryd_freq 1 90
+
+%setsteps 0 .006 .012+uvtime .024+uvtime
+%amplin 0 .012+uvtime .024+uvtime 45 0 %0 
+%freqlin 0 .012+uvtime .024+uvtime ryd_freq ryd_freq 0 0
 
 program 0
+
 
 % Software trigger for testing
 %trigger
