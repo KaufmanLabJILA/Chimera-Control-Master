@@ -8,6 +8,7 @@
 #include "MasterThreadInput.h"
 #include "ATMCD32D.H"
 #include <numeric>
+#include "AuxiliaryWindow.h" 
 
 CameraWindow::CameraWindow() : CDialog(), 
 								CameraSettings(&Andor), 
@@ -63,6 +64,7 @@ BEGIN_MESSAGE_MAP(CameraWindow, CDialog)
 
 	ON_REGISTERED_MESSAGE( eCameraFinishMessageID, &CameraWindow::onCameraFinish )
 	ON_REGISTERED_MESSAGE( eCameraProgressMessageID, &CameraWindow::onCameraProgress )
+	ON_REGISTERED_MESSAGE( eMakoGrabFrameMessageID, &CameraWindow::onMakoGrabFrame )
 	
 	ON_WM_RBUTTONUP()
 	ON_WM_LBUTTONUP()
@@ -516,6 +518,22 @@ LRESULT CameraWindow::onCameraFinish( WPARAM wParam, LPARAM lParam )
 	return 0;
 }
 
+void CameraWindow::startMako(std::string imageName)
+{
+		mot3Dcamera.startMako(1);
+		//std::string cameraStr = mot3Dcamera.getCameraStr();
+		//expUpdate("camera = " + cameraStr, input->comm, input->quiet);
+		mot3Dcamera.imageName = imageName;
+}
+LRESULT CameraWindow::onMakoGrabFrame(WPARAM wParam, LPARAM lParam)
+{
+	std::string imagePath = DATABASE_LOCATION + mot3Dcamera.imageName + ".bmp";
+	const char * pSaveName = imagePath.c_str();
+
+	mot3Dcamera.saveFrame(pSaveName);
+
+	return 0;
+}
 
 void CameraWindow::startCamera()
 {

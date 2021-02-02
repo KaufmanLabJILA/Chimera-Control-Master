@@ -43,6 +43,9 @@ namespace commonFunctions
 					camWin->startAtomCruncher(input);
 					camWin->startPlotterThread(input);
 					camWin->startCamera();
+					if (input.masterInput->settings.saveMakoImages) {
+						camWin->startMako(input.masterInput->settings.makoImageName);
+					}
 					startMaster( mainWin, input );
 				}
 				catch (Error& err)
@@ -117,26 +120,6 @@ namespace commonFunctions
 				//
 				mainWin->waitForRearranger( );
 
-				//try
-				//{
-				//	if ( mainWin->niawg.niawgIsRunning( ) )
-				//	{
-				//		status = "NIAWG";
-				//		abortNiawg( scriptWin, mainWin );
-				//		niawgAborted = true;
-				//	}
-				//	mainWin->getComm( )->sendColorBox( Niawg, 'B' );
-				//}
-				//catch ( Error& err )
-				//{
-				//	mainWin->getComm( )->sendError( "Abort NIAWG exited with Error! Error Message: " + err.whatStr( ) );
-				//	if ( status == "NIAWG" )
-				//	{
-				//		mainWin->getComm( )->sendColorBox( Niawg, 'R' );
-				//	}
-				//	mainWin->getComm( )->sendStatus( "EXITED WITH ERROR!\r\nInitialized Default Waveform\r\n" );
-				//	mainWin->getComm( )->sendTimer( "ERROR!" );
-				//}
 				if (!andorAborted && !masterAborted)
 				{
 					mainWin->getComm()->sendError("Camera and Master were not running. Can't Abort.\r\n");
@@ -188,35 +171,6 @@ namespace commonFunctions
 				}
 				break;
 			}
-			//case ID_RUNMENU_RUNNIAWG:
-			//{
-			//	ExperimentInput input;
-			//	try
-			//	{
-			//		commonFunctions::prepareMasterThread( ID_RUNMENU_RUNMASTER, scriptWin, mainWin, camWin, auxWin,
-			//											  input, false, true, false );
-			//		//
-			//		commonFunctions::logParameters( input, camWin, false );
-			//		//
-			//		commonFunctions::startMaster( mainWin, input );
-			//	}
-			//	catch (Error& except)
-			//	{
-			//		mainWin->getComm()->sendColorBox( Niawg, 'R' );
-			//		mainWin->getComm()->sendError("EXITED WITH ERROR! " + except.whatStr());
-			//		mainWin->getComm()->sendStatus("EXITED WITH ERROR!\r\nInitialized Default Waveform\r\n");
-			//	}
-			//	try
-			//	{
-			//		//???
-			//	}
-			//	catch (Error& err)
-			//	{
-			//		errBox( "Data Logging failed to start up correctly! " + err.whatStr() );
-			//		mainWin->getComm()->sendError( "EXITED WITH ERROR! " + err.whatStr() );
-			//	}
-			//	break;
-			//}
 			case ID_RUNMENU_RUNMOOG:
 			{
 				ExperimentInput input;

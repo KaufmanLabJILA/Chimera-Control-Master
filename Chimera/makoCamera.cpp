@@ -2,9 +2,17 @@
 #include "makoCamera.h"
 
 
-makoCamera::makoCamera(int cameraIndex)
+makoCamera::makoCamera()
 {
 
+}
+
+makoCamera::~makoCamera()
+{
+	apiController.ShutDown();
+}
+
+void makoCamera::startMako(int cameraIndex) {
 	err = apiController.StartUp();
 	if (VmbErrorSuccess != err)
 	{
@@ -25,11 +33,6 @@ makoCamera::makoCamera(int cameraIndex)
 	}
 }
 
-makoCamera::~makoCamera()
-{
-	apiController.ShutDown();
-}
-
 std::string makoCamera::getCameraStr() {
 	return strCameraID;
 }
@@ -37,6 +40,8 @@ std::string makoCamera::getCameraStr() {
 VmbErrorType makoCamera::saveFrame(const char * fileName) {
 
 	VmbFrameStatusType status = VmbFrameStatusIncomplete;
+
+	err = apiController.StartUp();
 
 	if (VmbErrorSuccess == err)
 	{
@@ -94,7 +99,7 @@ VmbErrorType makoCamera::saveFrame(const char * fileName) {
 										// Create the bitmap
 										if (0 == AVTCreateBitmap(&bitmap, pImage))
 										{
-											thrower("Could not create bitmap.\n");
+											std::cout << "Could not create bitmap.\n";
 											err = VmbErrorResources;
 										}
 										else
@@ -102,16 +107,16 @@ VmbErrorType makoCamera::saveFrame(const char * fileName) {
 											// Save the bitmap
 											if (0 == AVTWriteBitmapToFile(&bitmap, fileName))
 											{
-												thrower("Could not write bitmap to file.\n");
+												std::cout << "Could not write bitmap to file.\n";
 												err = VmbErrorOther;
 											}
 											else
 											{
-												//std::cout << "Bitmap successfully written to file \"" << fileName << "\"\n";
+												std::cout << "Bitmap successfully written to file \"" << fileName << "\"\n";
 												// Release the bitmap's buffer
 												if (0 == AVTReleaseBitmap(&bitmap))
 												{
-													thrower("Could not release the bitmap.\n");
+													std::cout << "Could not release the bitmap.\n";
 													err = VmbErrorInternalFault;
 												}
 											}
@@ -126,9 +131,14 @@ VmbErrorType makoCamera::saveFrame(const char * fileName) {
 		}
 	}
 
+	if (VmbErrorSuccess != err)
+	{
+		std::string strError = apiController.ErrorCodeToMessage(err);
+		std::cout << "\nAn error occurred: " << strError.c_str() << "\n";
+	}
 	if (VmbFrameStatusIncomplete == status)
 	{
-		thrower("received frame was not complete\n");
+		std::cout << "received frame was not complete\n";
 	}
 
 	return err;

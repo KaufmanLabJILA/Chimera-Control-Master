@@ -13,6 +13,7 @@
 #include "cameraPositions.h"
 #include "commonTypes.h"
 #include <bitset>
+#include "makoCamera.h"
 
 class MainWindow;
 class ScriptingWindow;
@@ -40,6 +41,7 @@ class CameraWindow : public CDialog
 		void wakeRearranger( );
 		LRESULT onCameraFinish( WPARAM wParam, LPARAM lParam );
 		LRESULT onCameraProgress( WPARAM wParam, LPARAM lParam );
+		LRESULT onMakoGrabFrame(WPARAM wParam, LPARAM lParam);
 		void handleDblClick( NMHDR* info, LRESULT* lResult );
 		void listViewRClick( NMHDR* info, LRESULT* lResult );
 		void handleSpecialGreaterThanMaxSelection();
@@ -74,6 +76,7 @@ class CameraWindow : public CDialog
 		void setTimerText( std::string timerText );
 		void prepareCamera( ExperimentInput& input );
 		void startCamera();
+		void startMako(std::string imageName);
 		std::string getStartMessage();
 		void setEmGain();
 		void handlePictureSettings( UINT id );
@@ -98,6 +101,7 @@ class CameraWindow : public CDialog
 		DECLARE_MESSAGE_MAP();
 
 		AndorCamera Andor;
+		makoCamera mot3Dcamera;
 		CameraSettingsControl CameraSettings;
 		ColorBox box;
 		PictureStats stats;

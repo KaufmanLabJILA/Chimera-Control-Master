@@ -259,17 +259,19 @@ dds10
 dds11
 10 - 125
 0
-12
-xcoilval 0.018
-ycoilval 0.021
-zcoilval 0.0055
-bluecoilx 0
-bluecoily 0
-bluecoilz -0.05
-motcoils 4
-carrier_3p1 79.946
-rsb 0.224
-asb 0.04
-carrier_3p0 79.99
-rsbi 0.086
+14
+bluemotcoil 2.5
+bluex1 0.53
+bluex2 -0.49
+bluey1 0.42
+bluey2 -0.42
+bluez1 -1.2
+bluez2 1.23
+greenmotcoil 0.4
+greenx1 0.11
+greenx2 -0.11
+greeny1 0.04
+greeny2 -0.04
+greenz1 -0.2
+greenz2 0.2
 1 512 1 1 512 1

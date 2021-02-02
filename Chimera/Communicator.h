@@ -32,6 +32,7 @@ class Communicator
 		void sendColorBox( systemInfo<char> colors );
 		void sendCameraFin();
 		void sendCameraProgress( long prog );
+		void sendGrabMakoFrame();
 		void sendRepProgress(ULONG rep);
 		void sendNormalFinish( );
 		void sendNoAtomsAlert( );

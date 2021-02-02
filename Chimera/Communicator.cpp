@@ -38,6 +38,11 @@ void Communicator::sendCameraProgress(long progress)
 	camWin->PostMessageA( eCameraProgressMessageID, 0, (LPARAM)progress );
 }
 
+void Communicator::sendGrabMakoFrame()
+{
+	camWin->PostMessageA(eMakoGrabFrameMessageID);
+}
+
 void Communicator::sendRepProgress(ULONG rep)
 {
 	mainWin->PostMessageA(eRepProgressMessageID, 0, LPARAM(rep));

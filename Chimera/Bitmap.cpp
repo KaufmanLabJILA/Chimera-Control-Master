@@ -26,7 +26,6 @@
 =============================================================================*/
 
 #include "stdafx.h"
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -258,16 +257,9 @@ unsigned char AVTWriteBitmapToFile( AVTBitmap const * const pBitmap, char const 
          && NULL != pBitmap->buffer
          && NULL != pFileName )
     {
-		errno_t err;
-		err = fopen_s(&file, pFileName, "w");
-		if (err == 0) {
-			fwrite(pBitmap->buffer, 1, pBitmap->bufferSize, file);
-			fclose(file);
-		}
-		else
-		{
-			thrower("the mako save file couldn't be opened");
-		}
+        file = fopen(pFileName, "wb");
+        fwrite(pBitmap->buffer, 1, pBitmap->bufferSize, file );
+        fclose(file);
 
         return 1;
     }

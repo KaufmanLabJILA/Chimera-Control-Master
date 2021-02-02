@@ -38,7 +38,6 @@ class MainWindow : public CDialog
 	DECLARE_DYNAMIC(MainWindow);
 	public:
 	    // overrides
-		void passNiawgIsOnPress( );
 		MainWindow(UINT id, CDialog*);
 		BOOL OnInitDialog() override;
 		HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
@@ -70,7 +69,6 @@ class MainWindow : public CDialog
 
 		// auxiliary functions used by the window.
 		void setNotes(std::string notes);
-		void setNiawgDefaults();
 		void fillMasterThreadInput( MasterThreadInput* input );
 		void fillMotInput( MasterThreadInput* input);
 		void startMaster( MasterThreadInput* input, bool isTurnOnMot );
@@ -91,8 +89,6 @@ class MainWindow : public CDialog
 		void addTimebar(std::string whichStatus);
 		void setShortStatus(std::string text);
 		void changeShortStatusColor(std::string color);
-		void restartNiawgDefaults();
-		void stopNiawg();
 		void changeBoxColor(systemInfo<char> colors);
 		void handleNewConfig( std::ofstream& newFile );
 		void handleSaveConfig(std::ofstream& saveFile);
@@ -101,9 +97,7 @@ class MainWindow : public CDialog
 		Communicator* getComm();
 		std::string getSystemStatusString();
 
-		bool niawgIsRunning();
 		bool masterIsRunning();
-		void setNiawgRunningState( bool newRunningState );
 		RunInfo getRunInfo();
 		void handleFinish();
 		UINT getRepNumber();
