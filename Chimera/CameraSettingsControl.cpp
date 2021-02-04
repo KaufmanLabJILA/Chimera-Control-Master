@@ -404,7 +404,9 @@ void CameraSettingsControl::handleTimer()
 		// in this case you expect it to throw.
 		setTemperature = andorFriend->getSettings().temperatureSetting;
 		andorFriend->getTemperature(currentTemperature);
-		if ( ANDOR_SAFEMODE ) { thrower( "SAFEMODE" ); }
+		if ( ANDOR_SAFEMODE ) { 
+			//thrower( "SAFEMODE" ); 
+		}
 	}
 	catch (Error& exception)
 	{

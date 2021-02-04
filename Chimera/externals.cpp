@@ -35,6 +35,8 @@ UINT eColoredEditMessageID = RegisterWindowMessage( "ID_VARIABLE_VALUES_MESSAGE"
 UINT eCameraFinishMessageID = RegisterWindowMessage( "ID_CAMERA_FINISH_MESSAGE" );
 UINT eCameraProgressMessageID = RegisterWindowMessage( "ID_CAMERA_PROGRESS_MESSAGE" );
 UINT eMakoGrabFrameMessageID = RegisterWindowMessage( "ID_MAKO_GRAB_FRAME_MESSAGE" );
+UINT eSetupMakoFrameMessageID = RegisterWindowMessage("ID_MAKO_SETUP_FRAME_MESSAGE");
+UINT eCloseMakoMessageID = RegisterWindowMessage("ID_MAKO_CLOSE_MESSAGE");
 UINT eRepProgressMessageID = RegisterWindowMessage("ID_REPETITION_PROGRESS_MESSAGE");
 UINT eNoAtomsAlertMessageID = RegisterWindowMessage( "ID_NO_ATOMS_ALERT_MESSAGE" );
 

@@ -33,6 +33,8 @@ class Communicator
 		void sendCameraFin();
 		void sendCameraProgress( long prog );
 		void sendGrabMakoFrame();
+		void sendSetupMakoFrame();
+		void sendCloseMako();
 		void sendRepProgress(ULONG rep);
 		void sendNormalFinish( );
 		void sendNoAtomsAlert( );

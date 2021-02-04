@@ -75,8 +75,6 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 		input->ttls->resetTtlEvents();
 		input->ddss->resetDDSEvents();
 
-
-
 		//initialize devices
 		input->thisObj->sendZynqCommand(zynq_tcp, "initExp");
 		
@@ -266,20 +264,21 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 				// this was re-written each time from looking at the VB6 code. 
 				if (input->runMaster)
 				{
-					//input->ttls->writeTtlData( variationInc, skipOption ); 
-					//input->ttls->startBoard(); 
-					//input->dacs->stopDacs(); 
-					//input->dacs->configureClocks(variationInc, skipOption); 
-					//input->dacs->writeDacs(variationInc, skipOption); 
 					input->dacs->startDacs();
 					input->ttls->startDioFPGA(variationInc);
 					input->thisObj->sendZynqCommand(zynq_tcp, "trigger");
+					if (input->settings.saveMakoImages) {
+						input->comm->sendSetupMakoFrame();
+					}
 					input->ttls->waitTillFinished(variationInc, skipOption);
 					input->dacs->stopDacs();
+					if (input->settings.saveMakoImages) {
+						input->comm->sendGrabMakoFrame();
+					}
 
 				}
 			}
-			input->comm->sendGrabMakoFrame();
+			//input->comm->sendGrabMakoFrame();
 			//input->ttls->disconnectDioFPGA(variationInc); 
 			expUpdate("\r\n", input->comm, input->quiet);
 		}
@@ -311,6 +310,9 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 		//								   input->settings.dontActuallyGenerate ); 
 		//} 
 		input->comm->sendNormalFinish();
+		if (input->settings.saveMakoImages) {
+			input->comm->sendCloseMako();
+		}
 
 		//disable device mod
 		input->thisObj->sendZynqCommand(zynq_tcp, "disableSeq");
@@ -345,6 +347,9 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 			input->comm->sendFatalError("Exited main experiment thread abnormally.");
 		}
 		input->thisObj->sendZynqCommand(zynq_tcp, "disableSeq");
+		if (input->settings.saveMakoImages) {
+			input->comm->sendCloseMako();
+		}
 	}
 	std::chrono::time_point<chronoClock> endTime(chronoClock::now());
 	expUpdate("Experiment took " + str(std::chrono::duration<double>((endTime - startTime)).count())

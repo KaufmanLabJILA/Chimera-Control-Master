@@ -43,6 +43,16 @@ void Communicator::sendGrabMakoFrame()
 	camWin->PostMessageA(eMakoGrabFrameMessageID);
 }
 
+void Communicator::sendSetupMakoFrame()
+{
+	camWin->PostMessageA(eSetupMakoFrameMessageID);
+}
+
+void Communicator::sendCloseMako()
+{
+	camWin->PostMessageA(eCloseMakoMessageID);
+}
+
 void Communicator::sendRepProgress(ULONG rep)
 {
 	mainWin->PostMessageA(eRepProgressMessageID, 0, LPARAM(rep));

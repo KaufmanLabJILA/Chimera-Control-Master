@@ -482,6 +482,9 @@
     <ClInclude Include="makoCamera.h">
       <Filter>Vimba</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Program Files\Allied Vision\Vimba_4.2\VimbaCPP\Include\VimbaSystem.h">
+      <Filter>Vimba</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Icon2.ico">

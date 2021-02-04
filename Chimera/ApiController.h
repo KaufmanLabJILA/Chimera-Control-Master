@@ -57,21 +57,14 @@ class ApiController
     //
     void            ShutDown();
 
-    //
-    // Opens the given camera
-    // Sets the maximum possible Ethernet packet size
-    // Adjusts the image format
-    // Calls the API convenience function to start single image acquisition
-    // Closes the camera in case of failure
-    //
-    // Parameters:
-    //  [in]    rStrCameraID        The ID of the camera to work on
-    //  [out]   rpFrame             The frame that will be filled. Does not need to be initialized.
-    //
-    // Returns:
-    //  An API status code
-    //
-    VmbErrorType    AcquireSingleImage( const std::string &rStrCameraID, FramePtr &rpFrame );
+	VmbErrorType    openCamera(const std::string &rStrCameraID);
+	VmbErrorType	GetAcquisitionStartFeature(AVT::VmbAPI::FeaturePtr & feature);
+	VmbErrorType	GetAcquisitionStopFeature(AVT::VmbAPI::FeaturePtr & feature);
+	VmbErrorType	AcquisitionStart();
+	VmbErrorType	AcquisitionStop();
+	VmbErrorType	setupAcquisition(const std::string &rStrCameraID, std::vector<FramePtr> &rpFrames);
+	VmbErrorType    finishAcquisition();
+	VmbErrorType	closeCamera();
 
     //
     // Gets all cameras known to Vimba
@@ -105,6 +98,11 @@ class ApiController
     VimbaSystem &m_system;
     // The currently streaming camera
     CameraPtr m_pCamera;
+
+	AVT::VmbAPI::FeaturePtr m_AcquisitionStartFeature;
+	AVT::VmbAPI::FeaturePtr m_AcquisitionStopFeature;
+	VmbInt64_t nPLS;
+	AVT::VmbAPI::FeaturePtr pFeature;
 };
 
 }}} // namespace AVT::VmbAPI::Examples

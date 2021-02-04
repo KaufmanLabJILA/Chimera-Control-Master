@@ -65,6 +65,9 @@ BEGIN_MESSAGE_MAP(CameraWindow, CDialog)
 	ON_REGISTERED_MESSAGE( eCameraFinishMessageID, &CameraWindow::onCameraFinish )
 	ON_REGISTERED_MESSAGE( eCameraProgressMessageID, &CameraWindow::onCameraProgress )
 	ON_REGISTERED_MESSAGE( eMakoGrabFrameMessageID, &CameraWindow::onMakoGrabFrame )
+	ON_REGISTERED_MESSAGE( eSetupMakoFrameMessageID, &CameraWindow::onSetupMakoFrame )
+	ON_REGISTERED_MESSAGE( eCloseMakoMessageID, &CameraWindow::onCloseMako)
+	
 	
 	ON_WM_RBUTTONUP()
 	ON_WM_LBUTTONUP()
@@ -521,17 +524,24 @@ LRESULT CameraWindow::onCameraFinish( WPARAM wParam, LPARAM lParam )
 void CameraWindow::startMako(std::string imageName)
 {
 		mot3Dcamera.startMako(1);
-		//std::string cameraStr = mot3Dcamera.getCameraStr();
-		//expUpdate("camera = " + cameraStr, input->comm, input->quiet);
-		mot3Dcamera.imageName = imageName;
+		mot3Dcamera.imageName = DATABASE_LOCATION + imageName + ".bmp";
 }
+
 LRESULT CameraWindow::onMakoGrabFrame(WPARAM wParam, LPARAM lParam)
 {
-	std::string imagePath = DATABASE_LOCATION + mot3Dcamera.imageName + ".bmp";
-	const char * pSaveName = imagePath.c_str();
+	mot3Dcamera.finishAcquisition();
+	return 0;
+}
 
-	mot3Dcamera.saveFrame(pSaveName);
+LRESULT CameraWindow::onSetupMakoFrame(WPARAM wParam, LPARAM lParam)
+{
+	mot3Dcamera.setupAcquisition();
+	return 0;
+}
 
+LRESULT CameraWindow::onCloseMako(WPARAM wParam, LPARAM lParam)
+{
+	mot3Dcamera.closeCamera();
 	return 0;
 }
 

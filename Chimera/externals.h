@@ -33,7 +33,7 @@ extern bool eWaitError;
 /// Global Options Variables
 extern UINT eStatusTextMessageID, eErrorTextMessageID, eFatalErrorMessageID, eNormalFinishMessageID,
 eColoredEditMessageID, eDebugMessageID, eCameraFinishMessageID, eCameraProgressMessageID,
-eMakoGrabFrameMessageID, eRepProgressMessageID, eNoAtomsAlertMessageID;
+eMakoGrabFrameMessageID, eRepProgressMessageID, eNoAtomsAlertMessageID, eSetupMakoFrameMessageID, eCloseMakoMessageID;
 
 extern bool eAbortNiawgFlag;
 

@@ -13,7 +13,9 @@ public:
 	makoCamera();
 	~makoCamera();
 	void startMako(int cameraIndex);
-	VmbErrorType saveFrame(const char * fileName);
+	void setupAcquisition();
+	void finishAcquisition();
+	void closeCamera();
 	std::string getCameraStr();
 	AVT::VmbAPI::Examples::ApiController apiController;
 	VmbErrorType err;
@@ -21,7 +23,7 @@ public:
 	std::string imageName;
 
 private:
-	
+	std::vector<AVT::VmbAPI::FramePtr> pFrames;
 };
 
 

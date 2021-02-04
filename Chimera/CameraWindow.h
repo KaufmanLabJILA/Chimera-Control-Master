@@ -42,6 +42,8 @@ class CameraWindow : public CDialog
 		LRESULT onCameraFinish( WPARAM wParam, LPARAM lParam );
 		LRESULT onCameraProgress( WPARAM wParam, LPARAM lParam );
 		LRESULT onMakoGrabFrame(WPARAM wParam, LPARAM lParam);
+		LRESULT onSetupMakoFrame(WPARAM wParam, LPARAM lParam);
+		LRESULT onCloseMako(WPARAM wParam, LPARAM lParam);
 		void handleDblClick( NMHDR* info, LRESULT* lResult );
 		void listViewRClick( NMHDR* info, LRESULT* lResult );
 		void handleSpecialGreaterThanMaxSelection();

@@ -124,7 +124,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;NO_WARN_MBCS_MFC_DEPRECATION;_DEBUG;_CONSOLE;_LIB;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;_SILENCE_FPOS_SEEKPOS_DEPRECATION_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Program Files\Allied Vision\Vimba_4.2;C:\Users\Public\Documents\Allied Vision\Vimba_4.2\VimbaCPP_Examples</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files\Allied Vision\Vimba_4.2;C:\Users\Public\Documents\Allied Vision\Vimba_4.2\VimbaCPP_Examples;C:\Program Files\Allied Vision\Vimba_4.2\VimbaCPP\Include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <ShowIncludes>false</ShowIncludes>
       <UseFullPaths>false</UseFullPaths>
@@ -187,6 +187,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\..\Program Files\Allied Vision\Vimba_4.2\VimbaCPP\Include\VimbaSystem.h" />
     <ClInclude Include="AlertSystem.h" />
     <ClInclude Include="AndorRunSettings.h" />
     <ClInclude Include="ApiController.h" />
