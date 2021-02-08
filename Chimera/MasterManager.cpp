@@ -347,6 +347,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 			input->comm->sendFatalError("Exited main experiment thread abnormally.");
 		}
 		input->thisObj->sendZynqCommand(zynq_tcp, "disableSeq");
+		input->ddss->setDDSs();
 		if (input->settings.saveMakoImages) {
 			input->comm->sendCloseMako();
 		}

@@ -263,15 +263,15 @@ dds11
 bluemotcoil 2.5
 bluex1 0.2
 bluex2 -0.2
-bluey1 0.42
-bluey2 -0.42
+bluey1 0.35
+bluey2 -0.35
 bluez1 -1.2
 bluez2 1.23
 greenmotcoil 0.4
-greenx1 0.11
-greenx2 -0.11
-greeny1 0.04
-greeny2 -0.04
+greenx1 0.09
+greenx2 -0.09
+greeny1 0.05
+greeny2 -0.05
 greenz1 -0.2
 greenz2 0.2
 1 512 1 1 512 1
