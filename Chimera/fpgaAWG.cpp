@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "fpgaAWG.h"
 
-fpgaAWG::fpgaAWG(std::string portID, int baudrate) : fpga(portID, baudrate) {
-	//Initialize
+fpgaAWG::fpgaAWG(std::string portID, int baudrate) : fpga(portID, AWG_SAFEMODE ? -1 : baudrate) {
+	//using ternary operators to change which fpga constructor is called.
 }
 
 fpgaAWG::~fpgaAWG(void) {

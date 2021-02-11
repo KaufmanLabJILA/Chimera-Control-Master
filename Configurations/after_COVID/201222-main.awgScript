@@ -10,33 +10,52 @@ reset
 % channel, start end time us, start end freq MHz, phase toggle, start phase
 %freqlin  0 0 30 .1 .5 1 0
 
-setsteps 0 1 0 90
-amplin   0 0 90 45 45
-freqlin  0 0 90 ryd_freq ryd_freq 1 0
+%setsteps 0 1 0 90
+%amplin   0 0 90 43 43
+%freqlin  0 0 90 ryd_freq ryd_freq 1 0
 
 % program channel. Must be called before other channels get programmed.
 %program 3
 
 % at this point could program other channels
 
-%setsteps 0 1000 0 uvtime
+%setsteps 0 6. 0 12. %clock runs at 153 MHz = (6.5 ns)^-1
+%amplin 0 0 12. 0 43 %DO NOT EXCEED 45% amp.
+%freqlin 0 0 12. ryd_freq ryd_freq 1 0
 
-%amplin   0 0 2000 0 45 %DO NOT EXCEED 50% amp.
-%freqlin  0 0 2000 ryd_freq ryd_freq 1 0
+%setsteps 0 6. 12.+uvtime 18.+uvtime
+%amplin 0 12.+uvtime 18.+uvtime 43 0 %0 
+%freqlin 0 12.+uvtime 18.+uvtime ryd_freq ryd_freq 0 0
 
-%amplin   0 2000 uvtime-2000 45 45 %DO NOT EXCEED 50% amp.
-%freqlin  0 2000 uvtime-2000 ryd_freq ryd_freq 1 0
+%setsteps 0 100 .018+uvtime .1+uvtime
+%amplin 0 .018+uvtime .1+uvtime 0 0
+%freqlin 0 .018+uvtime .1+uvtime ryd_freq ryd_freq 0 0
 
-%amplin   0 uvtime-2000 uvtime 45 0 %DO NOT EXCEED 50% amp.
-%freqlin  0 uvtime-2000 uvtime ryd_freq ryd_freq 1 0
+% for fast pulses:
+setsteps 0 .006 0 .012 %clock runs at 153 MHz = (6.5 ns)^-1
+amplin 0 0 .012 0 43 %DO NOT EXCEED 45% amp.
+freqlin 0 0 .012 ryd_freq ryd_freq 1 0
 
-%setsteps 0 .006 0 .012 %clock runs at 153 MHz = (6.5 ns)^-1
-%amplin 0 0 .012 0 45 
-%freqlin 0 0 .012 ryd_freq ryd_freq 1 90
+setsteps 0 .006 .012+uvtime .018+uvtime
+amplin 0 .012+uvtime .018+uvtime 43 0 %0 
+freqlin 0 .012+uvtime .018+uvtime ryd_freq ryd_freq 0 0
 
-%setsteps 0 .006 .012+uvtime .024+uvtime
-%amplin 0 .012+uvtime .024+uvtime 45 0 %0 
-%freqlin 0 .012+uvtime .024+uvtime ryd_freq ryd_freq 0 0
+%setsteps 0 .1 .018+uvtime .1+uvtime
+%amplin 0 .018+uvtime .1+uvtime 0 0
+%freqlin 0 .018+uvtime .1+uvtime ryd_freq ryd_freq 0 0
+
+% for frequency ramps:
+%setsteps 0 0.02604166666 0 .2 %clock runs at 153 MHz = (6.5 ns)^-1
+%amplin 0 0 .2 0 43 %DO NOT EXCEED 45% amp.
+%freqlin 0 0 .2 ryd_freq ryd_freq 1 0
+
+%setsteps 0 0.02604166666 .2 .2+uvtime
+%amplin 0 .2 .2+uvtime 43 43 %0 
+%freqlin 0 .2 .2+uvtime ryd_freq ryd_freq2 0 0
+
+%setsteps 0 0.02604166666 .2+uvtime .4+uvtime
+%amplin 0 .2+uvtime .4+uvtime 43 0
+%freqlin 0 .2+uvtime .4+uvtime ryd_freq2 ryd_freq2 0 0
 
 program 0
 

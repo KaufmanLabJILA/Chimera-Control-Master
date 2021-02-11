@@ -193,11 +193,11 @@ latticepow
 red3dpow
 0 - 10
 0
-blowfreq
--10 - 10
+uvpm_h
+0 - 7.5
 0
-piezomirror
--10 - 10
+uvpm_v
+0 - 10
 0
 12
 xcoilval 0.018

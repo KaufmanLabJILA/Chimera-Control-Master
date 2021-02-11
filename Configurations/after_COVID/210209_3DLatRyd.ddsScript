@@ -41,17 +41,26 @@ amps  0 100 30 100 0 6 5 1.5
 
 % spectroscopy2
 snapshot 4 reps 2
-%freqs 80 c_3p0+spec3p0/1000 80 80 79.74 c_3p1+f_rad_3d c_3p1+f_ax_3d c_3p1
-freqs 80 c_3p0+spec3p0/1000 80 80 79.74 c_3p1 c_3p1 c_3p1
-amps  0 100 30 100 0 6 3 10
+freqs 80 c_3p0+spec3p0/1000 80 80 79.74 c_3p1+f_rad_3d c_3p1+f_ax_3d c_3p1
+amps  0 100 30 100 0 6 3 2
+
+% phase jump
+snapshot 5 reps 2
+freqs 80 c_3p0+spec3p0/1000+0.1 80 80 79.74 c_3p1+f_rad_3d c_3p1+f_ax_3d c_3p1
+amps  0 100 30 100 0 6 3 2
+
+% spectroscopy2
+snapshot 6 reps 2
+freqs 80 c_3p0+spec3p0/1000 80 80 79.74 c_3p1+f_rad_3d c_3p1+f_ax_3d c_3p1
+amps  0 100 30 100 0 6 3 2
 
 %Parametric heating
-snapshot 5 reps 2
+snapshot 7 reps 2
 freqs 80+pmodf c_3p0+.5 75 80 spec3p1 spec3p1 spec3p1 spec3p1
 amps 30 100 30 100 0 8 4 5
 
 
-snapshot 6 reps 15000
+snapshot 8 reps 15000
 freqs 80+pmodf-.035 c_3p0+spec3p0/1000 75 80 spec3p1 spec3p1 spec3p1 spec3p1
 amps 30 100 30 100 0 8 4 5
 

@@ -7,7 +7,6 @@ def magicFieldsDual813():
   %dac: x1coil .45*.83
   %dac: z1coil .4
 
-  %%% 210117 -- just for one scan %%%
   daclinspace: y1coil .7 .7*dmby 10 10
   daclinspace: y2coil .7 .7*dmby 10 10
   %dac: y1coil .5

@@ -27,4 +27,4 @@ def imageLat(imageTime):
  off: shut707
  off: shut679
  off: imagshut
- t += .01
+ t += .01

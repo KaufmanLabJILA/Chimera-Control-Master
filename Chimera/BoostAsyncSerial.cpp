@@ -1,8 +1,14 @@
 #include "stdafx.h"
 #include "BoostAsyncSerial.h"
 
+
 BoostAsyncSerial::BoostAsyncSerial(std::string portID, int baudrate)
 {
+	if (baudrate == -1) {
+		return;
+		//handle AWG safemode.
+	}
+
 	port_ = std::make_unique<boost::asio::serial_port>(io_service_);
 
 	port_->open(portID);

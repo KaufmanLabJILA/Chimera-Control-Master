@@ -6,7 +6,7 @@ def fieldbigz():
   off: bigzantihelm
   t += 1
   dac: bigzcoil 1.75
-  t +=  7.25
+  t += 7.25
   dac: bigzcoil 2
 
   %daclinspace: bigzcoil 0 1 30 30
