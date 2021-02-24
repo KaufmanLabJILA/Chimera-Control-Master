@@ -40,12 +40,12 @@ def parametric_heat():
 
 pulseon: resetdds .1
 t += .2
-repeat: 7
+repeat: 9
  pulseon: stepdds 0.007
  t += .1
 end
 
-t += 150
+t += 200
 pulseon: resetdds .1
 t += .2
 

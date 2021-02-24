@@ -8,7 +8,7 @@
 #include "awgCommand.h"
 
 
-#define AWGMINSTEP    (double)1/153.6 //Minimum step size in us.
+#define AWGMINSTEP    (double)0.0065104166666666666666666666666 //Minimum step size in us.
 
 class fpgaAWG{
 
@@ -48,9 +48,9 @@ public:
 	static unsigned long int getTTW(double timeMicrosecs) {
 		//Max update rate is 153.6 MHz - step size is 6.51041667 ns.
 		if (timeMicrosecs < 0 || timeMicrosecs > 27962026.7) {
-			thrower("AWG time out of range, should be <27 seconds.");
+			thrower("AWG time out of range, should be <27.96 seconds.");
 		}
-		unsigned long int TTW = round(timeMicrosecs * 1000 / 6.51041667);
+		unsigned long int TTW = round(timeMicrosecs / AWGMINSTEP);
 		return(TTW);
 	}
 	//Attempt to parse moog script

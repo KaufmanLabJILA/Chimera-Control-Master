@@ -37,7 +37,6 @@ on: slower
 off: imagshut
 off: shut688
 off: rp688
-off: uvaottl
 on: bigzantihelm
 
 on: metertrig %meter trigger on falling edge

@@ -89,6 +89,40 @@ void gigaMoog::writeOff(MessageSender& ms) {
 		ms.enqueue(m);
 	}
 
+	//TODO: more clever way of writing move settings off.
+/*
+	for (int channel = 0; channel < 64; channel++) {
+		Message m = Message::make().destination(MessageDestination::KA007)
+			.DAC(MessageDAC::DAC0).channel(channel)
+			.setting(MessageSetting::MOVEFREQUENCY)
+			.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0.0).instantFTW(1).ATWIncr(0).stepSequenceID(0).FTWIncr(0).phaseJump(0);;
+		ms.enqueue(m);
+	}
+
+	for (int channel = 0; channel < 64; channel++) {
+		Message m = Message::make().destination(MessageDestination::KA007)
+			.DAC(MessageDAC::DAC1).channel(channel)
+			.setting(MessageSetting::MOVEFREQUENCY)
+			.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0.0).instantFTW(1).ATWIncr(0).stepSequenceID(0).FTWIncr(0).phaseJump(0);;
+		ms.enqueue(m);
+	}
+
+	for (int channel = 0; channel < 64; channel++) {
+		Message m = Message::make().destination(MessageDestination::KA007)
+			.DAC(MessageDAC::DAC2).channel(channel)
+			.setting(MessageSetting::MOVEFREQUENCY)
+			.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0.0).instantFTW(1).ATWIncr(0).stepSequenceID(0).FTWIncr(0).phaseJump(0);;
+		ms.enqueue(m);
+	}
+
+	for (int channel = 0; channel < 64; channel++) {
+		Message m = Message::make().destination(MessageDestination::KA007)
+			.DAC(MessageDAC::DAC3).channel(channel)
+			.setting(MessageSetting::MOVEFREQUENCY)
+			.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0.0).instantFTW(1).ATWIncr(0).stepSequenceID(0).FTWIncr(0).phaseJump(0);;
+		ms.enqueue(m);
+	}
+*/
 	//{
 	//	Message m = Message::make().destination(MessageDestination::KA007)
 	//		.setting(MessageSetting::TERMINATE_SEQ);
@@ -158,25 +192,57 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vari
 			Message m = Message::make().destination(MessageDestination::KA007)
 				.DAC(dacset).channel(channel.evaluate(variables, variation))
 				.setting(MessageSetting::LOADFREQUENCY)
-				.frequencyMHz(frequency.evaluate(variables, variation)).amplitudePercent(amplitude.evaluate(variables, variation)).phaseDegrees(phase.evaluate(variables, variation));;
+				.frequencyMHz(frequency.evaluate(variables, variation)).amplitudePercent(amplitude.evaluate(variables, variation)).phaseDegrees(phase.evaluate(variables, variation));
 			ms.enqueue(m);
+
+			if (DAC == "dac0") {
+				Message m = Message::make().destination(MessageDestination::KA007)
+					.DAC(dacset).channel(channel.evaluate(variables, variation))
+					.setting(MessageSetting::MOVEFREQUENCY)
+					.frequencyMHz(frequency.evaluate(variables, variation) + 1.4742).amplitudePercent(amplitude.evaluate(variables, variation)).phaseDegrees(phase.evaluate(variables, variation)).instantFTW(1).ATWIncr(-100).stepSequenceID(0).FTWIncr(-1).phaseJump(0);
+				ms.enqueue(m);
+			}
+			else if (DAC == "dac1") {
+				Message m = Message::make().destination(MessageDestination::KA007)
+					.DAC(dacset).channel(channel.evaluate(variables, variation))
+					.setting(MessageSetting::MOVEFREQUENCY)
+					.frequencyMHz(frequency.evaluate(variables, variation) + 1.4742).amplitudePercent(amplitude.evaluate(variables, variation)).phaseDegrees(phase.evaluate(variables, variation)).instantFTW(1).ATWIncr(-100).stepSequenceID(0).FTWIncr(-1).phaseJump(0);
+				ms.enqueue(m);
+			}
+			else if (DAC == "dac2") {
+				Message m = Message::make().destination(MessageDestination::KA007)
+					.DAC(dacset).channel(channel.evaluate(variables, variation))
+					.setting(MessageSetting::MOVEFREQUENCY)
+					.frequencyMHz(frequency.evaluate(variables, variation)).amplitudePercent(amplitude.evaluate(variables, variation)).phaseDegrees(phase.evaluate(variables, variation)).instantFTW(1).ATWIncr(-100).stepSequenceID(0).FTWIncr(-1).phaseJump(0);
+				ms.enqueue(m);
+			}
+			else if (DAC == "dac3") {
+				Message m = Message::make().destination(MessageDestination::KA007)
+					.DAC(dacset).channel(channel.evaluate(variables, variation))
+					.setting(MessageSetting::MOVEFREQUENCY)
+					.frequencyMHz(frequency.evaluate(variables, variation)).amplitudePercent(amplitude.evaluate(variables, variation)).phaseDegrees(phase.evaluate(variables, variation)).instantFTW(1).ATWIncr(-100).stepSequenceID(0).FTWIncr(-1).phaseJump(0);
+				ms.enqueue(m);
+			}
+
+
 		}
 		else if (word == "test") {
 
-			for (int channel = 0; channel < 16; channel++) {
-				Message m = Message::make().destination(MessageDestination::KA007)
-					.DAC(MessageDAC::DAC0).channel(channel)
-					.setting(MessageSetting::MOVEFREQUENCY)
-					.frequencyMHz(120+channel/16).amplitudePercent(70).phaseDegrees(180.0).instantFTW(1).ATWIncr(-100).stepSequenceID(0).FTWIncr(-1).phaseJump(0);
-				ms.enqueue(m);
-			}
-			for (int channel = 0; channel < 20; channel++) {
-				Message m = Message::make().destination(MessageDestination::KA007)
-					.DAC(MessageDAC::DAC1).channel(channel)
-					.setting(MessageSetting::MOVEFREQUENCY)
-					.frequencyMHz(120 + channel/2).amplitudePercent(70).phaseDegrees(180.0).instantFTW(1).ATWIncr(-100).stepSequenceID(0).FTWIncr(-1).phaseJump(0);
-				ms.enqueue(m);
-			};
+			//for (int channel = 0; channel < 16; channel++) {
+			//	Message m = Message::make().destination(MessageDestination::KA007)
+			//		.DAC(MessageDAC::DAC0).channel(channel)
+			//		.setting(MessageSetting::MOVEFREQUENCY)
+			//		.frequencyMHz(120+channel/16).amplitudePercent(70).phaseDegrees(180.0).instantFTW(1).ATWIncr(-100).stepSequenceID(0).FTWIncr(-1).phaseJump(0);
+			//	ms.enqueue(m);
+			//}
+			//for (int channel = 0; channel < 20; channel++) {
+			//	Message m = Message::make().destination(MessageDestination::KA007)
+			//		.DAC(MessageDAC::DAC1).channel(channel)
+			//		.setting(MessageSetting::MOVEFREQUENCY)
+			//		.frequencyMHz(120 + channel/2).amplitudePercent(70).phaseDegrees(180.0).instantFTW(1).ATWIncr(-100).stepSequenceID(0).FTWIncr(-1).phaseJump(0);
+			//	ms.enqueue(m);
+			//};
+
 			//for (int channel = 0; channel < 8
 			//	; channel++) {
 			//	Message m = Message::make().destination(MessageDestination::KA007)

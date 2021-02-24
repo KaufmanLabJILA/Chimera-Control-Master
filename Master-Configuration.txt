@@ -77,7 +77,7 @@ pi407
 0
 rp688
 0
-uvaottl
+clockdetune
 0
 andorshut
 0
@@ -130,8 +130,8 @@ d15
 x1coil
 -10 - 10
 0
-x2coil
--10 - 10
+tweezerpow813
+-10 - 1
 0
 y1coil
 -10 - 10

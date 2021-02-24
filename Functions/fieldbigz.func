@@ -18,10 +18,10 @@ def fieldbigz():
 %  t +=  7.25
 %  dac: bigzcoil 1.95
 
-%  dac: bigzcoil 0.65 
-%  t +=  3.99 
-%  dac: bigzcoil 1 
-
+  %dac: bigzcoil 0.65 
+  %t +=  3.99 
+  %dac: bigzcoil 1 
+  %t += 15
 %  dac: bigzcoil 1.745
 %  t +=  7.25
 %  dac: bigzcoil 1.99 

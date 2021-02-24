@@ -104,8 +104,12 @@ void fpgaAWG::setStep(unsigned long channel, float tStep, float tStart, float tE
 	};
 	stepSize = ts;
 
-	int numSteps = round((tEnd - tStart) / (stepSize * AWGMINSTEP));
+	int numSteps = ceil((tEnd - tStart) / (stepSize * AWGMINSTEP));
 
+	if (numSteps <= 1) {
+		thrower("Steps duration shorter than step size.");
+	};
+	
 	std::vector<awgCommand> & awgCommandList = selectCommandList(channel);
 
 	nPreviousStepSetting = awgCommandList.size();
@@ -121,8 +125,8 @@ void fpgaAWG::setStep(unsigned long channel, float tStep, float tStart, float tE
 }
 
 void fpgaAWG::freqLinearRamp(unsigned long channel, float tStart, float tEnd, float fStart, float fEnd, bool phase_update, float phaseStart) {
-	int iStart = nPreviousStepSetting + round((tStart - startTimeStepSetting) / (stepSize * AWGMINSTEP));
-	int numSteps = round((tEnd - tStart) / (stepSize * AWGMINSTEP));
+	int iStart = nPreviousStepSetting + ceil((tStart - startTimeStepSetting) / (stepSize * AWGMINSTEP));
+	int numSteps = ceil((tEnd - tStart) / (stepSize * AWGMINSTEP));
 	float fStep = (fEnd - fStart) / (numSteps-1);
 
 	std::vector<awgCommand> & awgCommandList = selectCommandList(channel);
@@ -140,8 +144,8 @@ void fpgaAWG::freqLinearRamp(unsigned long channel, float tStart, float tEnd, fl
 }
 
 void fpgaAWG::ampLinearRamp(unsigned long channel, float tStart, float tEnd, float aStart, float aEnd) {
-	int iStart = nPreviousStepSetting + round((tStart - startTimeStepSetting) / (stepSize * AWGMINSTEP));
-	int numSteps = round((tEnd - tStart) / (stepSize * AWGMINSTEP));
+	int iStart = nPreviousStepSetting + ceil((tStart - startTimeStepSetting) / (stepSize * AWGMINSTEP));
+	int numSteps = ceil((tEnd - tStart) / (stepSize * AWGMINSTEP));
 	float aStep = (aEnd - aStart) / (numSteps - 1);
 
 	std::vector<awgCommand> & awgCommandList = selectCommandList(channel);
@@ -228,7 +232,18 @@ void fpgaAWG::analyzeAWGScript(fpgaAWG* fpgaawg, std::vector<variableType>& vari
 	currentAWGScript >> word;
 	std::vector<UINT> totalRepeatNum, currentRepeatNum;
 	std::vector<std::streamoff> repeatPos;
+	
+	//Important: clear all old settings before new write.
+	awgCommandListDAC0.clear();
+	awgCommandListDAC1.clear();
+	awgCommandListDAC2.clear();
+	awgCommandListDAC3.clear();
+	nPreviousStepSetting = 0;
+	startTimeStepSetting = 0.0;
+	stepSize = 1;
+	
 	// the analysis loop.
+
 	while (!(currentAWGScript.peek() == EOF) || word != "__end__")
 	{
 		if (word == "customsequence") {

@@ -3,4 +3,5 @@ def magicFields813():
   dac: y1coil .7
   dac: y2coil .7
   dac: x1coil .014
-  dac: z1coil .39423
+%  dac: z1coil .39423 
+  dac: z1coil .368 %.37412 %.3755 %changed on 210216
