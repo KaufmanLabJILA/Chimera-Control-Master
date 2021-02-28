@@ -681,6 +681,11 @@ const char GIGAMOOG_INFO_TEXT[] =
 "Accepted Commands:\n"
 "(A) set:\n"
 "DAC number, channel number, amplitude (%), frequency (MHz), phase (degrees)."
+"(B) setmove:\n"
+"Snapshot ID, DAC number, channel number, instant frequency jump toggle, phase jump toggle, amplitude (%), amplitude increment, frequency (MHz), frequency increment, phase (degrees).\n"
+"Note that step increments must be of correct sign."
+"(C) hardreset:\n"
+"sets all output and move settings to 0 amp 0 freq."
 ;
 
 const char DDS_INFO_TEXT[] =

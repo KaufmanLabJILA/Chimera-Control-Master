@@ -278,7 +278,7 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 		}
 	}
 	if (editType == "Gmoog") {
-		if (word == "set")
+		if (word == "set" || word == "setmove")
 		{
 			return rgbs["theme purple"];
 		}
@@ -290,6 +290,9 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 		else if (word == "dac0" || word == "dac1" || word == "dac2" || word == "dac3")
 		{
 			return rgbs["theme green"];
+		}
+		else if (word == "hardreset") {
+			return rgbs["theme orange"];
 		}
 		if (word.size() > 8)
 		{

@@ -194,7 +194,7 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vari
 				.setting(MessageSetting::LOADFREQUENCY)
 				.frequencyMHz(frequency.evaluate(variables, variation)).amplitudePercent(amplitude.evaluate(variables, variation)).phaseDegrees(phase.evaluate(variables, variation));
 			ms.enqueue(m);
-
+/*
 			if (DAC == "dac0") {
 				Message m = Message::make().destination(MessageDestination::KA007)
 					.DAC(dacset).channel(channel.evaluate(variables, variation))
@@ -222,13 +222,88 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vari
 					.setting(MessageSetting::MOVEFREQUENCY)
 					.frequencyMHz(frequency.evaluate(variables, variation)).amplitudePercent(amplitude.evaluate(variables, variation)).phaseDegrees(phase.evaluate(variables, variation)).instantFTW(1).ATWIncr(-100).stepSequenceID(0).FTWIncr(-1).phaseJump(0);
 				ms.enqueue(m);
-			}
+			}*/
 
 
 		}
-		else if (word == "test") {
+		else if (word == "setmove") {
+			std::string DAC;
+			Expression channel, amplitude, frequency, phase, ampIncr, freqIncr;
+			std::string jumpFreq, jumpPhase, snapshotID;
+			
+			currentMoogScript >> snapshotID;
+			currentMoogScript >> DAC;
+			currentMoogScript >> channel;
+			currentMoogScript >> jumpFreq;
+			currentMoogScript >> jumpPhase;
+			currentMoogScript >> amplitude;
+			currentMoogScript >> ampIncr;
+			currentMoogScript >> frequency;
+			currentMoogScript >> freqIncr;
+			currentMoogScript >> phase;
 
-			//for (int channel = 0; channel < 16; channel++) {
+			MessageDAC dacset;
+			if (DAC == "dac0") {
+				dacset = MessageDAC::DAC0;
+			}
+			else if (DAC == "dac1") {
+				dacset = MessageDAC::DAC1;
+			}
+			else if (DAC == "dac2") {
+				dacset = MessageDAC::DAC2;
+			}
+			else if (DAC == "dac3") {
+				dacset = MessageDAC::DAC3;
+			}
+			else {
+				thrower("ERROR: unrecognized moog DAC selection: \"" + DAC + "\"");
+			}
+			Message m = Message::make().destination(MessageDestination::KA007)
+				.DAC(dacset).channel(channel.evaluate(variables, variation))
+				.setting(MessageSetting::MOVEFREQUENCY)
+				.frequencyMHz(frequency.evaluate(variables, variation)).amplitudePercent(amplitude.evaluate(variables, variation)).phaseDegrees(phase.evaluate(variables, variation)).instantFTW(stoul(jumpFreq, nullptr)).ATWIncr(round(ampIncr.evaluate(variables, variation))).stepSequenceID(stoul(snapshotID, nullptr)).FTWIncr(round(freqIncr.evaluate(variables, variation))).phaseJump(stoul(jumpPhase, nullptr));
+			ms.enqueue(m);
+		}
+		else if (word == "hardreset") {
+			writeOff(ms);
+
+			// RESET MOVE SETTINGS. TODO: do this more elegantly
+			for (int stepID = 0; stepID < 256; stepID++) {
+				for (int channel = 0; channel < 64; channel++) {
+					Message m = Message::make().destination(MessageDestination::KA007)
+						.DAC(MessageDAC::DAC0).channel(channel)
+						.setting(MessageSetting::MOVEFREQUENCY)
+						.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0.0).instantFTW(1).ATWIncr(0).stepSequenceID(stepID).FTWIncr(0).phaseJump(0);;
+					ms.enqueue(m);
+				}
+
+				for (int channel = 0; channel < 64; channel++) {
+					Message m = Message::make().destination(MessageDestination::KA007)
+						.DAC(MessageDAC::DAC1).channel(channel)
+						.setting(MessageSetting::MOVEFREQUENCY)
+						.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0.0).instantFTW(1).ATWIncr(0).stepSequenceID(stepID).FTWIncr(0).phaseJump(0);;
+					ms.enqueue(m);
+				}
+
+				for (int channel = 0; channel < 64; channel++) {
+					Message m = Message::make().destination(MessageDestination::KA007)
+						.DAC(MessageDAC::DAC2).channel(channel)
+						.setting(MessageSetting::MOVEFREQUENCY)
+						.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0.0).instantFTW(1).ATWIncr(0).stepSequenceID(stepID).FTWIncr(0).phaseJump(0);;
+					ms.enqueue(m);
+				}
+
+				for (int channel = 0; channel < 64; channel++) {
+					Message m = Message::make().destination(MessageDestination::KA007)
+						.DAC(MessageDAC::DAC3).channel(channel)
+						.setting(MessageSetting::MOVEFREQUENCY)
+						.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0.0).instantFTW(1).ATWIncr(0).stepSequenceID(stepID).FTWIncr(0).phaseJump(0);;
+					ms.enqueue(m);
+				}
+			}
+		}
+		else if (word == "test") {
+					//for (int channel = 0; channel < 16; channel++) {
 			//	Message m = Message::make().destination(MessageDestination::KA007)
 			//		.DAC(MessageDAC::DAC0).channel(channel)
 			//		.setting(MessageSetting::MOVEFREQUENCY)
@@ -251,7 +326,6 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vari
 			//		.frequencyMHz(235).amplitudePercent(5 + 5 * channel).phaseDegrees(180.0).instantFTW(0).ATWIncr(-1).stepSequenceID(2).FTWIncr(1).phaseJump(1);
 			//	ms.enqueue(m);
 			//};
-
 		}
 		else
 		{
