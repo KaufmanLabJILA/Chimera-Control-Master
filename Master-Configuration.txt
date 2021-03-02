@@ -11,7 +11,7 @@ greenbroad
 0
 greennarrow
 0
-dio1.6
+greenimage
 0
 dio1.7
 0
@@ -268,10 +268,10 @@ bluey2 -0.35
 bluez1 -1.2
 bluez2 1.23
 greenmotcoil 0.4
-greenx1 0.09
-greenx2 -0.09
-greeny1 0.05
-greeny2 -0.05
-greenz1 -0.2
-greenz2 0.2
+greenx1 0.08
+greenx2 -0.08
+greeny1 0.02
+greeny2 -0.02
+greenz1 -0.22
+greenz2 0.22
 1 512 1 1 512 1

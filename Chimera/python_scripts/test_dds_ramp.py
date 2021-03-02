@@ -105,7 +105,7 @@ class DDS_ramp_tester:
   def dds_seq_write_ftw_points(self):
     points=[]
     #these ramps should complete in just under 64 ms
-    points.append(DDS_ftw_seq_point(address=0,time=0,start=472446000,steps=0,incr=0,chan=0))
+    points.append(DDS_ftw_seq_point(address=0,time=0,start=800000,steps=10000,incr=120000,chan=0))
     #points.append(DDS_ftw_seq_point(address=1,time=   20000, start=4000000,steps=0,incr=0,chan=0)) 
     # points.append(DDS_ftw_seq_point(address=1,time=1,start=1000000,steps=1,incr=0,chan=3)) 
     points.append(DDS_ftw_seq_point(address=1,time=   0,start=     0,steps=    0,incr=    0,chan=0))
@@ -116,9 +116,9 @@ class DDS_ramp_tester:
 
   def dio_seq_write_points(self):
       points=[]
-      points.append(GPIO_seq_point(address=0,time=1,outputA=0x00000001,outputB=0x00000001))
-      points.append(GPIO_seq_point(address=1,time=20000,outputA=0x00000000,outputB=0x00000000))
-      points.append(GPIO_seq_point(address=2,time=40000,outputA=0x00000001,outputB=0x00000001))
+      points.append(GPIO_seq_point(address=0,time=2000000,outputA=0x00000001,outputB=0x00000001))
+      points.append(GPIO_seq_point(address=1,time=3000000,outputA=0x00000000,outputB=0x00000000))
+      points.append(GPIO_seq_point(address=2,time=4000000,outputA=0x00000001,outputB=0x00000001))
       points.append(GPIO_seq_point(address=3,time=6400000,outputA=0x00000000,outputB=0x00000000))
       points.append(GPIO_seq_point(address=4,time=0,outputA=0x00000000,outputB=0x00000000))
 
@@ -156,7 +156,7 @@ if __name__ == "__main__":
   import sys
   import dds_lock_pll
 
-  tester = DDS_ramp_tester(fifo_devices['AD9959_1'], fifo_devices['AD9959_1_seq_atw'], fifo_devices['AD9959_1_seq_ftw'], fifo_devices['GPIO_seq'])
+  tester = DDS_ramp_tester(fifo_devices['AD9959_0'], fifo_devices['AD9959_0_seq_atw'], fifo_devices['AD9959_0_seq_ftw'], fifo_devices['GPIO_seq'])
   tester.mod_disable()
   reset()
   dds_lock_pll.dds_lock_pll()
