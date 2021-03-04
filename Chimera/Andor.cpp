@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ATMCD32D.h"
 #include "Andor.h"
+#include "atcore.h"
 #include "CameraWindow.h"
 #include <chrono>
 #include <process.h>
@@ -14,7 +15,7 @@ std::string AndorCamera::getSystemInfo()
 	//AndorCapabilities capabilities;
 	//getCapabilities( capabilities );
 	info += "Camera Model: " + getHeadModel() + "\n";
-	int num; 
+	int num;
 	getSerialNumber(num);
 	info += "Camera Serial Number: " + str(num) + "\n";
 	return info;
@@ -33,116 +34,17 @@ AndorCamera::AndorCamera()
 	try
 	{
 		initialize();
-		setBaselineClamp(1);
-		//setBaselineOffset(0); //TODO: put this back?
-		setShutter(0, 5, 30, 30); //Shutter open for any series, 30ms open/close time.
-		setDMAParameters(1, 0.0001f);
+		//setBaselineClamp(1);
+		//setShutter(0, 5, 30, 30); //Shutter open for any series, 30ms open/close time.
+		//setDMAParameters(1, 0.0001f);
 		// TODO: turn fan back off, fanmode 2
-		setFanMode(0); //Internal fan off.
-		SetFastExternalTrigger(0); //TODO: Be careful of this setting.
+		//setFanMode(0); //Internal fan off.
+		//SetFastExternalTrigger(0); //TODO: Be careful of this setting.
 	}
 	catch (Error& err)
 	{
 		errBox(err.what());
 	}
-	/*
-	//appendColoredText("Initializing......................... ", eRichEditMessageBoxRichEditHandle, IDC_RICH_EDIT_MESSAGE_BOX_RICH_EDIT_ID, defaultCharFormat,
-	//				  eInitializeDialogBoxHandle);
-	//initializationUpdate(errorMessage, defaultCharFormat, redCharFormat, greenCharFormat);
-
-	if (!ANDOR_SAFEMODE)
-	{
-		// Get camera eCameraCapabilities
-		//errorMessage = myAndor::andorErrorChecker(GetCapabilities(&eCameraCapabilities));
-	}
-	//eCameraCapabilities.
-	//appendColoredText("Get Andor Capabilities information... ", eRichEditMessageBoxRichEditHandle, IDC_RICH_EDIT_MESSAGE_BOX_RICH_EDIT_ID, defaultCharFormat,
-	//				  eInitializeDialogBoxHandle);
-	//initializationUpdate(errorMessage, defaultCharFormat, redCharFormat, greenCharFormat);
-
-	if (!ANDOR_SAFEMODE)
-	{
-		// Get Head Model
-		//errorMessage = myAndor::andorErrorChecker(GetHeadModel(eModel));
-	}
-	//appendColoredText("Get Head Model information........... ", eRichEditMessageBoxRichEditHandle, IDC_RICH_EDIT_MESSAGE_BOX_RICH_EDIT_ID, defaultCharFormat,
-	//				  eInitializeDialogBoxHandle);
-	//initializationUpdate(errorMessage, defaultCharFormat, redCharFormat, greenCharFormat);
-
-	if (!ANDOR_SAFEMODE)
-	{
-		// Get detector information
-		//errorMessage = myAndor::andorErrorChecker(GetDetector(&eXPixels, &eYPixels));
-	}
-	else
-	{
-		//eXPixels = 512;
-		//eYPixels = 512;
-	}
-	//appendColoredText("Get Detector information............. ", eRichEditMessageBoxRichEditHandle, IDC_RICH_EDIT_MESSAGE_BOX_RICH_EDIT_ID, defaultCharFormat,
-	//				  eInitializeDialogBoxHandle);
-	//initializationUpdate(errorMessage, defaultCharFormat, redCharFormat, greenCharFormat);
-
-	if (!ANDOR_SAFEMODE)
-	{
-		// Set Vertical speed to recommended
-		//GetFastestRecommendedVSSpeed(&eVerticalSpeedNumber, &speed);
-		//errorMessage = myAndor::andorErrorChecker(SetVSSpeed(eVerticalSpeedNumber));
-	}
-	//appendColoredText("Set Vertical Speed................... ", eRichEditMessageBoxRichEditHandle, IDC_RICH_EDIT_MESSAGE_BOX_RICH_EDIT_ID, defaultCharFormat,
-	//				  eInitializeDialogBoxHandle);
-	//initializationUpdate(errorMessage, defaultCharFormat, redCharFormat, greenCharFormat);
-
-	// Set Horizontal Speed to max
-	STemp = 0;
-	eHorizontalSpeedNumber = 0;
-	eADNumber = 0;
-	if (!ANDOR_SAFEMODE)
-	{
-		errorMessage = myAndor::andorErrorChecker(GetNumberADChannels(&nAD));
-	}
-	//appendColoredText("Get number AD Channel................ ", eRichEditMessageBoxRichEditHandle, IDC_RICH_EDIT_MESSAGE_BOX_RICH_EDIT_ID, defaultCharFormat,
-	//				  eInitializeDialogBoxHandle);
-	//initializationUpdate(errorMessage, defaultCharFormat, redCharFormat, greenCharFormat);
-	if (!ANDOR_SAFEMODE)
-	{
-		errorMessage = myAndor::andorErrorChecker(SetBaselineClamp(1));
-	}
-	//appendColoredText("Set Baseline Clamp................... ", eRichEditMessageBoxRichEditHandle, IDC_RICH_EDIT_MESSAGE_BOX_RICH_EDIT_ID, defaultCharFormat,
-					  eInitializeDialogBoxHandle);
-	//initializationUpdate(errorMessage, defaultCharFormat, redCharFormat, greenCharFormat);
-	if (!ANDOR_SAFEMODE)
-	{
-		errorMessage = myAndor::andorErrorChecker(SetBaselineOffset(0));
-	}
-	//appendColoredText("Set Baseline Offset Value............ ", eRichEditMessageBoxRichEditHandle, IDC_RICH_EDIT_MESSAGE_BOX_RICH_EDIT_ID, defaultCharFormat,
-					  eInitializeDialogBoxHandle);
-	//initializationUpdate(errorMessage, defaultCharFormat, redCharFormat, greenCharFormat);
-
-	if (!ANDOR_SAFEMODE)
-	{
-		// Setting this makes the camera ALWAYS send an image as soon as it receives it instead of waiting a couple images before notifying the computer.
-		// It does this wait if you don't set this and the images are taken very fast, e.g. < 15 ms.
-		errorMessage = myAndor::andorErrorChecker(SetDMAParameters(1, 0.0001));
-	}
-	/*
-	//appendColoredText("Set DMA Parameters................... ", eRichEditMessageBoxRichEditHandle, IDC_RICH_EDIT_MESSAGE_BOX_RICH_EDIT_ID, defaultCharFormat,
-					  eInitializeDialogBoxHandle);
-	//initializationUpdate(errorMessage, defaultCharFormat, redCharFormat, greenCharFormat);
-	
-	if (!(*input->plotter).is_open())
-	{
-		errorMessage = "GNUPLOT didn't open correctly.";
-	}
-	else
-	{
-		errorMessage = "GOOD";
-	}
-	//appendColoredText("Opening GNUPLOT...................... ", eRichEditMessageBoxRichEditHandle, IDC_RICH_EDIT_MESSAGE_BOX_RICH_EDIT_ID, defaultCharFormat,
-	//				  eInitializeDialogBoxHandle);
-	//initializationUpdate(errorMessage, defaultCharFormat, redCharFormat, greenCharFormat);
-	*/
-
 
 }
 
@@ -156,12 +58,12 @@ void AndorCamera::initializeClass(Communicator* comm, chronoTimes* imageTimes)
 	_beginthreadex(NULL, 0, &AndorCamera::cameraThread, &threadInput, 0, &cameraThreadID);
 }
 
-void AndorCamera::updatePictureNumber( ULONGLONG newNumber )
+void AndorCamera::updatePictureNumber(ULONGLONG newNumber)
 {
 	currentPictureNumber = newNumber;
 }
 
-/* 
+/*
  * pause the camera thread which watches the camera for pictures
  */
 void AndorCamera::pauseThread()
@@ -177,41 +79,43 @@ void AndorCamera::pauseThread()
 void AndorCamera::onFinish()
 {
 	threadInput.signaler.notify_all();
+	AT_Close(CameraHndl);
+	AT_FinaliseLibrary();
 	cameraIsRunning = false;
 }
 
 
 /*
- * this thread watches the camera for pictures and when it sees a picture lets the main thread know via a message. 
+ * this thread watches the camera for pictures and when it sees a picture lets the main thread know via a message.
  * it gets initialized at the start of the program and is basically always running.
  */
-unsigned __stdcall AndorCamera::cameraThread( void* voidPtr )
+unsigned __stdcall AndorCamera::cameraThread(void* voidPtr)
 {
-	cameraThreadInput* input = (cameraThreadInput*) voidPtr;
+	cameraThreadInput* input = (cameraThreadInput*)voidPtr;
 	//... I'm not sure what this lock is doing here... why not inside while loop?
-	std::unique_lock<std::mutex> lock( input->runMutex );
+	std::unique_lock<std::mutex> lock(input->runMutex);
 	int safeModeCount = 0;
 	long pictureNumber = 0;
 	bool armed = false;
-	while ( !input->Andor->cameraThreadExitIndicator )
+	while (!input->Andor->cameraThreadExitIndicator)
 	{
-		/* 
+		/*
 		 * wait until unlocked. this happens when data is started.
-		 * the first argument is the lock.  The when the lock is locked, this function just sits and doesn't use cpu, 
-		 * unlike a while(gGlobalCheck){} loop that waits for gGlobalCheck to be set. The second argument here is a 
+		 * the first argument is the lock.  The when the lock is locked, this function just sits and doesn't use cpu,
+		 * unlike a while(gGlobalCheck){} loop that waits for gGlobalCheck to be set. The second argument here is a
 		 * lambda, more or less a quick inline function that doesn't in this case have a name. This handles something
 		 * called spurious wakeups, which are weird and appear to relate to some optimization things from the quick
 		 * search I did. Regardless, I don't fully understand why spurious wakeups occur, but this protects against
 		 * them.
 		 */
-		// Also, anytime this gets locked, the count should be reset.
-		input->signaler.wait( lock, [input, &safeModeCount ]() { return input->spuriousWakeupHandler; } );
-		if ( !ANDOR_SAFEMODE )
+		 // Also, anytime this gets locked, the count should be reset.
+		input->signaler.wait(lock, [input, &safeModeCount]() { return input->spuriousWakeupHandler; });
+		if (!ANDOR_SAFEMODE)
 		{
 			try
 			{
 				int status;
-				input->Andor->queryStatus(status);
+				//input->Andor->queryStatus(status);
 				if (status == DRV_IDLE && armed)
 				{
 					// signal the end to the main thread.
@@ -222,9 +126,9 @@ unsigned __stdcall AndorCamera::cameraThread( void* voidPtr )
 				else
 				{
 					input->Andor->waitForAcquisition();
-					if ( pictureNumber % 2 == 0 )
+					if (pictureNumber % 2 == 0)
 					{
-						(*input->imageTimes).push_back( std::chrono::high_resolution_clock::now( ) );
+						(*input->imageTimes).push_back(std::chrono::high_resolution_clock::now());
 					}
 					armed = true;
 					try
@@ -248,22 +152,22 @@ unsigned __stdcall AndorCamera::cameraThread( void* voidPtr )
 		{
 			// simulate an actual wait.
 			//Sleep( ULONG(input->Andor->runSettings.kineticCycleTime * 1000) );
-			Sleep( 100 );
-			if ( pictureNumber % 2 == 0 )
+			Sleep(100);
+			if (pictureNumber % 2 == 0)
 			{
-				(*input->imageTimes).push_back( std::chrono::high_resolution_clock::now( ) );
+				(*input->imageTimes).push_back(std::chrono::high_resolution_clock::now());
 			}
-			if ( input->Andor->cameraIsRunning && safeModeCount < input->Andor->runSettings.totalPicsInExperiment)
+			if (input->Andor->cameraIsRunning && safeModeCount < input->Andor->runSettings.totalPicsInExperiment)
 			{
-				if ( input->Andor->runSettings.cameraMode == "Kinetic Series Mode" 
-					 || input->Andor->runSettings.cameraMode == "Accumulation Mode" )
+				if (input->Andor->runSettings.cameraMode == "Kinetic Series Mode"
+					|| input->Andor->runSettings.cameraMode == "Accumulation Mode")
 				{
 					safeModeCount++;
-					input->comm->sendCameraProgress( safeModeCount );
+					input->comm->sendCameraProgress(safeModeCount);
 				}
 				else
 				{
-					input->comm->sendCameraProgress( 1 );
+					input->comm->sendCameraProgress(1);
 				}
 			}
 			else
@@ -297,46 +201,46 @@ void AndorCamera::setAcquisitionMode()
 	setAcquisitionMode(runSettings.acquisitionMode);
 }
 
-/* 
+/*
 	* Large function which initializes a given camera image run.
 	*/
 void AndorCamera::armCamera(CameraWindow* camWin, double& minKineticCycleTime)
 {
 	/// Set a bunch of parameters.
 	// Set to 1 MHz readout rate in both cases
-	setADChannel(0); //changed to 0
-	if (runSettings.emGainModeIsOn)
-	{
-		setHSSpeed(0, 0);
-	}
-	else
-	{
-		setHSSpeed(1, 0);
-	}
-	setVSSpeed(2); //TODO: change "1" to meaningful value.
-	setAcquisitionMode();
-	setReadMode();
+	//setADChannel(0); //changed to 0
+	//if (runSettings.emGainModeIsOn)
+	//{
+	//	setHSSpeed(0, 0);
+	//}
+	//else
+	//{
+	//	setHSSpeed(1, 0);
+	//}
+	//setVSSpeed(2); //TODO: change "1" to meaningful value.
+	//setAcquisitionMode();
+	//setReadMode();
 	setExposures();
 	setImageParametersToCamera();
 	// Set Mode-Specific Parameters
-	if (runSettings.acquisitionMode == 5)
-	{
-		setFrameTransferMode();
-	}
-	else if (runSettings.acquisitionMode == 3)
-	{
-		setFrameTransferMode(0);
-		setKineticCycleTime();
-		setScanNumber();
-		// set this to 1.
-		setNumberAccumulations(true);
-	}	
-	else if (runSettings.acquisitionMode == 2)
-	{
-		setAccumulationCycleTime();
-		setNumberAccumulations(false);
-	}
-	setGainMode();
+	//if (runSettings.acquisitionMode == 5)
+	//{
+	//	setFrameTransferMode();
+	//}
+	//else if (runSettings.acquisitionMode == 3)
+	//{
+	//	setFrameTransferMode(0);
+	//	setKineticCycleTime();
+	//	setScanNumber();
+	//	// set this to 1.
+	//	setNumberAccumulations(true);
+	//}
+	//else if (runSettings.acquisitionMode == 2)
+	//{
+	//	setAccumulationCycleTime();
+	//	setNumberAccumulations(false);
+	//}
+	//setGainMode();
 	setCameraTriggerMode();
 	// Set trigger mode.
 	// check plotting parameters
@@ -347,7 +251,7 @@ void AndorCamera::armCamera(CameraWindow* camWin, double& minKineticCycleTime)
 	// Initialize the thread accumulation number.
 	// this->??? = 1;
 	// //////////////////////////////
-	queryStatus();
+	//queryStatus();
 
 	/// Do some plotting stuffs
 	//eAlerts.setAlertThreshold();
@@ -356,21 +260,21 @@ void AndorCamera::armCamera(CameraWindow* camWin, double& minKineticCycleTime)
 	// the lock is released when the lock object function goes out of scope, which happens immediately after
 	// the start acquisition call
 	//std::lock_guard<std::mutex> lock( threadInput.runMutex );
-	
+
 	// get the min time after setting everything else.
-	minKineticCycleTime = getMinKineticCycleTime( );
+	//minKineticCycleTime = getMinKineticCycleTime();
 
 	cameraIsRunning = true;
 	// remove the spurious wakeup check.
 	threadInput.spuriousWakeupHandler = true;
 	// notify the thread that the experiment has started..
 	threadInput.signaler.notify_all();
-	
+
 	startAcquisition();
 }
 
 
-/* 
+/*
  * This function checks for new pictures, if they exist it gets them, and shapes them into the array which holds all of
  * the pictures for a given repetition.
  */
@@ -407,8 +311,8 @@ std::vector<std::vector<long>> AndorCamera::acquireImageData()
 	}
 	else
 	{
-		experimentPictureNumber = (((currentPictureNumber - 1) % runSettings.totalPicsInVariation) 
-								   % runSettings.picsPerRepetition);
+		experimentPictureNumber = (((currentPictureNumber - 1) % runSettings.totalPicsInVariation)
+			% runSettings.picsPerRepetition);
 	}
 
 	if (experimentPictureNumber == 0)
@@ -431,7 +335,7 @@ std::vector<std::vector<long>> AndorCamera::acquireImageData()
 	tempImage.resize(size);
 	WaitForSingleObject(imagesMutex, INFINITE);
 	imagesOfExperiment[experimentPictureNumber].resize(size);
- 	if (!ANDOR_SAFEMODE)
+	if (!ANDOR_SAFEMODE)
 	{
 		getOldestImage(tempImage); //TODO: go back to getoldest.
 		//getNewestImage(tempImage);
@@ -441,8 +345,8 @@ std::vector<std::vector<long>> AndorCamera::acquireImageData()
 		// immediately rotate
 		for (UINT imageVecInc = 0; imageVecInc < imagesOfExperiment[experimentPictureNumber].size(); imageVecInc++)
 		{
-			imagesOfExperiment[experimentPictureNumber][imageVecInc] = tempImage[((imageVecInc 
-				% runSettings.imageSettings.width) + 1) * runSettings.imageSettings.height 
+			imagesOfExperiment[experimentPictureNumber][imageVecInc] = tempImage[((imageVecInc
+				% runSettings.imageSettings.width) + 1) * runSettings.imageSettings.height
 				- imageVecInc / runSettings.imageSettings.width - 1];
 		}
 	}
@@ -464,13 +368,13 @@ std::vector<std::vector<long>> AndorCamera::acquireImageData()
 										0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,
 										0,	1,	0,	1,	0,	1,	0,	1,	0,	1,	0,	1,	0,	1,	0,
 										0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0
-									  };
+		};
 		atomSpots = { 0,0,0,
 					  0,1,0,
 					  0,0,0,
 					  0,0,0,
-					  0,0,0};
-					
+					  0,0,0 };
+
 		for (UINT imageVecInc = 0; imageVecInc < imagesOfExperiment[experimentPictureNumber].size(); imageVecInc++)
 		{
 			tempImage[imageVecInc] = rand() % 30 + 95;
@@ -499,7 +403,7 @@ std::vector<std::vector<long>> AndorCamera::acquireImageData()
 		}
 		ReleaseMutex(imagesMutex);
 	}
-	ReleaseMutex( imagesMutex );
+	ReleaseMutex(imagesMutex);
 	return imagesOfExperiment;
 }
 
@@ -508,18 +412,18 @@ std::vector<std::vector<long>> AndorCamera::acquireImageData()
 void AndorCamera::setCameraTriggerMode()
 {
 	std::string errMsg;
-	int trigType;
+	AT_WC* trigType;
 	if (runSettings.triggerMode == "Internal Trigger")
 	{
-		trigType = 0;
+		trigType = L"Internal";
 	}
 	else if (runSettings.triggerMode == "External Trigger")
 	{
-		trigType = 1;
+		trigType = L"External";
 	}
 	else if (runSettings.triggerMode == "Start On Trigger")
 	{
-		trigType = 6;
+		trigType = L"External Start";
 	}
 	setTriggerMode(trigType);
 }
@@ -530,15 +434,15 @@ void AndorCamera::setTemperature()
 	// Get the current temperature
 	if (runSettings.temperatureSetting < -60 || runSettings.temperatureSetting > 25)
 	{
-		int answer = promptBox( "Warning: The selected temperature is outside the normal temperature range of the "
-								"camera (-60 through 25 C). Proceed anyways?", MB_OKCANCEL );
+		int answer = promptBox("Warning: The selected temperature is outside the normal temperature range of the "
+			"camera (-60 through 25 C). Proceed anyways?", MB_OKCANCEL);
 		if (answer == IDCANCEL)
 		{
 			return;
 		}
 	}
 	// Proceedure to initiate cooling
-	changeTemperatureSetting( false );
+	changeTemperatureSetting(false);
 }
 
 
@@ -550,29 +454,30 @@ void AndorCamera::setReadMode()
 
 void AndorCamera::setExposures()
 {
-	if (runSettings.exposureTimes.size() > 0 && runSettings.exposureTimes.size() <= 16)
-	{
-		try {
-			setRingExposureTimes(runSettings.exposureTimes.size(), runSettings.exposureTimes.data());
-		}
-		catch (Error& err)
-		{
-			errBox("ERROR: " + err.whatStr());
-		}
-		//setRingExposureTimes(runSettings.exposureTimes.size(), runSettings.exposureTimes.data());
-	}
-	else
-	{
-		thrower("ERROR: Invalid size for vector of exposure times, value of " + str(runSettings.exposureTimes.size()) + ".");
-	}
+	//if (runSettings.exposureTimes.size() > 0 && runSettings.exposureTimes.size() <= 16)
+	//{
+	//	try {
+	//		setRingExposureTimes(runSettings.exposureTimes.size(), runSettings.exposureTimes.data());
+	//	}
+	//	catch (Error& err)
+	//	{
+	//		errBox("ERROR: " + err.whatStr());
+	//	}
+	//	//setRingExposureTimes(runSettings.exposureTimes.size(), runSettings.exposureTimes.data());
+	//}
+	//else
+	//{
+	//	thrower("ERROR: Invalid size for vector of exposure times, value of " + str(runSettings.exposureTimes.size()) + ".");
+	//}
+	AT_SetFloat(CameraHndl, L"ExposureTime", runSettings.exposureTimes[0]);
 }
 
 
 void AndorCamera::setImageParametersToCamera()
 {
-	setImage(runSettings.imageSettings.verticalBinning, runSettings.imageSettings.horizontalBinning, 
-			 runSettings.imageSettings.bottom, runSettings.imageSettings.top, 
-			 runSettings.imageSettings.left, runSettings.imageSettings.right);
+	setImage(runSettings.imageSettings.verticalBinning, runSettings.imageSettings.horizontalBinning,
+		runSettings.imageSettings.bottom, runSettings.imageSettings.top,
+		runSettings.imageSettings.left, runSettings.imageSettings.right);
 }
 
 
@@ -606,7 +511,7 @@ void AndorCamera::setFrameTransferMode()
 
 
 /*
- * exposures should be initialized to be the correct size. Nothing else matters for the inputs, they get 
+ * exposures should be initialized to be the correct size. Nothing else matters for the inputs, they get
  * over-written.
  * throws exception if fails
  */
@@ -644,7 +549,7 @@ void AndorCamera::checkAcquisitionTimings(float& kinetic, float& accumulation, s
 		getAcquisitionTimes(tempExposure, tempAccumTime, tempKineticTime);
 		getAdjustedRingExposureTimes(exposures.size(), timesArray);
 	}
-	else 
+	else
 	{
 		for (UINT exposureInc = 0; exposureInc < exposures.size(); exposureInc++)
 		{
@@ -663,7 +568,7 @@ void AndorCamera::checkAcquisitionTimings(float& kinetic, float& accumulation, s
 	accumulation = tempAccumTime;
 	kinetic = tempKineticTime;
 }
-	
+
 
 /*
  (
@@ -774,416 +679,426 @@ void AndorCamera::andorErrorChecker(int errorCode)
 	std::string errorMessage = "uninitialized";
 	switch (errorCode)
 	{
-		case 20001:
-		{
-			errorMessage = "DRV_ERROR_CODES";
-			break;
-		}
-		case 20002:
-		{
-			errorMessage = "DRV_SUCCESS";
-			break;
-		}
-		case 20003:
-		{
-			errorMessage = "DRV_VXDNOTINSTALLED";
-			break;
-		}
-		case 20004:
-		{
-			errorMessage = "DRV_ERROR_SCAN";
-			break;
-		}
-		case 20005:
-		{
-			errorMessage = "DRV_ERROR_CHECK_SUM";
-			break;
-		}
-		case 20006:
-		{
-			errorMessage = "DRV_ERROR_FILELOAD";
-			break;
-		}
-		case 20007:
-		{
-			errorMessage = "DRV_UNKNOWN_FUNCTION";
-			break;
-		}
-		case 20008:
-		{
-			errorMessage = "DRV_ERROR_VXD_INIT";
-			break;
-		}
-		case 20009:
-		{
-			errorMessage = "DRV_ERROR_ADDRESS";
-			break;
-		}
-		case 20010:
-		{
-			errorMessage = "DRV_ERROR_PAGELOCK";
-			break;
-		}
-		case 20011:
-		{
-			errorMessage = "DRV_ERROR_PAGE_UNLOCK";
-			break;
-		}
-		case 20012:
-		{
-			errorMessage = "DRV_ERROR_BOARDTEST";
-			break;
-		}
-		case 20013:
-		{
-			errorMessage = "DRV_ERROR_ACK";
-			break;
-		}
-		case 20014:
-		{
-			errorMessage = "DRV_ERROR_UP_FIFO";
-			break;
-		}
-		case 20015:
-		{
-			errorMessage = "DRV_ERROR_PATTERN";
-			break;
-		}
-		case 20017:
-		{
-			errorMessage = "DRV_ACQUISITION_ERRORS";
-			break;
-		}
-		case 20018:
-		{
-			errorMessage = "DRV_ACQ_BUFFER";
-			break;
-		}
-		case 20019:
-		{
-			errorMessage = "DRV_ACQ_DOWNFIFO_FULL";
-			break;
-		}
-		case 20020:
-		{
-			errorMessage = "DRV_PROC_UNKNOWN_INSTRUCTION";
-			break;
-		}
-		case 20021:
-		{
-			errorMessage = "DRV_ILLEGAL_OP_CODE";
-			break;
-		}
-		case 20022:
-		{
-			errorMessage = "DRV_KINETIC_TIME_NOT_MET";
-			break;
-		}
-		case 20023:
-		{
-			errorMessage = "DRV_KINETIC_TIME_NOT_MET";
-			break;
-		}
-		case 20024:
-		{
-			errorMessage = "DRV_NO_NEW_DATA";
-			break;
-		}
-		case 20026:
-		{
-			errorMessage = "DRV_SPOOLERROR";
-			break;
-		}
-		case 20033:
-		{
-			errorMessage = "DRV_TEMPERATURE_CODES";
-			break;
-		}
-		case 20034:
-		{
-			errorMessage = "DRV_TEMPERATURE_OFF";
-			break;
-		}
-		case 20035:
-		{
-			errorMessage = "DRV_TEMPERATURE_NOT_STABILIZED";
-			break;
-		}
-		case 20036:
-		{
-			errorMessage = "DRV_TEMPERATURE_STABILIZED";
-			break;
-		}
-		case 20037:
-		{
-			errorMessage = "DRV_TEMPERATURE_NOT_REACHED";
-			break;
-		}
-		case 20038:
-		{
-			errorMessage = "DRV_TEMPERATURE_OUT_RANGE";
-			break;
-		}
-		case 20039:
-		{
-			errorMessage = "DRV_TEMPERATURE_NOT_SUPPORTED";
-			break;
-		}
-		case 20040:
-		{
-			errorMessage = "DRV_TEMPERATURE_DRIFT";
-			break;
-		}
-		case 20049:
-		{
-			errorMessage = "DRV_GENERAL_ERRORS";
-			break;
-		}
-		case 20050:
-		{
-			errorMessage = "DRV_INVALID_AUX";
-			break;
-		}
-		case 20051:
-		{
-			errorMessage = "DRV_COF_NOTLOADED";
-			break;
-		}
-		case 20052:
-		{
-			errorMessage = "DRV_FPGAPROG";
-			break;
-		}
-		case 20053:
-		{
-			errorMessage = "DRV_FLEXERROR";
-			break;
-		}
-		case 20054:
-		{
-			errorMessage = "DRV_GPIBERROR";
-			break;
-		}
-		case 20064:
-		{
-			errorMessage = "DRV_DATATYPE";
-			break;
-		}
-		case 20065:
-		{
-			errorMessage = "DRV_DRIVER_ERRORS";
-			break;
-		}
-		case 20066:
-		{
-			errorMessage = "DRV_P1INVALID";
-			break;
-		}
-		case 20067:
-		{
-			errorMessage = "DRV_P2INVALID";
-			break;
-		}
-		case 20068:
-		{
-			errorMessage = "DRV_P3INVALID";
-			break;
-		}
-		case 20069:
-		{
-			errorMessage = "DRV_P4INVALID";
-			break;
-		}
-		case 20070:
-		{
-			errorMessage = "DRV_INIERROR";
-			break;
-		}
-		case 20071:
-		{
-			errorMessage = "DRV_COFERROR";
-			break;
-		}
-		case 20072:
-		{
-			errorMessage = "DRV_ACQUIRING";
-			break;
-		}
-		case 20073:
-		{
-			errorMessage = "DRV_IDLE";
-			break;
-		}
-		case 20074:
-		{
-			errorMessage = "DRV_TEMPCYCLE";
-			break;
-		}
-		case 20075:
-		{
-			errorMessage = "DRV_NOT_INITIALIZED";
-			break;
-		}
-		case 20076:
-		{
-			errorMessage = "DRV_P5INVALID";
-			break;
-		}
-		case 20077:
-		{
-			errorMessage = "DRV_P6INVALID";
-			break;
-		}
-		case 20078:
-		{
-			errorMessage = "DRV_INVALID_MODE";
-			break;
-		}
-		case 20079:
-		{
-			errorMessage = "DRV_INVALID_FILTER";
-			break;
-		}
-		case 20080:
-		{
-			errorMessage = "DRV_I2CERRORS";
-			break;
-		}
-		case 20081:
-		{
-			errorMessage = "DRV_DRV_ICDEVNOTFOUND";
-			break;
-		}
-		case 20082:
-		{
-			errorMessage = "DRV_I2CTIMEOUT";
-			break;
-		}
-		case 20083:
-		{
-			errorMessage = "DRV_P7INVALID";
-			break;
-		}
-		case 20089:
-		{
-			errorMessage = "DRV_USBERROR";
-			break;
-		}
-		case 20090:
-		{
-			errorMessage = "DRV_IOCERROR";
-			break;
-		}
-		case 20091:
-		{
-			errorMessage = "DRV_NOT_SUPPORTED";
-			break;
-		}
-		case 20093:
-		{
-			errorMessage = "DRV_USB_INTERRUPT_ENDPOINT_ERROR";
-			break;
-		}
-		case 20094:
-		{
-			errorMessage = "DRV_RANDOM_TRACK_ERROR";
-			break;
-		}
-		case 20095:
-		{
-			errorMessage = "DRV_INVALID_tRIGGER_MODE";
-			break;
-		}
-		case 20096:
-		{
-			errorMessage = "DRV_LOAD_FIRMWARE_ERROR";
-			break;
-		}
-		case 20097:
-		{
-			errorMessage = "DRV_DIVIDE_BY_ZERO_ERROR";
-			break;
-		}
-		case 20098:
-		{
-			errorMessage = "DRV_INVALID_RINGEXPOSURES";
-			break;
-		}
-		case 20099:
-		{
-			errorMessage = "DRV_BINNING_ERROR";
-			break;
-		}
-		case 20100:
-		{
-			errorMessage = "DRV_INVALID_AMPLIFIER";
-			break;
-		}
-		case 20115:
-		{
-			errorMessage = "DRV_ERROR_MAP";
-			break;
-		}
-		case 20116:
-		{
-			errorMessage = "DRV_ERROR_UNMAP";
-			break;
-		}
-		case 20117:
-		{
-			errorMessage = "DRV_ERROR_MDL";
-			break;
-		}
-		case 20118:
-		{
-			errorMessage = "DRV_ERROR_UNMDL";
-			break;
-		}
-		case 20119:
-		{
-			errorMessage = "DRV_ERROR_BUFSIZE";
-			break;
-		}
-		case 20121:
-		{
-			errorMessage = "DRV_ERROR_NOHANDLE";
-			break;
-		}
-		case 20130:
-		{
-			errorMessage = "DRV_GATING_NOT_AVAILABLE";
-			break;
-		}
-		case 20131:
-		{
-			errorMessage = "DRV_FPGA_VOLTAGE_ERROR";
-			break;
-		}
-		case 20990:
-		{
-			errorMessage = "DRV_ERROR_NOCAMERA";
-			break;
-		}
-		case 20991:
-		{
-			errorMessage = "DRV_NOT_SUPPORTED";
-			break;
-		}
-		case 20992:
-		{
-			errorMessage = "DRV_NOT_AVAILABLE";
-			break;
-		}
-		default:
-		{
-			errorMessage = "UNKNOWN ERROR MESSAGE RETURNED FROM CAMERA FUNCTION!";
-			break;
-		}
+	case 0:
+	{
+		errorMessage = "AT_SUCCESS";
+		break;
+	}
+	case 1:
+	{
+		errorMessage = "AT_ERR_NOTINITIALISED";
+		break;
+	}
+	case 20001:
+	{
+		errorMessage = "DRV_ERROR_CODES";
+		break;
+	}
+	case 20002:
+	{
+		errorMessage = "DRV_SUCCESS";
+		break;
+	}
+	case 20003:
+	{
+		errorMessage = "DRV_VXDNOTINSTALLED";
+		break;
+	}
+	case 20004:
+	{
+		errorMessage = "DRV_ERROR_SCAN";
+		break;
+	}
+	case 20005:
+	{
+		errorMessage = "DRV_ERROR_CHECK_SUM";
+		break;
+	}
+	case 20006:
+	{
+		errorMessage = "DRV_ERROR_FILELOAD";
+		break;
+	}
+	case 20007:
+	{
+		errorMessage = "DRV_UNKNOWN_FUNCTION";
+		break;
+	}
+	case 20008:
+	{
+		errorMessage = "DRV_ERROR_VXD_INIT";
+		break;
+	}
+	case 20009:
+	{
+		errorMessage = "DRV_ERROR_ADDRESS";
+		break;
+	}
+	case 20010:
+	{
+		errorMessage = "DRV_ERROR_PAGELOCK";
+		break;
+	}
+	case 20011:
+	{
+		errorMessage = "DRV_ERROR_PAGE_UNLOCK";
+		break;
+	}
+	case 20012:
+	{
+		errorMessage = "DRV_ERROR_BOARDTEST";
+		break;
+	}
+	case 20013:
+	{
+		errorMessage = "DRV_ERROR_ACK";
+		break;
+	}
+	case 20014:
+	{
+		errorMessage = "DRV_ERROR_UP_FIFO";
+		break;
+	}
+	case 20015:
+	{
+		errorMessage = "DRV_ERROR_PATTERN";
+		break;
+	}
+	case 20017:
+	{
+		errorMessage = "DRV_ACQUISITION_ERRORS";
+		break;
+	}
+	case 20018:
+	{
+		errorMessage = "DRV_ACQ_BUFFER";
+		break;
+	}
+	case 20019:
+	{
+		errorMessage = "DRV_ACQ_DOWNFIFO_FULL";
+		break;
+	}
+	case 20020:
+	{
+		errorMessage = "DRV_PROC_UNKNOWN_INSTRUCTION";
+		break;
+	}
+	case 20021:
+	{
+		errorMessage = "DRV_ILLEGAL_OP_CODE";
+		break;
+	}
+	case 20022:
+	{
+		errorMessage = "DRV_KINETIC_TIME_NOT_MET";
+		break;
+	}
+	case 20023:
+	{
+		errorMessage = "DRV_KINETIC_TIME_NOT_MET";
+		break;
+	}
+	case 20024:
+	{
+		errorMessage = "DRV_NO_NEW_DATA";
+		break;
+	}
+	case 20026:
+	{
+		errorMessage = "DRV_SPOOLERROR";
+		break;
+	}
+	case 20033:
+	{
+		errorMessage = "DRV_TEMPERATURE_CODES";
+		break;
+	}
+	case 20034:
+	{
+		errorMessage = "DRV_TEMPERATURE_OFF";
+		break;
+	}
+	case 20035:
+	{
+		errorMessage = "DRV_TEMPERATURE_NOT_STABILIZED";
+		break;
+	}
+	case 20036:
+	{
+		errorMessage = "DRV_TEMPERATURE_STABILIZED";
+		break;
+	}
+	case 20037:
+	{
+		errorMessage = "DRV_TEMPERATURE_NOT_REACHED";
+		break;
+	}
+	case 20038:
+	{
+		errorMessage = "DRV_TEMPERATURE_OUT_RANGE";
+		break;
+	}
+	case 20039:
+	{
+		errorMessage = "DRV_TEMPERATURE_NOT_SUPPORTED";
+		break;
+	}
+	case 20040:
+	{
+		errorMessage = "DRV_TEMPERATURE_DRIFT";
+		break;
+	}
+	case 20049:
+	{
+		errorMessage = "DRV_GENERAL_ERRORS";
+		break;
+	}
+	case 20050:
+	{
+		errorMessage = "DRV_INVALID_AUX";
+		break;
+	}
+	case 20051:
+	{
+		errorMessage = "DRV_COF_NOTLOADED";
+		break;
+	}
+	case 20052:
+	{
+		errorMessage = "DRV_FPGAPROG";
+		break;
+	}
+	case 20053:
+	{
+		errorMessage = "DRV_FLEXERROR";
+		break;
+	}
+	case 20054:
+	{
+		errorMessage = "DRV_GPIBERROR";
+		break;
+	}
+	case 20064:
+	{
+		errorMessage = "DRV_DATATYPE";
+		break;
+	}
+	case 20065:
+	{
+		errorMessage = "DRV_DRIVER_ERRORS";
+		break;
+	}
+	case 20066:
+	{
+		errorMessage = "DRV_P1INVALID";
+		break;
+	}
+	case 20067:
+	{
+		errorMessage = "DRV_P2INVALID";
+		break;
+	}
+	case 20068:
+	{
+		errorMessage = "DRV_P3INVALID";
+		break;
+	}
+	case 20069:
+	{
+		errorMessage = "DRV_P4INVALID";
+		break;
+	}
+	case 20070:
+	{
+		errorMessage = "DRV_INIERROR";
+		break;
+	}
+	case 20071:
+	{
+		errorMessage = "DRV_COFERROR";
+		break;
+	}
+	case 20072:
+	{
+		errorMessage = "DRV_ACQUIRING";
+		break;
+	}
+	case 20073:
+	{
+		errorMessage = "DRV_IDLE";
+		break;
+	}
+	case 20074:
+	{
+		errorMessage = "DRV_TEMPCYCLE";
+		break;
+	}
+	case 20075:
+	{
+		errorMessage = "DRV_NOT_INITIALIZED";
+		break;
+	}
+	case 20076:
+	{
+		errorMessage = "DRV_P5INVALID";
+		break;
+	}
+	case 20077:
+	{
+		errorMessage = "DRV_P6INVALID";
+		break;
+	}
+	case 20078:
+	{
+		errorMessage = "DRV_INVALID_MODE";
+		break;
+	}
+	case 20079:
+	{
+		errorMessage = "DRV_INVALID_FILTER";
+		break;
+	}
+	case 20080:
+	{
+		errorMessage = "DRV_I2CERRORS";
+		break;
+	}
+	case 20081:
+	{
+		errorMessage = "DRV_DRV_ICDEVNOTFOUND";
+		break;
+	}
+	case 20082:
+	{
+		errorMessage = "DRV_I2CTIMEOUT";
+		break;
+	}
+	case 20083:
+	{
+		errorMessage = "DRV_P7INVALID";
+		break;
+	}
+	case 20089:
+	{
+		errorMessage = "DRV_USBERROR";
+		break;
+	}
+	case 20090:
+	{
+		errorMessage = "DRV_IOCERROR";
+		break;
+	}
+	case 20091:
+	{
+		errorMessage = "DRV_NOT_SUPPORTED";
+		break;
+	}
+	case 20093:
+	{
+		errorMessage = "DRV_USB_INTERRUPT_ENDPOINT_ERROR";
+		break;
+	}
+	case 20094:
+	{
+		errorMessage = "DRV_RANDOM_TRACK_ERROR";
+		break;
+	}
+	case 20095:
+	{
+		errorMessage = "DRV_INVALID_tRIGGER_MODE";
+		break;
+	}
+	case 20096:
+	{
+		errorMessage = "DRV_LOAD_FIRMWARE_ERROR";
+		break;
+	}
+	case 20097:
+	{
+		errorMessage = "DRV_DIVIDE_BY_ZERO_ERROR";
+		break;
+	}
+	case 20098:
+	{
+		errorMessage = "DRV_INVALID_RINGEXPOSURES";
+		break;
+	}
+	case 20099:
+	{
+		errorMessage = "DRV_BINNING_ERROR";
+		break;
+	}
+	case 20100:
+	{
+		errorMessage = "DRV_INVALID_AMPLIFIER";
+		break;
+	}
+	case 20115:
+	{
+		errorMessage = "DRV_ERROR_MAP";
+		break;
+	}
+	case 20116:
+	{
+		errorMessage = "DRV_ERROR_UNMAP";
+		break;
+	}
+	case 20117:
+	{
+		errorMessage = "DRV_ERROR_MDL";
+		break;
+	}
+	case 20118:
+	{
+		errorMessage = "DRV_ERROR_UNMDL";
+		break;
+	}
+	case 20119:
+	{
+		errorMessage = "DRV_ERROR_BUFSIZE";
+		break;
+	}
+	case 20121:
+	{
+		errorMessage = "DRV_ERROR_NOHANDLE";
+		break;
+	}
+	case 20130:
+	{
+		errorMessage = "DRV_GATING_NOT_AVAILABLE";
+		break;
+	}
+	case 20131:
+	{
+		errorMessage = "DRV_FPGA_VOLTAGE_ERROR";
+		break;
+	}
+	case 20990:
+	{
+		errorMessage = "DRV_ERROR_NOCAMERA";
+		break;
+	}
+	case 20991:
+	{
+		errorMessage = "DRV_NOT_SUPPORTED";
+		break;
+	}
+	case 20992:
+	{
+		errorMessage = "DRV_NOT_AVAILABLE";
+		break;
+	}
+	default:
+	{
+		errorMessage = "UNKNOWN ERROR MESSAGE RETURNED FROM CAMERA FUNCTION!";
+		break;
+	}
 	}
 	/// So no throw is considered success.
-	if (errorMessage != "DRV_SUCCESS")
+	if (errorMessage != "DRV_SUCCESS" && errorMessage != "AT_SUCCESS")
 	{
-		thrower( errorMessage );
+		thrower(errorMessage);
 	}
 }
 
@@ -1193,12 +1108,20 @@ void AndorCamera::andorErrorChecker(int errorCode)
 
 void AndorCamera::initialize()
 {
-	char aBuffer[256];
+	//char aBuffer[256];
 	// Look in current working directory for driver files
-	GetCurrentDirectory(256, aBuffer);
+	//GetCurrentDirectory(256, aBuffer);
 	if (!ANDOR_SAFEMODE)
 	{
-		andorErrorChecker(Initialize(aBuffer));
+		//andorErrorChecker(Initialize(aBuffer));
+		int i_retCode;
+		andorErrorChecker(AT_InitialiseLibrary());
+		AT_64 iNumberDevices = 0;
+		AT_GetInt(AT_HANDLE_SYSTEM, L"Device Count", &iNumberDevices);
+		if (iNumberDevices <= 0) {
+			thrower("No cameras detected");
+		}
+		andorErrorChecker(AT_Open(0, &CameraHndl));
 	}
 }
 
@@ -1247,7 +1170,9 @@ void AndorCamera::waitForAcquisition()
 {
 	if (!ANDOR_SAFEMODE)
 	{
-		andorErrorChecker(WaitForAcquisition());
+		//andorErrorChecker(WaitForAcquisition());
+		int BufSize;
+		andorErrorChecker(AT_WaitBuffer(CameraHndl, &tempImageBuffer, &BufSize, AT_INFINITE));
 	}
 }
 
@@ -1381,11 +1306,12 @@ void AndorCamera::getNewestImage(std::vector<long>& dataArray)
 }
 
 
-void AndorCamera::setTriggerMode(int mode)
+void AndorCamera::setTriggerMode(AT_WC* mode)
 {
 	if (!ANDOR_SAFEMODE)
 	{
-		andorErrorChecker(SetTriggerMode(mode));
+		//andorErrorChecker(SetTriggerMode(mode));
+		andorErrorChecker(AT_SetEnumString(CameraHndl, L"TriggerMode", L"External"));
 	}
 }
 
@@ -1421,7 +1347,13 @@ void AndorCamera::setImage(int hBin, int vBin, int lBorder, int rBorder, int tBo
 {
 	if (!ANDOR_SAFEMODE)
 	{
-		andorErrorChecker(SetImage(hBin, vBin, lBorder, rBorder, tBorder, bBorder));
+		//andorErrorChecker(SetImage(hBin, vBin, lBorder, rBorder, tBorder, bBorder));
+		andorErrorChecker(AT_SetInt(CameraHndl, L"AOIHBin", hBin));
+		andorErrorChecker(AT_SetInt(CameraHndl, L"AOIWidth", rBorder - lBorder));
+		andorErrorChecker(AT_SetInt(CameraHndl, L"AOILeft", lBorder));
+		andorErrorChecker(AT_SetInt(CameraHndl, L"AOIVBin", vBin));
+		andorErrorChecker(AT_SetInt(CameraHndl, L"AOIHeight", bBorder - tBorder));
+		andorErrorChecker(AT_SetInt(CameraHndl, L"AOITop", tBorder));
 	}
 }
 
@@ -1443,14 +1375,14 @@ void AndorCamera::setFrameTransferMode(int mode)
 	}
 }
 
-double AndorCamera::getMinKineticCycleTime( )
+double AndorCamera::getMinKineticCycleTime()
 {
 	// get the currently set kinetic cycle time.
-	float minKineticCycleTime, dummy1, dummy2;	
-	setKineticCycleTime( 0 );
-	getAcquisitionTimes( dummy1, dummy2, minKineticCycleTime );
+	float minKineticCycleTime, dummy1, dummy2;
+	setKineticCycleTime(0);
+	getAcquisitionTimes(dummy1, dummy2, minKineticCycleTime);
 	// re-set whatever's currently in the settings.
-	setKineticCycleTime( );
+	setKineticCycleTime();
 	return minKineticCycleTime;
 }
 
@@ -1476,7 +1408,7 @@ void AndorCamera::queryStatus()
 	if (status != DRV_IDLE)
 	{
 		thrower("ERROR: You tried to start the camera, but the camera was not idle! Camera was in state corresponding to "
-				+ str(status) + "\r\n");
+			+ str(status) + "\r\n");
 	}
 }
 
@@ -1499,7 +1431,8 @@ void AndorCamera::startAcquisition()
 {
 	if (!ANDOR_SAFEMODE)
 	{
-		andorErrorChecker(StartAcquisition());
+		//andorErrorChecker(StartAcquisition());
+		andorErrorChecker(AT_Command(CameraHndl, L"AcquisitionStart"));
 	}
 }
 
@@ -1508,7 +1441,9 @@ void AndorCamera::abortAcquisition()
 {
 	if (!ANDOR_SAFEMODE)
 	{
-		andorErrorChecker(AbortAcquisition());
+		//andorErrorChecker(AbortAcquisition());
+		andorErrorChecker(AT_Command(CameraHndl, L"AcquisitionStop"));
+		andorErrorChecker(AT_Flush(CameraHndl));
 	}
 }
 
@@ -1627,7 +1562,7 @@ void AndorCamera::getCapabilities(AndorCapabilities& caps)
 {
 	if (!ANDOR_SAFEMODE)
 	{
-		andorErrorChecker( GetCapabilities( &caps ) );
+		andorErrorChecker(GetCapabilities(&caps));
 	}
 }
 
@@ -1635,7 +1570,7 @@ void AndorCamera::getSerialNumber(int& num)
 {
 	if (!ANDOR_SAFEMODE)
 	{
-		andorErrorChecker( GetCameraSerialNumber( &num ) );
+		andorErrorChecker(GetCameraSerialNumber(&num));
 	}
 }
 
@@ -1644,7 +1579,7 @@ std::string AndorCamera::getHeadModel()
 	char nameChars[1024];
 	if (!ANDOR_SAFEMODE)
 	{
-		andorErrorChecker(GetHeadModel( nameChars ));
+		andorErrorChecker(GetHeadModel(nameChars));
 	}
 	else
 	{

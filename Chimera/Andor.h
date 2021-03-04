@@ -5,6 +5,7 @@
 #include <process.h>
 #include <mutex>
 #include "ATMCD32D.h"
+#include "atcore.h"
 #include "AndorRunSettings.h"
 
 /// /////////////////////////////////////////////////////
@@ -80,7 +81,7 @@ class AndorCamera
 		void setReadMode(int mode);
 		void setRingExposureTimes(int sizeOfTimesArray, float* arrayOfTimes);
 		void setTemperature(int temp);
-		void setTriggerMode(int mode);
+		void setTriggerMode(AT_WC* mode);
 		void startAcquisition();
 
 		void temperatureControlOn();
@@ -156,4 +157,7 @@ class AndorCamera
 
 		cameraThreadInput threadInput;
 
+		AT_H CameraHndl;
+		unsigned char* tempImageBuffer;
+		int BufferSize;
 };
