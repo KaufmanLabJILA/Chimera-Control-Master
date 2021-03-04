@@ -36,6 +36,7 @@ class AndorCamera
 {
 	public:
 		AndorCamera::AndorCamera();
+		AndorCamera::~AndorCamera();
 
 		/// Andor Wrappers, in alphabetical order. Versions that take no parameters just insert current settings into 
 		// the versions that take parameters. Note that my wrapper names don't always match the andor SDK names. If 
@@ -122,6 +123,7 @@ class AndorCamera
 		void setBaselineClamp(int clamp);
 		void setBaselineOffset(int offset);
 		void setDMAParameters(int maxImagesPerDMA, float secondsPerDMA);
+		void queueBuffer();
 
 		static UINT __stdcall cameraThread( void* voidPtr );
 		
@@ -158,6 +160,7 @@ class AndorCamera
 		cameraThreadInput threadInput;
 
 		AT_H CameraHndl;
+		unsigned char* acqBuffer = NULL;
 		unsigned char* tempImageBuffer;
 		int BufferSize;
 };

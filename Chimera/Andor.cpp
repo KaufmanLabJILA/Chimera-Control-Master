@@ -48,6 +48,12 @@ AndorCamera::AndorCamera()
 
 }
 
+AndorCamera::~AndorCamera()
+{
+	AT_Close(CameraHndl);
+	AT_FinaliseLibrary();
+}
+
 void AndorCamera::initializeClass(Communicator* comm, chronoTimes* imageTimes)
 {
 	threadInput.comm = comm;
@@ -78,9 +84,12 @@ void AndorCamera::pauseThread()
  */
 void AndorCamera::onFinish()
 {
+	delete[] acqBuffer;
+	acqBuffer = NULL;
+	AT_Command(CameraHndl, L"Acquisition Stop");
+	AT_Flush(CameraHndl);
+
 	threadInput.signaler.notify_all();
-	AT_Close(CameraHndl);
-	AT_FinaliseLibrary();
 	cameraIsRunning = false;
 }
 
@@ -95,7 +104,7 @@ unsigned __stdcall AndorCamera::cameraThread(void* voidPtr)
 	//... I'm not sure what this lock is doing here... why not inside while loop?
 	std::unique_lock<std::mutex> lock(input->runMutex);
 	int safeModeCount = 0;
-	long pictureNumber = 0;
+	long pictureNumber = 1;
 	bool armed = false;
 	while (!input->Andor->cameraThreadExitIndicator)
 	{
@@ -116,31 +125,26 @@ unsigned __stdcall AndorCamera::cameraThread(void* voidPtr)
 			{
 				int status;
 				//input->Andor->queryStatus(status);
-				if (status == DRV_IDLE && armed)
+
+				input->Andor->waitForAcquisition();
+				if (pictureNumber % 2 == 0)
+				{
+					(*input->imageTimes).push_back(std::chrono::high_resolution_clock::now());
+				}
+				armed = true;
+
+				input->comm->sendCameraProgress(pictureNumber);
+
+				if (pictureNumber == input->Andor->runSettings.totalPicsInExperiment && armed)
 				{
 					// signal the end to the main thread.
-					input->comm->sendCameraProgress(-1);
+					//input->comm->sendCameraProgress(-1);
 					input->comm->sendCameraFin();
 					armed = false;
 				}
-				else
-				{
-					input->Andor->waitForAcquisition();
-					if (pictureNumber % 2 == 0)
-					{
-						(*input->imageTimes).push_back(std::chrono::high_resolution_clock::now());
-					}
-					armed = true;
-					try
-					{
-						input->Andor->getAcquisitionProgress(pictureNumber);
-					}
-					catch (Error& exception)
-					{
-						input->comm->sendError(exception.what());
-					}
-
-					input->comm->sendCameraProgress(pictureNumber);
+				else {
+					//requeue the buffer if taking more images
+					input->Andor->queueBuffer();
 				}
 			}
 			catch (Error&)
@@ -191,6 +195,10 @@ AndorRunSettings AndorCamera::getSettings()
 	return runSettings;
 }
 
+void AndorCamera::queueBuffer() {
+	andorErrorChecker(AT_QueueBuffer(CameraHndl, acqBuffer, BufferSize));
+}
+
 void AndorCamera::setSettings(AndorRunSettings settingsToSet)
 {
 	runSettings = settingsToSet;
@@ -207,69 +215,54 @@ void AndorCamera::setAcquisitionMode()
 void AndorCamera::armCamera(CameraWindow* camWin, double& minKineticCycleTime)
 {
 	/// Set a bunch of parameters.
-	// Set to 1 MHz readout rate in both cases
-	//setADChannel(0); //changed to 0
-	//if (runSettings.emGainModeIsOn)
-	//{
-	//	setHSSpeed(0, 0);
-	//}
-	//else
-	//{
-	//	setHSSpeed(1, 0);
-	//}
-	//setVSSpeed(2); //TODO: change "1" to meaningful value.
-	//setAcquisitionMode();
-	//setReadMode();
-	setExposures();
-	setImageParametersToCamera();
-	// Set Mode-Specific Parameters
-	//if (runSettings.acquisitionMode == 5)
-	//{
-	//	setFrameTransferMode();
-	//}
-	//else if (runSettings.acquisitionMode == 3)
-	//{
-	//	setFrameTransferMode(0);
-	//	setKineticCycleTime();
-	//	setScanNumber();
-	//	// set this to 1.
-	//	setNumberAccumulations(true);
-	//}
-	//else if (runSettings.acquisitionMode == 2)
-	//{
-	//	setAccumulationCycleTime();
-	//	setNumberAccumulations(false);
-	//}
-	//setGainMode();
-	setCameraTriggerMode();
-	// Set trigger mode.
-	// check plotting parameters
-	/// TODO!
-	// CAREFUL! I can only modify these guys here because I'm sure that I'm also not writing to them in the plotting 
-	// thread since the plotting thread hasn't
-	// started yet. If moving stuff around, be careful.
-	// Initialize the thread accumulation number.
-	// this->??? = 1;
-	// //////////////////////////////
-	//queryStatus();
 
-	/// Do some plotting stuffs
-	//eAlerts.setAlertThreshold();
-	//ePicStats.reset();
+	if (!ANDOR_SAFEMODE) {
+		setExposures();
+		setImageParametersToCamera();
+		setCameraTriggerMode();
 
-	// the lock is released when the lock object function goes out of scope, which happens immediately after
-	// the start acquisition call
-	//std::lock_guard<std::mutex> lock( threadInput.runMutex );
+		// check plotting parameters
+		/// TODO!
+		// CAREFUL! I can only modify these guys here because I'm sure that I'm also not writing to them in the plotting 
+		// thread since the plotting thread hasn't
+		// started yet. If moving stuff around, be careful.
+		// Initialize the thread accumulation number.
+		// this->??? = 1;
+		// //////////////////////////////
+		//queryStatus();
 
-	// get the min time after setting everything else.
-	//minKineticCycleTime = getMinKineticCycleTime();
+		/// Do some plotting stuffs
+		//eAlerts.setAlertThreshold();
+		//ePicStats.reset();
 
-	cameraIsRunning = true;
-	// remove the spurious wakeup check.
-	threadInput.spuriousWakeupHandler = true;
-	// notify the thread that the experiment has started..
-	threadInput.signaler.notify_all();
+		// the lock is released when the lock object function goes out of scope, which happens immediately after
+		// the start acquisition call
+		//std::lock_guard<std::mutex> lock( threadInput.runMutex );
 
+		// get the min time after setting everything else.
+		//minKineticCycleTime = getMinKineticCycleTime();
+
+
+		cameraIsRunning = true;
+		// remove the spurious wakeup check.
+		threadInput.spuriousWakeupHandler = true;
+		// notify the thread that the experiment has started..
+		threadInput.signaler.notify_all();
+
+		AT_SetEnumeratedString(CameraHndl, L"Pixel Encoding", L"Mono16");
+
+		AT_64 ImageSizeBytes;
+		AT_GetInt(CameraHndl, L"Image Size Bytes", &ImageSizeBytes);
+
+		BufferSize = static_cast<int>(ImageSizeBytes);
+
+		acqBuffer = new unsigned char[BufferSize];
+
+		andorErrorChecker(AT_QueueBuffer(CameraHndl, acqBuffer, BufferSize));
+
+		//Set the camera to continuously acquires frames 
+		AT_SetEnumString(CameraHndl, L"CycleMode", L"Continuous");
+	}
 	startAcquisition();
 }
 
@@ -280,25 +273,27 @@ void AndorCamera::armCamera(CameraWindow* camWin, double& minKineticCycleTime)
  */
 std::vector<std::vector<long>> AndorCamera::acquireImageData()
 {
-	try
-	{
-		checkForNewImages();
-	}
-	catch (Error& exception)
-	{
-		if (exception.whatBare() == "DRV_NO_NEW_DATA")
-		{
-			throw;
-			//TODO: put handling for this error back in.
-			// just return this anyways.
-			/*return imagesOfExperiment*/;
-		}
-		else
-		{
-			// it's an actual error, pass it up.
-			throw;
-		}
-	}
+	//try
+	//{
+	//	checkForNewImages();
+	//}
+	//catch (Error& exception)
+	//{
+	//	if (exception.whatBare() == "DRV_NO_NEW_DATA")
+	//	{
+	//		throw;
+	//		//TODO: put handling for this error back in.
+	//		// just return this anyways.
+	//		/*return imagesOfExperiment*/;
+	//	}
+	//	else
+	//	{
+	//		// it's an actual error, pass it up.
+	//		throw;
+	//	}
+	//}
+
+
 	/// ///
 	// for only one image... (each image processed from the call from a separate windows message)
 	int size;
@@ -330,15 +325,32 @@ std::vector<std::vector<long>> AndorCamera::acquireImageData()
 		ReleaseMutex(imagesMutex);
 	}
 
+
 	size = runSettings.imageSettings.width * runSettings.imageSettings.height;
 	std::vector<long> tempImage;
 	tempImage.resize(size);
 	WaitForSingleObject(imagesMutex, INFINITE);
 	imagesOfExperiment[experimentPictureNumber].resize(size);
+	unsigned short currentPixel = 0;
 	if (!ANDOR_SAFEMODE)
 	{
-		getOldestImage(tempImage); //TODO: go back to getoldest.
-		//getNewestImage(tempImage);
+		AT_64 Stride, Width, Height;
+		AT_GetInt(CameraHndl, L"AOIStride", &Stride);
+		AT_GetInt(CameraHndl, L"AOIWidth", &Width);
+		AT_GetInt(CameraHndl, L"AOIHeight", &Height);
+
+		for (AT_64 Row = 0; Row < Height; Row++) {
+			//Cast the raw image buffer to a 16-bit array. 
+			//...Assumes the PixelEncoding is 16-bit. 
+			unsigned short* ImagePixels = reinterpret_cast<unsigned short*>(tempImageBuffer);
+			//Process each pixel in a row as normal 
+			for (AT_64 Pixel = 0; Pixel < Width; Pixel++) {
+				currentPixel = ImagePixels[Pixel];
+				tempImage[Row*Width + Pixel] = ImagePixels[Pixel];
+			} //Use Stride to get the memory location of the next row. 
+			tempImageBuffer += Stride;
+		}
+
 		if (tempImage.size() == 0) {
 			throw;
 		}
@@ -349,6 +361,7 @@ std::vector<std::vector<long>> AndorCamera::acquireImageData()
 				% runSettings.imageSettings.width) + 1) * runSettings.imageSettings.height
 				- imageVecInc / runSettings.imageSettings.width - 1];
 		}
+
 	}
 	else
 	{
@@ -417,13 +430,12 @@ void AndorCamera::setCameraTriggerMode()
 	{
 		trigType = L"Internal";
 	}
-	else if (runSettings.triggerMode == "External Trigger")
-	{
-		trigType = L"External";
-	}
 	else if (runSettings.triggerMode == "Start On Trigger")
 	{
 		trigType = L"External Start";
+	}
+	else {
+		trigType = L"External";
 	}
 	setTriggerMode(trigType);
 }
@@ -1091,7 +1103,8 @@ void AndorCamera::andorErrorChecker(int errorCode)
 	}
 	default:
 	{
-		errorMessage = "UNKNOWN ERROR MESSAGE RETURNED FROM CAMERA FUNCTION!";
+		std::string errorCodeStr = std::to_string(errorCode);
+		errorMessage = "UNKNOWN ERROR MESSAGE RETURNED FROM CAMERA FUNCTION! errorCode = " + errorCodeStr;
 		break;
 	}
 	}
@@ -1115,7 +1128,10 @@ void AndorCamera::initialize()
 	{
 		//andorErrorChecker(Initialize(aBuffer));
 		int i_retCode;
-		andorErrorChecker(AT_InitialiseLibrary());
+		i_retCode = AT_InitialiseLibrary();
+		if (i_retCode != AT_SUCCESS) {
+			thrower("library not initialized");
+		}
 		AT_64 iNumberDevices = 0;
 		AT_GetInt(AT_HANDLE_SYSTEM, L"Device Count", &iNumberDevices);
 		if (iNumberDevices <= 0) {
@@ -1171,8 +1187,7 @@ void AndorCamera::waitForAcquisition()
 	if (!ANDOR_SAFEMODE)
 	{
 		//andorErrorChecker(WaitForAcquisition());
-		int BufSize;
-		andorErrorChecker(AT_WaitBuffer(CameraHndl, &tempImageBuffer, &BufSize, AT_INFINITE));
+		andorErrorChecker(AT_WaitBuffer(CameraHndl, &tempImageBuffer, &BufferSize, AT_INFINITE));
 	}
 }
 
@@ -1432,7 +1447,7 @@ void AndorCamera::startAcquisition()
 	if (!ANDOR_SAFEMODE)
 	{
 		//andorErrorChecker(StartAcquisition());
-		andorErrorChecker(AT_Command(CameraHndl, L"AcquisitionStart"));
+		andorErrorChecker(AT_Command(CameraHndl, L"Acquisition Start"));
 	}
 }
 

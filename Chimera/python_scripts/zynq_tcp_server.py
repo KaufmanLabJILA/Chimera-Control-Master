@@ -50,6 +50,7 @@ class zynq_tcp_server:
 			    # Receive the data in small chunks
 			    while True:
 			        data = connection.recv(64)
+			        data = data.split('\0')[0]
 			        print 'received "%s"' % data
 			        # print(len(data))
 			        if data:

@@ -84,7 +84,7 @@ std::string CameraWindow::getSystemStatusString()
 	if (!ANDOR_SAFEMODE)
 	{
 		statusStr += "Code System is Active!\n";
-		statusStr += Andor.getSystemInfo();
+		//statusStr += Andor.getSystemInfo();
 	}
 	else
 	{
@@ -193,7 +193,8 @@ void CameraWindow::passCameraMode()
 void CameraWindow::abortCameraRun()
 {
 	int status;
-	Andor.queryStatus(status);
+	//Andor.queryStatus(status);
+	status = DRV_ACQUIRING;
 	
 	if (ANDOR_SAFEMODE)
 	{
@@ -825,7 +826,7 @@ void CameraWindow::prepareCamera( ExperimentInput& input )
 	// make sure it's idle.
 	try
 	{
-		Andor.queryStatus();
+		//Andor.queryStatus();
 		if ( ANDOR_SAFEMODE )
 		{
 			thrower( "DRV_IDLE" );
