@@ -684,7 +684,6 @@ void CameraWindow::passPictureSettings( UINT id )
 	mainWindowFriend->updateConfigurationSavedStatus( false );
 }
 
-
 void CameraWindow::handlePictureSettings(UINT id)
 {
 	selectedPixel = { 0,0 };

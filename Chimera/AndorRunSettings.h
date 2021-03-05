@@ -31,6 +31,7 @@ struct AndorRunSettings
 	int totalPicsInExperiment;
 	// 
 	int temperatureSetting;
+	int temperatureSettingEnum;
 	//
 	int fanMode;
 	int VSSpeed;

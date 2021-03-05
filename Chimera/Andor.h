@@ -54,7 +54,8 @@ class AndorCamera
 		void queryStatus();
 		void queryStatus(int& status);
 		void getTemperatureRange(int& min, int& max);
-		void getTemperature(int& temp);
+		void getTemperature(double& temp, int& temperatureCount);
+		void getTemperatureStatus(int& temperatureStatus, AT_WC* temperatureStatusStr);
 
 		void setShutter(int typ, int mode, int closingtime, int openingtime);
 		void setAccumulationCycleTime();

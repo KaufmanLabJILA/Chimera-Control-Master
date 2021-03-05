@@ -331,7 +331,6 @@ std::vector<std::vector<long>> AndorCamera::acquireImageData()
 	tempImage.resize(size);
 	WaitForSingleObject(imagesMutex, INFINITE);
 	imagesOfExperiment[experimentPictureNumber].resize(size);
-	unsigned short currentPixel = 0;
 	if (!ANDOR_SAFEMODE)
 	{
 		AT_64 Stride, Width, Height;
@@ -345,7 +344,6 @@ std::vector<std::vector<long>> AndorCamera::acquireImageData()
 			unsigned short* ImagePixels = reinterpret_cast<unsigned short*>(tempImageBuffer);
 			//Process each pixel in a row as normal 
 			for (AT_64 Pixel = 0; Pixel < Width; Pixel++) {
-				currentPixel = ImagePixels[Pixel];
 				tempImage[Row*Width + Pixel] = ImagePixels[Pixel];
 			} //Use Stride to get the memory location of the next row. 
 			tempImageBuffer += Stride;
@@ -357,9 +355,10 @@ std::vector<std::vector<long>> AndorCamera::acquireImageData()
 		// immediately rotate
 		for (UINT imageVecInc = 0; imageVecInc < imagesOfExperiment[experimentPictureNumber].size(); imageVecInc++)
 		{
-			imagesOfExperiment[experimentPictureNumber][imageVecInc] = tempImage[((imageVecInc
+			/*imagesOfExperiment[experimentPictureNumber][imageVecInc] = tempImage[((imageVecInc
 				% runSettings.imageSettings.width) + 1) * runSettings.imageSettings.height
-				- imageVecInc / runSettings.imageSettings.width - 1];
+				- imageVecInc / runSettings.imageSettings.width - 1];*/
+			imagesOfExperiment[experimentPictureNumber][imageVecInc] = tempImage[imageVecInc];
 		}
 
 	}
@@ -650,7 +649,7 @@ void AndorCamera::changeTemperatureSetting(bool turnTemperatureControlOff)
 	// clear buffer
 	wsprintf(aBuffer, "");
 	// check if temp is in valid range
-	getTemperatureRange(minimumAllowedTemp, maximumAllowedTemp);
+	//getTemperatureRange(minimumAllowedTemp, maximumAllowedTemp);
 	if (runSettings.temperatureSetting < minimumAllowedTemp || runSettings.temperatureSetting > maximumAllowedTemp)
 	{
 		thrower("ERROR: Temperature is out of range\r\n");
@@ -675,7 +674,7 @@ void AndorCamera::changeTemperatureSetting(bool turnTemperatureControlOff)
 	*/
 	if (turnTemperatureControlOff == false)
 	{
-		setTemperature(runSettings.temperatureSetting);
+		setTemperature(runSettings.temperatureSettingEnum);
 	}
 	else
 	{
@@ -1191,15 +1190,6 @@ void AndorCamera::waitForAcquisition()
 	}
 }
 
-
-void AndorCamera::getTemperature(int& temp)
-{
-	if (!ANDOR_SAFEMODE)
-	{
-		andorErrorChecker(GetTemperature(&temp));
-	}
-}
-
 //
 void AndorCamera::getAdjustedRingExposureTimes(int size, float* timesArray)
 {
@@ -1234,7 +1224,7 @@ void AndorCamera::temperatureControlOn()
 {
 	if (!ANDOR_SAFEMODE)
 	{
-		andorErrorChecker(CoolerON());
+		andorErrorChecker(AT_SetBool(CameraHndl, L"SensorCooling", AT_TRUE));
 	}
 }
 
@@ -1243,16 +1233,36 @@ void AndorCamera::temperatureControlOff()
 {
 	if (!ANDOR_SAFEMODE)
 	{
-		andorErrorChecker(CoolerOFF());
+		andorErrorChecker(AT_SetBool(CameraHndl, L"SensorCooling", AT_FALSE));
 	}
 }
 
+void AndorCamera::getTemperatureStatus(int& temperatureStatusIndex, AT_WC* temperatureStatus)
+{
+	if (!ANDOR_SAFEMODE)
+	{ 
+		AT_GetEnumIndex(CameraHndl, L"TemperatureStatus", &temperatureStatusIndex);
+		AT_GetEnumStringByIndex(CameraHndl, L"TemperatureStatus", temperatureStatusIndex, temperatureStatus, 256);
+	}
+}
 
-void AndorCamera::setTemperature(int temp)
+void AndorCamera::getTemperature(double& temp, int& temperatureIndex)
 {
 	if (!ANDOR_SAFEMODE)
 	{
-		andorErrorChecker(SetTemperature(temp));
+		andorErrorChecker(AT_GetEnumIndex(CameraHndl, L"TemperatureControl", &temperatureIndex));
+		andorErrorChecker(AT_GetFloat(CameraHndl, L"SensorTemperature", &temp));
+	}
+}
+
+void AndorCamera::setTemperature(int tempEnum)
+{
+	if (!ANDOR_SAFEMODE)
+	{
+		//andorErrorChecker(SetTemperature(temp));
+		//int temperatureCount = 0;
+		//andorErrorChecker(AT_GetEnumCount(CameraHndl, L"TemperatureControl", &temperatureCount));
+		andorErrorChecker(AT_SetEnumIndex(CameraHndl, L"TemperatureControl", tempEnum));
 	}
 }
 
@@ -1364,10 +1374,10 @@ void AndorCamera::setImage(int hBin, int vBin, int lBorder, int rBorder, int tBo
 	{
 		//andorErrorChecker(SetImage(hBin, vBin, lBorder, rBorder, tBorder, bBorder));
 		andorErrorChecker(AT_SetInt(CameraHndl, L"AOIHBin", hBin));
-		andorErrorChecker(AT_SetInt(CameraHndl, L"AOIWidth", rBorder - lBorder));
+		andorErrorChecker(AT_SetInt(CameraHndl, L"AOIWidth", rBorder - lBorder + 1));
 		andorErrorChecker(AT_SetInt(CameraHndl, L"AOILeft", lBorder));
 		andorErrorChecker(AT_SetInt(CameraHndl, L"AOIVBin", vBin));
-		andorErrorChecker(AT_SetInt(CameraHndl, L"AOIHeight", bBorder - tBorder));
+		andorErrorChecker(AT_SetInt(CameraHndl, L"AOIHeight", bBorder - tBorder + 1));
 		andorErrorChecker(AT_SetInt(CameraHndl, L"AOITop", tBorder));
 	}
 }

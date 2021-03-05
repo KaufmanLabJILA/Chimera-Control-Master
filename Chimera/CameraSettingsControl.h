@@ -73,7 +73,11 @@ class CameraSettingsControl
 		Control<CButton> setTemperatureButton;
 		Control<CButton> temperatureOffButton;
 		Control<CEdit> temperatureEdit;
+		std::array<Control<CButton>, 3> temperatureChoice;
+		std::array<Control<CStatic>, 3> temperatureChoiceLabels;
+		std::array<int, 3> temperatureSettings = {15,-25,-45};
 		Control<CStatic> temperatureDisplay;
+		Control<CStatic> temperatureStatusMsg;
 		Control<CStatic> temperatureMsg;
 
 		// Kinetic Cycle Time
