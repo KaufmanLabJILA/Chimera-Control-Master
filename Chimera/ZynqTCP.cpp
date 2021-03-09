@@ -231,7 +231,7 @@ int ZynqTCP::writeDDSs(std::vector<DDSChannelSnapshot> ddsChannelSnapshots)
 	unsigned int timeConv = 100000; // SEQ time given in multiples of 10 ns
 	unsigned int timeConvDAC = 1000; // DDS time given multiples of 1 us
 	unsigned int dacRes = 65536;
-	char byte_buf[DAC_LEN_BYTE_BUF];
+	char byte_buf[DDS_LEN_BYTE_BUF];
 	unsigned int time, duration;
 	unsigned short channel;
 	char type;

@@ -98,9 +98,9 @@ void CameraSettingsControl::initialize( cameraPositions& pos, int& id, CWnd* par
 	setTemperatureButton.Create( "Set Camera Temperature (C)", NORM_PUSH_OPTIONS, setTemperatureButton.seriesPos,
 								 parent, IDC_SET_TEMPERATURE_BUTTON );
 	// Temperature Setting Display
-	temperatureDisplay.seriesPos = { pos.seriesPos.x + 350, pos.seriesPos.y, pos.seriesPos.x + 430, pos.seriesPos.y + 25 };
-	temperatureDisplay.videoPos = { pos.videoPos.x + 350, pos.videoPos.y, pos.videoPos.x + 430, pos.videoPos.y + 25 };
-	temperatureDisplay.amPos = { pos.amPos.x + 350, pos.amPos.y, pos.amPos.x + 430, pos.amPos.y + 25 };
+	temperatureDisplay.seriesPos = { pos.seriesPos.x + 270, pos.seriesPos.y, pos.seriesPos.x + 430, pos.seriesPos.y + 25 };
+	temperatureDisplay.videoPos = { pos.videoPos.x + 270, pos.videoPos.y, pos.videoPos.x + 430, pos.videoPos.y + 25 };
+	temperatureDisplay.amPos = { pos.amPos.x + 270, pos.amPos.y, pos.amPos.x + 430, pos.amPos.y + 25 };
 	temperatureDisplay.Create("", NORM_STATIC_OPTIONS, temperatureDisplay.seriesPos, parent, id++);
 	// Temperature Control Off Button
 	temperatureOffButton.seriesPos = { pos.seriesPos.x + 430, pos.seriesPos.y, pos.seriesPos.x + 480, pos.seriesPos.y + 25 };
@@ -231,6 +231,7 @@ void CameraSettingsControl::initialize( cameraPositions& pos, int& id, CWnd* par
 	kineticCycleTimeEdit.triggerModeSensitive = -1;
 	kineticCycleTimeEdit.Create( NORM_EDIT_OPTIONS, kineticCycleTimeEdit.seriesPos, parent, id++ );
 	kineticCycleTimeEdit.SetWindowTextA( "0.1" );
+
 }
 
 
@@ -370,7 +371,12 @@ void CameraSettingsControl::rearrange( std::string cameraMode, std::string trigg
 	temperatureOffButton.rearrange( cameraMode, triggerMode, width, height, fonts );
 	temperatureEdit.rearrange( cameraMode, triggerMode, width, height, fonts );
 	temperatureDisplay.rearrange( cameraMode, triggerMode, width, height, fonts );
+	for (int tempSetInc = 0; tempSetInc < 3; tempSetInc++) {
+		temperatureChoice[tempSetInc].rearrange(cameraMode, triggerMode, width, height, fonts);
+		temperatureChoiceLabels[tempSetInc].rearrange(cameraMode, triggerMode, width, height, fonts);
+	}
 	temperatureMsg.rearrange( cameraMode, triggerMode, width, height, fonts );
+	temperatureStatusMsg.rearrange(cameraMode, triggerMode, width, height, fonts);
 	kineticCycleTimeEdit.rearrange( cameraMode, triggerMode, width, height, fonts );
 	kineticCycleTimeLabel.rearrange( cameraMode, triggerMode, width, height, fonts );
 	accumulationCycleTimeEdit.rearrange(cameraMode, triggerMode, width, height, fonts);
@@ -460,10 +466,22 @@ void CameraSettingsControl::handleTimer()
 	try
 	{
 		// in this case you expect it to throw.
-		setTemperature = andorFriend->getSettings().temperatureSetting;
 		andorFriend->getTemperature(currentTemperature, temperatureIndex);
-
 		andorFriend->getTemperatureStatus(temperatureStatusIndex, temperatureStatus);
+
+		int setTemperature;
+		try
+		{
+			setTemperature = std::stoi(str(temperatureSettings[temperatureIndex]));
+		}
+		catch (std::invalid_argument&)
+		{
+			thrower("Error: Couldn't convert temperature input to a double! Check for unusual characters.");
+		}
+		runSettings.temperatureSetting = setTemperature;
+		runSettings.temperatureSettingEnum = temperatureIndex;
+		andorFriend->setSettings(runSettings);
+
 		int ret;
 		ret = wcstombs(temperatureStatusStr, temperatureStatus, sizeof(temperatureStatusStr));
 		if (ret == 256) {
@@ -485,7 +503,7 @@ void CameraSettingsControl::handleTimer()
 			currentControlColor = "Red";
 		}
 		temperatureMsg.SetWindowTextA(cstr("T = " + currentTemperatureStr + "C \r\n"));
-		temperatureDisplay.SetWindowTextA(cstr(setTemperature));
+		temperatureDisplay.SetWindowTextA(cstr("Tset = " + str(setTemperature) + " C"));
 
 		if ( ANDOR_SAFEMODE ) { 
 			//thrower( "SAFEMODE" ); 

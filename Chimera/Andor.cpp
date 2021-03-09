@@ -33,6 +33,8 @@ AndorCamera::AndorCamera()
 	// Initialize driver in current directory
 	try
 	{
+		NumberOfAcqBuffers = 10;
+		NumberOfImageBuffers = 10;
 		initialize();
 		//setBaselineClamp(1);
 		//setShutter(0, 5, 30, 30); //Shutter open for any series, 30ms open/close time.
@@ -84,8 +86,11 @@ void AndorCamera::pauseThread()
  */
 void AndorCamera::onFinish()
 {
-	delete[] acqBuffer;
-	acqBuffer = NULL;
+	//Free the allocated buffer s
+	for (int i = 0; i < NumberOfAcqBuffers; i++) {
+		delete[] AcqBuffers[i];
+	}
+
 	AT_Command(CameraHndl, L"Acquisition Stop");
 	AT_Flush(CameraHndl);
 
@@ -125,13 +130,19 @@ unsigned __stdcall AndorCamera::cameraThread(void* voidPtr)
 			{
 				int status;
 				//input->Andor->queryStatus(status);
+				//auto start = std::chrono::high_resolution_clock::now();
+				input->Andor->waitForAcquisition(pictureNumber);
 
-				input->Andor->waitForAcquisition();
 				if (pictureNumber % 2 == 0)
 				{
 					(*input->imageTimes).push_back(std::chrono::high_resolution_clock::now());
 				}
 				armed = true;
+
+				/*input->Andor->updatePictureNumber(pictureNumber);
+				std::vector<std::vector<long>> picData;
+				picData = input->Andor->acquireImageData(pictureNumber);
+				input->Andor->queueBuffers(pictureNumber);*/
 
 				input->comm->sendCameraProgress(pictureNumber);
 
@@ -141,11 +152,16 @@ unsigned __stdcall AndorCamera::cameraThread(void* voidPtr)
 					//input->comm->sendCameraProgress(-1);
 					input->comm->sendCameraFin();
 					armed = false;
+					pictureNumber = 1;
 				}
 				else {
-					//requeue the buffer if taking more images
-					input->Andor->queueBuffer();
+					++pictureNumber;
+					//requeue the buffers if taking more images
+					/*input->Andor->queueBuffers(pictureNumber);*/
 				}
+				/*auto stop = std::chrono::high_resolution_clock::now();
+				auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+				int a = 0;*/
 			}
 			catch (Error&)
 			{
@@ -195,8 +211,8 @@ AndorRunSettings AndorCamera::getSettings()
 	return runSettings;
 }
 
-void AndorCamera::queueBuffer() {
-	andorErrorChecker(AT_QueueBuffer(CameraHndl, acqBuffer, BufferSize));
+void AndorCamera::queueBuffers(int pictureNumber) {
+	andorErrorChecker(AT_QueueBuffer(CameraHndl, AcqBuffers[(pictureNumber - 1) % NumberOfAcqBuffers], BufferSize));
 }
 
 void AndorCamera::setSettings(AndorRunSettings settingsToSet)
@@ -218,6 +234,7 @@ void AndorCamera::armCamera(CameraWindow* camWin, double& minKineticCycleTime)
 
 	if (!ANDOR_SAFEMODE) {
 		setExposures();
+		//andorErrorChecker(AT_SetBool(CameraHndl, L"VerticallyCentreAOI", true)); //note if setting this true, can't set "AOITop"
 		setImageParametersToCamera();
 		setCameraTriggerMode();
 
@@ -246,24 +263,43 @@ void AndorCamera::armCamera(CameraWindow* camWin, double& minKineticCycleTime)
 		cameraIsRunning = true;
 		// remove the spurious wakeup check.
 		threadInput.spuriousWakeupHandler = true;
-		// notify the thread that the experiment has started..
-		threadInput.signaler.notify_all();
 
-		AT_SetEnumeratedString(CameraHndl, L"Pixel Encoding", L"Mono16");
+		AT_SetEnumeratedString(CameraHndl, L"Pixel Encoding", L"Mono12");
 
 		AT_64 ImageSizeBytes;
 		AT_GetInt(CameraHndl, L"Image Size Bytes", &ImageSizeBytes);
 
 		BufferSize = static_cast<int>(ImageSizeBytes);
 
-		acqBuffer = new unsigned char[BufferSize];
+		/*NumberOfAcqBuffers = runSettings.picsPerRepetition;
+		NumberOfImageBuffers = runSettings.picsPerRepetition;*/
 
-		andorErrorChecker(AT_QueueBuffer(CameraHndl, acqBuffer, BufferSize));
+		//Allocate a number of memory buffers to store frames
+		AcqBuffers.resize(NumberOfAcqBuffers);
+		tempImageBuffers.resize(NumberOfImageBuffers);
+
+		//for (int i = 0; i < NumberOfBuffers; i++) {
+		//	AcqBuffers[i] = new unsigned char[BufferSize];
+		//} //Pass these buffers to the SDK
+		//for (int i = 0; i < NumberOfBuffers; i++) {
+		//	andorErrorChecker(AT_QueueBuffer(CameraHndl, AcqBuffers[i], BufferSize));
+		//}
+		for (int i = 0; i < NumberOfAcqBuffers; i++) {
+			AcqBuffers[i] = new unsigned char[BufferSize];
+		}
+		for (int i = 0; i < NumberOfAcqBuffers; i++) {
+			andorErrorChecker(AT_QueueBuffer(CameraHndl, AcqBuffers[i], BufferSize));
+		}
 
 		//Set the camera to continuously acquires frames 
-		AT_SetEnumString(CameraHndl, L"CycleMode", L"Continuous");
+		andorErrorChecker(AT_SetEnumString(CameraHndl, L"CycleMode", L"Continuous"));
+		//Set the camera AUX out to show if any pixel row is being exposed
+		andorErrorChecker(AT_SetEnumString(CameraHndl, L"AuxiliaryOutSource", L"FireAny"));
+
 	}
 	startAcquisition();
+	// notify the thread that the experiment has started..
+	threadInput.signaler.notify_all();
 }
 
 
@@ -271,7 +307,7 @@ void AndorCamera::armCamera(CameraWindow* camWin, double& minKineticCycleTime)
  * This function checks for new pictures, if they exist it gets them, and shapes them into the array which holds all of
  * the pictures for a given repetition.
  */
-std::vector<std::vector<long>> AndorCamera::acquireImageData()
+std::vector<std::vector<long>> AndorCamera::acquireImageData(int pictureNumber)
 {
 	//try
 	//{
@@ -341,12 +377,12 @@ std::vector<std::vector<long>> AndorCamera::acquireImageData()
 		for (AT_64 Row = 0; Row < Height; Row++) {
 			//Cast the raw image buffer to a 16-bit array. 
 			//...Assumes the PixelEncoding is 16-bit. 
-			unsigned short* ImagePixels = reinterpret_cast<unsigned short*>(tempImageBuffer);
+			unsigned short* ImagePixels = reinterpret_cast<unsigned short*>(tempImageBuffers[(pictureNumber - 1) % NumberOfImageBuffers]);
 			//Process each pixel in a row as normal 
 			for (AT_64 Pixel = 0; Pixel < Width; Pixel++) {
 				tempImage[Row*Width + Pixel] = ImagePixels[Pixel];
 			} //Use Stride to get the memory location of the next row. 
-			tempImageBuffer += Stride;
+			tempImageBuffers[(pictureNumber - 1) % NumberOfImageBuffers] += Stride;
 		}
 
 		if (tempImage.size() == 0) {
@@ -355,9 +391,6 @@ std::vector<std::vector<long>> AndorCamera::acquireImageData()
 		// immediately rotate
 		for (UINT imageVecInc = 0; imageVecInc < imagesOfExperiment[experimentPictureNumber].size(); imageVecInc++)
 		{
-			/*imagesOfExperiment[experimentPictureNumber][imageVecInc] = tempImage[((imageVecInc
-				% runSettings.imageSettings.width) + 1) * runSettings.imageSettings.height
-				- imageVecInc / runSettings.imageSettings.width - 1];*/
 			imagesOfExperiment[experimentPictureNumber][imageVecInc] = tempImage[imageVecInc];
 		}
 
@@ -480,7 +513,7 @@ void AndorCamera::setExposures()
 	//{
 	//	thrower("ERROR: Invalid size for vector of exposure times, value of " + str(runSettings.exposureTimes.size()) + ".");
 	//}
-	AT_SetFloat(CameraHndl, L"ExposureTime", runSettings.exposureTimes[0]);
+	AT_SetFloat(CameraHndl, L"ExposureTime", runSettings.exposureTimes[1]);
 }
 
 
@@ -1181,12 +1214,12 @@ void AndorCamera::setDMAParameters(int maxImagesPerDMA, float secondsPerDMA)
 }
 
 
-void AndorCamera::waitForAcquisition()
+void AndorCamera::waitForAcquisition(int pictureNumber)
 {
 	if (!ANDOR_SAFEMODE)
 	{
 		//andorErrorChecker(WaitForAcquisition());
-		andorErrorChecker(AT_WaitBuffer(CameraHndl, &tempImageBuffer, &BufferSize, AT_INFINITE));
+		andorErrorChecker(AT_WaitBuffer(CameraHndl, &tempImageBuffers[(pictureNumber-1) % NumberOfImageBuffers], &BufferSize, AT_INFINITE));
 	}
 }
 
@@ -1240,7 +1273,7 @@ void AndorCamera::temperatureControlOff()
 void AndorCamera::getTemperatureStatus(int& temperatureStatusIndex, AT_WC* temperatureStatus)
 {
 	if (!ANDOR_SAFEMODE)
-	{ 
+	{
 		AT_GetEnumIndex(CameraHndl, L"TemperatureStatus", &temperatureStatusIndex);
 		AT_GetEnumStringByIndex(CameraHndl, L"TemperatureStatus", temperatureStatusIndex, temperatureStatus, 256);
 	}

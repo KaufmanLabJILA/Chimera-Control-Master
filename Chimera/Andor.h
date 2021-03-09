@@ -89,7 +89,7 @@ class AndorCamera
 		void temperatureControlOn();
 		void temperatureControlOff();
 
-		void waitForAcquisition();
+		void waitForAcquisition(int pictureNumber);
 
 		void getCapabilities( AndorCapabilities& caps );
 		void getSerialNumber( int& num );
@@ -103,7 +103,7 @@ class AndorCamera
 		void pauseThread();
 		void setSettings(AndorRunSettings settingsToSet);
 		void armCamera(CameraWindow* camWin, double& minKineticCycleTime);
-		std::vector<std::vector<long>> acquireImageData();
+		std::vector<std::vector<long>> acquireImageData(int pictureNumber);
 		void setTemperature();
 		void setExposures();
 		void setImageParametersToCamera();
@@ -124,7 +124,7 @@ class AndorCamera
 		void setBaselineClamp(int clamp);
 		void setBaselineOffset(int offset);
 		void setDMAParameters(int maxImagesPerDMA, float secondsPerDMA);
-		void queueBuffer();
+		void queueBuffers(int pictureNumber);
 
 		static UINT __stdcall cameraThread( void* voidPtr );
 		
@@ -161,7 +161,9 @@ class AndorCamera
 		cameraThreadInput threadInput;
 
 		AT_H CameraHndl;
-		unsigned char* acqBuffer = NULL;
-		unsigned char* tempImageBuffer;
+		std::vector<unsigned char*> AcqBuffers;
+		int NumberOfAcqBuffers;
+		int NumberOfImageBuffers;
+		std::vector<unsigned char*> tempImageBuffers;
 		int BufferSize;
 };

@@ -294,7 +294,8 @@ LRESULT CameraWindow::onCameraProgress( WPARAM wParam, LPARAM lParam )
 	std::vector<std::vector<long>> picData;
 	try
 	{
-		picData = Andor.acquireImageData();
+		picData = Andor.acquireImageData(pictureNumber);
+		Andor.queueBuffers(pictureNumber);
 	}
 	catch (Error& err)
 	{

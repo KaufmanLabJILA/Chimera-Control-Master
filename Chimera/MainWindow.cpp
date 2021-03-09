@@ -1002,7 +1002,6 @@ void MainWindow::waitForRearranger( )
 }
 
 
-// I think I can delete this...
 LRESULT MainWindow::onNormalFinishMessage(WPARAM wParam, LPARAM lParam)
 {
 	//TheScriptingWindow->setIntensityDefault();
@@ -1011,20 +1010,7 @@ LRESULT MainWindow::onNormalFinishMessage(WPARAM wParam, LPARAM lParam)
 	changeShortStatusColor("B");
 	stopRearranger( );
 	TheCameraWindow->wakeRearranger();
-	//comm.sendColorBox( Niawg, 'B' );
-	//try
-	//{
-	//	niawg.restartDefault();
-	//}
-	//catch ( Error& except )
-	//{
-	//	comm.sendError( "ERROR! The niawg finished normally, but upon restarting the default waveform, threw the "
-	//					"following error: " + except.whatStr( ) );
-	//	comm.sendColorBox( Niawg, 'B' );
-	//	comm.sendStatus( "ERROR!\r\n" );
-	//	return 0;
-	//}
-	//setNiawgRunningState( false );
+
 	try
 	{
 		waitForRearranger( );

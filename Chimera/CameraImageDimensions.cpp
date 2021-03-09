@@ -227,7 +227,7 @@ imageParameters ImageDimsControl::readImageParameters( CameraWindow* camWin )
 	if (currentImageParameters.left < 1 || currentImageParameters.right > 2048)
 	{
 		isReady = false;
-		thrower( "ERROR: Image horizontal borders must be greater than 0 and less than the detector width\r\n" );
+		thrower( "ERROR: Image horizontal borders must be greater than 0 and less than the detector width\r\n currentImageParameters.right = " + str(currentImageParameters.right) );
 	}
 	if (currentImageParameters.bottom < 1 || currentImageParameters.top > 2048)
 	{
@@ -288,12 +288,12 @@ void ImageDimsControl::setImageParametersFromInput( imageParameters param, Camer
 		isReady = false;
 		thrower( "ERROR: Image start positions must not be greater than end positions\r\n" );
 	}
-	if (currentImageParameters.left < 1 || currentImageParameters.right > 512)
+	if (currentImageParameters.left < 1 || currentImageParameters.right > 2048)
 	{
 		isReady = false;
 		thrower( "ERROR: Image horizontal borders must be greater than 0 and less than the detector width\r\n" );
 	}
-	if (currentImageParameters.bottom < 1 || currentImageParameters.top > 512)
+	if (currentImageParameters.bottom < 1 || currentImageParameters.top > 2048)
 	{
 		isReady = false;
 		thrower( "ERROR: Image verttical borders must be greater than 0 and less than the detector height\r\n" );
