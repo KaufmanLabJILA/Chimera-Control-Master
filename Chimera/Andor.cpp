@@ -233,7 +233,10 @@ void AndorCamera::armCamera(CameraWindow* camWin, double& minKineticCycleTime)
 	/// Set a bunch of parameters.
 
 	if (!ANDOR_SAFEMODE) {
-		setExposures();
+		if (runSettings.triggerMode != "External Exposure") {
+			setExposures();
+		}
+		
 		//andorErrorChecker(AT_SetBool(CameraHndl, L"VerticallyCentreAOI", true)); //note if setting this true, can't set "AOITop"
 		setImageParametersToCamera();
 		setCameraTriggerMode();
@@ -466,6 +469,10 @@ void AndorCamera::setCameraTriggerMode()
 	{
 		trigType = L"External Start";
 	}
+	else if (runSettings.triggerMode == "External Exposure")
+	{
+		trigType = L"External Exposure";
+	}
 	else {
 		trigType = L"External";
 	}
@@ -501,7 +508,7 @@ void AndorCamera::setExposures()
 	//if (runSettings.exposureTimes.size() > 0 && runSettings.exposureTimes.size() <= 16)
 	//{
 	//	try {
-	//		setRingExposureTimes(runSettings.exposureTimes.size(), runSettings.exposureTimes.data());
+	//		//setRingExposureTimes(runSettings.exposureTimes.size(), runSettings.exposureTimes.data());
 	//	}
 	//	catch (Error& err)
 	//	{
@@ -513,7 +520,7 @@ void AndorCamera::setExposures()
 	//{
 	//	thrower("ERROR: Invalid size for vector of exposure times, value of " + str(runSettings.exposureTimes.size()) + ".");
 	//}
-	AT_SetFloat(CameraHndl, L"ExposureTime", runSettings.exposureTimes[1]);
+	AT_SetFloat(CameraHndl, L"ExposureTime", runSettings.exposureTime);
 }
 
 
@@ -559,7 +566,7 @@ void AndorCamera::setFrameTransferMode()
  * over-written.
  * throws exception if fails
  */
-void AndorCamera::checkAcquisitionTimings(float& kinetic, float& accumulation, std::vector<float>& exposures)
+void AndorCamera::checkAcquisitionTimings(float& kinetic, float& accumulation, float& exposure)
 {
 	float tempExposure, tempAccumTime, tempKineticTime;
 	float * timesArray = NULL;
@@ -567,14 +574,7 @@ void AndorCamera::checkAcquisitionTimings(float& kinetic, float& accumulation, s
 	if (ANDOR_SAFEMODE)
 	{
 		// if in safemode initialize this stuff to the values to be outputted.
-		if (exposures.size() > 0)
-		{
-			tempExposure = exposures[0];
-		}
-		else
-		{
-			tempExposure = 0;
-		}
+		tempExposure = exposure;
 		tempAccumTime = accumulation;
 		tempKineticTime = kinetic;
 	}
@@ -587,28 +587,27 @@ void AndorCamera::checkAcquisitionTimings(float& kinetic, float& accumulation, s
 	// It is necessary to get the actual times as the system will calculate the
 	// nearest possible time. eg if you set exposure time to be 0, the system
 	// will use the closest value (around 0.01s)
-	timesArray = new float[exposures.size()];
+	int numpics = runSettings.picsPerRepetition;
+	timesArray = new float[numpics];
 	if (ANDOR_SAFEMODE)
 	{
 		getAcquisitionTimes(tempExposure, tempAccumTime, tempKineticTime);
-		getAdjustedRingExposureTimes(exposures.size(), timesArray);
+		getAdjustedRingExposureTimes(numpics, timesArray);
 	}
 	else
 	{
-		for (UINT exposureInc = 0; exposureInc < exposures.size(); exposureInc++)
+		for (UINT exposureInc = 0; exposureInc < numpics; exposureInc++)
 		{
-			timesArray[exposureInc] = exposures[exposureInc];
+			timesArray[exposureInc] = exposure;
 		}
 	}
 	// Set times
-	if (exposures.size() > 0)
+
+	for (UINT exposureInc = 0; exposureInc < numpics; exposureInc++)
 	{
-		for (UINT exposureInc = 0; exposureInc < exposures.size(); exposureInc++)
-		{
-			exposures[exposureInc] = timesArray[exposureInc];
-		}
-		delete[] timesArray;
+		exposure = timesArray[exposureInc];
 	}
+	delete[] timesArray;
 	accumulation = tempAccumTime;
 	kinetic = tempKineticTime;
 }
@@ -1369,7 +1368,7 @@ void AndorCamera::setTriggerMode(AT_WC* mode)
 	if (!ANDOR_SAFEMODE)
 	{
 		//andorErrorChecker(SetTriggerMode(mode));
-		andorErrorChecker(AT_SetEnumString(CameraHndl, L"TriggerMode", L"External"));
+		andorErrorChecker(AT_SetEnumString(CameraHndl, L"TriggerMode", mode));
 	}
 }
 

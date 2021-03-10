@@ -109,7 +109,7 @@ class AndorCamera
 		void setImageParametersToCamera();
 		void setScanNumber();
 		double getMinKineticCycleTime( );
-		void checkAcquisitionTimings(float& kinetic, float& accumulation, std::vector<float>& exposures);
+		void checkAcquisitionTimings(float& kinetic, float& accumulation, float& exposures);
 		void setNumberAccumulations(bool isKinetic);
 		void setCameraTriggerMode();
 		void onFinish();

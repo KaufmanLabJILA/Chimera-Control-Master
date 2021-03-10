@@ -23,8 +23,8 @@ class CameraSettingsControl
 		void updateRunSettingsFromPicSettings( );
 		CBrush* handleColor(int idNumber, CDC* colorer, brushMap brushes, rgbMap rgbs);
 		void initialize(cameraPositions& pos, int& id, CWnd* parent, cToolTips& tooltips);
-		void checkTimings(std::vector<float>& exposureTimes);
-		void checkTimings(float& kineticCycleTime, float& accumulationTime, std::vector<float>& exposureTimes);
+		void checkTimings(float& exposureTime);
+		void checkTimings(float& kineticCycleTime, float& accumulationTime, float& exposureTime);
 		imageParameters readImageParameters(CameraWindow* camWin);
 		void updateMinKineticCycleTime( double time );
 		void setEmGain(AndorCamera* andorObj);
@@ -43,6 +43,7 @@ class CameraSettingsControl
 		std::array<int, 4> getThresholds();
 		void updatePassivelySetSettings();
 		void setRunSettings(AndorRunSettings inputSettings);
+		void setExposureTimes();
 
 		void handleOpenConfig(std::ifstream& configFile, int versionMajor, int versionMinor );
 		void handleNewConfig( std::ofstream& newFile );

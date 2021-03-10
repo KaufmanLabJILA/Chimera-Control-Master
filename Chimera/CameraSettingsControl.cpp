@@ -12,7 +12,7 @@ CameraSettingsControl::CameraSettingsControl(AndorCamera* friendInitializer) : p
 
 	picSettingsObj.picsPerRepManual = false;
 
-	runSettings.exposureTimes = { 0.026f };
+	runSettings.exposureTime = 0.026f;
 	runSettings.picsPerRepetition = 1;
 	runSettings.kineticCycleTime = 0.1f;
 	runSettings.repetitionsPerVariation = 10;
@@ -84,6 +84,7 @@ void CameraSettingsControl::initialize( cameraPositions& pos, int& id, CWnd* par
 	// set options for the combo
 	triggerCombo.AddString( "Internal Trigger" );
 	triggerCombo.AddString( "External Trigger" );
+	triggerCombo.AddString("External Exposure");
 	triggerCombo.AddString( "Start On Trigger" );
 	// Select default trigger
 	triggerCombo.SelectString( 0, "External Trigger" );
@@ -266,9 +267,9 @@ void CameraSettingsControl::setRunSettings(AndorRunSettings inputSettings)
 	}
 	andorFriend->setGainMode();
 	// try to set this time.
-	picSettingsObj.setExposureTimes(inputSettings.exposureTimes, andorFriend);
+	picSettingsObj.setExposureTimes(inputSettings.exposureTime, andorFriend);
 	// now check actual times.
-	checkTimings(inputSettings.exposureTimes);
+	checkTimings(inputSettings.exposureTime);
 	///
 	kineticCycleTimeEdit.SetWindowTextA(cstr(inputSettings.kineticCycleTime));
 	accumulationCycleTimeEdit.SetWindowTextA(cstr(inputSettings.accumulationTime));
@@ -480,7 +481,6 @@ void CameraSettingsControl::handleTimer()
 		}
 		runSettings.temperatureSetting = setTemperature;
 		runSettings.temperatureSettingEnum = temperatureIndex;
-		andorFriend->setSettings(runSettings);
 
 		int ret;
 		ret = wcstombs(temperatureStatusStr, temperatureStatus, sizeof(temperatureStatusStr));
@@ -504,6 +504,11 @@ void CameraSettingsControl::handleTimer()
 		}
 		temperatureMsg.SetWindowTextA(cstr("T = " + currentTemperatureStr + "C \r\n"));
 		temperatureDisplay.SetWindowTextA(cstr("Tset = " + str(setTemperature) + " C"));
+
+		picSettingsObj.updateSettings();
+
+		runSettings.exposureTime = picSettingsObj.getUsedExposureTimes();
+		andorFriend->setSettings(runSettings);
 
 		if ( ANDOR_SAFEMODE ) { 
 			//thrower( "SAFEMODE" ); 
@@ -574,7 +579,7 @@ void CameraSettingsControl::handleTimer()
 void CameraSettingsControl::updateRunSettingsFromPicSettings( )
 {
 	runSettings.showPicsInRealTime = picSettingsObj.picsPerRepManual;
-	runSettings.exposureTimes = picSettingsObj.getUsedExposureTimes( );
+	runSettings.exposureTime = picSettingsObj.getUsedExposureTimes();
 	runSettings.picsPerRepetition = picSettingsObj.getPicsPerRepetition( );
 	runSettings.totalPicsInVariation = runSettings.picsPerRepetition * runSettings.repetitionsPerVariation;
 	if ( runSettings.totalVariations * runSettings.totalPicsInVariation > INT_MAX )
@@ -761,15 +766,15 @@ void CameraSettingsControl::handleModeChange( CameraWindow* cameraWindow )
 }
 
 
-void CameraSettingsControl::checkTimings(std::vector<float>& exposureTimes)
+void CameraSettingsControl::checkTimings(float& exposureTime)
 {
-	checkTimings(runSettings.kineticCycleTime, runSettings.accumulationTime, exposureTimes);
+	checkTimings(runSettings.kineticCycleTime, runSettings.accumulationTime, exposureTime);
 }
 
 
-void CameraSettingsControl::checkTimings(float& kineticCycleTime, float& accumulationTime, std::vector<float>& exposureTimes)
+void CameraSettingsControl::checkTimings(float& kineticCycleTime, float& accumulationTime, float& exposureTime)
 {
-	andorFriend->checkAcquisitionTimings(kineticCycleTime, accumulationTime, exposureTimes);
+	andorFriend->checkAcquisitionTimings(kineticCycleTime, accumulationTime, exposureTime);
 }
 
 
@@ -797,12 +802,15 @@ void CameraSettingsControl::setImageParameters(imageParameters newSettings, Came
 	imageDimensionsObj.setImageParametersFromInput(newSettings, camWin);
 }
 
+void CameraSettingsControl::setExposureTimes() {
+	picSettingsObj.setExposureTimes(andorFriend);
+}
 
 void CameraSettingsControl::checkIfReady()
 {
-	if ( picSettingsObj.getUsedExposureTimes().size() == 0 )
+	if ( picSettingsObj.getUsedExposureTimes() <= 0 )
 	{
-		thrower("Please Set at least one exposure time.");
+		thrower("Please Set at exposure time > 0");
 	}
 	if ( !imageDimensionsObj.checkReady() )
 	{

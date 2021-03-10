@@ -99,22 +99,20 @@ void PictureSettingsControl::initialize(cameraPositions& pos, CWnd* parent, int&
 	exposureLabel.Create("Exposure (ms):", NORM_STATIC_OPTIONS, exposureLabel.seriesPos, parent,
 		PICTURE_SETTINGS_ID_START + count++);
 	exposureLabel.fontType = SmallFont;
-	exposureTimesUnofficial.resize(4);
 
-	for (int picInc = 0; picInc < 4; picInc++)
-	{
-		exposureEdits[picInc].seriesPos = { pos.seriesPos.x + 100 + 95 * picInc, pos.seriesPos.y,
-			pos.seriesPos.x + 100 + 95 * (picInc + 1), pos.seriesPos.y + 20 };
-		exposureEdits[picInc].amPos = { pos.amPos.x + 100 + 95 * picInc, pos.amPos.y,
-			pos.amPos.x + 100 + 95 * (picInc + 1), pos.amPos.y + 20 };
-		exposureEdits[picInc].videoPos = { pos.videoPos.x + 100 + 95 * picInc, pos.videoPos.y,
-			pos.videoPos.x + 100 + 95 * (picInc + 1), pos.videoPos.y + 20 };
-		// first of group 
-		exposureEdits[picInc].Create(NORM_EDIT_OPTIONS, exposureEdits[picInc].seriesPos, parent,
-			PICTURE_SETTINGS_ID_START + count++);
-		exposureEdits[picInc].SetWindowTextA("26.0");
-		exposureTimesUnofficial[picInc] = 26 / 1000.0f;
-	}
+
+	exposureEdit.seriesPos = { pos.seriesPos.x + 100, pos.seriesPos.y,
+		pos.seriesPos.x + 100 + 95, pos.seriesPos.y + 20 };
+	exposureEdit.amPos = { pos.amPos.x + 100, pos.amPos.y,
+		pos.amPos.x + 100 + 95, pos.amPos.y + 20 };
+	exposureEdit.videoPos = { pos.videoPos.x + 100, pos.videoPos.y,
+		pos.videoPos.x + 100 + 95, pos.videoPos.y + 20 };
+	// first of group 
+	exposureEdit.Create(NORM_EDIT_OPTIONS, exposureEdit.seriesPos, parent,
+		PICTURE_SETTINGS_ID_START + count++);
+	exposureEdit.SetWindowTextA("26.0");
+	exposureTimesUnofficial = 26 / 1000.0f;
+
 	pos.seriesPos.y += 20;
 	pos.amPos.y += 20;
 	pos.videoPos.y += 20;
@@ -190,11 +188,11 @@ void PictureSettingsControl::handleNewConfig(std::ofstream& newFile)
 		newFile << 0 << " ";
 	}
 	newFile << "\n";
-	for (auto exposure : exposureTimesUnofficial)
-	{
+	/*for (auto exposure : exposureTimesUnofficial)
+	{*/
 		// in seconds 
 		newFile << 0.025 << " ";
-	}
+	//}
 	newFile << "\n";
 	for (auto threshold : thresholds)
 	{
@@ -215,10 +213,10 @@ void PictureSettingsControl::handleSaveConfig(std::ofstream& saveFile)
 		saveFile << color << " ";
 	}
 	saveFile << "\n";
-	for (auto exposure : exposureTimesUnofficial)
-	{
-		saveFile << exposure << " ";
-	}
+	/*for (auto exposure : exposureTimesUnofficial)
+	{*/
+		saveFile << exposureTimesUnofficial << " ";
+	//}
 	saveFile << "\n";
 	for (auto threshold : thresholds)
 	{
@@ -250,10 +248,10 @@ void PictureSettingsControl::handleOpenConfig(std::ifstream& openFile, int versi
 	{
 		openFile >> color;
 	}
-	for (auto& exposure : exposureTimesUnofficial)
-	{
-		openFile >> exposure;
-	}
+	/*for (auto& exposure : exposureTimesUnofficial)
+	{*/
+		openFile >> exposureTimesUnofficial;
+	//}
 	for (auto& threshold : fileThresholds)
 	{
 		openFile >> threshold;
@@ -270,7 +268,7 @@ void PictureSettingsControl::disablePictureControls(int pic)
 	{
 		return;
 	}
-	exposureEdits[pic].EnableWindow(0);
+	//exposureEdit.EnableWindow(0);
 	thresholdEdits[pic].EnableWindow(0);
 	colormapCombos[pic].EnableWindow(0);
 }
@@ -282,7 +280,7 @@ void PictureSettingsControl::enablePictureControls(int pic)
 	{
 		return;
 	}
-	exposureEdits[pic].EnableWindow();
+	exposureEdit.EnableWindow();
 	thresholdEdits[pic].EnableWindow();
 	colormapCombos[pic].EnableWindow();
 }
@@ -291,31 +289,31 @@ void PictureSettingsControl::enablePictureControls(int pic)
 CBrush* PictureSettingsControl::colorControls(int id, CDC* colorer, brushMap brushes, rgbMap rgbs)
 {
 	/// Exposures 
-	if (id >= exposureEdits.front().GetDlgCtrlID() && id <= exposureEdits.back().GetDlgCtrlID())
+	if (id == exposureEdit.GetDlgCtrlID())
 	{
-		int picNum = id - exposureEdits.front().GetDlgCtrlID();
-		if (!exposureEdits[picNum].IsWindowEnabled())
+		//int picNum = id - exposureEdit.GetDlgCtrlID();
+		if (!exposureEdit.IsWindowEnabled())
 		{
 			return NULL;
 		}
 		colorer->SetTextColor(rgbs["theme foreground"]);
 		//TCHAR textEdit[256]; 
 		CString text;
-		exposureEdits[picNum].GetWindowTextA(text);
+		exposureEdit.GetWindowTextA(text);
 		double exposure;
 		try
 		{
 			exposure = std::stof(str(text));// / 1000.0f; 
-			double dif = std::fabs(exposure / 1000.0 - exposureTimesUnofficial[picNum]);
+			double dif = std::fabs(exposure / 1000.0 - exposureTimesUnofficial);
 			if (dif < 0.000000001)
 			{
 				// good. 
 				colorer->SetBkColor(rgbs["theme green"]);
 				// catch change of color and redraw window. 
-				if (exposureEdits[picNum].colorState != 0)
+				if (exposureEdit.colorState != 0)
 				{
-					exposureEdits[picNum].colorState = 0;
-					exposureEdits[picNum].RedrawWindow();
+					exposureEdit.colorState = 0;
+					exposureEdit.RedrawWindow();
 				}
 				return brushes["theme green"];
 			}
@@ -326,10 +324,10 @@ CBrush* PictureSettingsControl::colorControls(int id, CDC* colorer, brushMap bru
 		}
 		colorer->SetBkColor(rgbs["Red"]);
 		// catch change of color and redraw window. 
-		if (exposureEdits[picNum].colorState != 1)
+		if (exposureEdit.colorState != 1)
 		{
-			exposureEdits[picNum].colorState = 1;
-			exposureEdits[picNum].RedrawWindow();
+			exposureEdit.colorState = 1;
+			exposureEdit.RedrawWindow();
 		}
 		return brushes["Red"];
 	}
@@ -368,10 +366,10 @@ CBrush* PictureSettingsControl::colorControls(int id, CDC* colorer, brushMap bru
 		}
 		colorer->SetBkColor(rgbs["Red"]);
 		// catch change of color and redraw window. 
-		if (exposureEdits[picNum].colorState != 1)
+		if (exposureEdit.colorState != 1)
 		{
-			exposureEdits[picNum].colorState = 1;
-			exposureEdits[picNum].RedrawWindow();
+			exposureEdit.colorState = 1;
+			exposureEdit.RedrawWindow();
 		}
 		return brushes["Red"];
 	}
@@ -479,18 +477,18 @@ void PictureSettingsControl::setExposureTimes(AndorCamera* andorObj)
 }
 
 
-void PictureSettingsControl::setExposureTimes(std::vector<float>& times, AndorCamera* andorObj)
+void PictureSettingsControl::setExposureTimes(float& time, AndorCamera* andorObj)
 {
-	std::vector<float> exposuresToSet;
-	exposuresToSet = times;
-	if (picsPerRepManual) {
+	float exposuresToSet;
+	exposuresToSet = time;
+	/*if (picsPerRepManual) {
 		exposuresToSet.resize(1);
 	}
 	else {
 		exposuresToSet.resize(picsPerRepetitionUnofficial);
-	}
+	}*/
 	AndorRunSettings settings = andorObj->getSettings();
-	settings.exposureTimes = exposuresToSet;
+	settings.exposureTime = exposuresToSet;
 	andorObj->setSettings(settings);
 	// try to set this time. 
 	andorObj->setExposures();
@@ -498,38 +496,19 @@ void PictureSettingsControl::setExposureTimes(std::vector<float>& times, AndorCa
 	try { parentSettingsControl->checkTimings(exposuresToSet); }
 	catch (std::runtime_error&) { throw; }
 
-	for (UINT exposureInc = 0; exposureInc < exposuresToSet.size(); exposureInc++)
-	{
-		exposureTimesUnofficial[exposureInc] = exposuresToSet[exposureInc];
-	}
+	exposureTimesUnofficial = exposuresToSet;
 
-	if (exposureTimesUnofficial.size() <= 0)
-	{
-		// this shouldn't happen 
-		thrower("ERROR: reached bad location where exposure times was of zero size, but this should have been detected earlier in the "
-			"code.");
-	}
 	// now output things. 
-	for (int exposureInc = 0; exposureInc < 4; exposureInc++)
-	{
-		exposureEdits[exposureInc].SetWindowTextA(cstr(this->exposureTimesUnofficial[exposureInc] * 1000));
-	}
+	exposureEdit.SetWindowTextA(cstr(this->exposureTimesUnofficial * 1000));
 }
 
 
 
-std::vector<float> PictureSettingsControl::getUsedExposureTimes()
+float PictureSettingsControl::getUsedExposureTimes()
 {
 	updateSettings();
-	std::vector<float> usedTimes;
+	float usedTimes;
 	usedTimes = exposureTimesUnofficial;
-
-	if (picsPerRepManual) {
-		usedTimes.resize(1); //Only use first exposure time if many images. 
-	}
-	else {
-		usedTimes.resize(picsPerRepetitionUnofficial);
-	}
 
 	return usedTimes;
 }
@@ -539,9 +518,9 @@ std::vector<float> PictureSettingsControl::getUsedExposureTimes()
  */
 void PictureSettingsControl::confirmAcquisitionTimings()
 {
-	std::vector<float> usedExposures;
+	float usedExposures;
 	usedExposures = exposureTimesUnofficial;
-	usedExposures.resize(picsPerRepetitionUnofficial);
+
 	try
 	{
 		parentSettingsControl->checkTimings(usedExposures);
@@ -550,10 +529,9 @@ void PictureSettingsControl::confirmAcquisitionTimings()
 	{
 		throw;
 	}
-	for (UINT exposureInc = 0; exposureInc < usedExposures.size(); exposureInc++)
-	{
-		exposureTimesUnofficial[exposureInc] = usedExposures[exposureInc];
-	}
+
+	exposureTimesUnofficial = usedExposures;
+
 }
 
 /**/
@@ -641,26 +619,23 @@ void PictureSettingsControl::updateSettings()
 		}
 		thresholdEdits[thresholdInc].RedrawWindow();
 	}
-	// grab the exposures. 
-	for (int exposureInc = 0; exposureInc < 4; exposureInc++)
+	// grab the exposure. 
+
+	CString textEdit;
+	exposureEdit.GetWindowTextA(textEdit);
+	float exposure;
+	try
 	{
-		CString textEdit;
-		exposureEdits[exposureInc].GetWindowTextA(textEdit);
-		float exposure;
-		try
-		{
-			exposure = std::stof(str(textEdit));
-			exposureTimesUnofficial[exposureInc] = exposure / 1000.0f;
-		}
-		catch (std::invalid_argument)
-		{
-			errBox("ERROR: failed to convert exposure number " + str(exposureInc + 1) + " to an integer.");
-		}
-		// refresh for new color 
-		exposureEdits[exposureInc].RedrawWindow();
+		exposure = std::stof(str(textEdit));
+		exposureTimesUnofficial = exposure / 1000.0f;
 	}
-	/// set the exposure times via andor 
-	//setExposureTimes( andorObj ); 
+	catch (std::invalid_argument)
+	{
+		errBox("ERROR: failed to convert exposure number to a float.");
+	}
+	// refresh for new color 
+	exposureEdit.RedrawWindow();
+
 }
 
 
@@ -684,10 +659,9 @@ void PictureSettingsControl::rearrange(std::string cameraMode, std::string trigg
 	{
 		control.rearrange(cameraMode, triggerMode, width, height, fonts);
 	}
-	for (auto& control : exposureEdits)
-	{
-		control.rearrange(cameraMode, triggerMode, width, height, fonts);
-	}
+
+	exposureEdit.rearrange(cameraMode, triggerMode, width, height, fonts);
+
 	for (auto& control : thresholdEdits)
 	{
 		control.rearrange(cameraMode, triggerMode, width, height, fonts);

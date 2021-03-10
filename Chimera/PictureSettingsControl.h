@@ -25,10 +25,10 @@ public:
 	void handleOptionChange(int id, AndorCamera* andorObj);
 	void disablePictureControls(int pic);
 	void enablePictureControls(int pic);
-	void setExposureTimes(std::vector<float>& times, AndorCamera* andorObj);
+	void setExposureTimes(float& time, AndorCamera* andorObj);
 	void setExposureTimes(AndorCamera* andorObj);
 	std::array<int, 4> getPictureColors();
-	std::vector<float> getUsedExposureTimes();
+	float getUsedExposureTimes();
 	std::array<int, 4> getThresholds();
 	CBrush* colorControls(int idNumber, CDC* colorer, brushMap brushes, rgbMap rgbs);
 	void confirmAcquisitionTimings();
@@ -43,7 +43,7 @@ public:
 private:
 	CameraSettingsControl* parentSettingsControl;
 	std::array<int, 4> colors;
-	std::vector<float> exposureTimesUnofficial;
+	float exposureTimesUnofficial;
 	std::array<int, 4> thresholds;
 	// This variable is used by this control and communicated to the andor object, but is not directly accessed 
 	// while the main camera control needs to figure out how many pictures per repetition there are. 
@@ -58,7 +58,7 @@ private:
 	//  
 	std::array<Control<CButton>, 4> totalNumberChoice;
 	std::array<Control<CStatic>, 4> pictureNumbers;
-	std::array<Control<CEdit>, 4> exposureEdits;
+	Control<CEdit> exposureEdit;
 	std::array<Control<CEdit>, 4> thresholdEdits;
 	std::array<Control<CComboBox>, 4> colormapCombos;
 

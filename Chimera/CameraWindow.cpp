@@ -40,6 +40,7 @@ BEGIN_MESSAGE_MAP(CameraWindow, CDialog)
 	ON_COMMAND_RANGE( MENU_ID_RANGE_BEGIN, MENU_ID_RANGE_END, &CameraWindow::passCommandsAndSettings)
 	//ON_COMMAND(ID_RUNMENU_RUNCAMERA, &CameraWindow::passPictureSettings)
 	ON_COMMAND_RANGE( PICTURE_SETTINGS_ID_START, PICTURE_SETTINGS_ID_END, &CameraWindow::passPictureSettings )
+	//ON_CONTROL_RANGE(EN_CHANGE, PICTURE_SETTINGS_ID_START, PICTURE_SETTINGS_ID_END, &CameraWindow::passPictureSettings)
 	//ON_CONTROL_RANGE( CBN_SELENDOK, PICTURE_SETTINGS_ID_START, PICTURE_SETTINGS_ID_END, 
 					  //&CameraWindow::passPictureSettings )
 	// these ids all go to the same function.
@@ -861,7 +862,8 @@ void CameraWindow::prepareCamera( ExperimentInput& input )
 	CameraSettings.setVariationNumber(varNumber);
 	
 	// biggest check here, camera settings includes a lot of things.
-	CameraSettings.checkIfReady();
+	CameraSettings.checkIfReady(); 
+	//CameraSettings.setExposureTimes();
 	input.camSettings = CameraSettings.getSettings();
 	/// start the camera.
 	Andor.setSettings( input.camSettings );
@@ -1133,10 +1135,9 @@ std::string CameraWindow::getStartMessage()
 	dialogMsg += "Current Camera Temperature Setting: " + str(
 		CameraSettings.getSettings().temperatureSetting ) + "\r\n";
 	dialogMsg += "Exposure Times: ";
-	for (auto& time : CameraSettings.getSettings().exposureTimes)
-	{
-		dialogMsg += str( time * 1000 ) + ", ";
-	}
+	float time = CameraSettings.getSettings().exposureTime;
+
+	dialogMsg += str( time * 1000 ) + ", ";
 	dialogMsg += "\r\n";
 	dialogMsg += "Image Settings: " + str( currentImageParameters.left ) + " - " + str( currentImageParameters.right ) + ", "
 		+ str( currentImageParameters.bottom ) + " - " + str( currentImageParameters.top ) + "\r\n";
