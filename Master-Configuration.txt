@@ -111,7 +111,7 @@ dio7.6
 0
 dio7.7
 0
-dio8.0
+cameratrig
 0
 dio8.1
 0

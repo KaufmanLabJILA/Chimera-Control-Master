@@ -5,6 +5,7 @@
 #include <process.h>
 #include <mutex>
 #include "ATMCD32D.h"
+#include "atcore.h"
 #include "AndorRunSettings.h"
 
 /// /////////////////////////////////////////////////////
@@ -35,6 +36,7 @@ class AndorCamera
 {
 	public:
 		AndorCamera::AndorCamera();
+		AndorCamera::~AndorCamera();
 
 		/// Andor Wrappers, in alphabetical order. Versions that take no parameters just insert current settings into 
 		// the versions that take parameters. Note that my wrapper names don't always match the andor SDK names. If 
@@ -52,7 +54,8 @@ class AndorCamera
 		void queryStatus();
 		void queryStatus(int& status);
 		void getTemperatureRange(int& min, int& max);
-		void getTemperature(int& temp);
+		void getTemperature(double& temp, int& temperatureCount);
+		void getTemperatureStatus(int& temperatureStatus, AT_WC* temperatureStatusStr);
 
 		void setShutter(int typ, int mode, int closingtime, int openingtime);
 		void setAccumulationCycleTime();
@@ -80,13 +83,13 @@ class AndorCamera
 		void setReadMode(int mode);
 		void setRingExposureTimes(int sizeOfTimesArray, float* arrayOfTimes);
 		void setTemperature(int temp);
-		void setTriggerMode(int mode);
+		void setTriggerMode(AT_WC* mode);
 		void startAcquisition();
 
 		void temperatureControlOn();
 		void temperatureControlOff();
 
-		void waitForAcquisition();
+		void waitForAcquisition(int pictureNumber);
 
 		void getCapabilities( AndorCapabilities& caps );
 		void getSerialNumber( int& num );
@@ -100,13 +103,13 @@ class AndorCamera
 		void pauseThread();
 		void setSettings(AndorRunSettings settingsToSet);
 		void armCamera(CameraWindow* camWin, double& minKineticCycleTime);
-		std::vector<std::vector<long>> acquireImageData();
+		std::vector<std::vector<long>> acquireImageData(int pictureNumber);
 		void setTemperature();
 		void setExposures();
 		void setImageParametersToCamera();
 		void setScanNumber();
 		double getMinKineticCycleTime( );
-		void checkAcquisitionTimings(float& kinetic, float& accumulation, std::vector<float>& exposures);
+		void checkAcquisitionTimings(float& kinetic, float& accumulation, float& exposures);
 		void setNumberAccumulations(bool isKinetic);
 		void setCameraTriggerMode();
 		void onFinish();
@@ -121,6 +124,7 @@ class AndorCamera
 		void setBaselineClamp(int clamp);
 		void setBaselineOffset(int offset);
 		void setDMAParameters(int maxImagesPerDMA, float secondsPerDMA);
+		void queueBuffers(int pictureNumber);
 
 		static UINT __stdcall cameraThread( void* voidPtr );
 		
@@ -156,4 +160,10 @@ class AndorCamera
 
 		cameraThreadInput threadInput;
 
+		AT_H CameraHndl;
+		std::vector<unsigned char*> AcqBuffers;
+		int NumberOfAcqBuffers;
+		int NumberOfImageBuffers;
+		std::vector<unsigned char*> tempImageBuffers;
+		int BufferSize;
 };

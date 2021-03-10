@@ -50,6 +50,7 @@ class zynq_tcp_server:
 			    # Receive the data in small chunks
 			    while True:
 			        data = connection.recv(64)
+			        data = data.split('\0')[0]
 			        print 'received "%s"' % data
 			        # print(len(data))
 			        if data:
@@ -65,7 +66,6 @@ class zynq_tcp_server:
 		connection.close()
 
 	def writeDevice(self, conn, data):
-		data = data.strip('\0')
 		data_split = data.split('_')
 		dev = data_split[0]
 		print 'dev = ', dev
@@ -93,7 +93,7 @@ class zynq_tcp_server:
 		else:
 			print 'no device selected'
 
-		
+
 
 	def writeDIOseq(self, conn, data_split):
 		num_snapshots = int(data_split[1])

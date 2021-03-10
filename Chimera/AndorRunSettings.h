@@ -21,7 +21,7 @@ struct AndorRunSettings
 	float kineticCycleTime;
 	float accumulationTime;
 	int accumulationNumber;
-	std::vector<float> exposureTimes;
+	float exposureTime;
 	//
 	UINT picsPerRepetition;
 	ULONGLONG repetitionsPerVariation;
@@ -31,6 +31,7 @@ struct AndorRunSettings
 	int totalPicsInExperiment;
 	// 
 	int temperatureSetting;
+	int temperatureSettingEnum;
 	//
 	int fanMode;
 	int VSSpeed;
