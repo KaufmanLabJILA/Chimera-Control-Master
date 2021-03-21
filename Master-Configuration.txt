@@ -77,7 +77,7 @@ pi407
 0
 rp688
 0
-clockdetune
+clockttl
 0
 andorshut
 0

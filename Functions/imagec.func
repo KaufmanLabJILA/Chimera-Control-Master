@@ -4,8 +4,8 @@ def imagec():
   off: radial2
   on: andorshut
   on: imagshut
-  off: shut707
-  off: shut679
+  on: shut707
+  on: shut679
   t += 4
   on: andortrig
   t += .2
@@ -14,8 +14,8 @@ def imagec():
   on: radial
   on: axial
   %on: red3dnarrow
-  %on: rp707
-  %on: rp679
+  on: rp707
+  on: rp679
   t += 75
   off: radial2
   off: axial

@@ -31,14 +31,93 @@ reset
 %amplin 0 .018+uvtime .1+uvtime 0 0
 %freqlin 0 .018+uvtime .1+uvtime ryd_freq ryd_freq 0 0
 
-% for fast pulses:
-setsteps 0 .006 0 .01 %clock runs at 153 MHz = (6.5 ns)^-1
-amplin 0 0 .01 0 43 %DO NOT EXCEED 45% amp.
-freqlin 0 0 .01 ryd_freq ryd_freq 1 0
+%%% Lukin-style gate:
+%setsteps 0 .006 0 .01 %clock runs at 153 MHz = (6.5 ns)^-1
+%amplin 0 0 .01 0 43 %DO NOT EXCEED 45% amp.
+%freqlin 0 0 .01 ryd_freq ryd_freq 1 0 
 
-setsteps 0 .006 .02+uvtime .03+uvtime
-amplin 0 .02+uvtime .03+uvtime 43 0 %0 
-freqlin 0 .02+uvtime .03+uvtime ryd_freq ryd_freq 0 0
+%setsteps 0 .006 .02+uvtime .03+uvtime
+%amplin 0 .02+uvtime .03+uvtime 43 0 
+%freqlin 0 .02+uvtime .03+uvtime ryd_freq ryd_freq 0 0
+
+%setsteps 0 .006 .04+uvtime .05+uvtime
+%amplin 0 .04+uvtime .05+uvtime 0 43 
+%freqlin 0 .04+uvtime .05+uvtime ryd_freq ryd_freq 1 uvphi
+
+%setsteps 0 .006 .06+2*uvtime .07+2*uvtime
+%amplin 0 .06+2*uvtime .07+2*uvtime 43 0
+%freqlin 0 .06+2*uvtime .07+2*uvtime ryd_freq ryd_freq 0 0
+
+%setsteps 0 .006 1 1.01
+%amplin 0 1 1.01 0 0 %0 
+%freqlin 0 1 1.01 ryd_freq ryd_freq 0 0 
+
+%%% for fast pulses:
+setsteps 0 .006 0 .007 %clock runs at 153 MHz = (6.5 ns)^-1
+amplin 0 0 .007 0 43 %DO NOT EXCEED 45% amp.
+freqlin 0 0 .007 ryd_freq ryd_freq 1 0
+
+setsteps 0 .006 uvtime .007+uvtime
+amplin 0 uvtime .007+uvtime 43 0 %0 
+freqlin 0 uvtime .007+uvtime ryd_freq ryd_freq 0 0
+
+setsteps 0 .006 uvtime+ramseytime .007+uvtime+ramseytime
+amplin 0 uvtime+ramseytime .007+uvtime+ramseytime 0 43
+freqlin 0 uvtime+ramseytime .007+uvtime+ramseytime ryd_freq ryd_freq 0 0
+
+setsteps 0 .006 2*uvtime+ramseytime .007+2*uvtime+ramseytime
+amplin 0 2*uvtime+ramseytime .007+2*uvtime+ramseytime 43 0
+freqlin 0 2*uvtime+ramseytime .007+2*uvtime+ramseytime ryd_freq ryd_freq 0 0
+
+%setsteps 0 .006 0 .01 %clock runs at 153 MHz = (6.5 ns)^-1
+%amplin 0 0 .01 0 43 %DO NOT EXCEED 45% amp.
+%freqlin 0 0 .01 ryd_freq ryd_freq 1 0
+
+%setsteps 0 .006 .02+uvtime .03+uvtime
+%amplin 0 .02+uvtime .03+uvtime 43 0 %0 
+%freqlin 0 .02+uvtime .03+uvtime ryd_freq ryd_freq 0 0
+
+%setsteps 0 .006 uvtime+1.03 uvtime+1.04
+%amplin 0 uvtime+1.03 uvtime+1.04 0 0 %0 
+%freqlin 0 uvtime+1.03 uvtime+1.04 ryd_freq ryd_freq 0 0 
+
+% for Ramsey on Rydberg line: 
+%setsteps 0 .006 uvtime+0.03+ramseytime uvtime+0.04+ramseytime
+%amplin 0 uvtime+0.03+ramseytime uvtime+0.04+ramseytime 0 0 %0 
+%freqlin 0 uvtime+0.03+ramseytime uvtime+0.04+ramseytime ryd_freq  ryd_freq 0 0 
+
+
+%%% forward ramp only
+%setsteps 0 .006 0 ramptime*scan %clock runs at 153 MHz = (6.5 ns)^-1 
+%amplin 0 0 ramptime*scan 0 43*scan %DO NOT EXCEED 45% amp. 
+%freqlin 0 0 ramptime*scan ryd_freq ryd_freq+(ryd_freq2-ryd_freq)*scan 1 0  
+
+%setsteps 0 .006 .01+ramptime*scan .02+ramptime*scan
+%amplin 0 .01+ramptime*scan .02+ramptime*scan 43*scan 0 %0 
+%freqlin 0 .01+ramptime*scan .02+ramptime*scan ryd_freq ryd_freq 0 0 
+
+%setsteps 0 .006 0 ramptime %clock runs at 153 MHz = (6.5 ns)^-1 
+%amplin 0 0 ramptime 0 43 %DO NOT EXCEED 45% amp. 
+%freqlin 0 0 ramptime ryd_freq ryd_freq2 1 0  
+
+%setsteps 0 .006 .01+ramptime+uvtime .02+ramptime+uvtime
+%amplin 0 .01+ramptime+uvtime .02+ramptime+uvtime 43 0 %0 
+%freqlin 0 .01+ramptime+uvtime .02+ramptime+uvtime ryd_freq ryd_freq 0 0 
+
+%%% for ramps:
+%setsteps 0 .006 0 ramptime %clock runs at 153 MHz = (6.5 ns)^-1 
+%amplin 0 0 ramptime 0 12 %DO NOT EXCEED 45% amp. 
+%freqlin 0 0 ramptime ryd_freq ryd_freq2 1 0  
+
+%setsteps 0 .006 ramptime+uvtime ramptime+uvtime+ramptime  
+%amplin 0 ramptime+uvtime ramptime+uvtime+ramptime 12 0 %0  
+%freqlin 0 ramptime+uvtime ramptime+uvtime+ramptime ryd_freq2 ryd_freq 0 0 
+
+%setsteps 0 .006 ramptime+uvtime+ramptime+.01 ramptime+uvtime+ramptime+.2
+%amplin 0 ramptime+uvtime+ramptime+.01 ramptime+uvtime+ramptime+.02 0 0
+%freqlin 0 ramptime+uvtime+ramptime+.01 ramptime+uvtime+ramptime+.02 ryd_freq ryd_freq 0 0
+
+%%% ramps^^ 
 
 %setsteps 0 .1 .018+uvtime .1+uvtime
 %amplin 0 .018+uvtime .1+uvtime 0 0
@@ -61,11 +140,65 @@ program 0
 
 setsteps 1 .006 0 .01 %clock runs at 153 MHz = (6.5 ns)^-1
 amplin 1 0 .01 0 43 %DO NOT EXCEED 45% amp.
-freqlin 1 0 .01 ryd_freq/5 ryd_freq/5 1 0
+freqlin 1 0 .01 ryd_freq ryd_freq 1 0
 
 setsteps 1 .006 .02+uvtime .03+uvtime
 amplin 1 .02+uvtime .03+uvtime 43 0 %0 
-freqlin 1 .02+uvtime .03+uvtime ryd_freq/5 ryd_freq/5 0 0
+freqlin 1 .02+uvtime .03+uvtime ryd_freq ryd_freq 0 0 
+
+setsteps 1 .006 uvtime+1 uvtime+1.01
+amplin 1 uvtime+1 uvtime+1.01 0 0 %0 
+freqlin 1 uvtime+1 uvtime+1.01 ryd_freq ryd_freq 0 0 
+
+%%%
+
+%setsteps 1 .006 0 ramptime %clock runs at 153 MHz = (6.5 ns)^-1 
+%amplin 1 0 ramptime 0 43 %DO NOT EXCEED 45% amp. 
+%freqlin 1 0 ramptime ryd_freq ryd_freq2 1 0  
+
+%setsteps 1 .006 ramptime+uvtime ramptime+uvtime+ramptime  
+%amplin 1 ramptime+uvtime ramptime+uvtime+ramptime 43 0 %0  
+%freqlin 1 ramptime+uvtime ramptime+uvtime+ramptime ryd_freq2 ryd_freq 0 0  
+
+%setsteps 1 .006 ramptime+uvtime+ramptime+.01 ramptime+uvtime+ramptime+.2
+%amplin 1 ramptime+uvtime+ramptime+.01 ramptime+uvtime+ramptime+.02 43 0
+%freqlin 1 ramptime+uvtime+ramptime+.01 ramptime+uvtime+ramptime+.02 ryd_freq ryd_freq 0 0
+
+%%%
+
+%setsteps 1 .006 0 .01 %clock runs at 153 MHz = (6.5 ns)^-1
+%amplin 1 0 .01 0 43 %DO NOT EXCEED 45% amp.
+%freqlin 1 0 .01 ryd_freq/100 ryd_freq/100 1 0 
+
+%setsteps 1 .006 .02+uvtime .03+uvtime
+%amplin 1 .02+uvtime .03+uvtime 43 0 
+%freqlin 1 .02+uvtime .03+uvtime ryd_freq/100 ryd_freq/100 0 0
+
+%setsteps 1 .006 .04+uvtime .05+uvtime
+%amplin 1 .04+uvtime .05+uvtime 0 43 
+%freqlin 1 .04+uvtime .05+uvtime ryd_freq/100 ryd_freq/100 1 uvphi
+
+%setsteps 1 .006 .06+2*uvtime .07+2*uvtime
+%amplin 1 .06+2*uvtime .07+2*uvtime 43 0
+%freqlin 1 .06+2*uvtime .07+2*uvtime ryd_freq/100 ryd_freq/100 0 0 
+
+%%%
+
+%setsteps 1 .006 0 ramptime*scan*10 %clock runs at 153 MHz = (6.5 ns)^-1 
+%amplin 1 0 ramptime*scan*10 0 43*scan %DO NOT EXCEED 45% amp. 
+%freqlin 1 0 ramptime*scan*10 ryd_freq/10 (ryd_freq+(ryd_freq2-ryd_freq)*scan)/10 1 0  
+
+%setsteps 1 .006 .01+ramptime*scan*10 .02+ramptime*scan*10
+%amplin 1 .01+ramptime*scan*10 .02+ramptime*scan*10 43*scan 0 %0 
+%freqlin 1 .01+ramptime*scan*10 .02+ramptime*scan*10 ryd_freq/10 ryd_freq/10 0 0 
+
+%setsteps 1 .06 0 ramptime*10 %clock runs at 153 MHz = (6.5 ns)^-1 
+%amplin 1 0 ramptime*10 0 43 %DO NOT EXCEED 45% amp. 
+%freqlin 1 0 ramptime*10 ryd_freq/10 ryd_freq2/10 1 0  
+
+%setsteps 1 .06 ramptime*10+uvtime ramptime*10+uvtime+ramptime*10  
+%amplin 1 ramptime*10+uvtime ramptime*10+uvtime+ramptime*10 43 0 %0  
+%freqlin 1 ramptime*10+uvtime ramptime*10+uvtime+ramptime*10 ryd_freq2/10 ryd_freq/10 0 0 
 
 program 1
 

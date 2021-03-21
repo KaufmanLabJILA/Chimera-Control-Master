@@ -1,0 +1,9 @@
+% Master-Script See the "?" for info on commands.
+def tweezer2lattice(rampTime):
+
+  daclinspace: axialpow ax_lattice_zero ax_lattice_pow rampTime 15
+  t += rampTime
+  daclinspace: latticepow lattice_zero lattice_pow rampTime 15
+  t += rampTime
+  daclinspace: tweezerpow tweezer_pow tweezer_zero rampTime 15
+  t += rampTime

@@ -13,7 +13,7 @@ amps  0 100 30 100 0 7 6 0
 % SPECTROSCOPY
 snapshot 0 reps 2
 freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+.5 spec3p1 spec3p1 spec3p1 spec3p1
-amps  0 100 30 100 28 3 3 .75
+amps  0 100 30 100 28 3 35 .75
 %for imaging optimization
 %freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+1 c_3p1+f_3d c_3p1+fcool c_3p1+fcools c_3p1+fcool+.001
 %amps  0 100 30 100 18 18 15 3
@@ -52,7 +52,7 @@ amps  0 100 30 92 0 6 3 2
 
 % phase jump
 snapshot 5 reps 2
-freqs 80 c_3p0+spec3p0/1000+.1 80 c_3p0+spec3p0/1000+.3 79.74 c_3p1+f_rad_3d c_3p1+f_ax_3d c_3p1+1
+freqs 80 c_3p0+spec3p0/1000+1 80 c_3p0+spec3p0/1000+.3 79.74 c_3p1+f_rad_3d c_3p1+f_ax_3d c_3p1+1
 %freqs 80 c_3p0+.5 80 80 79.74 c_3p1+f_rad_3d c_3p1+f_ax_3d c_3p1+f_rad_3d
 amps  0 100 30 92 0 6 3 2
 
@@ -70,11 +70,10 @@ amps  0 100 30 100 0 6 6 0
 %Parametric heating
 snapshot 8 reps 2
 freqs 80+pmodf c_3p0+spec3p0/1000 75 c_3p0+spec3p0/1000+.5 spec3p1 spec3p1 spec3p1 spec3p1
-amps 50 100 30 100 0 8 4 5
-
+amps 60 100 30 100 0 8 4 5
 
 snapshot 9 reps 15000
-freqs 80+pmodf-.035 c_3p0+spec3p0/1000 75 80 spec3p1 spec3p1 spec3p1 spec3p1
-amps 50 100 30 100 0 8 4 5
+freqs 80+pmodf-.03 c_3p0+spec3p0/1000 75 80 spec3p1 spec3p1 spec3p1 spec3p1
+amps 60 100 30 100 0 8 4 5
 
 end
