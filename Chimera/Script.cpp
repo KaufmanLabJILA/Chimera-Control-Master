@@ -250,7 +250,7 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 	//	}
 	//}
 	if (editType == "AWG") {
-		if (word == "setsteps" || word == "amplin" || word == "freqlin")
+		if (word == "setsteps" || word == "amplin" || word == "freqlin" || word == "setsingle")
 		{
 			return rgbs["theme purple"];
 		}

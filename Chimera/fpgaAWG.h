@@ -20,6 +20,7 @@ public:
 	void writeTimestamp(unsigned char channel, unsigned short address, float timeStampMicro, bool phase_update, float phaseDegrees, float ampPercent, float freqMHz);
 
 	void setStep(unsigned long channel, float tstep, float tStart, float tEnd);
+	void setSingle(unsigned long channel, float time, float amp, float freq, bool phase_update, float phase);
 	void freqLinearRamp(unsigned long channel, float tStart, float tEnd, float fStart, float fEnd, bool phase_update, float phaseStart);
 	void ampLinearRamp(unsigned long channel, float tStart, float tEnd, float aStart, float aEnd);
 	void writeCommandList(unsigned long channel);

@@ -248,7 +248,7 @@ BEGIN
         END
         POPUP "G&igamoog Script"
         BEGIN
-            MENUITEM "Ne&w Gigamoog Script",        ID_FILE_MY_GIGAMOOG_NEW
+            MENUITEM "Ne&w Gigamoog Script",        ID_FILE_MY_GIGAMOOG_SAVE
             MENUITEM "Op&en Gigamoog Script",       ID_FILE_MY_GIGAMOOG_OPEN
             MENUITEM "&Save Gigamoog Script",       ID_FILE_MY_GIGAMOOG_SAVE
             MENUITEM "Save Gigamoog Script &As",    ID_FILE_MY_GIGAMOOG_SAVEAS

@@ -124,6 +124,19 @@ void fpgaAWG::setStep(unsigned long channel, float tStep, float tStart, float tE
 
 }
 
+void fpgaAWG::setSingle(unsigned long channel, float time, float amp, float freq, bool phase_update, float phase) {
+	std::vector<awgCommand> & awgCommandList = selectCommandList(channel);
+
+	nPreviousStepSetting = awgCommandList.size();
+	awgCommandList.push_back(awgCommand());
+	awgCommandList.back().address = nPreviousStepSetting;
+	awgCommandList.back().timeStampMicro = time;
+	awgCommandList.back().ampPercent = amp;
+	awgCommandList.back().freqMHz = freq;
+	awgCommandList.back().phase_update = phase_update;
+	awgCommandList.back().phaseDegrees = phase;
+}
+
 void fpgaAWG::freqLinearRamp(unsigned long channel, float tStart, float tEnd, float fStart, float fEnd, bool phase_update, float phaseStart) {
 	int iStart = nPreviousStepSetting + ceil((tStart - startTimeStepSetting) / (stepSize * AWGMINSTEP));
 	int numSteps = ceil((tEnd - tStart) / (stepSize * AWGMINSTEP));
@@ -280,6 +293,18 @@ void fpgaAWG::analyzeAWGScript(fpgaAWG* fpgaawg, std::vector<variableType>& vari
 			currentAWGScript >> phaseDegrees;
 
 			freqLinearRamp(stoul(channel, nullptr, 0), tstart.evaluate(variables, variation), tstop.evaluate(variables, variation), fstart.evaluate(variables, variation), fstop.evaluate(variables, variation), phase_update.evaluate(variables, variation), phaseDegrees.evaluate(variables, variation));
+		}
+		else if (word == "setsingle") {
+			std::string channel;
+			Expression time, amp, freq, phase_update, phaseDegrees;
+			currentAWGScript >> channel;
+			currentAWGScript >> time;
+			currentAWGScript >> amp;
+			currentAWGScript >> freq;
+			currentAWGScript >> phase_update;
+			currentAWGScript >> phaseDegrees;
+
+			setSingle(stoul(channel, nullptr, 0), time.evaluate(variables, variation), amp.evaluate(variables, variation), freq.evaluate(variables, variation), phase_update.evaluate(variables, variation), phaseDegrees.evaluate(variables, variation));
 		}
 		else if (word == "program") {
 			std::string channel;
