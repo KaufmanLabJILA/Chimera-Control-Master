@@ -10,7 +10,7 @@ void MainOptionsControl::initialize( int& id, POINT& loc, CWnd* parent, cToolTip
 	header.fontType = HeadingFont;
 	randomizeRepsButton.sPos = { loc.x, loc.y, loc.x + 480 , loc.y += 25 };
 	randomizeRepsButton.Create( "Randomize Repetitions?", NORM_CHECK_OPTIONS, randomizeRepsButton.sPos, parent, id++ );
-	randomizeRepsButton.EnableWindow( false );
+	randomizeRepsButton.EnableWindow( true );
 	randomizeVariationsButton.sPos = { loc.x, loc.y, loc.x + 480 , loc.y += 25 };
 	randomizeVariationsButton.Create( "Randomize Variations?", NORM_CHECK_OPTIONS, randomizeVariationsButton.sPos, 
 									  parent, id++ );

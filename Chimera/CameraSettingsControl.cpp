@@ -28,24 +28,24 @@ CameraSettingsControl::CameraSettingsControl(AndorCamera* friendInitializer) : p
 }
 
 
-void CameraSettingsControl::initialize( cameraPositions& pos, int& id, CWnd* parent, cToolTips& tooltips )
+void CameraSettingsControl::initialize(cameraPositions& pos, int& id, CWnd* parent, cToolTips& tooltips)
 {
 	/// Header
 	header.seriesPos = { pos.seriesPos.x, pos.seriesPos.y, pos.seriesPos.x + 480, pos.seriesPos.y += 25 };
 	header.amPos = { pos.amPos.x, pos.amPos.y, pos.amPos.x + 480, pos.amPos.y += 25 };
 	header.videoPos = { pos.videoPos.x, pos.videoPos.y, pos.videoPos.x + 480, pos.videoPos.y += 25 };
-	header.Create( "CAMERA SETTINGS", NORM_HEADER_OPTIONS, header.seriesPos, parent, id++ );
+	header.Create("CAMERA SETTINGS", NORM_HEADER_OPTIONS, header.seriesPos, parent, id++);
 	header.fontType = HeadingFont;
 
 	/// camera mode
 	cameraModeCombo.seriesPos = { pos.seriesPos.x, pos.seriesPos.y, pos.seriesPos.x + 480, pos.seriesPos.y + 100 };
 	cameraModeCombo.amPos = { pos.amPos.x, pos.amPos.y, pos.amPos.x + 480, pos.amPos.y + 100 };
 	cameraModeCombo.videoPos = { pos.videoPos.x, pos.videoPos.y, pos.videoPos.x + 480, pos.videoPos.y + 100 };
-	cameraModeCombo.Create( NORM_COMBO_OPTIONS, cameraModeCombo.seriesPos, parent, IDC_CAMERA_MODE_COMBO );
-	cameraModeCombo.AddString( "Kinetic Series Mode" );
-	cameraModeCombo.AddString( "Accumulation Mode" );
-	cameraModeCombo.AddString( "Video Mode" );
-	cameraModeCombo.SelectString( 0, "Kinetic Series Mode" );
+	cameraModeCombo.Create(NORM_COMBO_OPTIONS, cameraModeCombo.seriesPos, parent, IDC_CAMERA_MODE_COMBO);
+	cameraModeCombo.AddString("Kinetic Series Mode");
+	cameraModeCombo.AddString("Accumulation Mode");
+	cameraModeCombo.AddString("Video Mode");
+	cameraModeCombo.SelectString(0, "Kinetic Series Mode");
 	runSettings.cameraMode = "Kinetic Series Mode";
 	pos.amPos.y += 25;
 	pos.videoPos.y += 25;
@@ -54,20 +54,20 @@ void CameraSettingsControl::initialize( cameraPositions& pos, int& id, CWnd* par
 	emGainButton.seriesPos = { pos.seriesPos.x, pos.seriesPos.y, pos.seriesPos.x + 120, pos.seriesPos.y + 20 };
 	emGainButton.videoPos = { pos.videoPos.x, pos.videoPos.y, pos.videoPos.x + 120, pos.videoPos.y + 20 };
 	emGainButton.amPos = { pos.amPos.x, pos.amPos.y, pos.amPos.x + 120, pos.amPos.y + 20 };
-	emGainButton.Create( "Set EM Gain", NORM_PUSH_OPTIONS, emGainButton.seriesPos, parent, IDC_SET_EM_GAIN_BUTTON );
-	emGainButton.setToolTip( "Set the state & gain of the EM gain of the camera. Enter a negative number to turn EM Gain"
-							 " mode off. The program will immediately change the state of the camera after pressing this button.", 
-							 tooltips, parent );
+	emGainButton.Create("Set EM Gain", NORM_PUSH_OPTIONS, emGainButton.seriesPos, parent, IDC_SET_EM_GAIN_BUTTON);
+	emGainButton.setToolTip("Set the state & gain of the EM gain of the camera. Enter a negative number to turn EM Gain"
+		" mode off. The program will immediately change the state of the camera after pressing this button.",
+		tooltips, parent);
 	//
 	emGainEdit.seriesPos = { pos.seriesPos.x + 120, pos.seriesPos.y, pos.seriesPos.x + 300, pos.seriesPos.y + 20 };
 	emGainEdit.amPos = { pos.amPos.x + 120, pos.amPos.y, pos.amPos.x + 300, pos.amPos.y + 20 };
 	emGainEdit.videoPos = { pos.videoPos.x + 120, pos.videoPos.y, pos.videoPos.x + 300, pos.videoPos.y + 20 };
-	emGainEdit.Create( NORM_EDIT_OPTIONS, emGainEdit.seriesPos, parent, id++ );
+	emGainEdit.Create(NORM_EDIT_OPTIONS, emGainEdit.seriesPos, parent, id++);
 	//
 	emGainDisplay.seriesPos = { pos.seriesPos.x + 300, pos.seriesPos.y, pos.seriesPos.x + 480, pos.seriesPos.y + 20 };
 	emGainDisplay.videoPos = { pos.videoPos.x + 300, pos.videoPos.y, pos.videoPos.x + 480, pos.videoPos.y + 20 };
 	emGainDisplay.amPos = { pos.amPos.x + 300, pos.amPos.y, pos.amPos.x + 480, pos.amPos.y + 20 };
-	emGainDisplay.Create( "OFF", NORM_STATIC_OPTIONS, emGainDisplay.seriesPos, parent, id++ );
+	emGainDisplay.Create("OFF", NORM_STATIC_OPTIONS, emGainDisplay.seriesPos, parent, id++);
 	// initialize settings.
 	runSettings.emGainLevel = 0;
 	runSettings.emGainModeIsOn = false;
@@ -80,14 +80,14 @@ void CameraSettingsControl::initialize( cameraPositions& pos, int& id, CWnd* par
 	triggerCombo.seriesPos = { pos.seriesPos.x, pos.seriesPos.y, pos.seriesPos.x + 480, pos.seriesPos.y + 800 };
 	triggerCombo.videoPos = { pos.videoPos.x, pos.videoPos.y,pos.videoPos.x + 480, pos.videoPos.y + 800 };
 	triggerCombo.amPos = { pos.amPos.x, pos.amPos.y, pos.amPos.x + 480, pos.amPos.y + 800 };
-	triggerCombo.Create( NORM_COMBO_OPTIONS, triggerCombo.seriesPos, parent, IDC_TRIGGER_COMBO );
+	triggerCombo.Create(NORM_COMBO_OPTIONS, triggerCombo.seriesPos, parent, IDC_TRIGGER_COMBO);
 	// set options for the combo
-	triggerCombo.AddString( "Internal Trigger" );
-	triggerCombo.AddString( "External Trigger" );
+	triggerCombo.AddString("Internal Trigger");
+	triggerCombo.AddString("External Trigger");
 	triggerCombo.AddString("External Exposure");
-	triggerCombo.AddString( "Start On Trigger" );
+	triggerCombo.AddString("Start On Trigger");
 	// Select default trigger
-	triggerCombo.SelectString( 0, "External Trigger" );
+	triggerCombo.SelectString(0, "External Trigger");
 	pos.seriesPos.y += 25;
 	pos.amPos.y += 25;
 	pos.videoPos.y += 25;
@@ -96,8 +96,8 @@ void CameraSettingsControl::initialize( cameraPositions& pos, int& id, CWnd* par
 	setTemperatureButton.seriesPos = { pos.seriesPos.x, pos.seriesPos.y, pos.seriesPos.x + 270, pos.seriesPos.y + 25 };
 	setTemperatureButton.videoPos = { pos.videoPos.x, pos.videoPos.y, pos.videoPos.x + 270, pos.videoPos.y + 25 };
 	setTemperatureButton.amPos = { pos.amPos.x, pos.amPos.y, pos.amPos.x + 270, pos.amPos.y + 25 };
-	setTemperatureButton.Create( "Set Camera Temperature (C)", NORM_PUSH_OPTIONS, setTemperatureButton.seriesPos,
-								 parent, IDC_SET_TEMPERATURE_BUTTON );
+	setTemperatureButton.Create("Set Camera Temperature (C)", NORM_PUSH_OPTIONS, setTemperatureButton.seriesPos,
+		parent, IDC_SET_TEMPERATURE_BUTTON);
 	// Temperature Setting Display
 	temperatureDisplay.seriesPos = { pos.seriesPos.x + 270, pos.seriesPos.y, pos.seriesPos.x + 430, pos.seriesPos.y + 25 };
 	temperatureDisplay.videoPos = { pos.videoPos.x + 270, pos.videoPos.y, pos.videoPos.x + 430, pos.videoPos.y + 25 };
@@ -128,7 +128,7 @@ void CameraSettingsControl::initialize( cameraPositions& pos, int& id, CWnd* par
 			temperatureChoiceLabels[tempInc].seriesPos, parent, TEMPERATURE_SETTINGS_ID_START + count++);
 
 		temperatureChoice[tempInc].seriesPos = { pos.seriesPos.x + 55 + 90 * tempInc, pos.seriesPos.y,
-			pos.seriesPos.x + 90 * (tempInc+1), pos.seriesPos.y + 20 };
+			pos.seriesPos.x + 90 * (tempInc + 1), pos.seriesPos.y + 20 };
 		temperatureChoice[tempInc].amPos = { pos.amPos.x + 55 + 90 * tempInc, pos.amPos.y, pos.amPos.x + 90 * (tempInc + 1),
 			pos.amPos.y + 20 };
 		temperatureChoice[tempInc].videoPos = { pos.videoPos.x + 55 + 90 * tempInc, pos.videoPos.y, pos.videoPos.x + 90 * (tempInc + 1),
@@ -165,15 +165,15 @@ void CameraSettingsControl::initialize( cameraPositions& pos, int& id, CWnd* par
 	temperatureMsg.seriesPos = { pos.seriesPos.x, pos.seriesPos.y, pos.seriesPos.x + 480, pos.seriesPos.y + 25 };
 	temperatureMsg.videoPos = { pos.videoPos.x, pos.videoPos.y, pos.videoPos.x + 480, pos.videoPos.y + 25 };
 	temperatureMsg.amPos = { pos.amPos.x, pos.amPos.y, pos.amPos.x + 480, pos.amPos.y + 25 };
-	temperatureMsg.Create( "Temperature control is disabled", NORM_STATIC_OPTIONS, temperatureMsg.seriesPos, parent, 
-						   id++ );
+	temperatureMsg.Create("Temperature control is disabled", NORM_STATIC_OPTIONS, temperatureMsg.seriesPos, parent,
+		id++);
 	pos.seriesPos.y += 25;
 	pos.amPos.y += 25;
 	pos.videoPos.y += 25;
 	//
-	picSettingsObj.initialize( pos, parent, id );
+	picSettingsObj.initialize(pos, parent, id);
 
-	imageDimensionsObj.initialize( pos, parent, false, id );
+	imageDimensionsObj.initialize(pos, parent, false, id);
 
 	/// REPETITIONS PER VARIATION
 
@@ -181,40 +181,40 @@ void CameraSettingsControl::initialize( cameraPositions& pos, int& id, CWnd* par
 	accumulationCycleTimeLabel.seriesPos = { -1,-1,-1,-1 };
 	accumulationCycleTimeLabel.videoPos = { -1,-1,-1,-1 };
 	accumulationCycleTimeLabel.amPos = { pos.amPos.x,pos.amPos.y,pos.amPos.x + 240,pos.amPos.y + 25 };
-	accumulationCycleTimeLabel.Create( "Accumulation Cycle Time", NORM_STATIC_OPTIONS,
-									   accumulationCycleTimeLabel.seriesPos, parent, id++ );
+	accumulationCycleTimeLabel.Create("Accumulation Cycle Time", NORM_STATIC_OPTIONS,
+		accumulationCycleTimeLabel.seriesPos, parent, id++);
 
 	accumulationCycleTimeEdit.seriesPos = { -1,-1,-1,-1 };
 	accumulationCycleTimeEdit.videoPos = { -1,-1,-1,-1 };
 	accumulationCycleTimeEdit.amPos = { pos.amPos.x + 240,pos.amPos.y,pos.amPos.x + 480, pos.amPos.y += 25 };
-	accumulationCycleTimeEdit.Create( NORM_EDIT_OPTIONS, accumulationCycleTimeEdit.seriesPos, parent, id++ );
-	accumulationCycleTimeEdit.SetWindowTextA( "0.1" );
+	accumulationCycleTimeEdit.Create(NORM_EDIT_OPTIONS, accumulationCycleTimeEdit.seriesPos, parent, id++);
+	accumulationCycleTimeEdit.SetWindowTextA("0.1");
 
 	// Accumulation Number
 	accumulationNumberLabel.seriesPos = { -1,-1,-1,-1 };
 	accumulationNumberLabel.videoPos = { -1,-1,-1,-1 };
 	accumulationNumberLabel.amPos = { pos.amPos.x,pos.amPos.y,pos.amPos.x + 240,pos.amPos.y + 25 };
-	accumulationNumberLabel.Create( "Accumulation #", NORM_STATIC_OPTIONS, accumulationNumberLabel.seriesPos, parent, 
-									id++ );
+	accumulationNumberLabel.Create("Accumulation #", NORM_STATIC_OPTIONS, accumulationNumberLabel.seriesPos, parent,
+		id++);
 	//
 	accumulationNumberEdit.seriesPos = { -1,-1,-1,-1 };
 	accumulationNumberEdit.videoPos = { -1,-1,-1,-1 };
 	accumulationNumberEdit.amPos = { pos.amPos.x + 240,pos.amPos.y,pos.amPos.x + 480,pos.amPos.y += 25 };
-	accumulationNumberEdit.Create( NORM_EDIT_OPTIONS, accumulationNumberEdit.seriesPos, parent, id++ );
-	accumulationNumberEdit.SetWindowTextA( "1" );
+	accumulationNumberEdit.Create(NORM_EDIT_OPTIONS, accumulationNumberEdit.seriesPos, parent, id++);
+	accumulationNumberEdit.SetWindowTextA("1");
 
 	// minimum kinetic cycle time (determined by camera)
 	minKineticCycleTimeLabel.seriesPos = { pos.seriesPos.x, pos.seriesPos.y, pos.seriesPos.x + 240, pos.seriesPos.y + 25 };
 	minKineticCycleTimeLabel.videoPos = { -1,-1,-1,-1 };
 	minKineticCycleTimeLabel.amPos = { -1,-1,-1,-1 };
-	minKineticCycleTimeLabel.Create( "Minimum Kinetic Cycle Time (s)", NORM_STATIC_OPTIONS, 
-									 minKineticCycleTimeLabel.seriesPos, parent, id++ );
+	minKineticCycleTimeLabel.Create("Minimum Kinetic Cycle Time (s)", NORM_STATIC_OPTIONS,
+		minKineticCycleTimeLabel.seriesPos, parent, id++);
 
 	minKineticCycleTimeDisp.seriesPos = { pos.seriesPos.x + 240, pos.seriesPos.y, pos.seriesPos.x + 480, pos.seriesPos.y += 25 };
 	minKineticCycleTimeDisp.videoPos = { -1,-1,-1,-1 };
 	minKineticCycleTimeDisp.amPos = { -1,-1,-1,-1 };
-	minKineticCycleTimeDisp.Create( NORM_STATIC_OPTIONS, minKineticCycleTimeDisp.seriesPos, parent, id++ );
-	minKineticCycleTimeDisp.SetWindowTextA( "" );
+	minKineticCycleTimeDisp.Create(NORM_STATIC_OPTIONS, minKineticCycleTimeDisp.seriesPos, parent, id++);
+	minKineticCycleTimeDisp.SetWindowTextA("");
 
 	/// Kinetic Cycle Time
 	// Kinetic Cycle Time Label
@@ -222,16 +222,16 @@ void CameraSettingsControl::initialize( cameraPositions& pos, int& id, CWnd* par
 	kineticCycleTimeLabel.videoPos = { -1,-1,-1,-1 };
 	kineticCycleTimeLabel.amPos = { -1,-1,-1,-1 };
 	kineticCycleTimeLabel.triggerModeSensitive = -1;
-	kineticCycleTimeLabel.Create( "Kinetic Cycle Time", NORM_STATIC_OPTIONS, kineticCycleTimeLabel.seriesPos, parent, 
-								  id++ );
+	kineticCycleTimeLabel.Create("Kinetic Cycle Time", NORM_STATIC_OPTIONS, kineticCycleTimeLabel.seriesPos, parent,
+		id++);
 
 	// Kinetic Cycle Time Edit
 	kineticCycleTimeEdit.seriesPos = { pos.seriesPos.x + 240, pos.seriesPos.y, pos.seriesPos.x + 480, pos.seriesPos.y += 25 };
 	kineticCycleTimeEdit.videoPos = { -1,-1,-1,-1 };
 	kineticCycleTimeEdit.amPos = { -1,-1,-1,-1 };
 	kineticCycleTimeEdit.triggerModeSensitive = -1;
-	kineticCycleTimeEdit.Create( NORM_EDIT_OPTIONS, kineticCycleTimeEdit.seriesPos, parent, id++ );
-	kineticCycleTimeEdit.SetWindowTextA( "0.1" );
+	kineticCycleTimeEdit.Create(NORM_EDIT_OPTIONS, kineticCycleTimeEdit.seriesPos, parent, id++);
+	kineticCycleTimeEdit.SetWindowTextA("0.1");
 
 }
 
@@ -242,9 +242,9 @@ void CameraSettingsControl::initialize( cameraPositions& pos, int& id, CWnd* par
 void CameraSettingsControl::cameraIsOn(bool state)
 {
 	// Can't change em gain mode or camera settings once started.
-	emGainButton.EnableWindow( !state );
-	setTemperatureButton.EnableWindow( !state );
-	temperatureOffButton.EnableWindow( !state );
+	emGainButton.EnableWindow(!state);
+	setTemperatureButton.EnableWindow(!state);
+	temperatureOffButton.EnableWindow(!state);
 }
 
 
@@ -305,10 +305,10 @@ void CameraSettingsControl::handleSetTemperaturePress()
 {
 	if (andorFriend->isRunning())
 	{
-		thrower( "ERROR: the camera (thinks that it?) is running. You can't change temperature settings during camera "
-				 "operation." );
+		thrower("ERROR: the camera (thinks that it?) is running. You can't change temperature settings during camera "
+			"operation.");
 	}
-	
+
 	//runSettings = andorFriend->getSettings();
 
 	int tempEnum;
@@ -317,7 +317,7 @@ void CameraSettingsControl::handleSetTemperaturePress()
 		if (temperatureChoice[tempInc].GetCheck() == BST_CHECKED) {
 			tempEnum = tempInc;
 		}
-		
+
 	}
 
 	int temp;
@@ -358,34 +358,34 @@ AndorRunSettings CameraSettingsControl::getSettings()
 	return runSettings;
 }
 
-void CameraSettingsControl::rearrange( std::string cameraMode, std::string triggerMode, int width, int height, fontMap fonts )
+void CameraSettingsControl::rearrange(std::string cameraMode, std::string triggerMode, int width, int height, fontMap fonts)
 {
-	imageDimensionsObj.rearrange( cameraMode, triggerMode, width, height, fonts );
-	picSettingsObj.rearrange( cameraMode, triggerMode, width, height, fonts );
-	header.rearrange( cameraMode, triggerMode, width, height, fonts );
-	cameraModeCombo.rearrange( cameraMode, triggerMode, width, height, fonts );
-	emGainButton.rearrange( cameraMode, triggerMode, width, height, fonts );
-	emGainDisplay.rearrange( cameraMode, triggerMode, width, height, fonts );
-	emGainEdit.rearrange( cameraMode, triggerMode, width, height, fonts );
-	triggerCombo.rearrange( cameraMode, triggerMode, width, height, fonts );
-	setTemperatureButton.rearrange( cameraMode, triggerMode, width, height, fonts );
-	temperatureOffButton.rearrange( cameraMode, triggerMode, width, height, fonts );
-	temperatureEdit.rearrange( cameraMode, triggerMode, width, height, fonts );
-	temperatureDisplay.rearrange( cameraMode, triggerMode, width, height, fonts );
+	imageDimensionsObj.rearrange(cameraMode, triggerMode, width, height, fonts);
+	picSettingsObj.rearrange(cameraMode, triggerMode, width, height, fonts);
+	header.rearrange(cameraMode, triggerMode, width, height, fonts);
+	cameraModeCombo.rearrange(cameraMode, triggerMode, width, height, fonts);
+	emGainButton.rearrange(cameraMode, triggerMode, width, height, fonts);
+	emGainDisplay.rearrange(cameraMode, triggerMode, width, height, fonts);
+	emGainEdit.rearrange(cameraMode, triggerMode, width, height, fonts);
+	triggerCombo.rearrange(cameraMode, triggerMode, width, height, fonts);
+	setTemperatureButton.rearrange(cameraMode, triggerMode, width, height, fonts);
+	temperatureOffButton.rearrange(cameraMode, triggerMode, width, height, fonts);
+	temperatureEdit.rearrange(cameraMode, triggerMode, width, height, fonts);
+	temperatureDisplay.rearrange(cameraMode, triggerMode, width, height, fonts);
 	for (int tempSetInc = 0; tempSetInc < 3; tempSetInc++) {
 		temperatureChoice[tempSetInc].rearrange(cameraMode, triggerMode, width, height, fonts);
 		temperatureChoiceLabels[tempSetInc].rearrange(cameraMode, triggerMode, width, height, fonts);
 	}
-	temperatureMsg.rearrange( cameraMode, triggerMode, width, height, fonts );
+	temperatureMsg.rearrange(cameraMode, triggerMode, width, height, fonts);
 	temperatureStatusMsg.rearrange(cameraMode, triggerMode, width, height, fonts);
-	kineticCycleTimeEdit.rearrange( cameraMode, triggerMode, width, height, fonts );
-	kineticCycleTimeLabel.rearrange( cameraMode, triggerMode, width, height, fonts );
+	kineticCycleTimeEdit.rearrange(cameraMode, triggerMode, width, height, fonts);
+	kineticCycleTimeLabel.rearrange(cameraMode, triggerMode, width, height, fonts);
 	accumulationCycleTimeEdit.rearrange(cameraMode, triggerMode, width, height, fonts);
 	accumulationCycleTimeLabel.rearrange(cameraMode, triggerMode, width, height, fonts);
 	accumulationNumberEdit.rearrange(cameraMode, triggerMode, width, height, fonts);
 	accumulationNumberLabel.rearrange(cameraMode, triggerMode, width, height, fonts);
-	minKineticCycleTimeLabel.rearrange( cameraMode, triggerMode, width, height, fonts );
-	minKineticCycleTimeDisp.rearrange( cameraMode, triggerMode, width, height, fonts );
+	minKineticCycleTimeLabel.rearrange(cameraMode, triggerMode, width, height, fonts);
+	minKineticCycleTimeDisp.rearrange(cameraMode, triggerMode, width, height, fonts);
 }
 
 BOOL CameraSettingsControl::getPicsPerRepManual() {
@@ -434,7 +434,7 @@ void CameraSettingsControl::setVariationNumber(UINT varNumber)
 	runSettings.totalVariations = varNumber;
 	if (runSettings.totalVariations * runSettings.totalPicsInVariation > INT_MAX)
 	{
-		thrower( "ERROR: Trying to take too many pictures! Maximum picture number is " + str( INT_MAX ) );
+		thrower("ERROR: Trying to take too many pictures! Maximum picture number is " + str(INT_MAX));
 	}
 	runSettings.totalPicsInExperiment = int(runSettings.totalVariations * runSettings.totalPicsInVariation);
 }
@@ -446,7 +446,7 @@ void CameraSettingsControl::setRepsPerVariation(UINT repsPerVar)
 	runSettings.totalPicsInVariation = runSettings.repetitionsPerVariation * runSettings.picsPerRepetition;
 	if (runSettings.totalVariations * runSettings.totalPicsInVariation > INT_MAX)
 	{
-		thrower( "ERROR: Trying to take too many pictures! Maximum picture number is " + str( INT_MAX ) );
+		thrower("ERROR: Trying to take too many pictures! Maximum picture number is " + str(INT_MAX));
 	}
 	runSettings.totalPicsInExperiment = int(runSettings.totalVariations * runSettings.totalPicsInVariation);
 }
@@ -464,127 +464,129 @@ void CameraSettingsControl::handleTimer()
 	wchar_t temperatureStatus[256];
 	char temperatureStatusStr[256];
 	std::stringstream stream;
-	try
-	{
-		// in this case you expect it to throw.
-		andorFriend->getTemperature(currentTemperature, temperatureIndex);
-		andorFriend->getTemperatureStatus(temperatureStatusIndex, temperatureStatus);
-
-		int setTemperature;
+	if (!ANDOR_SAFEMODE) {
 		try
 		{
-			setTemperature = std::stoi(str(temperatureSettings[temperatureIndex]));
-		}
-		catch (std::invalid_argument&)
-		{
-			thrower("Error: Couldn't convert temperature input to a double! Check for unusual characters.");
-		}
-		runSettings.temperatureSetting = setTemperature;
-		runSettings.temperatureSettingEnum = temperatureIndex;
+			// in this case you expect it to throw.
+			andorFriend->getTemperature(currentTemperature, temperatureIndex);
+			andorFriend->getTemperatureStatus(temperatureStatusIndex, temperatureStatus);
 
-		int ret;
-		ret = wcstombs(temperatureStatusStr, temperatureStatus, sizeof(temperatureStatusStr));
-		if (ret == 256) {
-			temperatureStatusStr[255] = '\0';
-		}
-		if (strcmp(temperatureStatusStr, "Cooling") == 0) {
-			temperatureStatusMsg.SetWindowTextA("temperature changing");
-		}
-		else {
-			temperatureStatusMsg.SetWindowTextA(temperatureStatusStr);
-		}
+			int setTemperature;
+			try
+			{
+				setTemperature = std::stoi(str(temperatureSettings[temperatureIndex]));
+			}
+			catch (std::invalid_argument&)
+			{
+				thrower("Error: Couldn't convert temperature input to a double! Check for unusual characters.");
+			}
+			runSettings.temperatureSetting = setTemperature;
+			runSettings.temperatureSettingEnum = temperatureIndex;
 
-		stream << std::fixed << std::setprecision(1) << currentTemperature;
-		std::string currentTemperatureStr = stream.str();
-		if (temperatureStatusIndex == 2) {
-			currentControlColor = "Green";
-		}
-		else {
-			currentControlColor = "Red";
-		}
-		temperatureMsg.SetWindowTextA(cstr("T = " + currentTemperatureStr + "C \r\n"));
-		temperatureDisplay.SetWindowTextA(cstr("Tset = " + str(setTemperature) + " C"));
+			int ret;
+			ret = wcstombs(temperatureStatusStr, temperatureStatus, sizeof(temperatureStatusStr));
+			if (ret == 256) {
+				temperatureStatusStr[255] = '\0';
+			}
+			if (strcmp(temperatureStatusStr, "Cooling") == 0) {
+				temperatureStatusMsg.SetWindowTextA("temperature changing");
+			}
+			else {
+				temperatureStatusMsg.SetWindowTextA(temperatureStatusStr);
+			}
 
-		picSettingsObj.updateSettings();
+			stream << std::fixed << std::setprecision(1) << currentTemperature;
+			std::string currentTemperatureStr = stream.str();
+			if (temperatureStatusIndex == 2) {
+				currentControlColor = "Green";
+			}
+			else {
+				currentControlColor = "Red";
+			}
+			temperatureMsg.SetWindowTextA(cstr("T = " + currentTemperatureStr + "C \r\n"));
+			temperatureDisplay.SetWindowTextA(cstr("Tset = " + str(setTemperature) + " C"));
 
-		runSettings.exposureTime = picSettingsObj.getUsedExposureTimes();
-		andorFriend->setSettings(runSettings);
+			picSettingsObj.updateSettings();
 
-		if ( ANDOR_SAFEMODE ) { 
-			//thrower( "SAFEMODE" ); 
+			runSettings.exposureTime = picSettingsObj.getUsedExposureTimes();
+			andorFriend->setSettings(runSettings);
+
+			if (ANDOR_SAFEMODE) {
+				//thrower( "SAFEMODE" ); 
+			}
 		}
-	}
-	catch (Error& exception)
-	{
-		// if not stable this won't get changed.
-		if (exception.whatBare() == "DRV_TEMPERATURE_STABILIZED")
+		catch (Error& exception)
 		{
-			currentControlColor = "Green";
-			temperatureDisplay.SetWindowTextA(cstr(setTemperature));
-			temperatureMsg.SetWindowTextA(cstr("Temperature has stabilized at " + str(currentTemperature) 
-											  + " (C)\r\n"));
-		}
-		else if (exception.whatBare() == "DRV_TEMPERATURE_NOT_REACHED")
-		{
-			currentControlColor = "Red";
-			temperatureDisplay.SetWindowTextA(cstr(setTemperature));
-			temperatureMsg.SetWindowTextA(cstr("Set temperature not yet reached. Current temperature is " 
-											  + str(currentTemperature) + " (C)\r\n"));
-		}
-		else if (exception.whatBare() == "DRV_TEMPERATURE_NOT_STABILIZED")
-		{
-			currentControlColor = "Red";
-			temperatureDisplay.SetWindowTextA(cstr(setTemperature));
-			temperatureMsg.SetWindowTextA(cstr("Temperature of " + str(currentTemperature) 
-											  + " (C) reached but not stable."));
-		}
-		else if (exception.whatBare() == "DRV_TEMPERATURE_DRIFT")
-		{
-			currentControlColor = "Red";
-			temperatureDisplay.SetWindowTextA(cstr(setTemperature));
-			temperatureMsg.SetWindowTextA(cstr("Temperature had stabilized but has since drifted. Temperature: " 
-											  + str(currentTemperature)));
-		}
-		else if (exception.whatBare() == "DRV_TEMPERATURE_OFF")
-		{
-			currentControlColor = "Red";
-			temperatureDisplay.SetWindowTextA(cstr(setTemperature));
-			temperatureMsg.SetWindowTextA(cstr("Temperature control is off. Temperature: " + str(currentTemperature)));
-		}
-		else if (exception.whatBare() == "DRV_ACQUIRING")
-		{
-			// doesn't change color of temperature control. This way the color of the control represents the state of
-			// the temperature right before the acquisition started, so that you can tell if you remembered to let it
-			// completely stabilize or not.
-			temperatureDisplay.SetWindowTextA(cstr(setTemperature));
-			temperatureMsg.SetWindowTextA("Camera is Acquiring data. No Temperature updates are available.");
-		}
-		else if (exception.whatBare() == "SAFEMODE")
-		{
-			currentControlColor = "Red";
-			temperatureDisplay.SetWindowTextA(cstr(setTemperature));
-			temperatureMsg.SetWindowTextA("Application is running in Safemode... No Real Temperature Data is available.");
-		}
-		else
-		{
-			currentControlColor = "Red";
-			temperatureDisplay.SetWindowTextA(cstr(currentTemperature));
-			temperatureMsg.SetWindowTextA(cstr("Unexpected Temperature Code: " + exception.whatBare() + ". Temperature: " 
-												+ str(currentTemperature)));
+			// if not stable this won't get changed.
+			if (exception.whatBare() == "DRV_TEMPERATURE_STABILIZED")
+			{
+				currentControlColor = "Green";
+				temperatureDisplay.SetWindowTextA(cstr(setTemperature));
+				temperatureMsg.SetWindowTextA(cstr("Temperature has stabilized at " + str(currentTemperature)
+					+ " (C)\r\n"));
+			}
+			else if (exception.whatBare() == "DRV_TEMPERATURE_NOT_REACHED")
+			{
+				currentControlColor = "Red";
+				temperatureDisplay.SetWindowTextA(cstr(setTemperature));
+				temperatureMsg.SetWindowTextA(cstr("Set temperature not yet reached. Current temperature is "
+					+ str(currentTemperature) + " (C)\r\n"));
+			}
+			else if (exception.whatBare() == "DRV_TEMPERATURE_NOT_STABILIZED")
+			{
+				currentControlColor = "Red";
+				temperatureDisplay.SetWindowTextA(cstr(setTemperature));
+				temperatureMsg.SetWindowTextA(cstr("Temperature of " + str(currentTemperature)
+					+ " (C) reached but not stable."));
+			}
+			else if (exception.whatBare() == "DRV_TEMPERATURE_DRIFT")
+			{
+				currentControlColor = "Red";
+				temperatureDisplay.SetWindowTextA(cstr(setTemperature));
+				temperatureMsg.SetWindowTextA(cstr("Temperature had stabilized but has since drifted. Temperature: "
+					+ str(currentTemperature)));
+			}
+			else if (exception.whatBare() == "DRV_TEMPERATURE_OFF")
+			{
+				currentControlColor = "Red";
+				temperatureDisplay.SetWindowTextA(cstr(setTemperature));
+				temperatureMsg.SetWindowTextA(cstr("Temperature control is off. Temperature: " + str(currentTemperature)));
+			}
+			else if (exception.whatBare() == "DRV_ACQUIRING")
+			{
+				// doesn't change color of temperature control. This way the color of the control represents the state of
+				// the temperature right before the acquisition started, so that you can tell if you remembered to let it
+				// completely stabilize or not.
+				temperatureDisplay.SetWindowTextA(cstr(setTemperature));
+				temperatureMsg.SetWindowTextA("Camera is Acquiring data. No Temperature updates are available.");
+			}
+			else if (exception.whatBare() == "SAFEMODE")
+			{
+				currentControlColor = "Red";
+				temperatureDisplay.SetWindowTextA(cstr(setTemperature));
+				temperatureMsg.SetWindowTextA("Application is running in Safemode... No Real Temperature Data is available.");
+			}
+			else
+			{
+				currentControlColor = "Red";
+				temperatureDisplay.SetWindowTextA(cstr(currentTemperature));
+				temperatureMsg.SetWindowTextA(cstr("Unexpected Temperature Code: " + exception.whatBare() + ". Temperature: "
+					+ str(currentTemperature)));
+			}
 		}
 	}
 }
 
 
-void CameraSettingsControl::updateRunSettingsFromPicSettings( )
+void CameraSettingsControl::updateRunSettingsFromPicSettings()
 {
 	runSettings.showPicsInRealTime = picSettingsObj.picsPerRepManual;
 	runSettings.exposureTime = picSettingsObj.getUsedExposureTimes();
-	runSettings.picsPerRepetition = picSettingsObj.getPicsPerRepetition( );
+	runSettings.picsPerRepetition = picSettingsObj.getPicsPerRepetition();
 	runSettings.totalPicsInVariation = runSettings.picsPerRepetition * runSettings.repetitionsPerVariation;
-	if ( runSettings.totalVariations * runSettings.totalPicsInVariation > INT_MAX )
+	if (runSettings.totalVariations * runSettings.totalPicsInVariation > INT_MAX)
 	{
-		thrower( "ERROR: Trying to take too many pictures! Maximum picture number is " + str( INT_MAX ) );
+		thrower("ERROR: Trying to take too many pictures! Maximum picture number is " + str(INT_MAX));
 	}
 	runSettings.totalPicsInExperiment = runSettings.totalVariations * runSettings.totalPicsInVariation;
 }
@@ -593,7 +595,7 @@ void CameraSettingsControl::updateRunSettingsFromPicSettings( )
 void CameraSettingsControl::handlePictureSettings(UINT id, AndorCamera* andorObj)
 {
 	picSettingsObj.handleOptionChange(id, andorObj);
-	updateRunSettingsFromPicSettings( );
+	updateRunSettingsFromPicSettings();
 }
 
 
@@ -652,12 +654,12 @@ std::array<int, 4> CameraSettingsControl::getPaletteNumbers()
 
 
 
-void CameraSettingsControl::handleOpenConfig(std::ifstream& configFile, int versionMajor, int versionMinor )
+void CameraSettingsControl::handleOpenConfig(std::ifstream& configFile, int versionMajor, int versionMinor)
 {
 	ProfileSystem::checkDelimiterLine(configFile, "CAMERA_SETTINGS");
 	AndorRunSettings tempSettings;
-	configFile.get( );
-	std::getline(configFile, tempSettings.triggerMode);	
+	configFile.get();
+	std::getline(configFile, tempSettings.triggerMode);
 	configFile >> tempSettings.emGainModeIsOn;
 	configFile >> tempSettings.emGainLevel;
 	configFile.get();
@@ -683,19 +685,19 @@ void CameraSettingsControl::handleOpenConfig(std::ifstream& configFile, int vers
 	configFile >> tempSettings.kineticCycleTime;
 	configFile >> tempSettings.accumulationTime;
 	configFile >> tempSettings.accumulationNumber;
-	configFile >> tempSettings.temperatureSetting; 
- 	//setRunSettings(tempSettings);
- 	ProfileSystem::checkDelimiterLine(configFile, "END_CAMERA_SETTINGS");
+	configFile >> tempSettings.temperatureSetting;
+	//setRunSettings(tempSettings);
+	ProfileSystem::checkDelimiterLine(configFile, "END_CAMERA_SETTINGS");
 	picSettingsObj.handleOpenConfig(configFile, versionMajor, versionMinor, andorFriend);
-	updateRunSettingsFromPicSettings( );
-	if ( (versionMajor == 2 && versionMinor > 4) || versionMajor > 2 )
+	updateRunSettingsFromPicSettings();
+	if ((versionMajor == 2 && versionMinor > 4) || versionMajor > 2)
 	{
-		imageDimensionsObj.handleOpen( configFile, versionMajor, versionMinor );
+		imageDimensionsObj.handleOpen(configFile, versionMajor, versionMinor);
 	}
 }
 
 
-void CameraSettingsControl::handleNewConfig( std::ofstream& newFile )
+void CameraSettingsControl::handleNewConfig(std::ofstream& newFile)
 {
 	newFile << "CAMERA_SETTINGS\n";
 	newFile << "External Trigger" << "\n";
@@ -707,8 +709,8 @@ void CameraSettingsControl::handleNewConfig( std::ofstream& newFile )
 	newFile << 2 << "\n";
 	newFile << 25 << "\n";
 	newFile << "END_CAMERA_SETTINGS\n";
-	picSettingsObj.handleNewConfig( newFile );
-	imageDimensionsObj.handleNew( newFile );
+	picSettingsObj.handleNewConfig(newFile);
+	imageDimensionsObj.handleNew(newFile);
 }
 
 
@@ -726,11 +728,11 @@ void CameraSettingsControl::handleSaveConfig(std::ofstream& saveFile)
 	saveFile << "END_CAMERA_SETTINGS\n";
 
 	picSettingsObj.handleSaveConfig(saveFile);
-	imageDimensionsObj.handleSave( saveFile );
+	imageDimensionsObj.handleSave(saveFile);
 }
 
 
-void CameraSettingsControl::handleModeChange( CameraWindow* cameraWindow )
+void CameraSettingsControl::handleModeChange(CameraWindow* cameraWindow)
 {
 	int sel = cameraModeCombo.GetCurSel();
 	if (sel == -1)
@@ -738,7 +740,7 @@ void CameraSettingsControl::handleModeChange( CameraWindow* cameraWindow )
 		return;
 	}
 	CString mode;
-	cameraModeCombo.GetLBText( sel, mode );
+	cameraModeCombo.GetLBText(sel, mode);
 	runSettings.cameraMode = mode;
 
 
@@ -761,8 +763,8 @@ void CameraSettingsControl::handleModeChange( CameraWindow* cameraWindow )
 
 
 	CRect rect;
-	cameraWindow->GetWindowRect( &rect );
-	cameraWindow->OnSize( 0, rect.right - rect.left, rect.bottom - rect.top );
+	cameraWindow->GetWindowRect(&rect);
+	cameraWindow->OnSize(0, rect.right - rect.left, rect.bottom - rect.top);
 }
 
 
@@ -778,22 +780,22 @@ void CameraSettingsControl::checkTimings(float& kineticCycleTime, float& accumul
 }
 
 
-void CameraSettingsControl::updateMinKineticCycleTime( double time )
+void CameraSettingsControl::updateMinKineticCycleTime(double time)
 {
-	minKineticCycleTimeDisp.SetWindowTextA( cstr( time ) );
+	minKineticCycleTimeDisp.SetWindowTextA(cstr(time));
 }
 
 
 imageParameters CameraSettingsControl::readImageParameters(CameraWindow* camWin)
 {
-	imageParameters parameters = imageDimensionsObj.readImageParameters( camWin );
+	imageParameters parameters = imageDimensionsObj.readImageParameters(camWin);
 	runSettings.imageSettings = parameters;
 	return parameters;
 }
 
-CBrush* CameraSettingsControl::handleColor( int idNumber, CDC* colorer, brushMap brushes, rgbMap rgbs )
+CBrush* CameraSettingsControl::handleColor(int idNumber, CDC* colorer, brushMap brushes, rgbMap rgbs)
 {
-	return picSettingsObj.colorControls( idNumber, colorer, brushes, rgbs );
+	return picSettingsObj.colorControls(idNumber, colorer, brushes, rgbs);
 }
 
 
@@ -808,40 +810,40 @@ void CameraSettingsControl::setExposureTimes() {
 
 void CameraSettingsControl::checkIfReady()
 {
-	if ( picSettingsObj.getUsedExposureTimes() <= 0 )
+	if (picSettingsObj.getUsedExposureTimes() <= 0)
 	{
 		thrower("Please Set at exposure time > 0");
 	}
-	if ( !imageDimensionsObj.checkReady() )
+	if (!imageDimensionsObj.checkReady())
 	{
 		thrower("Please set the image parameters.");
 	}
-	if ( runSettings.picsPerRepetition <= 0 )
+	if (runSettings.picsPerRepetition <= 0)
 	{
 		thrower("ERROR: Please set the number of pictures per repetition to a positive non-zero value.");
 	}
-	if ( runSettings.cameraMode == "Kinetic Series Mode" )
+	if (runSettings.cameraMode == "Kinetic Series Mode")
 	{
-		if ( runSettings.kineticCycleTime == 0 && runSettings.triggerMode == "Internal Trigger" )
+		if (runSettings.kineticCycleTime == 0 && runSettings.triggerMode == "Internal Trigger")
 		{
 			thrower("ERROR: Since you are running in internal trigger mode, please Set a kinetic cycle time.");
 		}
-		if ( runSettings.repetitionsPerVariation <= 0 )
+		if (runSettings.repetitionsPerVariation <= 0)
 		{
 			thrower("ERROR: Please set the \"Repetitions Per Variation\" variable to a positive non-zero value.");
 		}
-		if ( runSettings.totalVariations <= 0 )
+		if (runSettings.totalVariations <= 0)
 		{
 			thrower("ERROR: Please set the number of variations to a positive non-zero value.");
 		}
 	}
-	if ( runSettings.cameraMode == "Accumulate Mode" )
+	if (runSettings.cameraMode == "Accumulate Mode")
 	{
-		if ( runSettings.accumulationNumber <= 0 )
+		if (runSettings.accumulationNumber <= 0)
 		{
 			thrower("ERROR: Please set the current Accumulation Number to a positive non-zero value.");
 		}
-		if ( runSettings.accumulationTime <= 0 )
+		if (runSettings.accumulationTime <= 0)
 		{
 			thrower("ERROR: Please set the current Accumulation Time to a positive non-zero value.");
 		}

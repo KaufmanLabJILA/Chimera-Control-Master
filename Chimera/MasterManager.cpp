@@ -209,7 +209,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 			}
 			expUpdate("Programming Moog, DDS...\r\n", input->comm, input->quiet);
 
-			if (!MOOG_SAFEMODE) {
+			if (!GIGAMOOG_SAFEMODE) {
 				input->gmoog->loadMoogScript(input->gmoogScriptAddress);
 				input->gmoog->analyzeMoogScript(input->gmoog, input->variables, variationInc);
 			}

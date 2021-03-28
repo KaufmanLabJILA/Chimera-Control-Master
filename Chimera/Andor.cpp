@@ -394,6 +394,9 @@ std::vector<std::vector<long>> AndorCamera::acquireImageData(int pictureNumber)
 		// immediately rotate
 		for (UINT imageVecInc = 0; imageVecInc < imagesOfExperiment[experimentPictureNumber].size(); imageVecInc++)
 		{
+			/*imagesOfExperiment[experimentPictureNumber][imageVecInc] = tempImage[((imageVecInc
+				% runSettings.imageSettings.width) + 1) * runSettings.imageSettings.height
+				- imageVecInc / runSettings.imageSettings.width - 1];*/
 			imagesOfExperiment[experimentPictureNumber][imageVecInc] = tempImage[imageVecInc];
 		}
 
@@ -527,8 +530,8 @@ void AndorCamera::setExposures()
 void AndorCamera::setImageParametersToCamera()
 {
 	setImage(runSettings.imageSettings.verticalBinning, runSettings.imageSettings.horizontalBinning,
-		runSettings.imageSettings.bottom, runSettings.imageSettings.top,
-		runSettings.imageSettings.left, runSettings.imageSettings.right);
+		runSettings.imageSettings.left, runSettings.imageSettings.right,
+		runSettings.imageSettings.bottom, runSettings.imageSettings.top);
 }
 
 

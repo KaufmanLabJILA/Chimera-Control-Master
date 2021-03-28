@@ -13,11 +13,11 @@ greennarrow
 0
 greenimage
 0
-dio1.7
+blueimage
 0
-dio2.0
+tweezeraod
 0
-dio2.1
+imageshutter
 0
 dio2.2
 0
@@ -79,9 +79,9 @@ dio5.6
 0
 dio5.7
 0
-dio6.0
+gmmove
 0
-dio6.1
+gmload
 0
 dio6.2
 0
@@ -259,19 +259,22 @@ dds10
 dds11
 10 - 125
 0
-14
+17
 bluemotcoil 2.5
-bluex1 0.2
-bluex2 -0.2
-bluey1 0.35
-bluey2 -0.35
-bluez1 -1.2
-bluez2 1.23
+bluex1 0.41
+bluex2 -0.41
+bluey1 0.185
+bluey2 -0.185
+bluez1 0.7
+bluez2 -0.7
 greenmotcoil 0.4
-greenx1 0.08
-greenx2 -0.08
-greeny1 0.02
-greeny2 -0.02
-greenz1 -0.22
-greenz2 0.22
-1 512 1 1 512 1
+greenx1 0.098
+greenx2 -0.098
+greeny1 0.03
+greeny2 -0.03
+greenz1 -0.34
+greenz2 0.34
+blueloadtime 50
+greenbroadloadtime 30
+greennarrowloadtime 50
+994 1019 1 1010 1035 1
