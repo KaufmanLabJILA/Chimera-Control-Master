@@ -62,7 +62,7 @@ template <class ControlType> class Control : public ControlType
 	private:
 		int toolTipID;
 		CToolTipCtrl toolTip;
-		bool toolTipIsSet;
+		bool toolTipIsSet = false;
 };
 
 
