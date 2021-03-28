@@ -94,7 +94,6 @@ void AndorCamera::onFinish()
 	AT_Command(CameraHndl, L"Acquisition Stop");
 	AT_Flush(CameraHndl);
 
-	threadInput.signaler.notify_all();
 	cameraIsRunning = false;
 }
 
@@ -129,39 +128,34 @@ unsigned __stdcall AndorCamera::cameraThread(void* voidPtr)
 			try
 			{
 				int status;
-				//input->Andor->queryStatus(status);
-				//auto start = std::chrono::high_resolution_clock::now();
+
 				input->Andor->waitForAcquisition(pictureNumber);
 
 				if (pictureNumber % 2 == 0)
 				{
 					(*input->imageTimes).push_back(std::chrono::high_resolution_clock::now());
 				}
-				armed = true;
 
-				/*input->Andor->updatePictureNumber(pictureNumber);
-				std::vector<std::vector<long>> picData;
-				picData = input->Andor->acquireImageData(pictureNumber);
-				input->Andor->queueBuffers(pictureNumber);*/
-
-				input->comm->sendCameraProgress(pictureNumber);
-
-				if (pictureNumber == input->Andor->runSettings.totalPicsInExperiment && armed)
-				{
-					// signal the end to the main thread.
-					//input->comm->sendCameraProgress(-1);
+				if (input->Andor->cameraIsRunning == false && input->Andor->cameraIsArmed) {
 					input->comm->sendCameraFin();
-					armed = false;
+					input->Andor->cameraIsArmed = false;
 					pictureNumber = 1;
 				}
-				else {
-					++pictureNumber;
-					//requeue the buffers if taking more images
-					/*input->Andor->queueBuffers(pictureNumber);*/
+				else if (input->Andor->cameraIsRunning == true && input->Andor->cameraIsArmed) {
+					input->comm->sendCameraProgress(pictureNumber);
 				}
-				/*auto stop = std::chrono::high_resolution_clock::now();
-				auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
-				int a = 0;*/
+
+				if (pictureNumber == input->Andor->runSettings.totalPicsInExperiment && input->Andor->cameraIsArmed)
+				{
+					// signal the end to the main thread.
+					
+					input->comm->sendCameraFin();
+					input->Andor->cameraIsArmed = false;
+					pictureNumber = 1;
+				}
+				else if (input->Andor->cameraIsArmed) {
+					pictureNumber++;
+				}
 			}
 			catch (Error&)
 			{
@@ -262,8 +256,10 @@ void AndorCamera::armCamera(CameraWindow* camWin, double& minKineticCycleTime)
 		// get the min time after setting everything else.
 		//minKineticCycleTime = getMinKineticCycleTime();
 
-
+		currentPictureNumber = 1;
 		cameraIsRunning = true;
+		cameraIsArmed = true;
+
 		// remove the spurious wakeup check.
 		threadInput.spuriousWakeupHandler = true;
 

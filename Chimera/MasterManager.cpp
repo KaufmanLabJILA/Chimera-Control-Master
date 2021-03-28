@@ -324,7 +324,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 		input->thisObj->experimentIsRunning = false;
 		{
 			std::lock_guard<std::mutex> locker(input->thisObj->abortLock);
-			input->thisObj->isAborting = false;
+			//input->thisObj->isAborting = false;
 		}
 		if (input->runMaster)
 		{
@@ -336,6 +336,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 		{
 			expUpdate(abortString, input->comm, input->quiet);
 			input->comm->sendColorBox(Master, 'B');
+			input->thisObj->isAborting = false;
 		}
 		else
 		{

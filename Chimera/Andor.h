@@ -143,6 +143,7 @@ class AndorCamera
 		imageParameters runningImageParameters;
 		// 
 		bool cameraIsRunning;
+		bool cameraIsArmed;
 		// set either of these to true in order to break corresponding threads out of their loops.
 		bool plotThreadExitIndicator;
 		bool cameraThreadExitIndicator = false;

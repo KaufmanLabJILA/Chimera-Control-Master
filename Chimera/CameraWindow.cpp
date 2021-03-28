@@ -204,7 +204,7 @@ void CameraWindow::abortCameraRun()
 	}
 	if (status == DRV_ACQUIRING)
 	{
-		Andor.abortAcquisition();
+		//Andor.abortAcquisition();
 		timer.setTimerDisplay( "Aborted" );
 		Andor.setIsRunningState( false );
 		// close the plotting thread.
@@ -215,6 +215,7 @@ void CameraWindow::abortCameraRun()
 		WaitForSingleObject( plotThreadHandle, INFINITE );
 		//plotThreadAborting = false;
 		// camera is no longer running.
+
 		try
 		{
 			dataHandler.closeFile();
@@ -384,7 +385,7 @@ LRESULT CameraWindow::onCameraProgress( WPARAM wParam, LPARAM lParam )
 	ReleaseDC( drawer );
 
 	// write the data to the file.
-	if (currentSettings.cameraMode != "Continuous Single Scans Mode" && picData.size()!=0)
+	if (currentSettings.cameraMode != "Continuous Single Scans Mode" && picData.size()!=0 && !plotThreadAborting)
 	{
 		try
 		{
@@ -478,47 +479,11 @@ LRESULT CameraWindow::onCameraFinish( WPARAM wParam, LPARAM lParam )
 	mainWindowFriend->handleFinish();
 	plotThreadActive = false;
 	atomCrunchThreadActive = false;
-	/*
-	std::vector<double> imageToMainTime, mainToGrabTime, grabToCrunchTime, crunchCrunchingTime;
-	for ( auto inc : range( imageTimes.size( ) ) )
-	{
-		imageToMainTime.push_back( std::chrono::duration<double>( mainThreadStartTimes[inc] 
-																  - imageTimes[inc] ).count( ) );
-		mainToGrabTime.push_back( std::chrono::duration<double>( imageGrabTimes[inc] 
-																 - mainThreadStartTimes[inc] ).count( ) );
-		grabToCrunchTime.push_back( std::chrono::duration<double>( crunchSeesTimes[inc] 
-																   - imageGrabTimes[inc] ).count( ) );
-		crunchCrunchingTime.push_back( std::chrono::duration<double>( crunchFinTimes[inc] 
-																	  - crunchSeesTimes[inc] ).count( ) );
-	}
-	*/
-	// rearranger thread handles these right now.
-	//imageTimes.clear();
-	//imageGrabTimes.clear();
+
 	mainThreadStartTimes.clear();
 	crunchFinTimes.clear( );
 	crunchSeesTimes.clear( );
-	/*
-	std::ofstream dataFile( TIMING_OUTPUT_LOCATION + "CamTimeLog.txt" );
 
-	if ( !dataFile.is_open( ) )
-	{
-		errBox( "ERROR: data file failed to open for rearrangement log!" );
-	}
-	dataFile << "imageToCamera "
-		<< "grabTime "
-		<< "grabToCrunch "
-		<< "crunchingTime\n";
-	for ( auto count : range( imageToMainTime.size( ) ) )
-	{
-		dataFile << imageToMainTime[count] << " " 
-			<< mainToGrabTime[count] << " " 
-			<< grabToCrunchTime[count] << " " 
-			<< crunchCrunchingTime[count] << "\n";
-	}
-	dataFile.close( );
-	*/
-	//Sleep( 5000 );
 	mainWindowFriend->stopRearranger( );
 	wakeRearranger( );
 	return 0;
