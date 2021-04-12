@@ -58,7 +58,7 @@ class sequencer:
 		self.ddsAmpRange = [0, 5]
 		self.ddsFreqRange = [0, 500]
 		self.ddsFreqRangeConv = 8589930 # (2^32 - 1)/500 MHz
-		self.ddsAmpRangeConv = 818.4 # (2^10 - 1)/1.25 mW
+		self.ddsAmpRangeConv = 10.23 # (2^10 - 1)/1.25 mW
 		self.ddsTimeRes = 1.6e3 # in us
 		# initialize DACs
 		self.dac0 = DAC81416(fifo_devices['DAC81416_0'])
@@ -391,7 +391,7 @@ if __name__ == "__main__":
 	import dds_lock_pll
 
 	byte_buf_dio = 't0000A000_bF000000100000001\0t0000A3E8_b0000000000000000\0t0000A7D0_b0000000000000001\0'
-	byte_buf_dds = 't00000064_c0005_a_s000.500_e001.000_d00000000\0'
+	byte_buf_dds = 't00000064_c0005_f_s070.000_e000.000_d00000000\0t000A0064_c0005_a_s050.000_e000.000_d00000000'
 	#byte_buf1 = 't00000064_c0000_f_s080.000_e000.000_d00000000\0'
 
 	byte_buf_dac = 't00000064_c0000_s00.000_e01.000_d0007A120'
