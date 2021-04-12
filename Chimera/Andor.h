@@ -114,6 +114,8 @@ class AndorCamera
 		void setCameraTriggerMode();
 		void onFinish();
 		bool isRunning();
+		void stopRunning();
+		bool isStopping();
 		void setIsRunningState( bool state );
 		void updatePictureNumber( ULONGLONG newNumber );
 		void setGainMode();
@@ -144,6 +146,7 @@ class AndorCamera
 		// 
 		bool cameraIsRunning;
 		bool cameraIsArmed;
+		std::atomic<bool> cameraIsStopping;
 		// set either of these to true in order to break corresponding threads out of their loops.
 		bool plotThreadExitIndicator;
 		bool cameraThreadExitIndicator = false;

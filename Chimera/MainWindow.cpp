@@ -12,7 +12,7 @@
 MainWindow::MainWindow(UINT id, CDialog* splash) : CDialog(id), profile(PROFILES_PATH), 
     masterConfig( MASTER_CONFIGURATION_FILE_ADDRESS ), 
 	appSplash( splash ),
-	dds(DDS_FPGA_ADDRESS), gmoog(GIGAMOOG_PORT, 115200), zynq_tcp()
+	dds(DDS_FPGA_ADDRESS), gmoog(GIGAMOOG_PORT, 115200), zynq_tcp() //115200
 {
 	// create all the main rgbs and brushes. I want to make sure this happens before other windows are created.
 	mainRGBs["Light Green"]			= RGB( 163,	190, 140);

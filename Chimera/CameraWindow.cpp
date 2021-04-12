@@ -194,62 +194,47 @@ void CameraWindow::passCameraMode()
 void CameraWindow::abortCameraRun()
 {
 	int status;
-	//Andor.queryStatus(status);
-	status = DRV_ACQUIRING;
-	
-	if (ANDOR_SAFEMODE)
-	{
-		// simulate as if you needed to abort.
-		status = DRV_ACQUIRING;
-	}
-	if (status == DRV_ACQUIRING)
-	{
-		//Andor.abortAcquisition();
-		timer.setTimerDisplay( "Aborted" );
-		Andor.setIsRunningState( false );
+
+	timer.setTimerDisplay("Aborted");
+	Andor.stopRunning();
 		// close the plotting thread.
-		plotThreadAborting = true;
-		plotThreadActive = false;
-		atomCrunchThreadActive = false;
-		// Wait until plotting thread is complete.
-		WaitForSingleObject( plotThreadHandle, INFINITE );
-		//plotThreadAborting = false;
-		// camera is no longer running.
+	plotThreadAborting = true;
+	plotThreadActive = false;
+	atomCrunchThreadActive = false;
+	// Wait until plotting thread is complete.
+	WaitForSingleObject(plotThreadHandle, INFINITE);
+	//plotThreadAborting = false;
+	// camera is no longer running.
 
-		try
-		{
-			dataHandler.closeFile();
-		}
-		catch (Error& err)
-		{
-			mainWindowFriend->getComm()->sendError(err.what());
-		}
-		
-		if (!mainWindowFriend->masterIsRunning()) {
+	/*try
+	{
+		dataHandler.closeFile();
+	}
+	catch (Error& err)
+	{
+		mainWindowFriend->getComm()->sendError(err.what());
+	}
 
-		}
-		else if (Andor.getSettings().cameraMode != "Continuous Single Scans Mode")
+	if (!mainWindowFriend->masterIsRunning()) {
+
+	}
+	else if (Andor.getSettings().cameraMode != "Continuous Single Scans Mode")
+	{
+		int answer = promptBox("Acquisition Aborted. Delete Data file (data_" + str(dataHandler.getDataFileNumber())
+			+ ".h5) for this run?", MB_YESNO);
+		if (answer == IDYES)
 		{
-			int answer = promptBox("Acquisition Aborted. Delete Data file (data_" + str(dataHandler.getDataFileNumber())
-									  + ".h5) for this run?",MB_YESNO );
-			if (answer == IDYES)
+			try
 			{
-				try
-				{
-					dataHandler.deleteFile(mainWindowFriend->getComm());
-				}
-				catch (Error& err)
-				{
-					mainWindowFriend->getComm()->sendError(err.what());
-				}
+				dataHandler.deleteFile(mainWindowFriend->getComm());
+			}
+			catch (Error& err)
+			{
+				mainWindowFriend->getComm()->sendError(err.what());
 			}
 		}
-		plotThreadAborting = false;
-	}
-	else if (status == DRV_IDLE)
-	{
-		Andor.setIsRunningState(false);
-	}
+	}*/
+	plotThreadAborting = false;
 }
 
 
@@ -275,6 +260,7 @@ void CameraWindow::handlePictureEditChange( UINT id )
 
 LRESULT CameraWindow::onCameraProgress( WPARAM wParam, LPARAM lParam )
 {
+	cameraProgressActive = true;
 	UINT pictureNumber = lParam;
 	if ( pictureNumber % 2 == 1 )
 	{
@@ -404,6 +390,7 @@ LRESULT CameraWindow::onCameraProgress( WPARAM wParam, LPARAM lParam )
 			mainWindowFriend->getComm()->sendError( err.what() );
 		}
 	}
+	cameraProgressActive = false;
 	return 0;
 }
 
@@ -466,6 +453,11 @@ void CameraWindow::handleAutoscaleSelection()
 LRESULT CameraWindow::onCameraFinish( WPARAM wParam, LPARAM lParam )
 {
 	// notify the andor object that it is done.
+	Andor.stopRunning();
+	while (cameraProgressActive)
+	{
+		Sleep(0.2);
+	}
 	Andor.onFinish();
 	Andor.pauseThread();
 	if (alerts.soundIsToBePlayed())

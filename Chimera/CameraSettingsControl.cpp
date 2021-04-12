@@ -24,7 +24,7 @@ CameraSettingsControl::CameraSettingsControl(AndorCamera* friendInitializer) : p
 	runSettings.acquisitionMode = 3;
 	runSettings.emGainModeIsOn = false;
 	runSettings.showPicsInRealTime = false;
-	runSettings.triggerMode = "External Trigger";
+	runSettings.triggerMode = "External Exposure";
 }
 
 
@@ -87,11 +87,11 @@ void CameraSettingsControl::initialize(cameraPositions& pos, int& id, CWnd* pare
 	triggerCombo.AddString("External Exposure");
 	triggerCombo.AddString("Start On Trigger");
 	// Select default trigger
-	triggerCombo.SelectString(0, "External Trigger");
+	triggerCombo.SelectString(0, "External Exposure");
 	pos.seriesPos.y += 25;
 	pos.amPos.y += 25;
 	pos.videoPos.y += 25;
-	runSettings.triggerMode = "External Trigger";
+	runSettings.triggerMode = "External Exposure";
 	// Set temperature Button
 	setTemperatureButton.seriesPos = { pos.seriesPos.x, pos.seriesPos.y, pos.seriesPos.x + 270, pos.seriesPos.y + 25 };
 	setTemperatureButton.videoPos = { pos.videoPos.x, pos.videoPos.y, pos.videoPos.x + 270, pos.videoPos.y + 25 };
@@ -700,7 +700,7 @@ void CameraSettingsControl::handleOpenConfig(std::ifstream& configFile, int vers
 void CameraSettingsControl::handleNewConfig(std::ofstream& newFile)
 {
 	newFile << "CAMERA_SETTINGS\n";
-	newFile << "External Trigger" << "\n";
+	newFile << "External Exposure" << "\n";
 	newFile << 0 << "\n";
 	newFile << 0 << "\n";
 	newFile << "Kinetic Series Mode" << "\n";

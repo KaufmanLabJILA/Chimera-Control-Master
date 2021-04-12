@@ -80,21 +80,28 @@ void AndorCamera::pauseThread()
 	threadInput.spuriousWakeupHandler = false;
 }
 
+void AndorCamera::stopRunning()
+{
+	cameraIsStopping = true;
+}
 
 /*
  * this should get called when the camera finishes running. right now this is very simple.
  */
 void AndorCamera::onFinish()
 {
+	AT_Command(CameraHndl, L"Acquisition Stop");
+	AT_Flush(CameraHndl);
+
 	//Free the allocated buffer s
 	for (int i = 0; i < NumberOfAcqBuffers; i++) {
 		delete[] AcqBuffers[i];
 	}
 
-	AT_Command(CameraHndl, L"Acquisition Stop");
-	AT_Flush(CameraHndl);
-
+	cameraIsStopping = false;
 	cameraIsRunning = false;
+	threadInput.signaler.notify_all();
+	
 }
 
 
@@ -129,16 +136,18 @@ unsigned __stdcall AndorCamera::cameraThread(void* voidPtr)
 			{
 				int status;
 
-				input->Andor->waitForAcquisition(pictureNumber);
+				if (input->Andor->cameraIsRunning == true && input->Andor->cameraIsArmed && !(input->Andor->cameraIsStopping)) {
+					input->Andor->waitForAcquisition(pictureNumber);
+				}
 
 				if (pictureNumber % 2 == 0)
 				{
 					(*input->imageTimes).push_back(std::chrono::high_resolution_clock::now());
 				}
 
-				if (input->Andor->cameraIsRunning == false && input->Andor->cameraIsArmed) {
-					input->comm->sendCameraFin();
+				if (input->Andor->cameraIsStopping == true && input->Andor->cameraIsArmed) {
 					input->Andor->cameraIsArmed = false;
+					input->comm->sendCameraFin();
 					pictureNumber = 1;
 				}
 				else if (input->Andor->cameraIsRunning == true && input->Andor->cameraIsArmed) {
@@ -1587,6 +1596,11 @@ void AndorCamera::SetFastExternalTrigger(int mode)
 bool AndorCamera::isRunning()
 {
 	return cameraIsRunning;
+}
+
+bool AndorCamera::isStopping()
+{
+	return cameraIsStopping;
 }
 
 

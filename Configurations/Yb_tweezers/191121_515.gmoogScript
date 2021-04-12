@@ -1,0 +1,6 @@
+% DACs 2, 3 currently disabled.
+% set DAC, channel, amp, freq, phase
+
+set DAC0 0 74.06 150 11.2
+
+set DAC1 0 74.06 150 11.2

@@ -231,7 +231,7 @@ namespace commonFunctions
 				try
 				{
 					commonFunctions::prepareMasterThread( ID_RUNMENU_RUNMASTER, scriptWin, mainWin, camWin, auxWin, 
-														  input, false, false, true );
+														  input, false, true, true );
 					commonFunctions::startMaster( mainWin, input );
 				}
 				catch (Error& err)
@@ -926,7 +926,12 @@ namespace commonFunctions
 			input.masterInput->comm = mainWin->getComm();
 			input.masterInput->profile = profile;
 
-			input.masterInput->runMoog = runMoog;
+			if (!MOOG_SAFEMODE) {
+				input.masterInput->runMoog = runMoog;
+			}
+			else {
+				input.masterInput->runMoog = false;
+			}
 			if (runMoog) {
 				scriptInfo<std::string> addresses = scriptWin->getScriptAddresses();
 				//mainWin->setMoogRunningState(true);

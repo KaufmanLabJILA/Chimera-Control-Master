@@ -144,6 +144,7 @@ class CameraWindow : public CDialog
 		// 
 		std::atomic<bool> plotThreadActive;
 		std::atomic<bool> plotThreadAborting = false;
+		std::atomic<bool> cameraProgressActive = false;
 		std::atomic<bool> skipNext=false;
 		std::vector<double> plotterKey;
 		chronoTimes imageTimes, imageGrabTimes, mainThreadStartTimes, crunchSeesTimes, crunchFinTimes;

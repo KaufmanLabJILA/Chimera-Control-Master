@@ -20,8 +20,8 @@
 
 #ifdef ADAMS_LAB
 	#define PYTHON_HOME L"C:\\ProgramData\\Anaconda3\\"
-	#define MOOG_SAFEMODE false
-	#define GIGAMOOG_SAFEMODE false 
+	#define MOOG_SAFEMODE true
+	#define GIGAMOOG_SAFEMODE true 
 	#define NIAWG_SAFEMODE true
 	#define ANDOR_SAFEMODE false
 	#define PYTHON_SAFEMODE true
@@ -99,7 +99,7 @@
 	#define DDS_TIME_RESOLUTION 1.6 // in ms
 	#define DDS_MAX_AMP 1.25 // in mW
 	#define DDS_FPGA_ADDRESS "FT1I6IBSB" //Device Serial: FT1I6IBS, Use FT1I6IBSB in C++ to select Channel B
-	#define GIGAMOOG_PORT "COM5"
+	#define GIGAMOOG_PORT "COM6"
 	#define TOP_BOTTOM_TEK_SAFEMODE true
 	#define TOP_BOTTOM_TEK_USB_ADDRESS "USB0::0x0699::0x0343::C021681::0::INSTR"
 	#define EO_AXIAL_TEK_SAFEMODE true
@@ -289,7 +289,7 @@
 #endif
 
 //Moog constants
-#define MOOG_COM_PORT "COM6"
+#define MOOG_COM_PORT "COM7"
 #define MOOG_BAUD 77700
 
 // We calibrated this. // NIAWG_GAIN = 1.34.

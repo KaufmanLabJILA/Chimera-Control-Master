@@ -19,7 +19,7 @@ tweezeraod
 0
 imageshutter
 0
-dio2.2
+tweezermod
 0
 dio2.3
 0
@@ -29,7 +29,7 @@ dio2.5
 0
 dio2.6
 0
-dio2.7
+gmload
 0
 dio3.0
 0
@@ -79,9 +79,9 @@ dio5.6
 0
 dio5.7
 0
-gmmove
+dio6.0
 0
-gmload
+dio6.1
 0
 dio6.2
 0
@@ -139,7 +139,7 @@ y1coil
 z1coil
 -10 - 10
 0
-na1
+tweezerdepth
 -10 - 10
 0
 na2
@@ -259,22 +259,23 @@ dds10
 dds11
 10 - 125
 0
-17
+18
 bluemotcoil 2.5
-bluex1 0.41
-bluex2 -0.41
-bluey1 0.185
-bluey2 -0.185
-bluez1 0.7
-bluez2 -0.7
+bluex 0.41
+bluey 0.185
+bluez 0.7
 greenmotcoil 0.4
-greenx1 0.098
-greenx2 -0.098
-greeny1 0.03
-greeny2 -0.03
-greenz1 -0.34
-greenz2 0.34
+greenx 0.0925
+greeny 0.032
+greenz -0.36
 blueloadtime 50
 greenbroadloadtime 30
 greennarrowloadtime 50
-994 1019 1 1010 1035 1
+imagepower 0.8
+imagefreq 82.71
+lacfreq 82.6
+lacpower 0.6
+imagetime 75
+coolfreq 82.7
+coolpower 0.1
+980 1040 1 1000 1060 1
