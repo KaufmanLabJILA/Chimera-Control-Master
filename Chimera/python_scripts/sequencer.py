@@ -83,7 +83,7 @@ class sequencer:
 		print 'initializing experiment'
 		self.mod_disable()
 		reset()
-		dds_lock_pll.dds_lock_pll() 
+		dds_lock_pll.dds_lock_pll()
 
 	def getWord(self, bytes):
 		return bytes[3] + bytes[2] + bytes[1] + bytes[0]
@@ -163,7 +163,7 @@ class sequencer:
 
 	def set_DDS(self, channel, freq):
 		assert channel>=0 and channel<=11, 'Invalid channel for AD9959 in set_DDS'
-		dds_lock_pll.dds_lock_pll() 
+		dds_lock_pll.dds_lock_pll()
 		if (channel > 7):
 			channel = channel-8
 			self.dds2.set_DDS(channel, freq)
@@ -325,9 +325,9 @@ class sequencer:
 	def dds_seq_write_ftw_points(self):
 		points=[]
 		# points.append(DDS_ftw_seq_point(address=0,time=0,start=200000000,steps=0,incr=0,chan=0))
-		# ~ points.append(DDS_ftw_seq_point(address=0,time=   0,start=800000,steps=10000,incr=30000,chan=0)) 
+		# ~ points.append(DDS_ftw_seq_point(address=0,time=   0,start=800000,steps=10000,incr=30000,chan=0))
 		points.append(DDS_ftw_seq_point(address=0,time=0,start=800000,steps=0,incr=0,chan=1))
-		points.append(DDS_ftw_seq_point(address=1,time=20000,start=500000,steps=0,incr=0,chan=2)) 
+		points.append(DDS_ftw_seq_point(address=1,time=20000,start=500000,steps=0,incr=0,chan=2))
 		points.append(DDS_ftw_seq_point(address=2,time=0,start=0,steps=0,incr=0,chan=0))
 
 		for point in points:
@@ -389,9 +389,9 @@ if __name__ == "__main__":
 	from soft_trigger import trigger
 	from reset_all import reset
 	import dds_lock_pll
-	
+
 	byte_buf_dio = 't0000A000_bF000000100000001\0t0000A3E8_b0000000000000000\0t0000A7D0_b0000000000000001\0'
-	byte_buf_dds = 't00000064_c0001_f_s050.000_e000.000_d00000000\0'
+	byte_buf_dds = 't00000064_c0005_a_s000.500_e001.000_d00000000\0'
 	#byte_buf1 = 't00000064_c0000_f_s080.000_e000.000_d00000000\0'
 
 	byte_buf_dac = 't00000064_c0000_s00.000_e01.000_d0007A120'
