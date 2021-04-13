@@ -271,11 +271,11 @@ greenz -0.36
 blueloadtime 50
 greenbroadloadtime 30
 greennarrowloadtime 50
-imagepower 0.8
+imagepower 64
 imagefreq 82.71
 lacfreq 82.6
-lacpower 0.6
+lacpower 48
 imagetime 75
 coolfreq 82.7
-coolpower 0.1
+coolpower 8
 980 1040 1 1000 1060 1
