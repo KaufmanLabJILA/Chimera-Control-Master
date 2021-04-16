@@ -23,6 +23,7 @@ class AndorCamera;
 struct cameraThreadInput
 {
 	bool spuriousWakeupHandler;
+	std::atomic<bool> expectingAcquisition;
 	std::mutex runMutex;
 	std::condition_variable signaler;
 	Communicator* comm;

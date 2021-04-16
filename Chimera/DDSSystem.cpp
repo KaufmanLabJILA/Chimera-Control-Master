@@ -5,7 +5,7 @@
 #include "nidaqmx2.h"
 
 
-DDSSystem::DDSSystem() : ddsResolution({ 500 / pow(2,32), 1.25 / pow(2,10) })
+DDSSystem::DDSSystem() : ddsResolution({ 500 / pow(2,32), 100 / pow(2,10) })
 {
 	try
 	{
@@ -889,9 +889,9 @@ void DDSSystem::setAmpMinMax(int ddsNumber, double min, double max)
 	{
 		thrower("ERROR: Min dss amp value must be less than max dss amp value.");
 	}
-	if (min < 0 || min > 1.25 || max < 0 || max > 1.25)
+	if (min < 0 || min > 100 || max < 0 || max > 100)
 	{
-		thrower("ERROR: Min and max dss amp values must be within [0, 1.25].");
+		thrower("ERROR: Min and max dss amp values must be within [0, 100].");
 	}
 	ddsMinAmp[ddsNumber] = min;
 	ddsMaxAmp[ddsNumber] = max;

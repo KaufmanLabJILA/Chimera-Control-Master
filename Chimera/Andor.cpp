@@ -100,7 +100,7 @@ void AndorCamera::onFinish()
 
 	cameraIsStopping = false;
 	cameraIsRunning = false;
-	threadInput.signaler.notify_all();
+	threadInput.expectingAcquisition = false;
 	
 }
 
@@ -129,7 +129,10 @@ unsigned __stdcall AndorCamera::cameraThread(void* voidPtr)
 		 * them.
 		 */
 		 // Also, anytime this gets locked, the count should be reset.
-		input->signaler.wait(lock, [input, &safeModeCount]() { return input->spuriousWakeupHandler; });
+		//input->signaler.wait(lock, [input, &safeModeCount]() { return input->spuriousWakeupHandler; });
+		while (!input->expectingAcquisition) {
+			input->signaler.wait(lock);
+		}
 		if (!ANDOR_SAFEMODE)
 		{
 			try
@@ -307,6 +310,7 @@ void AndorCamera::armCamera(CameraWindow* camWin, double& minKineticCycleTime)
 	}
 	startAcquisition();
 	// notify the thread that the experiment has started..
+	threadInput.expectingAcquisition = true;
 	threadInput.signaler.notify_all();
 }
 
