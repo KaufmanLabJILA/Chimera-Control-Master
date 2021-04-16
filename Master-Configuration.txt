@@ -43,7 +43,7 @@ dio3.4
 0
 dio3.5
 0
-dio3.6
+blueshutter
 0
 dio3.7
 0
@@ -265,17 +265,17 @@ bluex 0.41
 bluey 0.185
 bluez 0.7
 greenmotcoil 0.4
-greenx 0.0925
-greeny 0.032
-greenz -0.36
+greenx 0.09657
+greeny 0.034
+greenz -0.2745
 blueloadtime 50
 greenbroadloadtime 30
 greennarrowloadtime 50
-imagepower 64
-imagefreq 82.71
+imagepower 60
+imagefreq 84.3
 lacfreq 82.6
 lacpower 48
-imagetime 75
+imagetime 150
 coolfreq 82.7
 coolpower 8
 980 1040 1 1000 1060 1

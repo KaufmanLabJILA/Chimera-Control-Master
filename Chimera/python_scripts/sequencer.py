@@ -58,9 +58,13 @@ class sequencer:
         self.ddsFreqRange = [0, 500]
         self.ddsFreqRangeConv = 8589930 # (2^32 - 1)/500 MHz
         self.ddsAmpRangeConv = 10.23 # (2^10 - 1)/1.25 mW
-        self.ddsTimeRes = 1.0e3 # in us
-        self.ddsAmpIncrMax = 268435455
-        self.ddsFreqIncrMax = 268435455
+        # self.ddsTimeRes = 1.0e3 # in us
+        self.accUpdateFreq = 1.0 # accumulator update freq in MHz, not really used, for reminder
+        # self.ddsAmpIncrMax = 268435455
+        # self.ddsFreqIncrMax = 268435455
+
+        self.ddsFreqIncMax = 0xfffffffffff # 32 ftw + 12 acc = 44bit
+        self.ddsAmpIncMax = 0x3fffff # 10 atw + 12 acc = 22bit
         # initialize DACs
         self.dac0 = DAC81416(fifo_devices['DAC81416_0'])
         self.dac1 = DAC81416(fifo_devices['DAC81416_1'])
@@ -246,14 +250,14 @@ class sequencer:
     	atw_points2=[]
     	for ii in range(num_snapshots):
     		[t, channel, aorf, s, end, duration] = self.dds_read_point(byte_buf[ii*byte_len: ii*byte_len + byte_len])
-    		num_steps = (duration/self.ddsTimeRes)-1
+    		num_steps = (duration*self.accUpdateFreq)
     		if (num_steps == 0):
     			ramp_inc = 0
     		else:
-    			ramp_inc = int((end-s)/num_steps)*4
+    			ramp_inc = int( (float(end-s)/num_steps) * 4096 )
     		if (aorf == 'f'):
     			if (ramp_inc < 0):
-    				ramp_inc = int(self.ddsFreqIncrMax + ramp_inc)
+    				ramp_inc = int(self.ddsFreqIncMax + ramp_inc)
     			if (channel < 4):
     				ftw_points0.append(DDS_ftw_seq_point(address=len(ftw_points0), time=t, start=s, steps=duration, incr=ramp_inc, chan=channel))
     			elif (4 <= channel < 8):
@@ -264,7 +268,7 @@ class sequencer:
     				ftw_points2.append(DDS_ftw_seq_point(address=len(ftw_points2), time=t, start=s, steps=duration, incr=ramp_inc, chan=channel))
     		elif (aorf == 'a'):
     			if (ramp_inc < 0):
-    				ramp_inc = int(self.ddsAmpIncrMax + ramp_inc)
+    				ramp_inc = int(self.ddsAmpIncMax + ramp_inc)
     			if (channel < 4):
     				atw_points0.append(DDS_atw_seq_point(address=len(atw_points0), time=t, start=s, steps=duration, incr=ramp_inc, chan=channel))
     			elif (4 <= channel < 8):
@@ -392,7 +396,7 @@ if __name__ == "__main__":
     import dds_lock_pll
 
     byte_buf_dio = 't00500000_b0000000000000001\0t0050A3E8_b0000000000000000\0t0050A7D0_b0000000000000001\0'
-    byte_buf_dds = 't00000064_c0005_f_s080.000_e000.000_d00000000\0t000A0064_c0005_f_s080.000_e090.000_d00006064\0'
+    byte_buf_dds = 't00000064_c0005_f_s080.000_e000.000_d00000000\0t000A0064_c0005_a_s100.000_e020.000_d00006064\0t004A0064_c0005_a_s050.000_e000.000_d00000000\0'
     # byte_buf_dds = 't00000064_c0005_f_s070.000_e000.000_d00000000\0t000A0064_c0005_a_s100.000_e000.000_d00000000'
     #byte_buf1 = 't00000064_c0000_f_s080.000_e000.000_d00000000\0'
 
@@ -402,7 +406,7 @@ if __name__ == "__main__":
     seq.mod_disable()
     reset()
     dds_lock_pll.dds_lock_pll()
-    seq.dds_seq_write_points(46, byte_buf_dds, 2)
+    seq.dds_seq_write_points(46, byte_buf_dds, 3)
     # seq.dds_seq_write_atw_points()
     #seq.dds_seq_write_ftw_points()
     # seq.set_DAC(0, 1)

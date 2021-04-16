@@ -196,6 +196,7 @@ void CameraWindow::abortCameraRun()
 	int status;
 
 	timer.setTimerDisplay("Aborted");
+	Andor.abortAcquisition();
 	Andor.stopRunning();
 		// close the plotting thread.
 	plotThreadAborting = true;
