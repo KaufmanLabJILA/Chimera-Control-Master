@@ -542,15 +542,18 @@ void AuxiliaryWindow::handleMasterConfigSave(std::stringstream& configStream)
 	{
 		std::string name = ddsBoards.getName(ddsInc);
 		std::pair<double, double> minMaxFreq = ddsBoards.getDDSFreqRange(ddsInc);
+		std::pair<double, double> minMaxAmp = ddsBoards.getDDSAmpRange(ddsInc);
 		if (name == "")
 		{
 			// then the name hasn't been set, so create the default name
 			name = "DDS" + str(ddsInc);
 		}
+		std::array<double, 2> defaultVals = ddsBoards.getDefaultValue(ddsInc);
 		configStream << name << "\n";
 		configStream << minMaxFreq.first << " - " << minMaxFreq.second << "\n";
-		double defaultVals = ddsBoards.getDefaultValue(ddsInc);
-		configStream << defaultVals << "\n";
+		configStream << defaultVals[0] << "\n";
+		configStream << minMaxAmp.first << " - " << minMaxAmp.second << "\n";
+		configStream << defaultVals[1] << "\n";
 	}
 
 	// Number of Variables
@@ -653,11 +656,17 @@ void AuxiliaryWindow::handleMasterConfigOpen(std::stringstream& configStream, do
 	{
 		std::string name;
 		std::string defaultFreqString;
+		std::string defaultAmpString;
 		double defaultFreq;
+		double defaultAmp;
 		std::string minFreqString;
 		std::string maxFreqString;
+		std::string minAmpString;
+		std::string maxAmpString;
 		double minFreq;
 		double maxFreq;
+		double minAmp;
+		double maxAmp;
 		configStream >> name;
 		configStream >> minFreqString;
 		std::string trash;
@@ -668,11 +677,23 @@ void AuxiliaryWindow::handleMasterConfigOpen(std::stringstream& configStream, do
 		}
 		configStream >> maxFreqString;
 		configStream >> defaultFreqString;
+		configStream >> minAmpString;
+		configStream >> trash;
+		if (trash != "-")
+		{
+			thrower("ERROR: Expected \"-\" in config file between min and max freq values!");
+		}
+		configStream >> maxAmpString;
+		configStream >> defaultAmpString;
 		try
 		{
 			defaultFreq = std::stod(defaultFreqString);
 			minFreq = std::stod(minFreqString);
 			maxFreq = std::stod(maxFreqString);
+
+			defaultAmp = std::stod(maxAmpString);
+			minAmp = std::stod(minAmpString);
+			maxAmp = std::stod(maxAmpString);
 		}
 		catch (std::invalid_argument&)
 		{
@@ -680,8 +701,9 @@ void AuxiliaryWindow::handleMasterConfigOpen(std::stringstream& configStream, do
 		}
 		ddsBoards.setName(ddsInc, name, toolTips, this);
 		ddsBoards.setFreqMinMax(ddsInc, minFreq, maxFreq);
+		ddsBoards.setAmpMinMax(ddsInc, minAmp, maxAmp);
 		//ddsBoards.prepareDDSForceChange(ddsInc, defaultFreq);
-		ddsBoards.setDefaultValue(ddsInc, defaultFreq);
+		ddsBoards.setDefaultValue(ddsInc, { defaultFreq, defaultAmp });
 	}
 	// variables.
 	if (version >= 1.1)
@@ -732,7 +754,10 @@ void AuxiliaryWindow::SetDacs()
 		sendStatus("Setting Dacs...\r\n");
 
 		dacBoards.handleButtonPress();
-		dacBoards.setDACs();
+		//dacBoards.setDACs();
+		dacBoards.setDACsSeq();
+		//ddsBoards.setDDSsAmpFreq();
+		ttlBoard.forceTtl(0, 0, -1);
 
 		sendStatus("Finished Setting Dacs.\r\n");
 	}
@@ -757,7 +782,8 @@ void AuxiliaryWindow::SetDDSs()
 		sendStatus("Setting DDSs...\r\n");
 
 		ddsBoards.handleButtonPress();
-		ddsBoards.setDDSs();
+		ddsBoards.setDDSsAmpFreq();
+		ttlBoard.forceTtl(0, 0, -1);
 
 		sendStatus("Finished Setting DDSs.\r\n");
 	}

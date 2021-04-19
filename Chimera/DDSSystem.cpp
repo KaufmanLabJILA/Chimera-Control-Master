@@ -10,6 +10,27 @@ DDSSystem::DDSSystem() : ddsResolution({ 500 / pow(2,32), 100 / pow(2,10) })
 	try
 	{
 		//
+		int tcp_connect;
+		try
+		{
+			tcp_connect = zynq_tcp.connectTCP(ZYNQ_ADDRESS);
+		}
+		catch (Error& err)
+		{
+			tcp_connect = 1;
+			errBox(err.what());
+		}
+
+		if (tcp_connect == 0)
+		{
+			zynq_tcp.writeCommand("disableSeq");
+			zynq_tcp.writeCommand("lockPLL");
+			zynq_tcp.disconnect();
+		}
+		else
+		{
+			throw("connection to zynq failed. can't write DDS data\n");
+		}
 	}
 	// I catch here because it's the constructor, and catching elsewhere is weird.
 	catch (Error& exception)
@@ -19,7 +40,7 @@ DDSSystem::DDSSystem() : ddsResolution({ 500 / pow(2,32), 100 / pow(2,10) })
 }
 
 
-std::array< double, 12> DDSSystem::getDDSStatus()
+std::array<std::array<double, 2>, 12> DDSSystem::getDDSStatus()
 {
 	return ddsValues;
 }
@@ -28,18 +49,20 @@ std::array< double, 12> DDSSystem::getDDSStatus()
 void DDSSystem::handleOpenConfig(std::ifstream& openFile, int versionMajor, int versionMinor)
 {
 	ProfileSystem::checkDelimiterLine(openFile, "DDSS");
-	prepareForce( );
+	prepareForce();
 	std::vector<double> values(getNumberOfDDSs());
 	UINT ddsInc = 0;
 	for (auto& dds : values)
 	{
 		std::string ddsFreqString;
+		std::string ddsAmpString;
 		openFile >> ddsFreqString;
+		openFile >> ddsAmpString;
 		try
 		{
-			double ddsFreqValue = std::stod(ddsFreqString);
-			if (ddsFreqValue > 10) {
-				prepareDDSForceChange(ddsInc, ddsFreqValue);
+			std::array<double, 2> ddsValue = { std::stod(ddsFreqString), std::stod(ddsAmpString) };
+			if (ddsValue[0] > 10) {
+				prepareDDSForceChange(ddsInc, ddsValue);
 			}
 		}
 		catch (std::invalid_argument&)
@@ -52,10 +75,10 @@ void DDSSystem::handleOpenConfig(std::ifstream& openFile, int versionMajor, int 
 }
 
 
-void DDSSystem::handleNewConfig( std::ofstream& newFile )
+void DDSSystem::handleNewConfig(std::ofstream& newFile)
 {
 	newFile << "DDSS\n";
-	for ( UINT ddsInc = 0; ddsInc < getNumberOfDDSs( ); ddsInc++ )
+	for (UINT ddsInc = 0; ddsInc < getNumberOfDDSs(); ddsInc++)
 	{
 		newFile << 80 << " " << 0 << " ";
 	}
@@ -68,7 +91,7 @@ void DDSSystem::handleSaveConfig(std::ofstream& saveFile)
 	saveFile << "DDSS\n";
 	for (UINT ddsInc = 0; ddsInc < getNumberOfDDSs(); ddsInc++)
 	{
-		saveFile << getDDSValue(ddsInc) << " ";
+		saveFile << getDDSValue(ddsInc)[0] << " " << getDDSValue(ddsInc)[1] << " ";
 	}
 	saveFile << "\nEND_DDSS\n";
 }
@@ -83,18 +106,18 @@ void DDSSystem::abort()
 std::string DDSSystem::getDDSSequenceMessage(UINT variation)
 {
 	std::string message;
-	for ( auto snap : ddsSnapshots[variation] )
+	for (auto snap : ddsSnapshots[variation])
 	{
-		std::string time = str( snap.time, 12, true );
+		std::string time = str(snap.time, 12, true);
 		message += time + ":\r\n";
 		int ddsCount = 0;
-		for ( auto val : snap.ddsValues )
+		for (auto val : snap.ddsValues)
 		{
-			std::string freq = str( val[0], true );
+			std::string freq = str(val[0], true);
 			std::string amp = str(val[1], true);
 			message += freq + ", " + amp + ", ";
 			ddsCount++;
-			if (ddsCount % 12 == 0 )
+			if (ddsCount % 12 == 0)
 			{
 				message += "\r\n";
 			}
@@ -201,13 +224,13 @@ void DDSSystem::rearrange(UINT width, UINT height, fontMap fonts)
 }
 
 
-void DDSSystem::setDefaultValue(UINT ddsNum, double val)
+void DDSSystem::setDefaultValue(UINT ddsNum, std::array<double, 2> val)
 {
 	defaultVals[ddsNum] = val;
 }
 
 
-double DDSSystem::getDefaultValue(UINT ddsNum)
+std::array<double, 2> DDSSystem::getDefaultValue(UINT ddsNum)
 {
 	return defaultVals[ddsNum];
 }
@@ -217,34 +240,44 @@ double DDSSystem::getDefaultValue(UINT ddsNum)
 void DDSSystem::initialize(POINT& pos, cToolTips& toolTips, AuxiliaryWindow* master, int& id)
 {
 	// title
-	ddsTitle.sPos = { pos.x, pos.y, pos.x + 340, pos.y += 25 };
+	ddsTitle.sPos = { pos.x, pos.y, pos.x + 400, pos.y += 25 };
 	ddsTitle.Create("DDSS", WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER, ddsTitle.sPos, master, id++);
 	ddsTitle.fontType = HeadingFont;
 	// 
-	ddsSetButton.sPos = { pos.x, pos.y, pos.x + 340, pos.y += 25};
-	ddsSetButton.Create( "Set New DDS Values", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, 
-						 ddsSetButton.sPos, master, ID_DDS_SET_BUTTON );
+	ddsSetButton.sPos = { pos.x, pos.y, pos.x + 400, pos.y += 25 };
+	ddsSetButton.Create("Set New DDS Values", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+		ddsSetButton.sPos, master, ID_DDS_SET_BUTTON);
 	ddsSetButton.setToolTip("Press this button to attempt force all DAC values to the values currently recorded in the"
-							 " edits below.", toolTips, master);
+		" edits below.", toolTips, master);
 
 	pos.y += 15;
 
 	// DDS board labels
-	dds0Title.sPos = { pos.x, pos.y, pos.x + 100, pos.y + 25 };
-	dds0Title.Create("DDS 0 (MHz)", WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER, dds0Title.sPos, master, id++);
+	dds0Title.sPos = { pos.x, pos.y, pos.x + 120, pos.y + 25 };
+	dds0Title.Create("DDS 0", WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER, dds0Title.sPos, master, id++);
 	dds0Title.fontType = HeadingFont;
-	dds1Title.sPos = { pos.x + 120, pos.y, pos.x + 220, pos.y + 25 };
-	dds1Title.Create("DDS 1 (MHz)", WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER, dds1Title.sPos, master, id++);
+	dds1Title.sPos = { pos.x + 140, pos.y, pos.x + 260, pos.y + 25 };
+	dds1Title.Create("DDS 1", WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER, dds1Title.sPos, master, id++);
 	dds1Title.fontType = HeadingFont;
-	dds2Title.sPos = { pos.x + 240, pos.y, pos.x + 340, pos.y += 25 };
-	dds2Title.Create("DDS 2 (MHz)", WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER, dds2Title.sPos, master, id++);
+	dds2Title.sPos = { pos.x + 280, pos.y, pos.x + 400, pos.y += 25 };
+	dds2Title.Create("DDS 2", WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER, dds2Title.sPos, master, id++);
 	dds2Title.fontType = HeadingFont;
 
-	
+	dds0FreqAmp.sPos = { pos.x + 30, pos.y, pos.x + 120, pos.y + 25 };
+	dds0FreqAmp.Create("freq / amp", WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER, dds0FreqAmp.sPos, master, id++);
+	dds0FreqAmp.fontType = HeadingFont;
+	dds1FreqAmp.sPos = { pos.x + 170, pos.y, pos.x + 260, pos.y + 25 };
+	dds1FreqAmp.Create("freq / amp", WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER, dds1FreqAmp.sPos, master, id++);
+	dds1FreqAmp.fontType = HeadingFont;
+	dds2FreqAmp.sPos = { pos.x + 310, pos.y, pos.x + 400, pos.y += 25 };
+	dds2FreqAmp.Create("freq / amp", WS_CHILD | WS_VISIBLE | SS_SUNKEN | SS_CENTER, dds2FreqAmp.sPos, master, id++);
+	dds2FreqAmp.fontType = HeadingFont;
+
+
 
 	//
 	int collumnInc = 0;
-	
+
 	// there's a single label first, hence the +1.
 	for (UINT ddsInc = 0; ddsInc < breakoutBoardFreqEdits.size(); ddsInc++)
 	{
@@ -255,13 +288,21 @@ void DDSSystem::initialize(POINT& pos, cToolTips& toolTips, AuxiliaryWindow* mas
 			pos.y -= 25 * breakoutBoardFreqEdits.size() / 3;
 		}
 
-		breakoutBoardFreqEdits[ddsInc].sPos = { pos.x + 30 + collumnInc * 120, pos.y, pos.x + 100 + collumnInc * 120,
-												pos.y += 25 };
+		breakoutBoardFreqEdits[ddsInc].sPos = { pos.x + 30 + collumnInc * 140, pos.y, pos.x + 75 + collumnInc * 140,
+												pos.y + 25 };
 		breakoutBoardFreqEdits[ddsInc].colorState = 0;
 		breakoutBoardFreqEdits[ddsInc].Create(WS_CHILD | WS_VISIBLE | WS_BORDER, breakoutBoardFreqEdits[ddsInc].sPos,
 			master, id++);
 		breakoutBoardFreqEdits[ddsInc].SetWindowText("0");
 		breakoutBoardFreqEdits[ddsInc].setToolTip(ddsNames[ddsInc], toolTips, master);
+
+		breakoutBoardAmpEdits[ddsInc].sPos = { pos.x + 75 + collumnInc * 140, pos.y, pos.x + 120 + collumnInc * 140,
+												pos.y += 25 };
+		breakoutBoardAmpEdits[ddsInc].colorState = 0;
+		breakoutBoardAmpEdits[ddsInc].Create(WS_CHILD | WS_VISIBLE | WS_BORDER, breakoutBoardAmpEdits[ddsInc].sPos,
+			master, id++);
+		breakoutBoardAmpEdits[ddsInc].SetWindowText("0");
+		breakoutBoardAmpEdits[ddsInc].setToolTip(ddsNames[ddsInc], toolTips, master);
 	}
 
 	collumnInc = 0;
@@ -276,9 +317,9 @@ void DDSSystem::initialize(POINT& pos, cToolTips& toolTips, AuxiliaryWindow* mas
 			pos.y -= 25 * ddsLabels.size() / 3;
 		}
 		// create label
-		ddsLabels[ddsInc].sPos = { pos.x + collumnInc * 120, pos.y, pos.x + 20 + collumnInc * 120, pos.y += 25 };
-		ddsLabels[ddsInc].Create(cstr(ddsInc - collumnInc * 4), WS_CHILD | WS_VISIBLE | SS_CENTER,
-								 ddsLabels[ddsInc].sPos, master, ID_DAC_FIRST_EDIT + ddsInc);
+		ddsLabels[ddsInc].sPos = { pos.x + collumnInc * 140, pos.y, pos.x + 20 + collumnInc * 140, pos.y += 25 };
+		ddsLabels[ddsInc].Create(cstr(ddsInc), WS_CHILD | WS_VISIBLE | SS_CENTER,
+			ddsLabels[ddsInc].sPos, master, ID_DAC_FIRST_EDIT + ddsInc);
 		ddsLabels[ddsInc].setToolTip(ddsNames[ddsInc], toolTips, master);
 	}
 }
@@ -292,26 +333,35 @@ void DDSSystem::handleButtonPress()
 	//ddsCommandFormList.clear();
 	//prepareForce();
 
-	std::array<double, 12> vals;
+	std::array<std::array<double, 2>, 12> vals;
 	for (UINT ddsInc = 0; ddsInc < ddsLabels.size(); ddsInc++)
 	{
 		CString freqText;
+		CString ampText;
 		breakoutBoardFreqEdits[ddsInc].GetWindowTextA(freqText);
+		breakoutBoardAmpEdits[ddsInc].GetWindowTextA(ampText);
 		try
 		{
-			vals[ddsInc] = std::stod(str(freqText));
+			vals[ddsInc][0] = std::stod(str(freqText));
+			vals[ddsInc][1] = std::stod(str(ampText));
 			std::string freqValStr;
+			std::string ampValStr;
 			if (roundToDDSPrecision)
 			{
-				double valRound;
-				valRound = roundToDDSResolution(vals[ddsInc]);
-				freqValStr = str(valRound, 13, true);
+				double valRoundFreq;
+				double valRoundAmp;
+				valRoundFreq = roundToDDSResolutionFreq(vals[ddsInc][0]);
+				valRoundAmp = roundToDDSResolutionAmp(vals[ddsInc][1]);
+				freqValStr = str(valRoundFreq, 13, true);
+				ampValStr = str(valRoundAmp, 13, true);
 			}
 			else
 			{
-				freqValStr = str(vals[ddsInc]);
+				freqValStr = str(vals[ddsInc][0]);
+				ampValStr = str(vals[ddsInc][1]);
 			}
 			breakoutBoardFreqEdits[ddsInc].SetWindowTextA(cstr(freqValStr));
+			breakoutBoardAmpEdits[ddsInc].SetWindowTextA(cstr(ampValStr));
 		}
 		catch (std::invalid_argument&)
 		{
@@ -324,6 +374,8 @@ void DDSSystem::handleButtonPress()
 	{
 		breakoutBoardFreqEdits[ddsInc].colorState = 0;
 		breakoutBoardFreqEdits[ddsInc].RedrawWindow();
+		breakoutBoardAmpEdits[ddsInc].colorState = 0;
+		breakoutBoardAmpEdits[ddsInc].RedrawWindow();
 	}
 }
 
@@ -337,8 +389,8 @@ void DDSSystem::organizeDDSCommands(UINT variation)
 
 	std::vector<DDSCommand> tempEvents(ddsCommandList[variation]);
 	// sort the events by time. using a lambda here.
-	std::sort( tempEvents.begin(), tempEvents.end(), 
-			   [](DDSCommand a, DDSCommand b){return a.time < b.time; });
+	std::sort(tempEvents.begin(), tempEvents.end(),
+		[](DDSCommand a, DDSCommand b) {return a.time < b.time; });
 	for (UINT commandInc = 0; commandInc < tempEvents.size(); commandInc++)
 	{
 		// because the events are sorted by time, the time organizer will already be sorted by time, and therefore I 
@@ -392,11 +444,11 @@ std::array<std::string, 12> DDSSystem::getAllNames()
 
 /*
  * IMPORTANT: this does not actually change any of the outputs of the board. It is meant to be called when things have
- * happened such that the control doesn't know what it's own status is, e.g. at the end of an experiment, since the 
- * program doesn't change it's internal memory of all of the status of the dacs as the experiment runs. (it can't, 
+ * happened such that the control doesn't know what it's own status is, e.g. at the end of an experiment, since the
+ * program doesn't change it's internal memory of all of the status of the dacs as the experiment runs. (it can't,
  * besides it would intensive to keep track of that in real time).
  */
-void DDSSystem::setDDSStatusNoForceOut(std::array<double, 12> status)
+void DDSSystem::setDDSStatusNoForceOut(std::array<std::array<double, 2>, 12> status)
 {
 	// set the internal values
 	ddsValues = status;
@@ -407,12 +459,15 @@ void DDSSystem::setDDSStatusNoForceOut(std::array<double, 12> status)
 		std::string ampStr;
 		if (roundToDDSPrecision)
 		{
-			double val = roundToDDSResolution(ddsValues[dacInc]);
-			freqStr = str(val, 13, true);
+			double valFreq = roundToDDSResolutionFreq(ddsValues[dacInc][0]);
+			double valAmp = roundToDDSResolutionAmp(ddsValues[dacInc][1]);
+			freqStr = str(valFreq, 13, true);
+			ampStr = str(valAmp, 13, true);
 		}
 		else
 		{
-			freqStr = str(ddsValues[dacInc], 13, true);
+			freqStr = str(ddsValues[dacInc][0], 13, true);
+			ampStr = str(ddsValues[dacInc][1], 13, true);
 		}
 		/*breakoutBoardEdits[dacInc].SetWindowText(cstr(valStr));
 		breakoutBoardEdits[dacInc].colorState = 0;*/
@@ -420,9 +475,14 @@ void DDSSystem::setDDSStatusNoForceOut(std::array<double, 12> status)
 }
 
 
-double DDSSystem::roundToDDSResolution(double num)
+double DDSSystem::roundToDDSResolutionFreq(double num)
 {
 	return long((num + ddsResolution[0] / 2) / ddsResolution[0]) * ddsResolution[0];
+}
+
+double DDSSystem::roundToDDSResolutionAmp(double num)
+{
+	return long((num + ddsResolution[1] / 2) / ddsResolution[1]) * ddsResolution[1];
 }
 
 
@@ -430,7 +490,7 @@ std::string DDSSystem::getErrorMessage(int errorCode)
 {
 	char errorChars[2048];
 	// Get the actual error message. This is much surperior to getErrorString function.
-	DAQmxGetExtendedErrorInfo( errorChars, 2048 );
+	DAQmxGetExtendedErrorInfo(errorChars, 2048);
 	std::string errorString(errorChars);
 	return errorString;
 }
@@ -440,20 +500,21 @@ void DDSSystem::prepareForce()
 {
 	ddsCommandList.resize(1);
 	ddsSnapshots.resize(1);
+	ddsChannelSnapshots = std::vector<std::vector<DDSChannelSnapshot>>(1);
 }
 
 
-void DDSSystem::interpretKey( std::vector<variableType>& variables, std::string& warnings )
+void DDSSystem::interpretKey(std::vector<variableType>& variables, std::string& warnings)
 {
 	UINT variations;
-	variations = variables.front( ).keyValues.size( );
+	variations = variables.front().keyValues.size();
 	if (variations == 0)
 	{
 		variations = 1;
 	}
 	/// imporantly, this sizes the relevant structures.
-	ddsCommandList = std::vector<std::vector<DDSCommand>> (variations);
-	ddsSnapshots = std::vector<std::vector<DDSSnapshot>> (variations);
+	ddsCommandList = std::vector<std::vector<DDSCommand>>(variations);
+	ddsSnapshots = std::vector<std::vector<DDSSnapshot>>(variations);
 	ddsChannelSnapshots = std::vector<std::vector<DDSChannelSnapshot>>(variations);
 
 	bool resolutionWarningPosted = false;
@@ -476,17 +537,17 @@ void DDSSystem::interpretKey( std::vector<variableType>& variables, std::string&
 				double varTime = 0;
 				for (auto variableTimeString : ddsCommandFormList[eventInc].time.first)
 				{
-					varTime += variableTimeString.evaluate( variables, variationInc );
+					varTime += variableTimeString.evaluate(variables, variationInc);
 				}
 				tempEvent.time = varTime + ddsCommandFormList[eventInc].time.second;
 			}
 
-			if ( ddsCommandFormList[eventInc].commandName == "ddsamp:")
+			if (ddsCommandFormList[eventInc].commandName == "ddsamp:")
 			{
 				/// single point.
 				////////////////
 				// deal with amp
-				tempEvent.amp = ddsCommandFormList[eventInc].initVal.evaluate( variables, variationInc );
+				tempEvent.amp = ddsCommandFormList[eventInc].initVal.evaluate(variables, variationInc);
 				tempEvent.endAmp = tempEvent.amp;
 				tempEvent.rampTime = 0;
 				tempEvent.freq = 0;
@@ -503,39 +564,39 @@ void DDSSystem::interpretKey( std::vector<variableType>& variables, std::string&
 				tempEvent.amp = 0;
 				ddsCommandList[variationInc].push_back(tempEvent);
 			}
-			else if ( ddsCommandFormList[eventInc].commandName == "ddslinspaceamp:" )
+			else if (ddsCommandFormList[eventInc].commandName == "ddslinspaceamp:")
 			{
 				// interpret ramp time command. I need to know whether it's ramping or not.
-				double rampTime = ddsCommandFormList[eventInc].rampTime.evaluate( variables, variationInc );
+				double rampTime = ddsCommandFormList[eventInc].rampTime.evaluate(variables, variationInc);
 				/// many points to be made.
 				// convert initValue and finalValue to doubles to be used 
 				double initValue, finalValue, numSteps;
-				initValue = ddsCommandFormList[eventInc].initVal.evaluate( variables, variationInc );
+				initValue = ddsCommandFormList[eventInc].initVal.evaluate(variables, variationInc);
 				// deal with final value;
-				finalValue = ddsCommandFormList[eventInc].finalVal.evaluate( variables, variationInc );
+				finalValue = ddsCommandFormList[eventInc].finalVal.evaluate(variables, variationInc);
 				// deal with numPoints
-				numSteps = ddsCommandFormList[eventInc].numSteps.evaluate( variables, variationInc );
+				numSteps = ddsCommandFormList[eventInc].numSteps.evaluate(variables, variationInc);
 				double rampInc = (finalValue - initValue) / numSteps;
-				if ( (fabs(rampInc) < DDS_MAX_AMP / pow( 2, 10 )) && !resolutionWarningPosted )
+				if ((fabs(rampInc) < DDS_MAX_AMP / pow(2, 10)) && !resolutionWarningPosted)
 				{
 					resolutionWarningPosted = true;
-					warnings += "Warning: numPoints of " + str(numSteps) + " results in an amplitude ramp increment of " 
-						+ str( rampInc ) + " is below the resolution of the ddss (which is " + str(DDS_MAX_AMP) + "/2^10 = "
-						+ str(DDS_MAX_AMP / pow( 2, 10 ) ) + "). \r\n";
+					warnings += "Warning: numPoints of " + str(numSteps) + " results in an amplitude ramp increment of "
+						+ str(rampInc) + " is below the resolution of the ddss (which is " + str(DDS_MAX_AMP) + "/2^10 = "
+						+ str(DDS_MAX_AMP / pow(2, 10)) + "). \r\n";
 				}
 				double timeInc = rampTime / numSteps;
 				double initTime = tempEvent.time;
 				double currentTime = tempEvent.time;
 				double val = initValue;
 
-				for ( auto stepNum : range( numSteps ) )
+				for (auto stepNum : range(numSteps))
 				{
 					tempEvent.amp = val;
 					tempEvent.time = currentTime;
 					tempEvent.endAmp = val;
 					tempEvent.rampTime = 0;
 					tempEvent.freq = 0;
-					ddsCommandList[variationInc].push_back( tempEvent );
+					ddsCommandList[variationInc].push_back(tempEvent);
 					currentTime += timeInc;
 					val += rampInc;
 				}
@@ -545,7 +606,7 @@ void DDSSystem::interpretKey( std::vector<variableType>& variables, std::string&
 				tempEvent.endAmp = finalValue;
 				tempEvent.rampTime = 0;
 				tempEvent.freq = 0;
-				ddsCommandList[variationInc].push_back( tempEvent );
+				ddsCommandList[variationInc].push_back(tempEvent);
 			}
 			else if (ddsCommandFormList[eventInc].commandName == "ddslinspacefreq:")
 			{
@@ -657,7 +718,7 @@ void DDSSystem::interpretKey( std::vector<variableType>& variables, std::string&
 			}
 			else
 			{
-				thrower( "ERROR: Unrecognized dds command name: " + ddsCommandFormList[eventInc].commandName );
+				thrower("ERROR: Unrecognized dds command name: " + ddsCommandFormList[eventInc].commandName);
 			}
 		}
 	}
@@ -672,7 +733,7 @@ UINT DDSSystem::getNumberSnapshots(UINT variation)
 
 void DDSSystem::checkTimingsWork(UINT variation)
 {
-	
+
 }
 
 ULONG DDSSystem::getNumberEvents(UINT variation)
@@ -684,16 +745,16 @@ ULONG DDSSystem::getNumberEvents(UINT variation)
 // note that this is not directly tied to changing any "current" parameters in the DDSSystem object (it of course changes a list parameter). The 
 // DacSystem object "current" parameters aren't updated to reflect an experiment, so if this is called for a force out, it should be called in conjuction
 // with changing "currnet" parameters in the DacSystem object.
-void DDSSystem::setDDSCommandForm( DDSCommandForm command )
+void DDSSystem::setDDSCommandForm(DDSCommandForm command)
 {
-	ddsCommandFormList.push_back( command );
+	ddsCommandFormList.push_back(command);
 	// you need to set up a corresponding trigger to tell the dacs to change the output at the correct time. 
 	// This is done later on interpretation of ramps etc.
 }
 
 void DDSSystem::setDDSs()
 {
-	int tcp_connect;
+	/*int tcp_connect;
 	try
 	{
 		tcp_connect = zynq_tcp.connectTCP(ZYNQ_ADDRESS);
@@ -721,9 +782,44 @@ void DDSSystem::setDDSs()
 	else
 	{
 		errBox("connection to zynq failed. can't update DDS freq values\n");
-	}
+	}*/
 }
 
+void DDSSystem::setDDSsAmpFreq()
+{
+
+	prepareForce();
+
+	DDSChannelSnapshot channelSnapshotAmp;
+	DDSChannelSnapshot channelSnapshotFreq;
+
+	int ddsCommandTime = 5;
+
+	for (int line = 0; line < 4; ++line) {
+		for (int dds = 0; dds < 3; ++dds) {
+			channelSnapshotFreq.ampOrFreq = 'f'; //freq change
+			channelSnapshotFreq.val = ddsValues[(4 * dds) + line][0];
+			channelSnapshotFreq.endVal = 0;
+
+			channelSnapshotAmp.ampOrFreq = 'a'; // amp change
+			channelSnapshotAmp.val = ddsValues[(4 * dds) + line][1];
+			channelSnapshotAmp.endVal = 0;
+
+			channelSnapshotFreq.time = 1 + ddsCommandTime*line;
+			channelSnapshotFreq.rampTime = 0;
+			channelSnapshotFreq.channel = (4*dds) + line;
+
+			channelSnapshotAmp.time = ddsCommandTime*(1 + line);
+			channelSnapshotAmp.rampTime = 0;
+			channelSnapshotAmp.channel = (4 * dds) + line;
+
+			ddsChannelSnapshots[0].push_back(channelSnapshotFreq);
+			ddsChannelSnapshots[0].push_back(channelSnapshotAmp);
+		}
+	}
+
+	writeDDSs(0, false);
+}
 
 void DDSSystem::checkValuesAgainstLimits(UINT variation)
 {
@@ -741,28 +837,32 @@ void DDSSystem::checkValuesAgainstLimits(UINT variation)
 			if (snapshot.ddsValues[line][1] > ddsMaxAmp[line] || snapshot.ddsValues[line][1] < ddsMinAmp[line])
 			{
 				thrower("ERROR: Attempted to set DDS" + str(line) + " value outside min/max amp range for this line. The "
-						"value was " + str(snapshot.ddsValues[line][1]) + ", while the minimum accepted value is " +
-						str(ddsMinAmp[line]) + " and the maximum value is " + str(ddsMaxAmp[line]) + ". "
-						"Change the min/max if you actually need to set this value.\r\n");
+					"value was " + str(snapshot.ddsValues[line][1]) + ", while the minimum accepted value is " +
+					str(ddsMinAmp[line]) + " and the maximum value is " + str(ddsMaxAmp[line]) + ". "
+					"Change the min/max if you actually need to set this value.\r\n");
 			}
 		}
 	}
 }
 
 // this is a function called in preparation for forcing a dac change. Remember, you need to call ___ to actually change things.
-void DDSSystem::prepareDDSForceChange(int line, double val)
+void DDSSystem::prepareDDSForceChange(int line, std::array<double, 2> val)
 {
 	// change parameters in the DDSSystem object so that the object knows what the current settings are.
 	//std::string volt = str(roundToDacResolution(voltage));
 	std::string freqStr;
+	std::string ampStr;
 	if (roundToDDSPrecision)
 	{
-		double roundedVal = roundToDDSResolution(val);
-		freqStr = str(roundedVal, 13);
+		double roundedValFreq = roundToDDSResolutionFreq(val[0]);
+		double roundedValAmp = roundToDDSResolutionAmp(val[1]);
+		freqStr = str(roundedValFreq, 13);
+		ampStr = str(roundedValAmp, 13);
 	}
 	else
 	{
-		freqStr = str(val, 13);
+		freqStr = str(val[0], 13);
+		ampStr = str(val[1], 13);
 	}
 	if (freqStr.find(".") != std::string::npos)
 	{
@@ -771,25 +871,35 @@ void DDSSystem::prepareDDSForceChange(int line, double val)
 	}
 
 	breakoutBoardFreqEdits[line].SetWindowText(cstr(freqStr));
+	breakoutBoardAmpEdits[line].SetWindowText(cstr(ampStr));
 	ddsValues[line] = val;
 
 	setForceDDSEvent(line, val, 0);
 }
 
 
-void DDSSystem::setForceDDSEvent( int line, double val, UINT variation )
+void DDSSystem::setForceDDSEvent(int line, std::array<double, 2> val, UINT variation)
 {
-	if (val > ddsMaxFreq[line] || val < ddsMinFreq[line])
+	if (val[0] > ddsMaxFreq[line] || val[0] < ddsMinFreq[line])
 	{
 		thrower("ERROR: Attempted to set DDS" + str(line) + " value outside min/max frequency range for this line. The "
-			"value was " + str(val) + ", while the minimum accepted value is " +
+			"value was " + str(val[0]) + ", while the minimum accepted value is " +
 			str(ddsMinFreq[line]) + " and the maximum value is " + str(ddsMaxFreq[line]) + ". "
 			"Change the min/max if you actually need to set this value.\r\n");
 	}
 
+	if (val[1] > ddsMaxAmp[line] || val[1] < ddsMinAmp[line])
+	{
+		thrower("ERROR: Attempted to set DDS" + str(line) + " value outside min/max amplitude range for this line. The "
+			"value was " + str(val[1]) + ", while the minimum accepted value is " +
+			str(ddsMinAmp[line]) + " and the maximum value is " + str(ddsMaxAmp[line]) + ". "
+			"Change the min/max if you actually need to set this value.\r\n");
+	}
+
 	DDSCommand eventInfo;
-	eventInfo.line = line;	
-	eventInfo.freq = val;
+	eventInfo.line = line;
+	eventInfo.freq = val[0];
+	eventInfo.amp = val[1];
 
 }
 
@@ -824,6 +934,8 @@ void DDSSystem::writeDDSs(UINT variation, bool loadSkip)
 
 	if (tcp_connect == 0)
 	{
+		//zynq_tcp.writeCommand("disableSeq");
+		//zynq_tcp.writeCommand("lockPLL");
 		zynq_tcp.writeDDSs(ddsChannelSnapshots[variation]);
 		zynq_tcp.disconnect();
 	}
@@ -868,7 +980,7 @@ int DDSSystem::getDDSIdentifier(std::string name)
 	for (UINT ddsInc = 0; ddsInc < ddsValues.size(); ddsInc++)
 	{
 		// check names set by user.
-		std::transform( ddsNames[ddsInc].begin(), ddsNames[ddsInc].end(), ddsNames[ddsInc].begin(), ::tolower );
+		std::transform(ddsNames[ddsInc].begin(), ddsNames[ddsInc].end(), ddsNames[ddsInc].begin(), ::tolower);
 		if (name == ddsNames[ddsInc])
 		{
 			return ddsInc;
@@ -928,9 +1040,9 @@ void DDSSystem::setName(int dacNumber, std::string name, cToolTips& toolTips, Au
 	if (name == "")
 	{
 		// no empty names allowed.
-		return; 
+		return;
 	}
-	std::transform( name.begin(), name.end(), name.begin(), ::tolower );
+	std::transform(name.begin(), name.end(), name.begin(), ::tolower);
 	ddsNames[dacNumber] = name;
 	//breakoutBoardEdits[dacNumber].setToolTip(name, toolTips, master);
 }
@@ -942,7 +1054,7 @@ std::string DDSSystem::getName(int ddsNumber)
 }
 
 
-HBRUSH DDSSystem::handleColorMessage( CWnd* window, brushMap brushes, rgbMap rgbs, CDC* cDC)
+HBRUSH DDSSystem::handleColorMessage(CWnd* window, brushMap brushes, rgbMap rgbs, CDC* cDC)
 {
 	//int controlID = GetDlgCtrlID(*window);
 	//if (controlID >= ddsLabels[0].GetDlgCtrlID() && controlID <= ddsLabels.back().GetDlgCtrlID() )
@@ -986,7 +1098,7 @@ UINT DDSSystem::getNumberOfDDSs()
 }
 
 
-double DDSSystem::getDDSValue(int ddsNumber)
+std::array<double, 2> DDSSystem::getDDSValue(int ddsNumber)
 {
 	return ddsValues[ddsNumber];
 }
@@ -1017,7 +1129,7 @@ void DDSSystem::unshadeDDSs()
 			breakoutBoardEdits[shadeInc].colorState = 0;
 			breakoutBoardEdits[shadeInc].SetReadOnly(false);
 			breakoutBoardEdits[shadeInc].RedrawWindow();
-		}		
+		}
 	}*/
 }
 

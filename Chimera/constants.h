@@ -97,7 +97,7 @@
 	#define DDS_LEN_BYTE_BUF 46
 	#define DAC_TIME_RESOLUTION 1.6 // in ms
 	#define DDS_TIME_RESOLUTION 1.6 // in ms
-	#define DDS_MAX_AMP 1.25 // in mW
+	#define DDS_MAX_AMP 100 // in mW
 	#define DDS_FPGA_ADDRESS "FT1I6IBSB" //Device Serial: FT1I6IBS, Use FT1I6IBSB in C++ to select Channel B
 	#define GIGAMOOG_PORT "COM6"
 	#define TOP_BOTTOM_TEK_SAFEMODE true

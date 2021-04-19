@@ -178,6 +178,9 @@ class sequencer:
     	else:
     		self.dds0.set_DDS(channel, freq)
 
+    def lock_PLL(self):
+        dds_lock_pll.dds_lock_pll()
+
     def mod_enable(self):
     	self.gpio2.set_bit(0, channel=1)
 

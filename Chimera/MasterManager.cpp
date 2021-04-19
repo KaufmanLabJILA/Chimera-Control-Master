@@ -316,7 +316,10 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 
 		//disable device mod
 		input->thisObj->sendZynqCommand(zynq_tcp, "disableSeq");
-		input->ddss->setDDSs();
+		input->thisObj->sendZynqCommand(zynq_tcp, "lockPLL");
+		input->ddss->setDDSsAmpFreq();
+		input->dacs->setDACsSeq();
+		input->thisObj->sendZynqCommand(zynq_tcp, "trigger");
 	}
 	catch (Error& exception)
 	{
@@ -348,7 +351,10 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 			input->comm->sendFatalError("Exited main experiment thread abnormally.");
 		}
 		input->thisObj->sendZynqCommand(zynq_tcp, "disableSeq");
-		input->ddss->setDDSs();
+		input->thisObj->sendZynqCommand(zynq_tcp, "lockPLL");
+		input->ddss->setDDSsAmpFreq();
+		input->dacs->setDACsSeq();
+		input->thisObj->sendZynqCommand(zynq_tcp, "trigger");
 		if (input->settings.saveMakoImages) {
 			input->comm->sendCloseMako();
 		}

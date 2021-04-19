@@ -1097,6 +1097,38 @@ void DacSystem::setDACs()
 	}
 }
 
+void DacSystem::setDACsSeq()
+{
+	dacSnapshots = std::vector<std::vector<DacSnapshot>>(1);
+	finalDacSnapshots = std::vector<std::vector<DacChannelSnapshot>>(1);
+
+	dacSnapshots[0].push_back({ 1, dacValues });
+
+	DacSnapshot snapshotPrev;
+	DacSnapshot snapshot;
+	DacChannelSnapshot channelSnapshot;
+	std::vector<int> channels;
+
+	snapshot = dacSnapshots[0][0];
+
+	for (int j = 0; j < 32; ++j) {
+			channels.push_back(j);
+	}
+
+
+	//for each channel with a changed voltage add a dacSnapshot to the final list
+	for (int channel : channels) {
+		channelSnapshot.time = snapshot.time + 5*channel;
+		channelSnapshot.channel = channel;
+		channelSnapshot.dacValue = snapshot.dacValues[channel];
+		channelSnapshot.dacEndValue = snapshot.dacEndValues[channel];
+		channelSnapshot.dacRampTime = snapshot.dacRampTimes[channel];
+		finalDacSnapshots[0].push_back(channelSnapshot);
+	}
+
+	writeDacs(0, false);
+}
+
 void DacSystem::zeroDACValues()
 {
 	for (int line = 0; line < dacValues.size(); ++line)

@@ -799,6 +799,9 @@ void DioSystem::forceTtl(int row, int number, int state)
 		ttlPushControls[row][number].SetCheck(BST_UNCHECKED);
 		ttlStatus[row][number] = false;
 	}
+	else if (state == -1) {
+		// do nothing
+	}
 	else
 	{
 		ttlPushControls[row][number].SetCheck(BST_CHECKED);
@@ -846,7 +849,7 @@ void DioSystem::forceTtl(int row, int number, int state)
 	if (tcp_connect == 0)
 	{
 		zynq_tcp.writeCommand("trigger");
-		zynq_tcp.writeCommand("disableMod");
+		//zynq_tcp.writeCommand("disableMod");
 		zynq_tcp.disconnect();
 	}
 	else
@@ -854,16 +857,6 @@ void DioSystem::forceTtl(int row, int number, int state)
 		errBox("connection to zynq failed. can't write DAC data\n");
 	}
 
-	////FROM DIO64 legacy////
-	/*std::array<unsigned short, 4> tempCommand;
-	tempCommand[0] = static_cast <unsigned short>(ttlBits[0].to_ulong());
-	tempCommand[1] = static_cast <unsigned short>(ttlBits[1].to_ulong());
-	tempCommand[2] = static_cast <unsigned short>(ttlBits[2].to_ulong());
-	tempCommand[3] = static_cast <unsigned short>(ttlBits[3].to_ulong());*/
-	//dioForceOutput( 0, tempCommand.data(), 15 );
-	/////////// 
-
-	//fpgaForceOutput(tempCommand); //Note, .data is a pointer to the first element in the array, hence this is just passing a pointer to the data in teh array. 
 }
 
 
