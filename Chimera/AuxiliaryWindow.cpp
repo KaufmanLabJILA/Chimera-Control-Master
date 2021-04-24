@@ -35,6 +35,7 @@ BEGIN_MESSAGE_MAP(AuxiliaryWindow, CDialog)
 
 	ON_COMMAND(TTL_HOLD, &handlTtlHoldPush)
 	ON_COMMAND(ID_DAC_SET_BUTTON, &SetDacs)
+	ON_COMMAND(ID_DAC_MOT_SET_BUTTON, &SetDacsMOT)
 	ON_COMMAND(ID_DDS_SET_BUTTON, &SetDDSs)
 	ON_COMMAND(IDC_ZERO_TTLS, &zeroTtls)
 	ON_COMMAND(IDC_ZERO_DACS, &zeroDacs)
@@ -365,13 +366,34 @@ void AuxiliaryWindow::zeroDacs()
 		ttlBoard.resetTtlEvents();
 
 		dacBoards.zeroDACValues();
-		dacBoards.setDACs();
+		dacBoards.setDACsSeq();
+		ttlBoard.forceTtl(0, 0, -1);
 
 		sendStatus("Zero'd DACs.\r\n");
 	}
 	catch (Error& exception)
 	{
 		sendStatus("Failed to Zero DACs!!!\r\n");
+		sendErr(exception.what());
+	}
+}
+
+void AuxiliaryWindow::SetDacsMOT()
+{
+	try
+	{
+		dacBoards.resetDacEvents();
+		ttlBoard.resetTtlEvents();
+
+		dacBoards.setMOTValues(&globalVariables);
+		dacBoards.setDACsSeq();
+		ttlBoard.forceTtl(0, 0, -1);
+
+		sendStatus("DACs set to blue MOT values.\r\n");
+	}
+	catch (Error& exception)
+	{
+		sendStatus("Failed to set DACs to blue MOT values!!!\r\n");
 		sendErr(exception.what());
 	}
 }

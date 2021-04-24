@@ -424,8 +424,15 @@ void DacSystem::initialize(POINT& pos, cToolTips& toolTips, AuxiliaryWindow* mas
 		dacLabels[dacInc].setToolTip(dacNames[dacInc], toolTips, master);
 	}
 
+	pos.y += 20;
+
+	dacSetMOTButton.sPos = { pos.x, pos.y, pos.x + 340, pos.y += 25 };
+	dacSetMOTButton.Create("Set DAC MOT Values", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+		dacSetMOTButton.sPos, master, ID_DAC_MOT_SET_BUTTON);
+	dacSetMOTButton.setToolTip("Press this button to attempt force all DAC values to the blue MOT values", toolTips, master);
+
 	pos.x += 500;
-	pos.y -= 25 * breakoutBoardEdits.size() / 2 + 5*25;
+	pos.y -= 25 * breakoutBoardEdits.size() / 2 + 5*25 + 45;
 }
 
 
@@ -1135,6 +1142,38 @@ void DacSystem::zeroDACValues()
 	{
 		dacValues[line] = 0;
 		breakoutBoardEdits[line].SetWindowText("0");
+	}
+}
+
+void DacSystem::setMOTValues(VariableSystem* globalVariables)
+{
+	std::vector<variableType> variables = globalVariables->getEverything();
+	for (auto variable : variables) {
+		if (variable.name == "bluemotcoil") {
+			dacValues[0] = variable.ranges[0].initialValue;
+		}
+		else if (variable.name == "bluex") {
+			dacValues[1] = variable.ranges[0].initialValue;
+			dacValues[17] = -variable.ranges[0].initialValue;
+		}
+		else if (variable.name == "bluey") {
+			dacValues[2] = variable.ranges[0].initialValue;
+			dacValues[18] = -variable.ranges[0].initialValue;
+		}
+		else if (variable.name == "bluez") {
+			dacValues[3] = variable.ranges[0].initialValue;
+			dacValues[19] = -variable.ranges[0].initialValue;
+		}
+	}
+	for (int line = 0; line < dacValues.size(); ++line)
+	{
+		std::string dacValueStr = std::to_string(dacValues[line]);
+		if (dacValueStr.find(".") != std::string::npos)
+		{
+			// then it's a double. kill extra zeros on the end.
+			dacValueStr.erase(dacValueStr.find_last_not_of('0') + 1, std::string::npos);
+		}
+		breakoutBoardEdits[line].SetWindowText(cstr(dacValueStr));
 	}
 }
 

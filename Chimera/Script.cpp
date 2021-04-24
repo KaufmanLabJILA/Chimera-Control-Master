@@ -311,9 +311,13 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 		{
 			return rgbs["theme purple"];
 		}
-		if (word == "dac:" || word == "dacarange:" || word == "daclinspace:")
+		if (word == "dac:" || word == "dacarange:" || word == "daclinspace:" || word == "dacramp:")
 		{
 			return rgbs["theme yellow"];
+		}
+		if (word == "ddsamp:" || word == "ddsfreq:" || word == "ddslinspace:" || word == "ddsrampamp:" || word == "ddsrampfreq:")
+		{
+			return rgbs["theme orange"];
 		}
 		else if (word == "call")
 		{
@@ -364,6 +368,17 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 				return rgbs["theme green"];
 			}
 			if (word == "dac" + str(dacInc))
+			{
+				return rgbs["theme green"];
+			}
+		}
+		for (UINT ddsInc = 0; ddsInc < dacNames.size(); ddsInc++)
+		{
+			if (word == dacNames[ddsInc])
+			{
+				return rgbs["theme green"];
+			}
+			if (word == "dds" + str(ddsInc))
 			{
 				return rgbs["theme green"];
 			}

@@ -82,6 +82,7 @@ public:
 	void handleAbort();
 	void zeroTtls();
 	void zeroDacs();
+	void SetDacsMOT();
 
 	//void handleAgilentOptions(UINT id);
 

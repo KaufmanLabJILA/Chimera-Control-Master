@@ -27,7 +27,7 @@ rb2
 0
 rb3
 0
-dio2.6
+op
 0
 gmload
 0
@@ -289,9 +289,9 @@ bluex 0.41
 bluey 0.185
 bluez 0.7
 greenmotcoil 0.4
-greenx 0.09657
-greeny 0.034
-greenz -0.2745
+greenx 0.0988
+greeny 0.0327
+greenz -0.3172
 blueloadtime 50
 greenbroadloadtime 30
 greennarrowloadtime 50

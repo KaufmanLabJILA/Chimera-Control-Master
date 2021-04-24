@@ -42,6 +42,7 @@ class DacSystem
 		void setDACs();
 		void setDACsSeq();
 		void zeroDACValues();
+		void setMOTValues(VariableSystem* globalVariables);
 		void startDacs();
 		void configureClocks( UINT variation, bool loadSkip );
 		void setDefaultValue(UINT dacNum, double val);
@@ -80,6 +81,7 @@ class DacSystem
 		Control<CStatic> dac0Title;
 		Control<CStatic> dac1Title;
 		Control<CButton> dacSetButton;
+		Control<CButton> dacSetMOTButton;
 		Control<CButton> zeroDacs;
 		std::array<Control<CStatic>, 32> dacLabels;
 		std::array<Control<CEdit>, 32> breakoutBoardEdits;
