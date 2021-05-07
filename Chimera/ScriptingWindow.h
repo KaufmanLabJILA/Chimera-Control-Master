@@ -13,13 +13,9 @@ class AuxiliaryWindow;
 // a convenient structure for containing one object for each script. For example, the address of each script. 
 template <typename type> struct scriptInfo 
 { 
-	//type verticalNIAWG; 
 	type moog; 
 	type gmoog; 
-	//type horizontalNIAWG; 
-	//type intensityAgilent; 
 	type master; 
-	type DDS; 
 }; 
  
  
@@ -58,13 +54,7 @@ class ScriptingWindow : public CDialog
 		void updateProfile(std::string text); 
 		void considerScriptLocations(); 
 		void recolorScripts(); 
- 
-		//void newIntensityScript(); 
-		//void openIntensityScript(CWnd* parent); 
-		//void openIntensityScript(std::string name); 
-		//void saveIntensityScript(); 
-		//void saveIntensityScriptAs(CWnd* parent); 
-		//void agilentEditChange(); 
+
  
 		void newMoogScript(); 
 		void openMoogScript(CWnd* parent); 
@@ -80,27 +70,6 @@ class ScriptingWindow : public CDialog
 		void saveGmoogScriptAs(CWnd* parent); 
 		void gmoogEditChange(); 
  
-		void newDdsScript(); 
-		void openDdsScript(CWnd* parent); 
-		void openDdsScript(std::string name); 
-		void saveDdsScript(); 
-		void saveDdsScriptAs(CWnd* parent); 
-		void ddsEditChange(); 
- 
-		//void newVerticalScript(); 
-		//void openVerticalScript(CWnd* parent); 
-		//void openVerticalScript(std::string name); 
-		//void saveVerticalScript(); 
-		//void saveVerticalScriptAs(CWnd* parent); 
-		//void verticalEditChange(); 
- 
-		//void newHorizontalScript(); 
-		//void openHorizontalScript(CWnd* parent); 
-		//void openHorizontalScript(std::string name); 
-		//void saveHorizontalScript(); 
-		//void saveHorizontalScriptAs(CWnd* parent); 
-		//void horizontalEditChange(); 
- 
 		void newMasterScript(); 
 		void openMasterScript(CWnd* parent); 
 		void openMasterScript(std::string name); 
@@ -112,25 +81,22 @@ class ScriptingWindow : public CDialog
 		void deleteMasterFunction(); 
 		void masterEditChange(); 
 		Communicator* comm(); 
-		//void openMasterScript(std::string name); 
  
 		void changeBoxColor( systemInfo<char> colors ); 
 		void updateConfigurationSavedStatus(bool status); 
 		void OnCancel() override; 
 		void OnSize(UINT nType, int cx, int cy); 
  
-		//void handleIntensityButtons( UINT id ); 
 		void handleMoogScriptComboChange(); 
 		void handleGmoogScriptComboChange(); 
-		//void handleHorizontalScriptComboChange(); 
-		//void handleVerticalScriptComboChange(); 
+ 
 		void handleAgilentScriptComboChange(); 
 		void handleMasterFunctionChange( ); 
-		//void handleIntensityCombo(); 
+
 		void handleOpenConfig(std::ifstream& configFile, int versionMajor, int versionMinor ); 
 		void catchEnter(); 
 		profileSettings getProfile(); 
-		//void setIntensityDefault(); 
+
 	private: 
 		DECLARE_MESSAGE_MAP(); 
 		 
@@ -140,9 +106,8 @@ class ScriptingWindow : public CDialog
 		// 
 		cToolTips tooltips; 
  
-		Script masterScript, moogScript, gmoogScript, ddsScript /*verticalNiawgScript*/ /*horizontalNiawgScript*/; 
+		Script masterScript, moogScript, gmoogScript; 
 		ColorBox statusBox; 
 		ProfileIndicator profileDisplay; 
  
-		//Agilent intensityAgilent; 
 }; 

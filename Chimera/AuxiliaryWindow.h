@@ -76,6 +76,7 @@ public:
 	void DacEditChange(UINT id);
 	void SetDacs();
 	void SetDDSs();
+	void lockDDSs();
 
 	fontMap getFonts();
 

@@ -31,11 +31,11 @@ op
 0
 gmload
 0
-dio3.0
+blue3dmotshutter
 0
-dio3.1
+blue2dmotshutter
 0
-dio3.2
+greenshutter
 0
 dio3.3
 0
@@ -43,7 +43,7 @@ dio3.4
 0
 dio3.5
 0
-blueshutter
+dio3.6
 0
 dio3.7
 0
@@ -289,17 +289,17 @@ bluex 0.41
 bluey 0.185
 bluez 0.7
 greenmotcoil 0.4
-greenx 0.0988
-greeny 0.0327
-greenz -0.3172
+greenx 0.099
+greeny 0.035
+greenz -0.309
 blueloadtime 50
 greenbroadloadtime 30
 greennarrowloadtime 50
-imagepower 60
-imagefreq 84.3
+imagepower 50
+imagefreq 84
 lacfreq 82.6
 lacpower 48
-imagetime 150
+imagetime 300
 coolfreq 82.7
 coolpower 8
-980 1040 1 1000 1060 1
+983 1043 1 1006 1066 1

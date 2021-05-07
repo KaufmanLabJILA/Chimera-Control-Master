@@ -30,7 +30,6 @@ public:
 	std::string getMasterAddressFromConfig();
 	std::string getMoogAddressFromConfig();
 	std::string getGmoogAddressFromConfig();
-	std::string getDdsAddressFromConfig();
 	void saveSequence();
 	void saveSequenceAs();
 	void renameSequence();

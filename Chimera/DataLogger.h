@@ -20,7 +20,6 @@ class DataLogger
 		void writePic( UINT currentPictureNumber, std::vector<long> image, imageParameters dims );
 		void logMasterParameters( MasterThreadInput* input);
 		void logFunctions(H5::Group& group);
-		void logDDSParameters(MasterThreadInput* input);
 		void logMoogParameters(MasterThreadInput* input);
 		void logMiscellaneous();
 		void logAndorSettings( AndorRunSettings settings, bool on );

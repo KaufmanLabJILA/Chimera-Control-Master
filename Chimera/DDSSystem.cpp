@@ -322,6 +322,13 @@ void DDSSystem::initialize(POINT& pos, cToolTips& toolTips, AuxiliaryWindow* mas
 			ddsLabels[ddsInc].sPos, master, ID_DAC_FIRST_EDIT + ddsInc);
 		ddsLabels[ddsInc].setToolTip(ddsNames[ddsInc], toolTips, master);
 	}
+
+	pos.y += 25;
+
+	ddsPLLButton.sPos = { pos.x, pos.y, pos.x + 400, pos.y += 25 };
+	ddsPLLButton.Create("Lock DDS PLLs", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+		ddsPLLButton.sPos, master, ID_DDS_PLL_BUTTON);
+	ddsPLLButton.setToolTip("Press this button to lock the DDS PLLs", toolTips, master);
 }
 
 
@@ -752,37 +759,37 @@ void DDSSystem::setDDSCommandForm(DDSCommandForm command)
 	// This is done later on interpretation of ramps etc.
 }
 
-void DDSSystem::setDDSs()
+void DDSSystem::lockPLLs()
 {
-	/*int tcp_connect;
 	try
 	{
-		tcp_connect = zynq_tcp.connectTCP(ZYNQ_ADDRESS);
-	}
-	catch (Error& err)
-	{
-		tcp_connect = 1;
-		errBox(err.what());
-	}
-
-	if (tcp_connect == 0)
-	{
-		std::ostringstream stringStream;
-		std::string command;
-		for (int line = 0; line < ddsValues.size(); ++line) {
-			if (ddsValues[line] != 0) {
-				stringStream.str("");
-				stringStream << "DDS_" << line << "_" << std::setprecision(3) << ddsValues[line];
-				command = stringStream.str();
-				zynq_tcp.writeCommand(command);
-			}
+		//
+		int tcp_connect;
+		try
+		{
+			tcp_connect = zynq_tcp.connectTCP(ZYNQ_ADDRESS);
 		}
-		zynq_tcp.disconnect();
+		catch (Error& err)
+		{
+			tcp_connect = 1;
+			errBox(err.what());
+		}
+
+		if (tcp_connect == 0)
+		{
+			zynq_tcp.writeCommand("lockPLL");
+			zynq_tcp.disconnect();
+		}
+		else
+		{
+			throw("connection to zynq failed. can't lock DDS PLLs\n");
+		}
 	}
-	else
+	// I catch here because it's the constructor, and catching elsewhere is weird.
+	catch (Error& exception)
 	{
-		errBox("connection to zynq failed. can't update DDS freq values\n");
-	}*/
+		errBox(exception.what());
+	}
 }
 
 void DDSSystem::setDDSsAmpFreq()

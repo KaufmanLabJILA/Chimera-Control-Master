@@ -41,10 +41,6 @@
 #define ID_FILE_MY_CONFIG_OPEN          40011
 #define ID_HELP_SCRIPT                  40012
 #define ID_HELP_GENERALINFORMATION      40013
-#define ID_FILE_MY_DDS_OPEN             40014
-#define ID_FILE_MY_DDS_SAVE             40015
-#define ID_FILE_MY_DDS_SAVEAS           40016
-#define ID_FILE_MY_DDS_NEW              40017
 #define ID_FILE_RUN_EVERYTHING          40018
 #define ID_FILE_MY_WRITE_WAVEFORMS      40019
 #define ID_FILE_MY_EXIT                 40020

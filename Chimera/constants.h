@@ -77,7 +77,7 @@
 #ifdef DEEP_THOUGHT
 	#define PYTHON_HOME L"C:\\Users\\klab\\Anaconda3\\"
 	#define MOOG_SAFEMODE true
-	#define GIGAMOOG_SAFEMODE true
+	#define GIGAMOOG_SAFEMODE false
 	#define NIAWG_SAFEMODE true
 	#define ANDOR_SAFEMODE false
 	#define MAKO_SAFEMODE true
@@ -453,6 +453,7 @@ const char * const SERVER_ADDRESS = "192.168.236.1";
 #define ID_DAC_FIRST_EDIT 14072
 #define ID_DAC_LAST_EDIT 14096
 #define ID_DAC_MOT_SET_BUTTON 14097
+#define ID_DDS_PLL_BUTTON 14098
 // TEKTRONICS STUFF
 //#define TOP_BOTTOM_PROGRAM 14097
 //#define TOP_ON_OFF 14098

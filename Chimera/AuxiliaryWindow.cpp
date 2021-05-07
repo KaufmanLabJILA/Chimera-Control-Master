@@ -37,6 +37,7 @@ BEGIN_MESSAGE_MAP(AuxiliaryWindow, CDialog)
 	ON_COMMAND(ID_DAC_SET_BUTTON, &SetDacs)
 	ON_COMMAND(ID_DAC_MOT_SET_BUTTON, &SetDacsMOT)
 	ON_COMMAND(ID_DDS_SET_BUTTON, &SetDDSs)
+	ON_COMMAND(ID_DDS_PLL_BUTTON, &lockDDSs)
 	ON_COMMAND(IDC_ZERO_TTLS, &zeroTtls)
 	ON_COMMAND(IDC_ZERO_DACS, &zeroDacs)
 	ON_COMMAND(IDOK, &handleEnter)
@@ -808,6 +809,29 @@ void AuxiliaryWindow::SetDDSs()
 		ttlBoard.forceTtl(0, 0, -1);
 
 		sendStatus("Finished Setting DDSs.\r\n");
+	}
+	catch (Error& exception)
+	{
+		errBox(exception.what());
+		sendStatus(": " + exception.whatStr() + "\r\n");
+		sendErr(exception.what());
+	}
+	mainWindowFriend->updateConfigurationSavedStatus(false);
+}
+
+void AuxiliaryWindow::lockDDSs()
+{
+	// have the dds values change
+	try
+	{
+		mainWindowFriend->updateConfigurationSavedStatus(false);
+		sendStatus("----------------------\r\n");
+
+		sendStatus("Locking DDS PLLs...\r\n");
+
+		ddsBoards.lockPLLs();
+
+		sendStatus("Finished locking PLLs.\r\n");
 	}
 	catch (Error& exception)
 	{

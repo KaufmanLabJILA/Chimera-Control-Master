@@ -253,13 +253,6 @@ BEGIN
             MENUITEM "&Save Gigamoog Script",       ID_FILE_MY_GIGAMOOG_SAVE
             MENUITEM "Save Gigamoog Script &As",    ID_FILE_MY_GIGAMOOG_SAVEAS
         END
-        POPUP "&DDS Script"
-        BEGIN
-            MENUITEM "Ne&w DDS Script",             ID_FILE_MY_DDS_NEW
-            MENUITEM "Op&en DDS Script",            ID_FILE_MY_DDS_OPEN
-            MENUITEM "&Save DDS Script",            ID_FILE_MY_DDS_SAVE
-            MENUITEM "Save DDS Script &As",         ID_FILE_MY_DDS_SAVEAS
-        END
         POPUP "&Other Agilents"
         BEGIN
             POPUP "Top / Bottom"

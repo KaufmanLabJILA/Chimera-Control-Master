@@ -271,12 +271,8 @@ namespace commonFunctions
 			{
 				try
 				{
-					//scriptWin->saveHorizontalScript( );
-					//scriptWin->saveVerticalScript( );
 					scriptWin->saveMoogScript();
 					scriptWin->saveGmoogScript();
-					//scriptWin->saveIntensityScript( );
-					scriptWin->saveDdsScript();
 
 					try {
 						scriptWin->saveMasterFunction_nocatch();
@@ -285,10 +281,6 @@ namespace commonFunctions
 						scriptWin->saveMasterScript();
 					}
 
-					//auxWin->updateAgilent( TopBottom );
-					//auxWin->updateAgilent( Axial );
-					//auxWin->updateAgilent( Flashing );
-					//auxWin->updateAgilent( Microwave );
 					mainWin->profile.saveEntireProfile( scriptWin, mainWin, auxWin, camWin );
 					mainWin->masterConfig.save( mainWin, auxWin, camWin );
 					
@@ -459,26 +451,6 @@ namespace commonFunctions
 			case ID_FILE_MY_MOOG_SAVEAS:
 			{
 				scriptWin->saveMoogScriptAs(parent);
-				break;
-			}
-			case ID_FILE_MY_DDS_NEW:
-			{
-				scriptWin->newDdsScript();
-				break;
-			}
-			case ID_FILE_MY_DDS_OPEN:
-			{
-				scriptWin->openDdsScript(parent);
-				break;
-			}
-			case ID_FILE_MY_DDS_SAVE:
-			{
-				scriptWin->saveDdsScript();
-				break;
-			}
-			case ID_FILE_MY_DDS_SAVEAS:
-			{
-				scriptWin->saveDdsScriptAs(parent);
 				break;
 			}
 			case ID_FILE_MY_GIGAMOOG_NEW:
@@ -819,10 +791,6 @@ namespace commonFunctions
 			scriptInfo<std::string> scriptNames = scriptWin->getScriptNames();
 			// ordering matters here, make sure you get the correct script name.
 			std::string moogNameString(scriptNames.moog);
-			//std::string horizontalNameString( scriptNames.horizontalNIAWG );
-			//std::string verticalNameString( scriptNames.verticalNIAWG );
-			//std::string intensityNameString( scriptNames.intensityAgilent );
-			std::string DDSNameString(scriptNames.DDS);
 			std::string sequenceInfo = "";
 			if (sequenceInfo != "")
 			{
@@ -831,11 +799,7 @@ namespace commonFunctions
 			else
 			{
 				scriptInfo<bool> scriptSavedStatus = scriptWin->getScriptSavedStatuses();
-				//beginInfo += "Vertical Script Name:........ " + str( verticalNameString );
-				//if (scriptSavedStatus.verticalNIAWG)
-				//{
-				//	beginInfo += " SAVED\r\n";
-				//}
+				
 				beginInfo += "Moog Script Name:........ " + str(moogNameString);
 				if (scriptSavedStatus.moog)
 				{
@@ -845,34 +809,7 @@ namespace commonFunctions
 				{
 					beginInfo += " NOT SAVED\r\n";
 				}
-				//beginInfo += "Horizontal Script Name:...... " + str( horizontalNameString );
-				//if (scriptSavedStatus.horizontalNIAWG)
-				//{
-				//	beginInfo += " SAVED\r\n";
-				//}
-				//else
-				//{
-				//	beginInfo += " NOT SAVED\r\n";
-				//}
-				/*beginInfo += "Intensity Script Name:....... " + str( intensityNameString );
-				if (scriptSavedStatus.intensityAgilent)
-				{
-					beginInfo += " SAVED\r\n";
-				}
-				else
-				{
-					beginInfo += " NOT SAVED\r\n";
-				}*/
-				beginInfo += "DDS Script Name:........ " + str(DDSNameString);
 				
-				if (scriptSavedStatus.DDS)
-				{
-					beginInfo += " SAVED\r\n";
-				}
-				else
-				{
-					beginInfo += " NOT SAVED\r\n";
-				}
 			}
 			beginInfo += "\r\n";
 		}
@@ -1080,7 +1017,6 @@ namespace commonFunctions
 		logger->initializeDataFiles();
 		logger->logAndorSettings( input.camSettings, takeAndorPictures );
 		logger->logMasterParameters( input.masterInput );
-		logger->logDDSParameters(input.masterInput);
 		logger->logMoogParameters(input.masterInput);
 		logger->logMiscellaneous();
 		//logger->closeFile(); //TODO: May have to remove this once andor is integrated.

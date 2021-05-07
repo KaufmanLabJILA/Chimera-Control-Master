@@ -66,8 +66,8 @@ class DDSSystem
 		double roundToDDSResolutionFreq(double num);
 		double roundToDDSResolutionAmp(double num);
 		void handleEditChange( UINT ddsNumber );
-		void setDDSs();
 		void setDDSsAmpFreq();
+		void lockPLLs();
 
 	private:
 		Control<CStatic> ddsTitle;
@@ -80,7 +80,7 @@ class DDSSystem
 		std::array < Control<CStatic>, 3> ampLabels;
 		std::array < Control<CStatic>, 3> freqLabels;
 		Control<CButton> ddsSetButton;
-		//Control<CButton> zeroDSSs;
+		Control<CButton> ddsPLLButton;
 		std::array<Control<CStatic>, 12> ddsLabels;
 		std::array<Control<CEdit>, 12> breakoutBoardFreqEdits;
 		std::array<Control<CEdit>, 12> breakoutBoardAmpEdits;

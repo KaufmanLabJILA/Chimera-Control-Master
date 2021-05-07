@@ -323,11 +323,8 @@ void ProfileSystem::saveConfigurationAs(ScriptingWindow* scriptWindow, MainWindo
 	configurationSaveFile << "Version: " + str(versionMain) + "." + str(versionSub) + "\n";
 	scriptInfo<std::string> addresses = scriptWindow->getScriptAddresses();
 	// order matters! 
-	//configurationSaveFile << addresses.verticalNIAWG << "\n"; 
 	configurationSaveFile << addresses.moog << "\n";
 	configurationSaveFile << addresses.gmoog << "\n";
-	//configurationSaveFile << addresses.intensityAgilent << "\n"; 
-	configurationSaveFile << addresses.DDS << "\n";
 
 	// Number of Variables 
 	std::vector<variableType> vars = auxWin->getAllVariables();
@@ -870,25 +867,6 @@ std::string ProfileSystem::getGmoogAddressFromConfig()
 		thrower("ERROR: Failed to open configuration file.");
 	}
 	std::string line, word, address, newPath;
-	std::getline(configFile, line);
-	std::getline(configFile, line);
-	std::getline(configFile, line);
-	getline(configFile, newPath);
-	return newPath;
-}
-
-std::string ProfileSystem::getDdsAddressFromConfig()
-{
-	std::string configurationAddress;
-	configurationAddress = currentProfile.categoryPath + currentProfile.configuration + "." + CONFIG_EXTENSION;
-	std::fstream configFile(configurationAddress);
-	if (!configFile.is_open())
-	{
-		thrower("ERROR: Failed to open configuration file.");
-	}
-	std::string line, word, address, newPath;
-	std::getline(configFile, line);
-	std::getline(configFile, line);
 	std::getline(configFile, line);
 	std::getline(configFile, line);
 	std::getline(configFile, line);

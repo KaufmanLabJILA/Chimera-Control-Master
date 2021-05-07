@@ -712,7 +712,6 @@ void MainWindow::fillMasterThreadInput(MasterThreadInput* input)
 	input->masterScriptAddress = profile.getMasterAddressFromConfig();
 	input->moogScriptAddress = profile.getMoogAddressFromConfig();
 	input->gmoogScriptAddress = profile.getGmoogAddressFromConfig();
-	input->ddsScriptAddress = profile.getDdsAddressFromConfig();
 	input->settings = settings.getOptions();
 	input->repetitionNumber = getRepNumber();
 	input->debugOptions = debugger.getOptions();

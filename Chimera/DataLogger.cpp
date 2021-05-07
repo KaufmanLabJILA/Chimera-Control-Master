@@ -325,40 +325,6 @@ void DataLogger::logFunctions(H5::Group& group)
 	}
 }
 
-void DataLogger::logDDSParameters(MasterThreadInput* input)
-{
-	try
-	{
-		if (input == NULL)
-		{
-			H5::Group runParametersGroup(file.createGroup("/DDS-Parameters:NA"));
-			return;
-		}
-		H5::Group runParametersGroup(file.createGroup("/DDS-Parameters"));
-		writeDataSet(input->runMaster, "Run-DDS", runParametersGroup);
-		if (input->runMaster)
-		{
-			std::ifstream ddsScript(input->ddsScriptAddress);
-			if (!ddsScript.is_open())
-			{
-				thrower("ERROR: Failed to load DDS script!");
-			}
-			std::string scriptBuf(str(ddsScript.rdbuf()));
-			writeDataSet(scriptBuf, "DDS-Script", runParametersGroup);
-			writeDataSet(input->ddsScriptAddress, "DDS-Script-File-Address", runParametersGroup);
-		}
-		else
-		{
-			writeDataSet("", "NA:DDS-Script", runParametersGroup);
-			writeDataSet("", "NA:DDS-Script-File-Address", runParametersGroup);
-		}
-	}
-	catch (H5::Exception& err)
-	{
-		thrower("ERROR: Failed to log DDS parameters in HDF5 file: detail:" + err.getDetailMsg());
-	}
-}
-
 void DataLogger::logMoogParameters(MasterThreadInput* input)
 {
 	try
