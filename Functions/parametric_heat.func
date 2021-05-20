@@ -45,7 +45,7 @@ repeat: 10
  t += .1
 end
 
-t += 150
+t += 150 %do not change from 150
 pulseon: resetdds .1
 t += .2
 

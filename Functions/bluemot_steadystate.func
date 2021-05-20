@@ -42,7 +42,7 @@ def bluemot_steadystate():
   dac: y2coil .01
   dac: z1coil .0
 
-  dac: blue3dpow 0.26
+  dac: blue3dpow 0.3
   on: blueshut
   on: blowawayshutter
   on: blue3d

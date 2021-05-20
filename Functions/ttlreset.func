@@ -24,6 +24,8 @@ def ttlReset():
   off: stepdds
   off: resetdds
 
+off: clockttl
+
 on: blowawayshutter
 on: blueshut
 on: tweezershut

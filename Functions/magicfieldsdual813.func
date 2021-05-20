@@ -7,10 +7,13 @@ def magicFieldsDual813():
   %dac: x1coil .45*.83
   %dac: z1coil .4
 
-  daclinspace: y1coil .7 .7*dmby 10 10
-  daclinspace: y2coil .7 .7*dmby 10 10
-  %dac: y1coil .5
-  %dac: y2coil .5
-  dac: x1coil -.45*dmbx
-  dac: z1coil .35
+%  daclinspace: y1coil .7 .7*dmby 10 10
+%  daclinspace: y2coil .7 .7*dmby 10 10
+%  dac: x1coil -.45*dmbx
+%  dac: z1coil .35
+
+  dac: y1coil .7
+  dac: y2coil .7
+  dac: z1coil .3665 %.3686 %.3759 %.3719 % .3745  %.3715
+  dac: x1coil .014
   t += 11

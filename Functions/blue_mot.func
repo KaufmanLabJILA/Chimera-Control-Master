@@ -27,7 +27,7 @@ def blue_mot(loadTime):
 %  dac: y2coil .02
 %  dac: z1coil .1
 
-  daclinspace: blue3dpow .3 0.01 12 15
+  daclinspace: blue3dpow .3 .01 12 15
 %  daclinspace: bigzcoil 1 0.5 12 15
   t += 12
 %  dac: blue3dpow 0.02 %.06 %0.077

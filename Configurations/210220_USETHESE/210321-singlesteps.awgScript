@@ -3,18 +3,15 @@ reset
 
 %%% for fast pulses:
 
-setsingle 0 0 43 ryd_freq 1 0
-setsingle 0 uvtime 0 0 1 0
+setsingle 0 ramptime 43 ryd_freq 1 0
+setsingle 0 ramptime+uvtime 0 ryd_freq 0 0
 
 program 0
 
 %%% for monitoring:
 
 setsingle 1 0 43 ryd_freq 1 0
-setsingle 1 uvtime 0 0 1 0
-
-setsingle 1 uvtime+.2 43 ryd_freq 1 0
-setsingle 1 2*uvtime+.2 0 0 1 0
+setsingle 1 uvtime 0 ryd_freq 0 0
 
 program 1
 
