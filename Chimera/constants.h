@@ -669,6 +669,7 @@ const char AWG_INFO_TEXT[] =
 "(B) Ramp types:\n"
 "Linear ramps for frequency and amplitude - note that both amplitude and frequency settings MUST fully cover range of step settings.\n"
 "linear amplitude ramp: amplin <channel, start time, end time (us), start amplitude, end amplitude (percent)>\n"
+"Gaussian amplitude ramp: amplin <channel, start time, end time (us), sigma, direction (+1 for peak at end, -1 for peak at beginning), start amplitude, end amplitude (percent)>\n"
 "linear frequency ramp: freqlin <channel, start time, end time (us), start frequency, end frequency (MHz), phase jump toggle (0 or 1), start phase (in degrees, only used if toggle enabled)>\n"
 "(C) Once ramps for one channel programmed, must write settings with program <channel>.\n"
 "(D) Software triggers:\n"

@@ -11,13 +11,22 @@ freqlin 0 ramptime+uvtime ramptime+uvtime+ramptime cuv-1 cuv-20 0 0
 
 program 0
 
-setsteps 1 .006 0 ramptime
-amplin 1 0 ramptime 0 43
-freqlin 1 0 ramptime cuv-20 cuv 1 0 
+%setsteps 1 .006 0 ramptime
+%amplin 1 0 ramptime 0 43
+%freqlin 1 0 ramptime (cuv-20)/10 cuv/10 1 0 
 
-setsteps 1 .006 ramptime+uvtime ramptime+uvtime+ramptime  
-amplin 1 ramptime+uvtime ramptime+uvtime+ramptime 43 0 %0  
-freqlin 1 ramptime+uvtime ramptime+uvtime+ramptime cuv cuv-20 0 0 
+%setsteps 1 .006 ramptime+uvtime ramptime+uvtime+ramptime  
+%amplin 1 ramptime+uvtime ramptime+uvtime+ramptime 43 0 %0  
+%freqlin 1 ramptime+uvtime ramptime+uvtime+ramptime cuv/10 (cuv-20)/10 0 0 
+
+setsteps 1 .006 0 1
+%amplin 1 0 1 0 43
+ampgauss 1 0 1 .3 1 0 43
+freqlin 1 0 1 (cuv-20)/10 cuv/10 1 0
+
+setsteps 1 .006 1.1 2.1
+ampgauss 1 1.1 2.1 .3 -1 43 0 %0  
+freqlin 1 1.1 2.1 cuv/10 (cuv-20)/10 0 0 
 
 program 1
 

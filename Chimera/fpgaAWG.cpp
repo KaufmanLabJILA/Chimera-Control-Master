@@ -172,6 +172,37 @@ void fpgaAWG::ampLinearRamp(unsigned long channel, float tStart, float tEnd, flo
 	};
 }
 
+void fpgaAWG::ampGaussianRamp(unsigned long channel, float tStart, float tEnd, float tSigma, int direction, float aStart, float aStop) {
+	int iStart = nPreviousStepSetting + ceil((tStart - startTimeStepSetting) / (stepSize * AWGMINSTEP));
+	int numSteps = ceil((tEnd - tStart) / (stepSize * AWGMINSTEP));
+
+	std::vector<awgCommand> & awgCommandList = selectCommandList(channel);
+
+	if (tEnd > awgCommandList.back().timeStampMicro + stepSize * AWGMINSTEP) {
+		thrower("Ramp too long for assigned steps.");
+	};
+
+	float t, aVal;
+
+	if (direction == 1) {
+		for (int i = 0; i < numSteps; i++) {
+			t = stepSize * AWGMINSTEP * i + tStart;
+			aVal = (aStop - aStart) * exp(-1 * pow((t - tEnd), 2) / (2 * pow(tSigma, 2))) + aStart;
+			awgCommandList[iStart + i].ampPercent = aVal;
+		};
+	}
+	else if (direction == -1){
+		for (int i = 0; i < numSteps; i++) {
+			t = stepSize * AWGMINSTEP * i + tStart;
+			aVal = (aStart - aStop) * exp(-1 * pow((t - tStart), 2) / (2 * pow(tSigma, 2))) + aStop;
+			awgCommandList[iStart + i].ampPercent = aVal;
+		};
+	}
+	else {
+		thrower("Direction must be +1 or -1.");
+	}
+}
+
 void fpgaAWG::writeCommandList(unsigned long channel) {
 	std::vector<awgCommand> & awgCommandList = selectCommandList(channel);
 	int numSteps = awgCommandList.size();
@@ -196,8 +227,6 @@ void fpgaAWG::writeCommandList(unsigned long channel) {
 	};
 	writeTimestamp(channelWord, numSteps, 0.0, false, 0.0, 0.0, 0.0);
 }
-
-
 
 void fpgaAWG::loadAWGScript(std::string scriptAddress)
 {
@@ -280,6 +309,18 @@ void fpgaAWG::analyzeAWGScript(fpgaAWG* fpgaawg, std::vector<variableType>& vari
 			currentAWGScript >> astart;
 			currentAWGScript >> astop;
 			ampLinearRamp(stoul(channel, nullptr, 0), tstart.evaluate(variables, variation), tstop.evaluate(variables, variation), astart.evaluate(variables, variation), astop.evaluate(variables, variation));
+		}
+		else if (word == "ampgauss") {
+			std::string channel;
+			Expression tstart, tstop, tsigma, direction, azerolevel, apeak;
+			currentAWGScript >> channel;
+			currentAWGScript >> tstart;
+			currentAWGScript >> tstop;
+			currentAWGScript >> tsigma;
+			currentAWGScript >> direction;
+			currentAWGScript >> azerolevel;
+			currentAWGScript >> apeak;
+			ampGaussianRamp(stoul(channel, nullptr, 0), tstart.evaluate(variables, variation), tstop.evaluate(variables, variation), tsigma.evaluate(variables, variation), direction.evaluate(variables, variation), azerolevel.evaluate(variables, variation), apeak.evaluate(variables, variation));
 		}
 		else if (word == "freqlin") {
 			std::string channel;
