@@ -1,0 +1,25 @@
+% Master-Script See the "?" for info on commands.
+def green_image(imagefreq, imagepower, imagetime):
+  % insert commands here...
+on: imageshutter
+
+t += 1
+ddsfreq: dds4 imagefreq %greenimage, 83.1
+t += 5
+ddsamp: dds4 imagepower
+t += 5
+
+on: cameratrig
+t += 1 %to initiate all pixels exposing
+
+on: greenimage
+%on: mot3dcamera
+%off: tweezeraod
+t += imagetime
+%off: mot3dcamera
+off: greenimage
+
+t += 10
+
+off: cameratrig
+off: imageshutter

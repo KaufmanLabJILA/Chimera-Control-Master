@@ -1,0 +1,13 @@
+% Master-Script See the "?" for info on commands.
+def bias_fields(xfield, yfield, zfield):
+  % insert commands here...
+t += 0.01
+dac: x1coil xfield
+dac: x2coil -xfield
+t += 0.01
+dac: y1coil yfield
+dac: y2coil -yfield
+t += 0.01
+dac: z1coil zfield 
+dac: z2coil -zfield
+t += 0.01

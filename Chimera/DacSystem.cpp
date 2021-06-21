@@ -15,6 +15,7 @@ DacSystem::DacSystem() : dacResolution(10.0 / pow(2, 16))
 	// in ms.
 	// ?? I thought it was 10 MHz...
 	dacTriggerTime = 0.0005;
+	roundToDacPrecision = true;
 	try
 	{
 		// initialize tasks and chanells on the DACs
@@ -533,6 +534,8 @@ void DacSystem::organizeDacCommands(UINT variation)
 	{
 		// first copy the last set so that things that weren't changed remain unchanged.
 		dacSnapshots[variation].push_back(dacSnapshots[variation].back());
+		dacSnapshots[variation].back().dacValues = dacSnapshots[variation].back().dacEndValues;
+		dacSnapshots[variation].back().dacRampTimes = { 0 };
 		dacSnapshots[variation].back().time = timeOrganizer[commandInc].first;
 		for (UINT zeroInc = 0; zeroInc < timeOrganizer[commandInc].second.size(); zeroInc++)
 		{
@@ -1235,16 +1238,20 @@ void DacSystem::formatDacForFPGA(UINT variation)
 
 		if (i == 0) {
 			for (int j = 0; j < 32; ++j) {
-				if (snapshot.dacValues[j] != dacValues[j] || (snapshot.dacValues[j] == dacValues[j] && snapshot.dacRampTimes[j] != 0)) {
+				if (fabs(snapshot.dacValues[j] - dacValues[j]) > 100 * DBL_EPSILON || 
+					(fabs(snapshot.dacValues[j] - dacValues[j]) < 100 * DBL_EPSILON && 
+						fabs(snapshot.dacRampTimes[j]) > 100 * DBL_EPSILON)) {
 					channels.push_back(j);
 				}
 			}
 		} else {
 			snapshotPrev = dacSnapshots[variation][i - 1];
 			for (int j = 0; j < 32; ++j) {
-				if (snapshot.dacValues[j] != snapshotPrev.dacValues[j] || 
-					snapshot.dacValues[j] != snapshotPrev.dacEndValues[j] ||
-					(snapshot.dacValues[j] == snapshotPrev.dacValues[j] && snapshot.dacRampTimes[j] != 0 && snapshotPrev.dacRampTimes[j] == 0)) {
+				if (fabs(snapshot.dacValues[j] - snapshotPrev.dacValues[j]) > 100 * DBL_EPSILON ||
+					fabs(snapshot.dacValues[j] - snapshotPrev.dacEndValues[j]) > 100 * DBL_EPSILON ||
+					(fabs(snapshot.dacValues[j] - snapshotPrev.dacValues[j]) < 100 * DBL_EPSILON && 
+						fabs(snapshot.dacRampTimes[j]) > 100 * DBL_EPSILON && 
+						fabs(snapshotPrev.dacRampTimes[j]) < 100 * DBL_EPSILON)) {
 					channels.push_back(j);
 				}
 			}

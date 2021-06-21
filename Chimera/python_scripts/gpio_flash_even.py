@@ -70,5 +70,4 @@ if __name__ == "__main__":
     writeToSeqGPIO(character,0x0002,0x000000C8,0x55555555,0x55555555)
     sleep(0.05)
     #terminate sequence
-    writeToSeqGPIO(character,0x0003,0x00000000,0x00000000,0x00000000)
     sleep(0.05)

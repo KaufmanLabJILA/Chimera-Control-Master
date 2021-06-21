@@ -1,0 +1,19 @@
+% Master-Script See the "?" for info on commands.
+def eit(eittime): 
+  % insert commands here...
+dac: x1coil 1.64
+dac: x2coil -1.64
+t += 0.01
+dac: y1coil 0.01
+dac: y2coil -0.01
+t += 0.01
+dac: z1coil -0.1
+dac: z2coil 0.1
+
+t += 10
+
+on: rb1
+on: rb2
+t += eittime
+off: rb1
+off: rb2

@@ -77,7 +77,7 @@
 #ifdef DEEP_THOUGHT
 	#define PYTHON_HOME L"C:\\Users\\klab\\Anaconda3\\"
 	#define MOOG_SAFEMODE true
-	#define GIGAMOOG_SAFEMODE false
+	#define GIGAMOOG_SAFEMODE true
 	#define NIAWG_SAFEMODE true
 	#define ANDOR_SAFEMODE false
 	#define MAKO_SAFEMODE true
