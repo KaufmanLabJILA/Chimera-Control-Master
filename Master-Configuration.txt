@@ -291,7 +291,7 @@ bluez 0.5
 greenmotcoil 0.4
 greenx 0.096
 greeny 0.034
-greenz -0.312
+greenz -0.33
 blueloadtime 200
 greenbroadloadtime 30
 greennarrowloadtime 50
