@@ -71,6 +71,7 @@ class ScriptingWindow : public CDialog
 		void gmoogEditChange(); 
  
 		void newMasterScript(); 
+		std::string openMasterScriptFolder(CWnd* parent);
 		void openMasterScript(CWnd* parent); 
 		void openMasterScript(std::string name); 
 		void saveMasterScript(); 

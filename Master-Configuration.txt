@@ -7,13 +7,13 @@ pushbeam
 0
 blue3dmot
 0
-greenbroad
+coolmod
 0
 greennarrow
 0
 greenimage
 0
-dio1.7
+gmload
 0
 tweezeraod
 0
@@ -27,9 +27,9 @@ rb2
 0
 rb3
 0
-op
+rb4
 0
-gmload
+op
 0
 blue3dmotshutter
 0
@@ -39,13 +39,13 @@ greenshutter
 0
 eitshutter
 0
-dio3.4
+gm1
 0
-dio3.5
+gm2
 0
-dio3.6
+qb
 0
-dio3.7
+greenbroad
 0
 dio4.0
 0
@@ -224,88 +224,88 @@ dac31
 -10 - 10
 0
 dds0
-10 - 125
+10 - 200
 0
 0 - 100
 100
 dds1
-10 - 125
+10 - 200
 0
 0 - 100
 100
 dds2
-10 - 125
+10 - 200
 0
 0 - 100
 100
 dds3
-10 - 125
+10 - 200
 0
 0 - 100
 100
 dds4
-10 - 125
+10 - 200
 80
 0 - 100
 100
 dds5
-10 - 125
+10 - 200
 0
 0 - 100
 100
 dds6
-10 - 125
+10 - 200
 0
 0 - 100
 100
 dds7
-10 - 125
+10 - 200
 0
 0 - 100
 100
 dds8
-10 - 125
+10 - 200
 0
 0 - 100
 100
 dds9
-10 - 125
+10 - 200
 0
 0 - 100
 100
 dds10
-10 - 125
+10 - 200
 0
 0 - 100
 100
 dds11
-10 - 125
+10 - 200
 0
 0 - 100
 100
-29
+33
 bluemotcoil 2.5
 bluex 0.41
 bluey 0.185
 bluez 0.5
 greenmotcoil 0.4
 greenx 0.096
-greeny 0.034
-greenz -0.33
+greeny 0.035
+greenz -0.32
 blueloadtime 200
 greenbroadloadtime 30
-greennarrowloadtime 50
+greennarrowloadtime 30
 imagepower 38
-imagefreq 85.3
-lacfreq 85.5
-lacpower 35
+imagefreq 85
+lacfreq 84.63
+lacpower 11.32
 imagetime 120
-coolfreq 85.5
-coolpower 9
+coolfreq 84.2586
+coolpower 5
 lactime 35
 cooltime 20
-greennarrowfreq 83.04
-greennarrowpower 8
+greennarrowfreq 82.6
+greennarrowpower 9
 eitfreq 99.8
 eitprobepower 80
 eitpumpower 40
@@ -313,4 +313,8 @@ eittime 50
 sisfreq 89.8
 sispower 52
 sistime 10
-973 1063 1 986 1076 1
+greennarrowpowerstart 20
+bluefreq 110
+bluetime 120
+bluepower 29
+943 1083 1 946 1046 1

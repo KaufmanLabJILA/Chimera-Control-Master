@@ -1182,6 +1182,7 @@ void AndorCamera::initialize()
 			thrower("No cameras detected");
 		}
 		andorErrorChecker(AT_Open(0, &CameraHndl));
+		andorErrorChecker(AT_SetBool(CameraHndl, L"SpuriousNoiseFilter", AT_FALSE));
 	}
 }
 

@@ -14,6 +14,7 @@
 #include "MainWindow.h"
 #include "CameraWindow.h"
 #include "AuxiliaryWindow.h"
+#include <boost/filesystem.hpp>
 
 // Functions called by all windows to do the same thing, mostly things that happen on menu presses.
 namespace commonFunctions
@@ -25,6 +26,76 @@ namespace commonFunctions
 	{
 		switch (msgID)
 		{
+			case ID_FILE_RUN_FOLDER:
+			{
+				std::string filepath = scriptWin->openMasterScriptFolder(parent);
+				std::string delimiter = "\\";
+				std::vector<std::string> filepathparts;
+
+				size_t pos = 0;
+				std::string token;
+				while ((pos = filepath.find(delimiter)) != std::string::npos) {
+					token = filepath.substr(0, pos);
+					filepathparts.push_back(token);
+					filepath.erase(0, pos + delimiter.length());
+				}
+				std::string folderpath = "";
+				for (int i = 0; i < filepathparts.size(); i++) {
+					folderpath += filepathparts[i] + "\\";
+				}
+				mainWin->getComm()->sendStatus("going to run all scripts the selected folder:" + folderpath + "\r\n");
+
+				std::vector<std::string> master_scripts;
+
+				for (const auto & file : boost::filesystem::directory_iterator(folderpath)) {
+					//mainWin->getComm()->sendStatus(file.path().string() + "\r\n");
+					std::string filepathstr = file.path().string();
+					if (filepathstr.substr(filepathstr.find_last_of(".") + 1) == "mScript") {
+						master_scripts.push_back(filepathstr);
+						mainWin->getComm()->sendStatus(filepathstr + "\r\n");
+					}
+				}
+
+				ExperimentInput input;
+
+				for (int i = 0; i < master_scripts.size(); i++) {
+					camWin->redrawPictures(false);
+					try
+					{
+						prepareCamera(mainWin, camWin, input);
+						prepareMasterThread(msgID, scriptWin, mainWin, camWin, auxWin, input, false, true, true);
+						camWin->preparePlotter(input);
+						camWin->prepareAtomCruncher(input);
+
+						logParameters(input, camWin, true);
+
+						camWin->startAtomCruncher(input);
+						camWin->startPlotterThread(input);
+						camWin->startCamera();
+						if (input.masterInput->settings.saveMakoImages) {
+							camWin->startMako(input.masterInput->settings.makoImageName);
+						}
+						startMaster(mainWin, input);
+					}
+					catch (Error& err)
+					{
+						if (err.whatBare() == "CANCEL")
+						{
+							mainWin->getComm()->sendStatus("Canceled camera initialization.\r\n");
+							mainWin->getComm()->sendColorBox(Niawg, 'B');
+							break;
+						}
+						mainWin->getComm()->sendError("EXITED WITH ERROR! " + err.whatStr());
+						mainWin->getComm()->sendColorBox(Camera, 'R');
+						mainWin->getComm()->sendStatus("EXITED WITH ERROR!\r\nInitialized Default Waveform\r\n");
+						mainWin->getComm()->sendTimer("ERROR!");
+						camWin->assertOff();
+						break;
+					}
+				}
+
+				break;
+			}
 			case ID_FILE_RUN_EVERYTHING:
 			case ID_ACCELERATOR_F5:
 			case ID_FILE_MY_WRITE_WAVEFORMS:

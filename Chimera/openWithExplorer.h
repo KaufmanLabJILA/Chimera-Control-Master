@@ -9,3 +9,5 @@
 */
 std::string openWithExplorer(CWnd* parent, std::string extension);
 
+std::string getFolderWithExplorer(CWnd* parent, std::string extension);
+

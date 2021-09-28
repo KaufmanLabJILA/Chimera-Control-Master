@@ -108,7 +108,9 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 		input->thisObj->loadSkipTimes.resize(variations);
 		if (input->runMaster)
 		{
+			expUpdate("interpret TTLs\r\n", input->comm, input->quiet);
 			input->ttls->interpretKey(input->variables);
+			expUpdate("interpret DACs\r\n", input->comm, input->quiet);
 			input->dacs->interpretKey(input->variables, warnings);
 			input->ddss->interpretKey(input->variables, warnings);
 		}

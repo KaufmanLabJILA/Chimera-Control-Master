@@ -1135,6 +1135,7 @@ void DioSystem::interpretKey(std::vector<variableType>& variables)
 		//dioFPGA[variationNum].init(connType, ftHandle, m_hSerialComm);
 		for (UINT commandInc = 0; commandInc < ttlCommandFormList.size(); commandInc++)
 		{
+
 			DioCommand tempCommand;
 			tempCommand.line = ttlCommandFormList[commandInc].line;
 			tempCommand.value = ttlCommandFormList[commandInc].value;

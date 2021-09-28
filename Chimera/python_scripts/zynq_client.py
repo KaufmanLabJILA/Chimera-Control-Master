@@ -18,7 +18,7 @@ class zynq_tcp_client:
             # print('sending "{}"'.format(dev_m.decode()))
             self.sock.sendall(dev_m)
 
-            bytes_m = b't000186A0_b0000000000008100'
+            bytes_m = b't000186A0_b0000000000000180'
             bytes_m = bytes_m.ljust(28, b'\0')
             # print('sending "{}"'.format(bytes_m.decode()))
             self.sock.sendall(bytes_m)

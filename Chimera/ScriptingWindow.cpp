@@ -562,6 +562,19 @@ void ScriptingWindow::newMasterScript()
 		auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames());
 }
 
+std::string ScriptingWindow::openMasterScriptFolder(CWnd* parent)
+{
+	try
+	{
+		std::string horizontalOpenName = getFolderWithExplorer(parent, MASTER_SCRIPT_EXTENSION);
+		return horizontalOpenName;
+	}
+	catch (Error& err)
+	{
+		comm()->sendError("New Master function Failed: " + err.whatStr() + "\r\n");
+	}
+}
+
 void ScriptingWindow::openMasterScript(CWnd* parent)
 {
 	try
