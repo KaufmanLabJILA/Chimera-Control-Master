@@ -291,7 +291,7 @@ bluez 0.5
 greenmotcoil 0.4
 greenx 0.096
 greeny 0.035
-greenz -0.32
+greenz -0.28
 blueloadtime 200
 greenbroadloadtime 30
 greennarrowloadtime 30
@@ -316,5 +316,5 @@ sistime 10
 greennarrowpowerstart 20
 bluefreq 110
 bluetime 120
-bluepower 29
+bluepower 35
 943 1083 1 946 1046 1
