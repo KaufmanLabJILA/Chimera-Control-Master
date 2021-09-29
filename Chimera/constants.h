@@ -79,16 +79,16 @@
 	#define MOOG_SAFEMODE true
 	#define GIGAMOOG_SAFEMODE true
 	#define NIAWG_SAFEMODE true
-	#define ANDOR_SAFEMODE false
+	#define ANDOR_SAFEMODE true
 	#define MAKO_SAFEMODE true
 	#define PYTHON_SAFEMODE true
 	#define DIO_SAFEMODE true
 	#define DIO_FPGA_SAFEMODE true
-	#define DIO_ARM_MODE false
+	#define DIO_ARM_MODE true
 	#define DDS_SAFEMODE true
 	#define DAQMX_SAFEMODE true
 	#define RSG_SAFEMODE true
-	#define ZNYQ_SAFEMODE false
+	#define ZNYQ_SAFEMODE true
 	#define ZYNQ_ADDRESS "10.10.0.2"
 	#define ZYNQ_PORT "8080"
 	#define ZYNQ_MAX_BUFF 64

@@ -28,6 +28,8 @@ namespace commonFunctions
 		{
 			case ID_FILE_RUN_FOLDER:
 			{
+				CWinThread* multiExperimentThread;
+
 				std::string filepath = scriptWin->openMasterScriptFolder(parent);
 				std::string delimiter = "\\";
 				std::vector<std::string> filepathparts;
@@ -55,44 +57,15 @@ namespace commonFunctions
 						mainWin->getComm()->sendStatus(filepathstr + "\r\n");
 					}
 				}
-
-				ExperimentInput input;
-
-				for (int i = 0; i < master_scripts.size(); i++) {
-					camWin->redrawPictures(false);
-					try
-					{
-						prepareCamera(mainWin, camWin, input);
-						prepareMasterThread(msgID, scriptWin, mainWin, camWin, auxWin, input, false, true, true);
-						camWin->preparePlotter(input);
-						camWin->prepareAtomCruncher(input);
-
-						logParameters(input, camWin, true);
-
-						camWin->startAtomCruncher(input);
-						camWin->startPlotterThread(input);
-						camWin->startCamera();
-						if (input.masterInput->settings.saveMakoImages) {
-							camWin->startMako(input.masterInput->settings.makoImageName);
-						}
-						startMaster(mainWin, input);
-					}
-					catch (Error& err)
-					{
-						if (err.whatBare() == "CANCEL")
-						{
-							mainWin->getComm()->sendStatus("Canceled camera initialization.\r\n");
-							mainWin->getComm()->sendColorBox(Niawg, 'B');
-							break;
-						}
-						mainWin->getComm()->sendError("EXITED WITH ERROR! " + err.whatStr());
-						mainWin->getComm()->sendColorBox(Camera, 'R');
-						mainWin->getComm()->sendStatus("EXITED WITH ERROR!\r\nInitialized Default Waveform\r\n");
-						mainWin->getComm()->sendTimer("ERROR!");
-						camWin->assertOff();
-						break;
-					}
-				}
+				MultiExperimentInput* input;
+				input->auxWin = auxWin;
+				input->camWin = camWin;
+				input->mainWin = mainWin;
+				input->scriptWin = scriptWin;
+				input->parent = parent;
+				input->msgID = msgID;
+				input->master_scripts = master_scripts;
+				multiExperimentThread = AfxBeginThread(multipleExperimentThreadProcedure, input, THREAD_PRIORITY_HIGHEST);
 
 				break;
 			}
@@ -834,6 +807,54 @@ namespace commonFunctions
 		input.includesCameraRun = true;
 	}
 
+	UINT __cdecl multipleExperimentThreadProcedure(void* voidInput) {
+
+		MultiExperimentInput* multiExpInput = (MultiExperimentInput*)voidInput;
+		ExperimentInput input;
+
+		for (int i = 0; i < multiExpInput->master_scripts.size(); i++) {
+			multiExpInput->camWin->redrawPictures(false);
+			if (multiExpInput->scriptWin->openMasterScriptByPath(multiExpInput->master_scripts[i]) == 1) {
+				multiExpInput->mainWin->getComm()->sendError("failed to load script: " + multiExpInput->master_scripts[i]);
+				break;
+			}
+			try
+			{
+				prepareCamera(multiExpInput->mainWin, multiExpInput->camWin, input);
+				prepareMasterThread(multiExpInput->msgID, multiExpInput->scriptWin, multiExpInput->mainWin, multiExpInput->camWin, multiExpInput->auxWin, input, false, true, true);
+				multiExpInput->camWin->preparePlotter(input);
+				multiExpInput->camWin->prepareAtomCruncher(input);
+
+				logParameters(input, multiExpInput->camWin, true);
+
+				multiExpInput->camWin->startAtomCruncher(input);
+				multiExpInput->camWin->startPlotterThread(input);
+				multiExpInput->camWin->startCamera();
+				startMaster(multiExpInput->mainWin, input);
+			}
+			catch (Error& err)
+			{
+				if (err.whatBare() == "CANCEL")
+				{
+					multiExpInput->mainWin->getComm()->sendStatus("Canceled camera initialization.\r\n");
+					multiExpInput->mainWin->getComm()->sendColorBox(Niawg, 'B');
+					break;
+				}
+				multiExpInput->mainWin->getComm()->sendError("EXITED WITH ERROR! " + err.whatStr());
+				multiExpInput->mainWin->getComm()->sendColorBox(Camera, 'R');
+				multiExpInput->mainWin->getComm()->sendStatus("EXITED WITH ERROR!\r\nInitialized Default Waveform\r\n");
+				multiExpInput->mainWin->getComm()->sendTimer("ERROR!");
+				multiExpInput->camWin->assertOff();
+				break;
+			}
+			multiExpInput->mainWin->masterThreadManager.runningThread->m_bAutoDelete = FALSE;
+			multiExpInput->mainWin->masterThreadManager.runningThread->ResumeThread();
+			WaitForSingleObject(multiExpInput->mainWin->masterThreadManager.runningThread->m_hThread, INFINITE);
+			delete multiExpInput->mainWin->masterThreadManager.runningThread;
+			multiExpInput->mainWin->masterThreadManager.runningThread = 0;
+		}
+	}
+
 
 	void prepareMasterThread( int msgID, ScriptingWindow* scriptWin, MainWindow* mainWin, CameraWindow* camWin, 
 		AuxiliaryWindow* auxWin, ExperimentInput& input,
@@ -944,6 +965,8 @@ namespace commonFunctions
 				scriptInfo<std::string> addresses = scriptWin->getScriptAddresses();
 				//mainWin->setMoogRunningState(true);
 			}
+
+			input.masterInput->multipleExperiments = input.multipleExperiments;
 
 			// Start the programming thread.
 			auxWin->fillMasterThreadInput( input.masterInput );

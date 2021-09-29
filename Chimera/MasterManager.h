@@ -59,6 +59,8 @@ class MasterManager
 		static double convertToTime( timeType time, std::vector<variableType> variables, UINT variation );
 		void sendZynqCommand(ZynqTCP zynq_tcp, std::string command);
 
+		CWinThread* runningThread;
+
 	private:
 		timeType loadSkipTime;
 		std::vector<double> loadSkipTimes;
@@ -75,7 +77,6 @@ class MasterManager
 		timeType operationTime;
 		bool experimentIsRunning;
 		/// task handles
-		CWinThread* runningThread;
 
 		// Important, these should only be written to by the pause and aborting functions...
 		std::mutex pauseLock;

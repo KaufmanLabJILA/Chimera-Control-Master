@@ -68,16 +68,18 @@ struct MasterThreadInput
 	std::condition_variable* conditionVariableForRearrangement;
 	rerngOptions rearrangeInfo;
 	std::atomic<bool>* skipNext;
+	bool multipleExperiments;
 };
 
 
 struct ExperimentInput
 {
 	ExperimentInput::ExperimentInput( ) :
-		includesCameraRun( false ), masterInput( NULL ), plotterInput( NULL ), cruncherInput( NULL ) { }
+		includesCameraRun( false ), multipleExperiments ( false ), masterInput( NULL ), plotterInput( NULL ), cruncherInput( NULL ) { }
 	MasterThreadInput* masterInput;
 	realTimePlotterInput* plotterInput;
 	atomCruncherInput* cruncherInput;
 	AndorRunSettings camSettings;
 	bool includesCameraRun;
+	bool multipleExperiments;
 };
