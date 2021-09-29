@@ -31,10 +31,10 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 	/// initialize various structures 
 	// convert the input to the correct structure. 
 	MasterThreadInput* input = (MasterThreadInput*)voidInput;
-	// change the status of the parent object to reflect that the thread is running. 
+	// change the status of the parent object to reflect that the thread is running.
 	input->thisObj->experimentIsRunning = true;
-	// warnings will be passed by reference to a series of function calls which can append warnings to the string. 
-	// at a certain point the string will get outputted to the error console. Remember, errors themselves are handled  
+	// warnings will be passed by reference to a series of function calls which can append warnings to the string.
+	// at a certain point the string will get outputted to the error console. Remember, errors themselves are handled
 	// by thrower() calls. 
 	std::string warnings;
 	std::string abortString = "\r\nABORTED!\r\n";

@@ -575,6 +575,23 @@ std::string ScriptingWindow::openMasterScriptFolder(CWnd* parent)
 	}
 }
 
+int ScriptingWindow::openMasterScriptByPath(std::string filepath)
+{
+	try
+	{
+		masterScript.openParentScript(filepath, getProfile().categoryPath, mainWindowFriend->getRunInfo());
+		masterScript.updateScriptNameText(getProfile().categoryPath);
+		masterScript.colorEntireScript(auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(),
+			auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames());
+		return 0;
+	}
+	catch (Error& err)
+	{
+		comm()->sendError("openMasterScriptByPath function Failed: " + err.whatStr() + "\r\n");
+		return 1;
+	}
+}
+
 void ScriptingWindow::openMasterScript(CWnd* parent)
 {
 	try
