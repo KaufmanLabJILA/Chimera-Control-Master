@@ -1047,7 +1047,7 @@ void Script::newScript()
 }
 
 //
-void Script::openParentScript(std::string parentScriptFileAndPath, std::string categoryPath, RunInfo info)
+void Script::openParentScript(std::string parentScriptFileAndPath, std::string categoryPath, RunInfo info, bool prompt)
 {
 	if (parentScriptFileAndPath == "" || parentScriptFileAndPath == "NONE")
 	{
@@ -1113,7 +1113,7 @@ void Script::openParentScript(std::string parentScriptFileAndPath, std::string c
 	// Check location of vertical script.
 	int sPos = parentScriptFileAndPath.find_last_of('\\');
 	std::string scriptLocation = parentScriptFileAndPath.substr(0, sPos);
-	if (scriptLocation + "\\" != categoryPath && categoryPath != "")
+	if (scriptLocation + "\\" != categoryPath && categoryPath != "" && prompt)
 	{
 		int answer = promptBox("The requested " + deviceType + " script: " + parentScriptFileAndPath + " is not "
 								"currently located in the current configuration folder. This is recommended so that "

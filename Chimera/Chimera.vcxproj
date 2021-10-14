@@ -213,6 +213,7 @@
     <ClInclude Include="Expression.h" />
     <ClInclude Include="GigaMoog.h" />
     <ClInclude Include="makoCamera.h" />
+    <ClInclude Include="MasterThreadInput.h" />
     <ClInclude Include="MessagePrinter.h" />
     <ClInclude Include="MessageSender.h" />
     <ClInclude Include="Messagetypes.h" />

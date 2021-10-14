@@ -188,7 +188,7 @@ BEGIN
     END
     POPUP "&Run Menu"
     BEGIN
-		MENUITEM "&Run All Scripts in Current Folder", ID_FILE_RUN_FOLDER
+		MENUITEM "&Run All Master Scripts in a Folder", ID_FILE_RUN_FOLDER
         MENUITEM "&Run Everything \tF5",        ID_FILE_RUN_EVERYTHING
         MENUITEM "Run &Single Shot\tShift+S",   ID_RUNMENU_RUNSINGLESHOT
         MENUITEM "Run &Master\tF4",             ID_RUNMENU_RUNMASTER

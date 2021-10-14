@@ -19,6 +19,9 @@
 // Functions called by all windows to do the same thing, mostly things that happen on menu presses.
 namespace commonFunctions
 {
+
+	bool masterAborted;
+
 	// this function handles messages that all windows can recieve, e.g. accelerator keys and menu messages. It 
 	// redirects everything to all of the other functions below, for the most part.
 	void handleCommonMessage( int msgID, CWnd* parent, MainWindow* mainWin, ScriptingWindow* scriptWin, 
@@ -31,6 +34,9 @@ namespace commonFunctions
 				CWinThread* multiExperimentThread;
 
 				std::string filepath = scriptWin->openMasterScriptFolder(parent);
+				if (filepath == "") {
+					break;
+				}
 				std::string delimiter = "\\";
 				std::vector<std::string> filepathparts;
 
@@ -57,15 +63,15 @@ namespace commonFunctions
 						mainWin->getComm()->sendStatus(filepathstr + "\r\n");
 					}
 				}
-				MultiExperimentInput* input;
-				input->auxWin = auxWin;
-				input->camWin = camWin;
-				input->mainWin = mainWin;
-				input->scriptWin = scriptWin;
-				input->parent = parent;
-				input->msgID = msgID;
-				input->master_scripts = master_scripts;
-				multiExperimentThread = AfxBeginThread(multipleExperimentThreadProcedure, input, THREAD_PRIORITY_HIGHEST);
+				MultiExperimentInput* multiInput = new MultiExperimentInput;
+				multiInput->auxWin = auxWin;
+				multiInput->camWin = camWin;
+				multiInput->mainWin = mainWin;
+				multiInput->scriptWin = scriptWin;
+				multiInput->parent = parent;
+				multiInput->msgID = msgID;
+				multiInput->master_scripts = master_scripts;
+				multiExperimentThread = AfxBeginThread(multipleExperimentThreadProcedure, multiInput, THREAD_PRIORITY_HIGHEST);
 
 				break;
 			}
@@ -119,7 +125,8 @@ namespace commonFunctions
 					mainWin->getComm( )->sendError( "Experiment is paused. Please unpause before aborting.\r\n" );
 					break;
 				}
-				bool andorAborted = false, masterAborted = false;
+				bool andorAborted = false;
+				masterAborted = false;
 
 				mainWin->stopRearranger( );
 				camWin->wakeRearranger( );
@@ -792,17 +799,19 @@ namespace commonFunctions
 	}
 
 
-	void prepareCamera( MainWindow* mainWin, CameraWindow* camWin, ExperimentInput& input )
+	void prepareCamera( MainWindow* mainWin, CameraWindow* camWin, ExperimentInput& input, bool prompt )
 	{
 		camWin->redrawPictures( false );
 		mainWin->getComm()->sendTimer( "Starting..." );
 		camWin->prepareCamera( input );
 		std::string msg = camWin->getStartMessage();
-		int answer = promptBox( msg, MB_OKCANCEL );
-		if (answer == IDCANCEL)
-		{
-			// user doesn't want to start the camera.
-			thrower( "CANCEL" );
+		if (prompt) {
+			int answer = promptBox( msg, MB_OKCANCEL );
+			if (answer == IDCANCEL)
+			{
+				// user doesn't want to start the camera.
+				thrower( "CANCEL" );
+			}
 		}
 		input.includesCameraRun = true;
 	}
@@ -812,16 +821,31 @@ namespace commonFunctions
 		MultiExperimentInput* multiExpInput = (MultiExperimentInput*)voidInput;
 		ExperimentInput input;
 
+		std::string runningMultiExperiment = "\r\n\r\nYou are going to run multiple experiments. I hope this dialog helps.";
+
+		INT_PTR delayDialog;
+		delayDialog = DialogBoxParam(NULL, MAKEINTRESOURCE(IDD_BEGINNING_SETTINGS), 0,
+				beginningSettingsDialogProc, (LPARAM)cstr(runningMultiExperiment));
+
 		for (int i = 0; i < multiExpInput->master_scripts.size(); i++) {
+			if (masterAborted) {
+				break;
+			}
 			multiExpInput->camWin->redrawPictures(false);
-			if (multiExpInput->scriptWin->openMasterScriptByPath(multiExpInput->master_scripts[i]) == 1) {
+			bool opened_script = multiExpInput->scriptWin->openMasterScriptByPath(multiExpInput->master_scripts[i]);
+			if (opened_script == 1) {
 				multiExpInput->mainWin->getComm()->sendError("failed to load script: " + multiExpInput->master_scripts[i]);
 				break;
 			}
 			try
 			{
-				prepareCamera(multiExpInput->mainWin, multiExpInput->camWin, input);
-				prepareMasterThread(multiExpInput->msgID, multiExpInput->scriptWin, multiExpInput->mainWin, multiExpInput->camWin, multiExpInput->auxWin, input, false, true, true);
+				multiExpInput->mainWin->profile.saveConfigurationOnly(multiExpInput->scriptWin, multiExpInput->mainWin, multiExpInput->auxWin, multiExpInput->camWin);
+				Sleep(0.5);
+				prepareCamera(multiExpInput->mainWin, multiExpInput->camWin, input, false);
+				Sleep(0.5);
+				prepareMasterThread(multiExpInput->msgID, multiExpInput->scriptWin, multiExpInput->mainWin, multiExpInput->camWin, multiExpInput->auxWin, 
+					input, false, true, true, false);
+				Sleep(0.5);
 				multiExpInput->camWin->preparePlotter(input);
 				multiExpInput->camWin->prepareAtomCruncher(input);
 
@@ -850,15 +874,18 @@ namespace commonFunctions
 			multiExpInput->mainWin->masterThreadManager.runningThread->m_bAutoDelete = FALSE;
 			multiExpInput->mainWin->masterThreadManager.runningThread->ResumeThread();
 			WaitForSingleObject(multiExpInput->mainWin->masterThreadManager.runningThread->m_hThread, INFINITE);
+			Sleep(0.5);
 			delete multiExpInput->mainWin->masterThreadManager.runningThread;
 			multiExpInput->mainWin->masterThreadManager.runningThread = 0;
+			Sleep(0.5);
 		}
+		delete multiExpInput;
+		return false;
 	}
 
 
 	void prepareMasterThread( int msgID, ScriptingWindow* scriptWin, MainWindow* mainWin, CameraWindow* camWin, 
-		AuxiliaryWindow* auxWin, ExperimentInput& input,
-		bool single, bool runMoog, bool runTtls )
+		AuxiliaryWindow* auxWin, ExperimentInput& input, bool single, bool runMoog, bool runTtls, bool prompt )
 	{
 		Communicator* comm = mainWin->getComm();
 		profileSettings profile = mainWin->getProfileSettings();
@@ -925,7 +952,7 @@ namespace commonFunctions
 		std::string beginQuestion = "\r\n\r\nBegin Waveform Generation with these Settings?";
 
 		INT_PTR areYouSure = 0;
-		if (!single)
+		if (!single && prompt)
 		{
 			areYouSure = DialogBoxParam(NULL, MAKEINTRESOURCE(IDD_BEGINNING_SETTINGS), 0,
 				beginningSettingsDialogProc, (LPARAM)cstr(beginInfo + beginQuestion));

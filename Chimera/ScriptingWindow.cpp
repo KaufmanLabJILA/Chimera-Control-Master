@@ -579,7 +579,7 @@ int ScriptingWindow::openMasterScriptByPath(std::string filepath)
 {
 	try
 	{
-		masterScript.openParentScript(filepath, getProfile().categoryPath, mainWindowFriend->getRunInfo());
+		masterScript.openParentScript(filepath, getProfile().categoryPath, mainWindowFriend->getRunInfo(), false);
 		masterScript.updateScriptNameText(getProfile().categoryPath);
 		masterScript.colorEntireScript(auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(),
 			auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames());

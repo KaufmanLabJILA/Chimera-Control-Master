@@ -43,7 +43,7 @@ gm1
 0
 gm2
 0
-qb
+dio3.6
 0
 greenbroad
 0
@@ -81,9 +81,9 @@ dio5.7
 0
 blueimage
 0
-dio6.1
+xrot
 0
-dio6.2
+zrot
 0
 dio6.3
 0
@@ -142,7 +142,7 @@ z1coil
 tweezerdepth
 -10 - 10
 0
-na2
+power556
 -10 - 10
 0
 motcoils
@@ -283,7 +283,7 @@ dds11
 0
 0 - 100
 100
-33
+34
 bluemotcoil 2.5
 bluex 0.41
 bluey 0.185
@@ -291,17 +291,17 @@ bluez 0.5
 greenmotcoil 0.4
 greenx 0.096
 greeny 0.035
-greenz -0.28
+greenz -0.3
 blueloadtime 200
 greenbroadloadtime 30
 greennarrowloadtime 30
 imagepower 38
 imagefreq 85
 lacfreq 84.63
-lacpower 11.32
+lacpower 15
 imagetime 120
 coolfreq 84.2586
-coolpower 5
+coolpower 8
 lactime 35
 cooltime 20
 greennarrowfreq 82.6
@@ -316,5 +316,6 @@ sistime 10
 greennarrowpowerstart 20
 bluefreq 110
 bluetime 120
-bluepower 35
+bluepower 29
+setpoint556 2.65
 943 1083 1 946 1046 1

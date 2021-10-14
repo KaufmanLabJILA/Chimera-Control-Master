@@ -51,7 +51,7 @@ class Script
 		std::string getExtension();
 
 		void loadFile( std::string pathToFile );
-		void openParentScript( std::string parentScriptFileAndPath, std::string categoryPath, RunInfo info );
+		void openParentScript( std::string parentScriptFileAndPath, std::string categoryPath, RunInfo info, bool prompt = true );
 		void considerCurrentLocation( std::string categoryPath, RunInfo info );
 		void checkSave( std::string categoryPath, RunInfo info );
 		void updateSavedStatus( bool isSaved );

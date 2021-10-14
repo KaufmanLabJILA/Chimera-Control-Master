@@ -74,8 +74,8 @@ struct MasterThreadInput
 
 struct ExperimentInput
 {
-	ExperimentInput::ExperimentInput( ) :
-		includesCameraRun( false ), multipleExperiments ( false ), masterInput( NULL ), plotterInput( NULL ), cruncherInput( NULL ) { }
+	ExperimentInput::ExperimentInput() :
+		includesCameraRun(false), multipleExperiments(false), masterInput(NULL), plotterInput(NULL), cruncherInput(NULL) { };
 	MasterThreadInput* masterInput;
 	realTimePlotterInput* plotterInput;
 	atomCruncherInput* cruncherInput;

@@ -320,7 +320,8 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 		input->thisObj->sendZynqCommand(zynq_tcp, "disableSeq");
 		input->thisObj->sendZynqCommand(zynq_tcp, "lockPLL");
 		input->ddss->setDDSsAmpFreq();
-		input->dacs->setDACsSeq();
+		//input->dacs->setDACsSeq();
+		input->dacs->zeroDACValues();
 		input->thisObj->sendZynqCommand(zynq_tcp, "trigger");
 	}
 	catch (Error& exception)

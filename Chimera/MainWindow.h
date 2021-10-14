@@ -107,6 +107,7 @@ class MainWindow : public CDialog
 		void passConfigPress( );
 
 		MasterManager masterThreadManager;
+		ProfileSystem profile;
 
 	private:		
 		DECLARE_MESSAGE_MAP();
@@ -114,7 +115,6 @@ class MainWindow : public CDialog
 		CameraWindow* TheCameraWindow;
 		AuxiliaryWindow* TheAuxiliaryWindow;
 		// members that have gui elements
-		ProfileSystem profile;
 		MasterConfiguration masterConfig;
 		NoteSystem notes;
 		DebugOptionsControl debugger;

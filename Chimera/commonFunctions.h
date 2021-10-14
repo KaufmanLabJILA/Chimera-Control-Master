@@ -11,9 +11,9 @@ namespace commonFunctions
 	void handleCommonMessage( int msgID, CWnd* parent, MainWindow* comm, ScriptingWindow* scriptWin, 
 							 CameraWindow* camWin, AuxiliaryWindow* auxWin );
 	/// Run Menu
-	void prepareCamera( MainWindow* mainWin, CameraWindow* camWin, ExperimentInput& input );
+	void prepareCamera( MainWindow* mainWin, CameraWindow* camWin, ExperimentInput& input, bool prompt = true );
 	void prepareMasterThread( int msgID, ScriptingWindow* scriptWin, MainWindow* mainWin, CameraWindow* camWin,
-							  AuxiliaryWindow* auxWin, ExperimentInput& input, bool single, bool runMoog, bool runTtls );
+							  AuxiliaryWindow* auxWin, ExperimentInput& input, bool single, bool runMoog, bool runTtls, bool prompt = true );
 	void abortRearrangement( MainWindow* mainWin, CameraWindow* camWin );
 	void startMaster(MainWindow* mainWin, ExperimentInput& input);
 	UINT __cdecl multipleExperimentThreadProcedure(void* voidInput);
@@ -32,6 +32,8 @@ namespace commonFunctions
 
 	struct MultiExperimentInput
 	{
+		/*MultiExperimentInput::MultiExperimentInput() :
+			msgID(0), master_scripts({}), parent(NULL), mainWin(NULL), scriptWin(NULL), camWin(NULL), auxWin(NULL) { };*/
 		int msgID;
 		std::vector<std::string> master_scripts;
 		CWnd* parent;
@@ -40,6 +42,8 @@ namespace commonFunctions
 		CameraWindow* camWin; 
 		AuxiliaryWindow* auxWin;
 	};
+
 }
+
 
 
