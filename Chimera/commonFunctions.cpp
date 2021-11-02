@@ -82,6 +82,7 @@ namespace commonFunctions
 			{
 				ExperimentInput input;
 				camWin->redrawPictures(false);
+
 				try
 				{
 					prepareCamera( mainWin, camWin, input );
