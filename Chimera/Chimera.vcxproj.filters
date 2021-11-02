@@ -199,15 +199,6 @@
     <ClCompile Include="DDSSystem.cpp">
       <Filter>Auxiliary Window</Filter>
     </ClCompile>
-    <ClCompile Include="ApiController.cpp">
-      <Filter>Vimba</Filter>
-    </ClCompile>
-    <ClCompile Include="Bitmap.cpp">
-      <Filter>Vimba</Filter>
-    </ClCompile>
-    <ClCompile Include="makoCamera.cpp">
-      <Filter>Vimba</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -473,18 +464,6 @@
     <ClInclude Include="DDSStructures.h">
       <Filter>Auxiliary Window</Filter>
     </ClInclude>
-    <ClInclude Include="ApiController.h">
-      <Filter>Vimba</Filter>
-    </ClInclude>
-    <ClInclude Include="Bitmap.h">
-      <Filter>Vimba</Filter>
-    </ClInclude>
-    <ClInclude Include="makoCamera.h">
-      <Filter>Vimba</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Program Files\Allied Vision\Vimba_4.2\VimbaCPP\Include\VimbaSystem.h">
-      <Filter>Vimba</Filter>
-    </ClInclude>
     <ClInclude Include="MasterThreadInput.h">
       <Filter>General Files</Filter>
     </ClInclude>
@@ -549,9 +528,6 @@
     </Filter>
     <Filter Include="TCP Interface">
       <UniqueIdentifier>{8db406d5-8c09-4fc3-948b-154fc9eff545}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Vimba">
-      <UniqueIdentifier>{e7a84506-7fb2-4c04-80ee-1f998c6d209a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
