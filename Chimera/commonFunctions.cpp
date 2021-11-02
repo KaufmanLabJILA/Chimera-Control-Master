@@ -95,7 +95,6 @@ namespace commonFunctions
 					camWin->startPlotterThread(input);
 					camWin->startCamera();
 					if (input.masterInput->settings.saveMakoImages) {
-						camWin->startMako(input.masterInput->settings.makoImageName);
 					}
 					startMaster( mainWin, input );
 				}
