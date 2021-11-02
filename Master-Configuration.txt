@@ -43,7 +43,7 @@ gm1
 0
 gm2
 0
-dio3.6
+qubitshutter
 0
 greenbroad
 0
@@ -283,39 +283,30 @@ dds11
 0
 0 - 100
 100
-34
+25
 bluemotcoil 2.5
-bluex 0.41
-bluey 0.185
-bluez 0.5
+bluex 0.3851
+bluey 0.1781
+bluez 0.8099
 greenmotcoil 0.4
 greenx 0.096
 greeny 0.035
 greenz -0.3
 blueloadtime 200
 greenbroadloadtime 30
-greennarrowloadtime 30
-imagepower 38
-imagefreq 85
-lacfreq 84.63
-lacpower 15
-imagetime 120
+greennarrowloadtime 50
+lacfreq 92.5
+lacpower 50.53
 coolfreq 84.2586
-coolpower 8
+coolpower 6
 lactime 35
 cooltime 20
 greennarrowfreq 82.6
-greennarrowpower 9
-eitfreq 99.8
-eitprobepower 80
-eitpumpower 40
-eittime 50
-sisfreq 89.8
-sispower 52
-sistime 10
+greennarrowpower 6
 greennarrowpowerstart 20
 bluefreq 110
 bluetime 120
-bluepower 29
+bluepower 30
 setpoint556 2.65
+comploadtime 20
 943 1083 1 946 1046 1

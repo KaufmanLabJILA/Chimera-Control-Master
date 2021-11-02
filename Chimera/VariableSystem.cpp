@@ -33,7 +33,7 @@ void VariableSystem::initialize( POINT& pos, cToolTips& toolTips, AuxiliaryWindo
 	scanDimensions = 1;
 	variableRanges = 1;
 	// controls
-	variablesHeader.sPos = { pos.x, pos.y, pos.x + 480, pos.y + 25 };
+	variablesHeader.sPos = { pos.x, pos.y, pos.x + 680, pos.y + 25 };
 	variablesHeader.Create( cstr( title ), WS_BORDER | WS_CHILD | WS_VISIBLE | ES_CENTER | ES_READONLY,
 							variablesHeader.sPos, master, id++ );
 	variablesHeader.fontType = HeadingFont;
@@ -42,14 +42,14 @@ void VariableSystem::initialize( POINT& pos, cToolTips& toolTips, AuxiliaryWindo
 	LONG listViewSize = 0;
 	if ( isGlobal )
 	{
-		listViewSize = 600;
+		listViewSize = 300;
 	}
 	else
 	{
-		listViewSize = 250;
+		listViewSize = 600;
 	}
 
-	variablesListview.sPos = { pos.x, pos.y, pos.x + 480, pos.y + listViewSize };
+	variablesListview.sPos = { pos.x, pos.y, pos.x + 680, pos.y + listViewSize };
 	variablesListview.Create( WS_VISIBLE | WS_CHILD | LVS_REPORT | LVS_EDITLABELS | WS_BORDER, variablesListview.sPos, 
 							  master, listviewId );
 	
@@ -83,7 +83,7 @@ void VariableSystem::initialize( POINT& pos, cToolTips& toolTips, AuxiliaryWindo
 	}
 	else
 	{
-		listViewDefaultCollumn.cx = 50;
+		listViewDefaultCollumn.cx = 150;
 		variablesListview.InsertColumn( 0, &listViewDefaultCollumn );
 		listViewDefaultCollumn.pszText = "Type";
 		listViewDefaultCollumn.cx = 0x40;

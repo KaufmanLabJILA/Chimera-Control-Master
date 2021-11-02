@@ -72,6 +72,7 @@ namespace commonFunctions
 				multiInput->msgID = msgID;
 				multiInput->master_scripts = master_scripts;
 				multiExperimentThread = AfxBeginThread(multipleExperimentThreadProcedure, multiInput, THREAD_PRIORITY_HIGHEST);
+				Sleep(3);
 
 				break;
 			}
@@ -823,9 +824,9 @@ namespace commonFunctions
 
 		std::string runningMultiExperiment = "\r\n\r\nYou are going to run multiple experiments. I hope this dialog helps.";
 
-		INT_PTR delayDialog;
+		/*INT_PTR delayDialog;
 		delayDialog = DialogBoxParam(NULL, MAKEINTRESOURCE(IDD_BEGINNING_SETTINGS), 0,
-				beginningSettingsDialogProc, (LPARAM)cstr(runningMultiExperiment));
+				beginningSettingsDialogProc, (LPARAM)cstr(runningMultiExperiment));*/
 
 		for (int i = 0; i < multiExpInput->master_scripts.size(); i++) {
 			if (masterAborted) {
@@ -840,7 +841,7 @@ namespace commonFunctions
 			try
 			{
 				multiExpInput->mainWin->profile.saveConfigurationOnly(multiExpInput->scriptWin, multiExpInput->mainWin, multiExpInput->auxWin, multiExpInput->camWin);
-				Sleep(0.5);
+				//Sleep(0.5);
 				prepareCamera(multiExpInput->mainWin, multiExpInput->camWin, input, false);
 				Sleep(0.5);
 				prepareMasterThread(multiExpInput->msgID, multiExpInput->scriptWin, multiExpInput->mainWin, multiExpInput->camWin, multiExpInput->auxWin, 

@@ -1006,7 +1006,7 @@ BOOL AuxiliaryWindow::OnInitDialog()
 
 		POINT statusLoc = { 960, 0 };
 
-		controlLocation = POINT{ 1440, 0 };
+		controlLocation = POINT{ 1240, 0 };
 		globalVariables.initialize(controlLocation, toolTips, this, id, "GLOBAL VARIABLES",
 			mainWindowFriend->getRgbs(), IDC_GLOBAL_VARS_LISTVIEW);
 		configVariables.initialize(controlLocation, toolTips, this, id, "CONFIGURATION VARIABLES",
