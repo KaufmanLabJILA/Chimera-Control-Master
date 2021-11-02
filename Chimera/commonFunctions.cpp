@@ -323,7 +323,8 @@ namespace commonFunctions
 			{
 				try
 				{
-					scriptWin->saveMoogScript();
+					//scriptWin->saveMoogScript();
+					scriptWin->saveAWGScript();
 					scriptWin->saveGmoogScript();
 
 					try {
@@ -485,24 +486,44 @@ namespace commonFunctions
 				scriptWin->saveVerticalScriptAs(parent);
 				break;
 			}*/
-			case ID_FILE_MY_MOOG_NEW:
+			//case ID_FILE_MY_MOOG_NEW:
+			//{
+			//	scriptWin->newMoogScript();
+			//	break;
+			//}
+			//case ID_FILE_MY_MOOG_OPEN:
+			//{
+			//	scriptWin->openMoogScript(parent);
+			//	break;
+			//}
+			//case ID_FILE_MY_MOOG_SAVE:
+			//{
+			//	scriptWin->saveMoogScript();
+			//	break;
+			//}
+			//case ID_FILE_MY_MOOG_SAVEAS:
+			//{
+			//	scriptWin->saveMoogScriptAs(parent);
+			//	break;
+			//}
+			case ID_FILE_MY_AWG_NEW:
 			{
-				scriptWin->newMoogScript();
+				scriptWin->newAWGScript();
 				break;
 			}
-			case ID_FILE_MY_MOOG_OPEN:
+			case ID_FILE_MY_AWG_OPEN:
 			{
-				scriptWin->openMoogScript(parent);
+				scriptWin->openAWGScript(parent);
 				break;
 			}
-			case ID_FILE_MY_MOOG_SAVE:
+			case ID_FILE_MY_AWG_SAVE:
 			{
-				scriptWin->saveMoogScript();
+				scriptWin->saveAWGScript();
 				break;
 			}
-			case ID_FILE_MY_MOOG_SAVEAS:
+			case ID_FILE_MY_AWG_SAVEAS:
 			{
-				scriptWin->saveMoogScriptAs(parent);
+				scriptWin->saveAWGScriptAs(parent);
 				break;
 			}
 			case ID_FILE_MY_GIGAMOOG_NEW:
@@ -886,7 +907,7 @@ namespace commonFunctions
 
 
 	void prepareMasterThread( int msgID, ScriptingWindow* scriptWin, MainWindow* mainWin, CameraWindow* camWin, 
-		AuxiliaryWindow* auxWin, ExperimentInput& input, bool single, bool runMoog, bool runTtls, bool prompt )
+		AuxiliaryWindow* auxWin, ExperimentInput& input, bool single, bool runAWG, bool runTtls, bool prompt )
 	{
 		Communicator* comm = mainWin->getComm();
 		profileSettings profile = mainWin->getProfileSettings();
@@ -906,11 +927,12 @@ namespace commonFunctions
 		mainWin->checkProfileReady();
 		scriptWin->checkScriptSaves( );
 		std::string beginInfo = "Current Settings:\r\n=============================\r\n\r\n";
-		if (runMoog)
+		if (runAWG)
 		{
 			scriptInfo<std::string> scriptNames = scriptWin->getScriptNames();
 			// ordering matters here, make sure you get the correct script name.
-			std::string moogNameString(scriptNames.moog);
+			std::string awgNameString(scriptNames.awg);
+	
 			std::string sequenceInfo = "";
 			if (sequenceInfo != "")
 			{
@@ -919,9 +941,10 @@ namespace commonFunctions
 			else
 			{
 				scriptInfo<bool> scriptSavedStatus = scriptWin->getScriptSavedStatuses();
-				
-				beginInfo += "Moog Script Name:........ " + str(moogNameString);
-				if (scriptSavedStatus.moog)
+			
+				beginInfo += "AWG Script Name:........ " + str(awgNameString);
+		
+				if (scriptSavedStatus.awg)
 				{
 					beginInfo += " SAVED\r\n";
 				}
@@ -929,10 +952,11 @@ namespace commonFunctions
 				{
 					beginInfo += " NOT SAVED\r\n";
 				}
-				
+			
 			}
 			beginInfo += "\r\n";
 		}
+
 
 		std::vector<variableType> vars = auxWin->getAllVariables();
 		if (vars.size() == 0)
@@ -960,7 +984,7 @@ namespace commonFunctions
 		}
 		if (areYouSure == 0)
 		{
-			if (runMoog)
+			if (runAWG)
 			{
 				mainWin->getComm()->sendStatus("Performing Initial Analysis and Writing and Loading Non-Varying Waveforms to Moog...\r\n");
 				//mainWin->getComm()->sendColorBox(Moog, 'Y');
@@ -983,13 +1007,8 @@ namespace commonFunctions
 			input.masterInput->comm = mainWin->getComm();
 			input.masterInput->profile = profile;
 
-			if (!MOOG_SAFEMODE) {
-				input.masterInput->runMoog = runMoog;
-			}
-			else {
-				input.masterInput->runMoog = false;
-			}
-			if (runMoog) {
+			input.masterInput->runAWG = runAWG;
+			if (runAWG) {
 				scriptInfo<std::string> addresses = scriptWin->getScriptAddresses();
 				//mainWin->setMoogRunningState(true);
 			}
@@ -1139,7 +1158,8 @@ namespace commonFunctions
 		logger->initializeDataFiles();
 		logger->logAndorSettings( input.camSettings, takeAndorPictures );
 		logger->logMasterParameters( input.masterInput );
-		logger->logMoogParameters(input.masterInput);
+		//logger->logMoogParameters(input.masterInput);
+		logger->logAWGParameters(input.masterInput);
 		logger->logMiscellaneous();
 		//logger->closeFile(); //TODO: May have to remove this once andor is integrated.
 	}

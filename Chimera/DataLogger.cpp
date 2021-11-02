@@ -325,37 +325,71 @@ void DataLogger::logFunctions(H5::Group& group)
 	}
 }
 
-void DataLogger::logMoogParameters(MasterThreadInput* input)
+//void DataLogger::logMoogParameters(MasterThreadInput* input)
+//{
+//	try
+//	{
+//		if (input == NULL)
+//		{
+//			H5::Group runParametersGroup(file.createGroup("/Moog-Parameters:NA"));
+//			return;
+//		}
+//		H5::Group runParametersGroup(file.createGroup("/Moog-Parameters"));
+//		writeDataSet(input->runMoog, "Run-Moog", runParametersGroup);
+//		if (input->runMoog)
+//		{
+//			std::ifstream moogScript(input->moogScriptAddress);
+//			if (!moogScript.is_open())
+//			{
+//				thrower("ERROR: Failed to load Moog script!");
+//			}
+//			std::string scriptBuf(str(moogScript.rdbuf()));
+//			writeDataSet(scriptBuf, "Moog-Script", runParametersGroup);
+//			writeDataSet(input->moogScriptAddress, "Moog-Script-File-Address", runParametersGroup);
+//		}
+//		else
+//		{
+//			writeDataSet("", "NA:Moog-Script", runParametersGroup);
+//			writeDataSet("", "NA:Moog-Script-File-Address", runParametersGroup);
+//		}
+//	}
+//	catch (H5::Exception& err)
+//	{
+//		thrower("ERROR: Failed to log Moog parameters in HDF5 file: detail:" + err.getDetailMsg());
+//	}
+//}
+
+void DataLogger::logAWGParameters(MasterThreadInput* input)
 {
 	try
 	{
 		if (input == NULL)
 		{
-			H5::Group runParametersGroup(file.createGroup("/Moog-Parameters:NA"));
+			H5::Group runParametersGroup(file.createGroup("/AWG-Parameters:NA"));
 			return;
 		}
-		H5::Group runParametersGroup(file.createGroup("/Moog-Parameters"));
-		writeDataSet(input->runMoog, "Run-Moog", runParametersGroup);
-		if (input->runMoog)
+		H5::Group runParametersGroup(file.createGroup("/AWG-Parameters"));
+		writeDataSet(input->runAWG, "Run-AWG", runParametersGroup);
+		if (input->runAWG)
 		{
-			std::ifstream moogScript(input->moogScriptAddress);
-			if (!moogScript.is_open())
+			std::ifstream awgScript(input->awgScriptAddress);
+			if (!awgScript.is_open())
 			{
 				thrower("ERROR: Failed to load Moog script!");
 			}
-			std::string scriptBuf(str(moogScript.rdbuf()));
-			writeDataSet(scriptBuf, "Moog-Script", runParametersGroup);
-			writeDataSet(input->moogScriptAddress, "Moog-Script-File-Address", runParametersGroup);
+			std::string scriptBuf(str(awgScript.rdbuf()));
+			writeDataSet(scriptBuf, "AWG-Script", runParametersGroup);
+			writeDataSet(input->awgScriptAddress, "AWG-Script-File-Address", runParametersGroup);
 		}
 		else
 		{
-			writeDataSet("", "NA:Moog-Script", runParametersGroup);
-			writeDataSet("", "NA:Moog-Script-File-Address", runParametersGroup);
+			writeDataSet("", "NA:AWG-Script", runParametersGroup);
+			writeDataSet("", "NA:AWG-Script-File-Address", runParametersGroup);
 		}
 	}
 	catch (H5::Exception& err)
 	{
-		thrower("ERROR: Failed to log Moog parameters in HDF5 file: detail:" + err.getDetailMsg());
+		thrower("ERROR: Failed to log AWG parameters in HDF5 file: detail:" + err.getDetailMsg());
 	}
 }
 

@@ -21,6 +21,7 @@
 #ifdef ADAMS_LAB
 	#define PYTHON_HOME L"C:\\ProgramData\\Anaconda3\\"
 	#define MOOG_SAFEMODE true
+	#define AWG_SAFEMODE false
 	#define GIGAMOOG_SAFEMODE true 
 	#define NIAWG_SAFEMODE true
 	#define ANDOR_SAFEMODE true
@@ -33,6 +34,8 @@
 	#define RSG_SAFEMODE true
 	#define DDS_FPGA_ADDRESS "FT1I6IBSB" //Device Serial: FT1I6IBS, Use FT1I6IBSB in C++ to select Channel B
 	#define GIGAMOOG_PORT "COM6" 
+	#define AWG_PORT "COM17"
+	#define AWG_BAUD 115200 /*921600*/ 
 	#define TOP_BOTTOM_TEK_SAFEMODE true
 	#define TOP_BOTTOM_TEK_USB_ADDRESS "USB0::0x0699::0x0343::C021681::0::INSTR"
 	#define EO_AXIAL_TEK_SAFEMODE true
@@ -77,6 +80,7 @@
 #ifdef DEEP_THOUGHT
 	#define PYTHON_HOME L"C:\\Users\\klab\\Anaconda3\\"
 	#define MOOG_SAFEMODE true
+	#define AWG_SAFEMODE false
 	#define GIGAMOOG_SAFEMODE true
 	#define NIAWG_SAFEMODE true
 	#define ANDOR_SAFEMODE false
@@ -100,6 +104,8 @@
 	#define DDS_MAX_AMP 100 // in mW
 	#define DDS_FPGA_ADDRESS "FT1I6IBSB" //Device Serial: FT1I6IBS, Use FT1I6IBSB in C++ to select Channel B
 	#define GIGAMOOG_PORT "COM6"
+	#define AWG_PORT "COM17"
+	#define AWG_BAUD 115200 /*921600*/ 
 	#define TOP_BOTTOM_TEK_SAFEMODE true
 	#define TOP_BOTTOM_TEK_USB_ADDRESS "USB0::0x0699::0x0343::C021681::0::INSTR"
 	#define EO_AXIAL_TEK_SAFEMODE true
@@ -138,6 +144,7 @@
 
 	//Test file for moog
 	const std::string MOOG_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_MOOG_SCRIPT.moogScript";
+	const std::string AWG_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_AWG_SCRIPT.awgScript";
 	const std::string GMOOG_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_GMOOG_SCRIPT.moogScript";
 	const std::string DDS_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_DDS_SCRIPT.ddsScript";
 #endif
@@ -383,8 +390,10 @@ const char * const SERVER_ADDRESS = "192.168.236.1";
 #define IDC_ENTER_EMAIL_INFO 10024
 // Scripting Window
 
-#define IDC_MOOG_FUNCTION_COMBO 12001
-#define IDC_MOOG_EDIT 12002
+//#define IDC_MOOG_FUNCTION_COMBO 12001
+//#define IDC_MOOG_EDIT 12002
+#define IDC_AWG_FUNCTION_COMBO 12001
+#define IDC_AWG_EDIT 12002
 #define IDC_GMOOG_FUNCTION_COMBO 12003
 #define IDC_GMOOG_EDIT 12004
 //#define IDC_VERTICAL_NIAWG_FUNCTION_COMBO 12001
@@ -547,7 +556,8 @@ const char * const SERVER_ADDRESS = "192.168.236.1";
 #define FUNCTION_EXTENSION "func"
 #define PLOTTING_EXTENSION "plot"
 
-#define MOOG_SCRIPT_EXTENSION "moogScript"
+//#define MOOG_SCRIPT_EXTENSION "moogScript"
+#define AWG_SCRIPT_EXTENSION "awgScript"
 #define GIGAMOOG_SCRIPT_EXTENSION "gmoogScript"
 #define DDS_SCRIPT_EXTENSION "ddsScript"
 
@@ -605,6 +615,30 @@ const char MOOG_INFO_TEXT[] =
 "step <stepsize>, stepsize is a 10-bit unsigned number. LSB = 25MHz/sec.\n"
 "(C) Software triggers:\n"
 "move, load, no inputs. Mostly just for debugging since actual experiment would use external TTL triggers\n"
+;
+
+const char AWG_INFO_TEXT[] =
+">>> This is a script for programming the fpga AWG (subharmonicon). <<<\n"
+"- the input format is referenced below using angled brackets <...>. Place the input on\n"
+" the line below the command in the format specified.\n"
+"- The associated c++ code has been designed to be flexible when it comes to trailing white spaces at the ends of\n"
+" lines and in between commands, so use whatever such formatting pleases your eyes.\n"
+"Accepted Commands:\n"
+"(A) Single snapshots:\n"
+"Set a single snapshot at a specific time. Note that script must be time-ordered.\n"
+"setsingle <channel (e.g. 0b0001), time, amp, freq, phase jump toggle (0 or 1), phase (in degrees, only used if toggle enabled)>\n"
+"(A) Step size:\n"
+"The step size, and number of steps, must be declared before any ramp that occurs during those steps.\n"
+"setsteps <channel (e.g. 0b0001), step size, start time, end time (all in us)>\n"
+"Note that the initial step MUST be at time 0.\n"
+"(B) Ramp types:\n"
+"Linear ramps for frequency and amplitude - note that both amplitude and frequency settings MUST fully cover range of step settings.\n"
+"linear amplitude ramp: amplin <channel, start time, end time (us), start amplitude, end amplitude (percent)>\n"
+"Gaussian amplitude ramp: amplin <channel, start time, end time (us), sigma, direction (+1 for peak at end, -1 for peak at beginning), start amplitude, end amplitude (percent)>\n"
+"linear frequency ramp: freqlin <channel, start time, end time (us), start frequency, end frequency (MHz), phase jump toggle (0 or 1), start phase (in degrees, only used if toggle enabled)>\n"
+"(C) Once ramps for one channel programmed, must write settings with program <channel>.\n"
+"(D) Software triggers:\n"
+"reset, trigger, no inputs. Mostly just for debugging since actual experiment would use external TTL triggers\n"
 ;
 
 const char GIGAMOOG_INFO_TEXT[] =

@@ -323,7 +323,8 @@ void ProfileSystem::saveConfigurationAs(ScriptingWindow* scriptWindow, MainWindo
 	configurationSaveFile << "Version: " + str(versionMain) + "." + str(versionSub) + "\n";
 	scriptInfo<std::string> addresses = scriptWindow->getScriptAddresses();
 	// order matters! 
-	configurationSaveFile << addresses.moog << "\n";
+	//configurationSaveFile << addresses.moog << "\n";
+	configurationSaveFile << addresses.awg << "\n";
 	configurationSaveFile << addresses.gmoog << "\n";
 
 	// Number of Variables 
@@ -841,7 +842,23 @@ std::string ProfileSystem::getMasterAddressFromConfig()
 	return newPath;
 }
 
-std::string ProfileSystem::getMoogAddressFromConfig()
+//std::string ProfileSystem::getMoogAddressFromConfig()
+//{
+//	std::string configurationAddress;
+//	configurationAddress = currentProfile.categoryPath + currentProfile.configuration + "." + CONFIG_EXTENSION;
+//	std::fstream configFile(configurationAddress);
+//	if (!configFile.is_open())
+//	{
+//		thrower("ERROR: Failed to open configuration file.");
+//	}
+//	std::string line, word, address, newPath;
+//	std::getline(configFile, line);
+//	std::getline(configFile, line);
+//	getline(configFile, newPath);
+//	return newPath;
+//}
+
+std::string ProfileSystem::getAWGAddressFromConfig()
 {
 	std::string configurationAddress;
 	configurationAddress = currentProfile.categoryPath + currentProfile.configuration + "." + CONFIG_EXTENSION;

@@ -13,7 +13,8 @@ class AuxiliaryWindow;
 // a convenient structure for containing one object for each script. For example, the address of each script. 
 template <typename type> struct scriptInfo 
 { 
-	type moog; 
+	//type moog; 
+	type awg;
 	type gmoog; 
 	type master; 
 }; 
@@ -56,12 +57,19 @@ class ScriptingWindow : public CDialog
 		void recolorScripts(); 
 
  
-		void newMoogScript(); 
-		void openMoogScript(CWnd* parent); 
-		void openMoogScript(std::string name); 
-		void saveMoogScript(); 
-		void saveMoogScriptAs(CWnd* parent); 
-		void moogEditChange(); 
+		//void newMoogScript(); 
+		//void openMoogScript(CWnd* parent); 
+		//void openMoogScript(std::string name); 
+		//void saveMoogScript(); 
+		//void saveMoogScriptAs(CWnd* parent); 
+		//void moogEditChange(); 
+
+		void newAWGScript();
+		void openAWGScript(CWnd* parent);
+		void openAWGScript(std::string name);
+		void saveAWGScript();
+		void saveAWGScriptAs(CWnd* parent);
+		void awgEditChange();
  
 		void newGmoogScript(); 
 		void openGmoogScript(CWnd* parent); 
@@ -89,7 +97,8 @@ class ScriptingWindow : public CDialog
 		void OnCancel() override; 
 		void OnSize(UINT nType, int cx, int cy); 
  
-		void handleMoogScriptComboChange(); 
+		//void handleMoogScriptComboChange(); 
+		void handleAWGScriptComboChange();
 		void handleGmoogScriptComboChange(); 
  
 		void handleAgilentScriptComboChange(); 
@@ -108,7 +117,7 @@ class ScriptingWindow : public CDialog
 		// 
 		cToolTips tooltips; 
  
-		Script masterScript, moogScript, gmoogScript; 
+		Script masterScript, awgScript, gmoogScript; /*moogScript, */
 		ColorBox statusBox; 
 		ProfileIndicator profileDisplay; 
  
