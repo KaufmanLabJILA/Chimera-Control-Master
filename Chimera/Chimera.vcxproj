@@ -192,6 +192,7 @@
     <ClInclude Include="ATMCD32D.H" />
     <ClInclude Include="atomCruncherInput.h" />
     <ClInclude Include="atomGrid.h" />
+    <ClInclude Include="awgCommand.h" />
     <ClInclude Include="beginningSettingsDialogProc.h" />
     <ClInclude Include="BoostAsyncSerial.h" />
     <ClInclude Include="CameraImageDimensions.h" />
@@ -209,6 +210,7 @@
     <ClInclude Include="DDS_SYNTH.h" />
     <ClInclude Include="DebugOptionsControl.h" />
     <ClInclude Include="Expression.h" />
+    <ClInclude Include="fpgaawg.h" />
     <ClInclude Include="GigaMoog.h" />
     <ClInclude Include="MasterThreadInput.h" />
     <ClInclude Include="MessagePrinter.h" />
@@ -303,6 +305,7 @@
     <ClCompile Include="DDS_SYNTH.cpp" />
     <ClCompile Include="DebugOptionsControl.cpp" />
     <ClCompile Include="Expression.cpp" />
+    <ClCompile Include="fpgaAWG.cpp" />
     <ClCompile Include="GigaMoog.cpp" />
     <ClCompile Include="MessagePrinter.cpp" />
     <ClCompile Include="MessageSender.cpp" />

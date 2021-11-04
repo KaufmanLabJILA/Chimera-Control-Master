@@ -199,6 +199,9 @@
     <ClCompile Include="DDSSystem.cpp">
       <Filter>Auxiliary Window</Filter>
     </ClCompile>
+    <ClCompile Include="fpgaAWG.cpp">
+      <Filter>Main Window</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -466,6 +469,12 @@
     </ClInclude>
     <ClInclude Include="MasterThreadInput.h">
       <Filter>General Files</Filter>
+    </ClInclude>
+    <ClInclude Include="awgCommand.h">
+      <Filter>Main Window</Filter>
+    </ClInclude>
+    <ClInclude Include="fpgaawg.h">
+      <Filter>Main Window</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
