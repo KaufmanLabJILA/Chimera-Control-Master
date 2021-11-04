@@ -85,7 +85,7 @@ xrot
 0
 zrot
 0
-dio6.3
+awgtrigger
 0
 dio6.4
 0

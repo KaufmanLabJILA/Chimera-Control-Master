@@ -11,11 +11,11 @@
 // build and debug other aspects of the program.
 
 //#define MASTER_COMPUTER
-//#define DEEP_THOUGHT
+#define DEEP_THOUGHT
 //#define ADAMS_LAB
 // #define DESKTOP_COMPUTER
 //#define SALAMIS_TABLET
-#define PAL9000
+//#define PAL9000
 /// File Locations
 
 #ifdef ADAMS_LAB
@@ -176,7 +176,7 @@
 	#define DDS_MAX_AMP 100 // in mW
 	#define DDS_FPGA_ADDRESS "FT1I6IBSB" //Device Serial: FT1I6IBS, Use FT1I6IBSB in C++ to select Channel B
 	#define GIGAMOOG_PORT "COM6"
-	#define AWG_PORT "COM17"
+	#define AWG_PORT "COM13"
 	#define AWG_BAUD 115200 /*921600*/ 
 	#define TOP_BOTTOM_TEK_SAFEMODE true
 	#define TOP_BOTTOM_TEK_USB_ADDRESS "USB0::0x0699::0x0343::C021681::0::INSTR"

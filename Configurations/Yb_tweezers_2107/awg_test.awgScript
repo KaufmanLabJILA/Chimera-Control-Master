@@ -1,0 +1,31 @@
+% start by resetting synthesizer
+
+reset
+
+% set channel, step size, strat and end time in us 
+setsteps 0 1 0 30
+
+% linear amplitude ramps
+% channel, start endtime us, start end amp
+amplin 0 0 30 100 100
+
+% linear frequency ramp
+% channel, start end time in us, start end freq in MHz, 
+% phase toggle, start phase
+freqlin 0 0 30 .1 .5 1 0
+
+setsteps 0 1 60 90
+amplin 0 60 90 100 0
+freqlin 0 60 90 .5 .1 0 0
+
+
+
+program 0
+
+
+
+
+
+% Software trigger for testing
+
+trigger
