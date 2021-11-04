@@ -306,7 +306,7 @@ greennarrowpower 6
 greennarrowpowerstart 20
 bluefreq 110
 bluetime 120
-bluepower 30
+bluepower 31
 setpoint556 2.65
 comploadtime 20
 943 1083 1 946 1046 1
