@@ -49,7 +49,7 @@ blueshut
 0
 shut707
 0
-axlatshut
+clkshut
 0
 shut679
 0
@@ -67,7 +67,7 @@ mmload
 0
 mmmove
 0
-c2
+makotweezer
 0
 c3
 0
@@ -83,7 +83,7 @@ andorshut
 0
 bigzantihelm
 0
-c10
+t515hold
 0
 c11
 0
@@ -158,7 +158,7 @@ imagtune
 -10 - 10
 0
 uvintservo
--1 - 3
+-1 - 4
 0
 axialpow
 -10 - 1

@@ -13,10 +13,12 @@ def imageLat(imageTime):
  on: imag461
  on: axial
  on: radial2
+ %on: radial
  %on: red3dnarrow
  t += imageTime
  off: axial
  off: radial2
+ off: radial
  off: red3dnarrow
  off: imag461
  off: andortrig

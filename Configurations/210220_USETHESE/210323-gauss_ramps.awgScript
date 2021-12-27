@@ -1,0 +1,47 @@
+% start by resetting synthesizer
+reset
+%%% for ramps:
+%setsteps 0 .006 0 ramptime %clock runs at 153 MHz = (6.5 ns)^-1 
+%amplin 0 0 ramptime 0 43 %DO NOT EXCEED 45% amp. 
+%freqlin 0 0 ramptime cuv-20 cuv-1 1 0  
+
+%setsteps 0 .006 ramptime+uvtime ramptime+uvtime+ramptime  
+%amplin 0 ramptime+uvtime ramptime+uvtime+ramptime 43 0 %0  
+%freqlin 0 ramptime+uvtime ramptime+uvtime+ramptime cuv-1 cuv-20 0 0 
+
+setsteps 0 .006 0 rampsigma*3
+%amplin 0 0 1 0 43
+ampgauss 0 0 rampsigma*3 rampsigma 1 0 43
+freqlin 0 0 rampsigma*3 (cuv-20) cuv-4 1 0
+
+setsteps 0 .006 rampsigma*3+uvtime rampsigma*6+uvtime
+ampgauss 0 rampsigma*3+uvtime rampsigma*6+uvtime rampsigma -1 43 0 %0  
+freqlin 0 rampsigma*3+uvtime rampsigma*6+uvtime cuv-4 (cuv-20) 0 0 
+
+setsingle 0 rampsigma*6+uvtime+.006 0 (cuv-20) 0 0
+
+program 0
+
+%setsteps 1 .006 0 ramptime
+%amplin 1 0 ramptime 0 43
+%freqlin 1 0 ramptime (cuv-20)/10 cuv/10 1 0 
+
+%setsteps 1 .006 ramptime+uvtime ramptime+uvtime+ramptime  
+%amplin 1 ramptime+uvtime ramptime+uvtime+ramptime 43 0 %0  
+%freqlin 1 ramptime+uvtime ramptime+uvtime+ramptime cuv/10 (cuv-20)/10 0 0 
+
+setsteps 1 .006 0 rampsigma*3
+%amplin 1 0 1 0 43
+ampgauss 1 0 rampsigma*3 rampsigma 1 0 43
+freqlin 1 0 rampsigma*3 (cuv-20) cuv-.5 1 0
+
+setsteps 1 .006 rampsigma*3+uvtime rampsigma*6+uvtime
+ampgauss 1 rampsigma*3+uvtime rampsigma*6+uvtime rampsigma -1 43 0 %0  
+freqlin 1 rampsigma*3+uvtime rampsigma*6+uvtime cuv-.5 (cuv-20) 0 0 
+
+setsingle 1 rampsigma*6+uvtime+.006 0 (cuv-20) 0 0
+
+program 1
+
+% Software trigger for testing
+%trigger

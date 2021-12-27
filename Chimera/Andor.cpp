@@ -38,7 +38,7 @@ AndorCamera::AndorCamera()
 		setShutter(0, 5, 30, 30); //Shutter open for any series, 30ms open/close time.
 		setDMAParameters(1, 0.0001f);
 		// TODO: turn fan back off, fanmode 2
-		setFanMode(0); //Internal fan off.
+		setFanMode(2); //Internal fan off. 211102: 0 - adaptive mode, 2 - always off.
 		SetFastExternalTrigger(0); //TODO: Be careful of this setting.
 	}
 	catch (Error& err)

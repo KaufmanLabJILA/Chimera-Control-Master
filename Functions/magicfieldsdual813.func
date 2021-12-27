@@ -14,6 +14,6 @@ def magicFieldsDual813():
 
   dac: y1coil .7
   dac: y2coil .7
-  dac: z1coil .3665 %.3686 %.3759 %.3719 % .3745  %.3715
+  dac: z1coil dmbz %%%for no bigz: .3665%%% %.3686 %.3759 %.3719 % .3745  %.3715
   dac: x1coil .014
   t += 11

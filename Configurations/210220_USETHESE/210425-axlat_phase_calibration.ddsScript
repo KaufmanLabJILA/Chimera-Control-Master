@@ -13,7 +13,7 @@ amps  0 0 30 100 0 7 6 0
 % SPECTROSCOPY
 snapshot 0 reps 2
 freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+.5 spec3p1 spec3p1 spec3p1 spec3p1
-amps  0 0 30 100 28 3 3 1.5
+amps  0 0 30 100 28 3 2 1.5
 %for imaging optimization
 %freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+1 c_3p1+f_3d c_3p1+fcool c_3p1+fcools c_3p1+fcool+.001
 %amps  0 100 30 100 18 18 15 3
@@ -27,6 +27,7 @@ amps  0 0 30 100 28 3 3 1.5
 snapshot 1 reps 2
 freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+1 c_3p1+f_3d c_3p1+fcool c_3p1+.14 c_3p1+fcool+.001
 amps  0 100 30 100 18 15 15 3
+%amps  0 100 30 100 18 100 100 100
 
 % IMAGE LATTICE
 %snapshot 1 reps 2

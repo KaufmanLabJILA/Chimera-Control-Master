@@ -3,6 +3,7 @@ def grafanaSnapshot():
   %%% DO NOT LEAVE THIS ON.
   on: imagshut
   dac: imagingPow imagpow
+  dac: blue3dpow 0.3
   on: blueshut
   on: red3d
   on: imag461

@@ -1,0 +1,16 @@
+% Master-Script See the "?" for info on commands.
+def red_cmot():
+
+  dac: bigzcoil .445
+
+
+  dac: x1coil 0.00175
+  dac: y1coil 0.0125
+  dac: y2coil 0.0125
+  dac: z1coil 0.0225
+
+  on: red3dnarrow
+  t += 75
+  off: red3dnarrow
+ 
+

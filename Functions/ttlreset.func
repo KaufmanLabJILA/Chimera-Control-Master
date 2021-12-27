@@ -33,9 +33,10 @@ on: tweezerAO
 on: tweezer813ao
 on: lat813ao
 on: axlatTTL
-on: axlatshut
 on: shut689
 on: slower
+
+off: clkshut
 off: imagshut
 off: shut688
 off: rp688
