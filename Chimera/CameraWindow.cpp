@@ -8,6 +8,7 @@
 #include "MasterThreadInput.h"
 #include "ATMCD32D.H"
 #include <numeric>
+#include "cnpy.h"
 
 CameraWindow::CameraWindow() : CDialog(), 
 								CameraSettings(&Andor), 
@@ -302,11 +303,13 @@ LRESULT CameraWindow::onCameraProgress( WPARAM wParam, LPARAM lParam )
 	{
 		std::lock_guard<std::mutex> locker( plotLock );
 		// TODO: add check to check if this is needed.
-		if (imageQueue.size() == 0) {
-		}
-		else {
-			imageQueue.push_back(picData[(pictureNumber - 1) % currentSettings.picsPerRepetition]);
-		}
+		//211227: this check is never initializing the queue.
+		//if (imageQueue.size() == 0) {
+		//}
+		//else {
+		//	imageQueue.push_back(picData[(pictureNumber - 1) % currentSettings.picsPerRepetition]);
+		//}
+		imageQueue.push_back(picData[(pictureNumber - 1) % currentSettings.picsPerRepetition]);
 	}
 
 	CDC* drawer = GetDC( );
@@ -836,46 +839,6 @@ void CameraWindow::prepareCamera( ExperimentInput& input )
 	Andor.setSettings( input.camSettings );
 }
 
-void CameraWindow::prepareAtomCruncher( ExperimentInput& input )
-{
-	input.cruncherInput = new atomCruncherInput;
-	input.cruncherInput->plotterActive = plotThreadActive;
-	input.cruncherInput->imageDims = CameraSettings.getSettings( ).imageSettings;
-	atomCrunchThreadActive = true;
-	input.cruncherInput->plotterNeedsImages = input.plotterInput->needsCounts;
-	input.cruncherInput->cruncherThreadActive = &atomCrunchThreadActive;
-	skipNext = false;
-	input.cruncherInput->skipNext = &skipNext;
-	input.cruncherInput->imageQueue = &imageQueue;
-	// options
-	if ( input.masterInput )
-	{
-		input.cruncherInput->rearrangerActive = input.masterInput->rearrangeInfo.active;
-	}
-	else
-	{
-		input.cruncherInput->rearrangerActive = false;
-	}
-	// locks
-	input.cruncherInput->imageLock = &imageLock;
-	input.cruncherInput->plotLock = &plotLock;
-	input.cruncherInput->rearrangerLock = &rearrangerLock;
-	// what the thread fills.
-	plotterPictureQueue.clear( );
-	input.cruncherInput->plotterImageQueue = &plotterPictureQueue;
-	plotterAtomQueue.clear( );
-	input.cruncherInput->plotterAtomQueue = &plotterAtomQueue;
-	rearrangerAtomQueue.clear( );
-	input.cruncherInput->rearrangerAtomQueue = &rearrangerAtomQueue;
-	input.cruncherInput->thresholds = CameraSettings.getThresholds();
-	input.cruncherInput->picsPerRep = CameraSettings.getSettings().picsPerRepetition;
-	input.cruncherInput->gridInfo = analysisHandler.getAtomGrid( );
-	input.cruncherInput->catchPicTime = &crunchSeesTimes;
-	input.cruncherInput->finTime = &crunchFinTimes;
-	input.cruncherInput->atomThresholdForSkip = mainWindowFriend->getMainOptions( ).atomThresholdForSkip;
-	input.cruncherInput->rearrangerConditionWatcher = &rearrangerConditionVariable;
-}
-
 
 void CameraWindow::startAtomCruncher(ExperimentInput& input)
 {
@@ -959,43 +922,188 @@ AndorRunSettings CameraWindow::getRunSettings()
 }
 
 
+void CameraWindow::prepareAtomCruncher(ExperimentInput& input)
+{
+	input.cruncherInput = new atomCruncherInput;
+	input.cruncherInput->plotterActive = plotThreadActive;
+	input.cruncherInput->imageDims = CameraSettings.getSettings().imageSettings;
+	atomCrunchThreadActive = true;
+	input.cruncherInput->plotterNeedsImages = input.plotterInput->needsCounts;
+	input.cruncherInput->cruncherThreadActive = &atomCrunchThreadActive;
+	skipNext = false;
+	input.cruncherInput->skipNext = &skipNext;
+	input.cruncherInput->imageQueue = &imageQueue;
+
+	try {
+		//load masks from .npy file
+		cnpy::NpyArray arrMasks = cnpy::npy_load(MASKS_FILE_LOCATION);
+		input.cruncherInput->masks = arrMasks.as_vec<int16>(); //load masks as a flattened list of longs (row major), passing by pointer to first element.
+		input.cruncherInput->nMask = arrMasks.shape[0];
+		input.cruncherInput->nx = arrMasks.shape[1];
+		input.cruncherInput->ny = arrMasks.shape[2]; //Get np array dimensions
+
+		cnpy::NpyArray arrCrops = cnpy::npy_load(MASKS_CROP_FILE_LOCATION);
+		input.cruncherInput->masksCrop = arrCrops.as_vec<int16>(); //This is flattened column major automatically for no goddamn reason.
+		cnpy::NpyArray arrBGImg = cnpy::npy_load(BG_IMAGE_FILE_LOCATION);
+		input.cruncherInput->bgImg = arrBGImg.as_vec<long>(); //row major
+	}
+	catch (const std::runtime_error& e) {
+		errBox(e.what());
+	}
+
+	// options
+	if (input.masterInput)
+	{
+		input.cruncherInput->rearrangerActive = input.masterInput->rearrangeInfo.active;
+	}
+	else
+	{
+		input.cruncherInput->rearrangerActive = false;
+	}
+	// locks
+	input.cruncherInput->imageLock = &imageLock;
+	input.cruncherInput->plotLock = &plotLock;
+	input.cruncherInput->rearrangerLock = &rearrangerLock;
+	// what the thread fills.
+	plotterPictureQueue.clear();
+	input.cruncherInput->plotterImageQueue = &plotterPictureQueue;
+	plotterAtomQueue.clear();
+	input.cruncherInput->plotterAtomQueue = &plotterAtomQueue;
+	rearrangerAtomQueue.clear();
+	input.cruncherInput->rearrangerAtomQueue = &rearrangerAtomQueue;
+	input.cruncherInput->thresholds = CameraSettings.getThresholds();
+	input.cruncherInput->picsPerRep = CameraSettings.getSettings().picsPerRepetition;
+	input.cruncherInput->gridInfo = analysisHandler.getAtomGrid();
+	input.cruncherInput->catchPicTime = &crunchSeesTimes;
+	input.cruncherInput->finTime = &crunchFinTimes;
+	input.cruncherInput->atomThresholdForSkip = mainWindowFriend->getMainOptions().atomThresholdForSkip;
+	input.cruncherInput->rearrangerConditionWatcher = &rearrangerConditionVariable;
+}
+
+
 // this thread has one purpose: watch the image vector thread for new images, determine where atoms are, and pass them
 // to the threads waiting on atom info.
 
 // should consider modifying so that it can use an array of locations. At the moment doesn't.
+//UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
+//{
+//	atomCruncherInput* input = (atomCruncherInput*)inputPtr; 
+//	std::vector<long> monitoredPixelIndecies;
+//
+//	if ( input->gridInfo.topLeftCorner == coordinate( 0, 0 ) )
+//	{
+//		return 0;
+//	}
+//	
+//	for ( auto columnInc : range( input->gridInfo.width ) )
+//	{
+//		for ( auto rowInc : range( input->gridInfo.height ) )
+//		{
+//			ULONG pixelRow = (input->gridInfo.topLeftCorner.row - 1) + rowInc * input->gridInfo.pixelSpacing;
+//			ULONG pixelColumn = (input->gridInfo.topLeftCorner.column - 1) + columnInc * input->gridInfo.pixelSpacing;
+//			if ( pixelRow >= input->imageDims.height || pixelColumn >= input->imageDims.width )
+//			{
+//				errBox( "ERROR: Grid appears to include pixels outside the image frame! Not allowed, seen by atom "
+//						"cruncher thread" );
+//				return 0;
+//			}
+//			int index = ((input->imageDims.height - 1 - pixelRow) * input->imageDims.width + pixelColumn);
+//			if ( index >= input->imageDims.width * input->imageDims.height )
+//			{
+//				// shouldn't happen after I finish debugging.
+//				errBox( "ERROR: Math error! Somehow, the pixel indexes appear within bounds, but the calculated index"
+//						" is larger than the image is!" );
+//				return 0;
+//			}
+//			monitoredPixelIndecies.push_back( index );
+//		}
+//	}
+//	UINT imageCount = 0;
+//	// loop watching the image queue.
+//	while (*input->cruncherThreadActive || input->imageQueue->size() != 0)
+//	{
+//		// if no images wait until images. Should probably change to be event based.
+//		if (input->imageQueue->size() == 0)
+//		{
+//			continue;
+//		}
+//		if ( imageCount % 2 == 0 )
+//		{
+//			input->catchPicTime->push_back( std::chrono::high_resolution_clock::now( ) );
+//		}
+//		// only contains the counts for the pixels being monitored.
+//		std::vector<long> tempImagePixels( monitoredPixelIndecies.size( ) );
+//		// only contains the boolean true/false of whether an atom passed a threshold or not. 
+//		std::vector<bool> tempAtomArray( monitoredPixelIndecies.size() );
+//		UINT count = 0;
+//		// scope for the lock_guard. I want to free the lock as soon as possible, so add extra small scope.
+//		{
+//			std::lock_guard<std::mutex> locker( *input->imageLock );				
+//			for ( auto pixelIndex : monitoredPixelIndecies )
+//			{
+//				tempImagePixels[count] = (*input->imageQueue)[0][pixelIndex];
+//				count++;
+//			}
+//		}
+//		count = 0;
+//		for ( auto& pix : tempImagePixels )
+//		{
+//			if ( pix >= input->thresholds[imageCount % input->picsPerRep] )
+//			{
+//				tempAtomArray[count] = true;
+//			}
+//			count++;
+//		}
+//		if ( input->rearrangerActive )
+//		{
+//			// copies the array if first pic of rep. Only looks at first picture because its rearranging. Could change
+//			// if we need to do funny experiments, just need to change rearranger handling.
+//			if ( imageCount % input->picsPerRep == 0 )
+//			{
+//				{
+//					std::lock_guard<std::mutex> locker( *input->rearrangerLock ); // When a lock_guard object is created, it attempts to take ownership of the mutex it is given. When control leaves the scope in which the lock_guard object was created, the lock_guard is destructed and the mutex is released.
+//
+//					(*input->rearrangerAtomQueue).push_back( tempAtomArray ); //put atom array in rearrange queue
+//					input->rearrangerConditionWatcher->notify_all( );
+//				}
+//				input->finTime->push_back( std::chrono::high_resolution_clock::now( ) );
+//			}
+//		}
+//		if (input->plotterActive)
+//		{
+//			// copies the array. Right now I'm assuming that the thread always needs atoms, which is not a good 
+//			// assumption.
+//			(*input->plotterAtomQueue).push_back(tempAtomArray);
+//
+//			if (input->plotterNeedsImages)
+//			{
+//				(*input->plotterImageQueue).push_back(tempImagePixels);
+//			}
+//		}
+//		// if last picture of repetition
+//		if ( imageCount % input->picsPerRep == input->picsPerRep - 1 )
+//		{
+//			UINT numAtoms = std::accumulate( tempAtomArray.begin( ), tempAtomArray.end( ), 0 );
+//			if ( numAtoms >= input->atomThresholdForSkip )
+//			{
+//				*input->skipNext = true;
+//			}
+//			else
+//			{
+//				*input->skipNext = false;
+//			}
+//		}
+//		imageCount++;
+//		std::lock_guard<std::mutex> locker( *input->imageLock );
+//		(*input->imageQueue).erase((*input->imageQueue).begin());		
+//	}
+//	return 0;
+//}
 UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 {
-	atomCruncherInput* input = (atomCruncherInput*)inputPtr; 
-	std::vector<long> monitoredPixelIndecies;
+	atomCruncherInput* input = (atomCruncherInput*)inputPtr;
+	std::vector<long> monitoredAtomIndecies;
 
-	if ( input->gridInfo.topLeftCorner == coordinate( 0, 0 ) )
-	{
-		return 0;
-	}
-	
-	for ( auto columnInc : range( input->gridInfo.width ) )
-	{
-		for ( auto rowInc : range( input->gridInfo.height ) )
-		{
-			ULONG pixelRow = (input->gridInfo.topLeftCorner.row - 1) + rowInc * input->gridInfo.pixelSpacing;
-			ULONG pixelColumn = (input->gridInfo.topLeftCorner.column - 1) + columnInc * input->gridInfo.pixelSpacing;
-			if ( pixelRow >= input->imageDims.height || pixelColumn >= input->imageDims.width )
-			{
-				errBox( "ERROR: Grid appears to include pixels outside the image frame! Not allowed, seen by atom "
-						"cruncher thread" );
-				return 0;
-			}
-			int index = ((input->imageDims.height - 1 - pixelRow) * input->imageDims.width + pixelColumn);
-			if ( index >= input->imageDims.width * input->imageDims.height )
-			{
-				// shouldn't happen after I finish debugging.
-				errBox( "ERROR: Math error! Somehow, the pixel indexes appear within bounds, but the calculated index"
-						" is larger than the image is!" );
-				return 0;
-			}
-			monitoredPixelIndecies.push_back( index );
-		}
-	}
 	UINT imageCount = 0;
 	// loop watching the image queue.
 	while (*input->cruncherThreadActive || input->imageQueue->size() != 0)
@@ -1005,45 +1113,63 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 		{
 			continue;
 		}
-		if ( imageCount % 2 == 0 )
+		if (imageCount % 2 == 0)
 		{
-			input->catchPicTime->push_back( std::chrono::high_resolution_clock::now( ) );
+			input->catchPicTime->push_back(std::chrono::high_resolution_clock::now());
 		}
-		// only contains the counts for the pixels being monitored.
-		std::vector<long> tempImagePixels( monitoredPixelIndecies.size( ) );
+		// only contains the counts for the ROIs being monitored.
+		std::vector<long> tempImageROIs(input->nMask);
 		// only contains the boolean true/false of whether an atom passed a threshold or not. 
-		std::vector<bool> tempAtomArray( monitoredPixelIndecies.size() );
+		std::vector<bool> tempAtomArray(input->nMask);
 		UINT count = 0;
 		// scope for the lock_guard. I want to free the lock as soon as possible, so add extra small scope.
 		{
-			std::lock_guard<std::mutex> locker( *input->imageLock );				
-			for ( auto pixelIndex : monitoredPixelIndecies )
+			std::lock_guard<std::mutex> locker(*input->imageLock);
+			for (size_t imask = 0; imask < input->nMask; imask++)
 			{
-				tempImagePixels[count] = (*input->imageQueue)[0][pixelIndex];
-				count++;
+				tempImageROIs[imask] = 0;
+				//iterate from min to max x, y values in each mask
+				for (size_t iy = 0; iy < input->ny; iy++)
+				{
+					for (size_t ix = 0; ix < input->nx; ix++)
+					{
+						//select appropriate pixel in image and mask and take product. Also subtracting background in this step - doing it all at once to avoid saving image twice, but also want to keep raw image for plotting.
+						size_t indPixImg = (ix + input->masksCrop[imask]) + (input->imageDims.width)*(iy + input->masksCrop[imask + 2 * input->nMask]);
+						size_t indPixMask = (input->nx)*(input->ny)*imask + ix + iy * (input->nx);
+						try {
+							tempImageROIs[imask] += ((*input->imageQueue)[0][indPixImg] - input->bgImg[indPixImg]) * (input->masks[indPixMask]);
+						}
+						catch (...) {
+							//TODO: work out why this is failing intermittently in debug mode.
+						}
+					}
+				}
 			}
 		}
-		count = 0;
-		for ( auto& pix : tempImagePixels )
 		{
-			if ( pix >= input->thresholds[imageCount % input->picsPerRep] )
+			size_t iroi = 0;
+			for (auto& roi : tempImageROIs) 
 			{
-				tempAtomArray[count] = true;
+				if (roi/100 >= input->thresholds[imageCount % input->picsPerRep]) //factor of 100 due to normalization of masks.
+				{
+					tempAtomArray[iroi] = true;
+				}
+				iroi++;
 			}
-			count++;
 		}
-		if ( input->rearrangerActive )
+		if (input->rearrangerActive)
 		{
 			// copies the array if first pic of rep. Only looks at first picture because its rearranging. Could change
 			// if we need to do funny experiments, just need to change rearranger handling.
-			if ( imageCount % input->picsPerRep == 0 )
+			if (imageCount % input->picsPerRep == 0)
 			{
 				{
-					std::lock_guard<std::mutex> locker( *input->rearrangerLock );
-					(*input->rearrangerAtomQueue).push_back( tempAtomArray );
-					input->rearrangerConditionWatcher->notify_all( );
+					std::lock_guard<std::mutex> locker(*input->rearrangerLock); // When a lock_guard object is created, it attempts to take ownership of the mutex it is given. When control leaves the scope in which the lock_guard object was created, the lock_guard is destructed and the mutex is released.
+
+					(*input->rearrangerAtomQueue).push_back(tempAtomArray); //put atom array in rearrange queue
+					input->rearrangerConditionWatcher->notify_all();
 				}
-				input->finTime->push_back( std::chrono::high_resolution_clock::now( ) );
+				input->finTime->push_back(std::chrono::high_resolution_clock::now());
 			}
 		}
 		if (input->plotterActive)
@@ -1054,14 +1180,14 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 
 			if (input->plotterNeedsImages)
 			{
-				(*input->plotterImageQueue).push_back(tempImagePixels);
+				(*input->plotterImageQueue).push_back(tempImageROIs);
 			}
 		}
 		// if last picture of repetition
-		if ( imageCount % input->picsPerRep == input->picsPerRep - 1 )
+		if (imageCount % input->picsPerRep == input->picsPerRep - 1)
 		{
-			UINT numAtoms = std::accumulate( tempAtomArray.begin( ), tempAtomArray.end( ), 0 );
-			if ( numAtoms >= input->atomThresholdForSkip )
+			UINT numAtoms = std::accumulate(tempAtomArray.begin(), tempAtomArray.end(), 0);
+			if (numAtoms >= input->atomThresholdForSkip)
 			{
 				*input->skipNext = true;
 			}
@@ -1071,8 +1197,8 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 			}
 		}
 		imageCount++;
-		std::lock_guard<std::mutex> locker( *input->imageLock );
-		(*input->imageQueue).erase((*input->imageQueue).begin());		
+		std::lock_guard<std::mutex> locker(*input->imageLock);
+		(*input->imageQueue).erase((*input->imageQueue).begin());
 	}
 	return 0;
 }

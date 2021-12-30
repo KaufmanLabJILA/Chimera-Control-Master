@@ -184,6 +184,7 @@
     <ClCompile Include="fpgaAWG.cpp">
       <Filter>Main Window</Filter>
     </ClCompile>
+    <ClCompile Include="cnpy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -437,6 +438,8 @@
     <ClInclude Include="awgCommand.h">
       <Filter>Main Window</Filter>
     </ClInclude>
+    <ClInclude Include="cnpy.h" />
+    <ClInclude Include="moveSequence.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Icon2.ico">

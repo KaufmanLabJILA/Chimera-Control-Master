@@ -278,7 +278,7 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 		}
 	}
 	if (editType == "Gmoog") {
-		if (word == "set" || word == "setmove")
+		if (word == "set" || word == "setmove" || word == "initx" || word == "inity" || word == "rearrange" || word == "targetstart" || word == "targetend")
 		{
 			return rgbs["theme purple"];
 		}

@@ -7,7 +7,6 @@
 #include "atomGrid.h"
 #include "imageParameters.h"
 
-
 struct atomCruncherInput
 {
 	//
@@ -17,6 +16,10 @@ struct atomCruncherInput
 	// what the thread watches...
 	std::atomic<bool>* cruncherThreadActive;
 	std::vector<std::vector<long>>* imageQueue;
+	std::vector<int16> masks; //Pass by value, do not want these modified by other threads.
+	std::vector<long> bgImg;
+	std::vector<int16> masksCrop;
+	int nMask, nx, ny; //dimensions of masks. 
 	// options
 	bool plotterActive;
 	bool plotterNeedsImages;

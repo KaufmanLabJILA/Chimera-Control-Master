@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "GigaMoog.h"
+#include "cnpy.h"
 
 //using namespace::boost::asio;
 //using namespace::std;
@@ -18,6 +19,271 @@ gigaMoog::gigaMoog(std::string portID, int baudrate) : fpga(portID, baudrate) {
 }
 
 gigaMoog::~gigaMoog(void){
+}
+
+void gigaMoog::refreshLUT()
+{
+	//Reload tweezer position LUT
+	//load LUTs from .npy file
+	cnpy::NpyArray arrAmpLUT = cnpy::npy_load(TWEEZER_AMPLITUDE_LUT_FILE_LOCATION);
+	std::vector<double> ampLUT = arrAmpLUT.as_vec<double>(); //load LUT as a flattened list of floats (row major)
+	cnpy::NpyArray arrFreqLUT = cnpy::npy_load(TWEEZER_FREQUENCY_LUT_FILE_LOCATION);
+	std::vector<double> freqLUT = arrFreqLUT.as_vec<double>(); // (row major)
+
+	xDim = arrAmpLUT.shape[0];
+	yDim = arrAmpLUT.shape[1]; //Get np array dimensions
+
+	UINT i = 0;
+	for (auto& amp : ampLUT)
+	{
+		ATW_LUT.push_back(amp);
+		//ATW_LUT.push_back(getATW(amp));
+		i++;
+	}
+
+	i = 0;
+	for (auto& freq : freqLUT)
+	{
+		FTW_LUT.push_back(freq);
+		//FTW_LUT.push_back(getFTW(freq)); //TODO: switch LUTs back to tuning words for speed, after fixing the message builder nonsense.
+		i++;
+	}
+
+}
+
+//void gigaMoog::writeRearrangeMoves(moveSequence input) {
+void gigaMoog::writeRearrangeMoves() {
+
+	moveSingle single;
+	moveSequence input;
+	for (size_t i = 0; i < 3; i++)
+	{
+		single.startAOX = { 0,10,20 };
+		single.startAOY = { 0 };
+		single.endAOX = { 0,13,20 };
+		single.endAOY = { 0 };
+		input.moves.push_back(single);
+	}
+
+	input.moves[1].endAOX = { 0,15,20 };
+	input.moves[2].endAOX = { 0,5,20 };
+
+	UINT nMoves = input.nMoves();
+	if (nMoves>256/3)
+	{
+		thrower("ERROR: too many moves for gmoog buffer");
+		return;
+	}
+
+	MessageSender ms;
+	//First write all zeroes for load
+	writeOff(ms);
+
+	UINT8 nx, ny;
+	double phase, amp, freq, ampPrev, freqPrev;
+	int ampstep, freqstep;
+
+	for (size_t stepID = 0; stepID < nMoves; stepID++)
+	{
+		nx = input.moves[stepID].nx();
+		ny = input.moves[stepID].ny();
+
+		//step 1: ramp up tones at initial locations and phases
+		for (int channel = 0; channel < 16; channel++) {//TODO: 16 could be changed to 64 if using more tones for rearrangement
+			if (channel < nx) {
+				freq = FTW_LUT[
+					2 * (input.moves[stepID].startAOX[channel] + xDim * input.moves[stepID].startAOY[0])
+				];
+				amp = ATW_LUT[
+					2 * (input.moves[stepID].startAOX[channel] + xDim * input.moves[stepID].startAOY[0])
+				];
+				phase = fmod(180 * pow(channel + 1, 2) / nx, 360); //this assumes comb of even tones, imperfect, but also short duratio so not super critical, and fast.
+
+				Message m = Message::make().destination(MessageDestination::KA007)
+					.DAC(MessageDAC::DAC0).channel(channel)
+					.setting(MessageSetting::MOVEFREQUENCY)
+					.frequencyMHz(freq).amplitudePercent(amp).phaseDegrees(phase).instantFTW(1).ATWIncr(ampStepMag).stepSequenceID(3 * stepID).FTWIncr(0).phaseJump(1);;
+				ms.enqueue(m);
+			}
+			else //populate extra channels with null moves.
+			{
+				Message m = Message::make().destination(MessageDestination::KA007)
+					.DAC(MessageDAC::DAC0).channel(channel)
+					.setting(MessageSetting::MOVEFREQUENCY)
+					.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0).instantFTW(1).ATWIncr(0).stepSequenceID(3 * stepID).FTWIncr(0).phaseJump(1);;
+				ms.enqueue(m);
+			}
+
+		}
+
+		for (int channel = 0; channel < 16; channel++) {
+			if (channel < ny) {
+				freq = FTW_LUT[
+					2 * (input.moves[stepID].startAOX[0] + xDim * input.moves[stepID].startAOY[channel]) + 1
+				];
+				amp = ATW_LUT[
+					2 * (input.moves[stepID].startAOX[0] + xDim * input.moves[stepID].startAOY[channel]) + 1
+				];
+				phase = fmod(180 * pow(channel + 1, 2) / ny, 360);
+
+				Message m = Message::make().destination(MessageDestination::KA007)
+					.DAC(MessageDAC::DAC1).channel(channel)
+					.setting(MessageSetting::MOVEFREQUENCY)
+					.frequencyMHz(freq).amplitudePercent(amp).phaseDegrees(phase).instantFTW(1).ATWIncr(ampStepMag).stepSequenceID(3 * stepID).FTWIncr(0).phaseJump(1);;
+				ms.enqueue(m);
+			}
+			else
+			{
+				Message m = Message::make().destination(MessageDestination::KA007)
+					.DAC(MessageDAC::DAC1).channel(channel)
+					.setting(MessageSetting::MOVEFREQUENCY)
+					.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0).instantFTW(1).ATWIncr(0).stepSequenceID(3 * stepID).FTWIncr(0).phaseJump(1);;
+				ms.enqueue(m);
+			}
+
+		}
+
+		//step 2: ramp to new locations
+		for (int channel = 0; channel < 16; channel++) {
+			if (channel < nx)
+			{
+				freqPrev = FTW_LUT[
+					2 * (input.moves[stepID].startAOX[channel] + xDim * input.moves[stepID].startAOY[0])
+				];
+				ampPrev = ATW_LUT[
+					2 * (input.moves[stepID].startAOX[channel] + xDim * input.moves[stepID].startAOY[0])
+				];
+				freq = FTW_LUT[
+					2 * (input.moves[stepID].endAOX[channel] + xDim * input.moves[stepID].endAOY[0])
+				];
+				amp = ATW_LUT[
+					2 * (input.moves[stepID].endAOX[channel] + xDim * input.moves[stepID].endAOY[0])
+				];
+
+				ampstep = (amp < ampPrev) ? -ampStepMag : ampStepMag; //Change sign of steps appropriately.
+				freqstep = (freq < freqPrev) ? -freqStepMag : freqStepMag;
+
+				Message m = Message::make().destination(MessageDestination::KA007)
+					.DAC(MessageDAC::DAC0).channel(channel)
+					.setting(MessageSetting::MOVEFREQUENCY)
+					.frequencyMHz(freq).amplitudePercent(amp).phaseDegrees(0).instantFTW(0).ATWIncr(ampstep).stepSequenceID(3 * stepID + 1).FTWIncr(freqstep).phaseJump(0);;
+				ms.enqueue(m);
+			}
+			else
+			{
+				Message m = Message::make().destination(MessageDestination::KA007)
+					.DAC(MessageDAC::DAC0).channel(channel)
+					.setting(MessageSetting::MOVEFREQUENCY)
+					.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0).instantFTW(1).ATWIncr(0).stepSequenceID(3 * stepID + 1).FTWIncr(0).phaseJump(0);;
+				ms.enqueue(m);
+			}
+		}
+
+		for (int channel = 0; channel < 16; channel++) {
+			if (channel < ny)
+			{
+				freqPrev = FTW_LUT[
+					2 * (input.moves[stepID].startAOX[0] + xDim * input.moves[stepID].startAOY[channel]) + 1
+				];
+				ampPrev = ATW_LUT[
+					2 * (input.moves[stepID].startAOX[0] + xDim * input.moves[stepID].startAOY[channel]) + 1
+				];
+				freq = FTW_LUT[
+					2 * (input.moves[stepID].endAOX[0] + xDim * input.moves[stepID].endAOY[channel]) + 1
+				];
+				amp = ATW_LUT[
+					2 * (input.moves[stepID].endAOX[0] + xDim * input.moves[stepID].endAOY[channel]) + 1
+				];
+
+				ampstep = (amp < ampPrev) ? -ampStepMag : ampStepMag; //Change sign of steps appropriately.
+				freqstep = (freq < freqPrev) ? -freqStepMag : freqStepMag;
+
+				Message m = Message::make().destination(MessageDestination::KA007)
+					.DAC(MessageDAC::DAC1).channel(channel)
+					.setting(MessageSetting::MOVEFREQUENCY)
+					.frequencyMHz(freq).amplitudePercent(amp).phaseDegrees(0).instantFTW(0).ATWIncr(ampstep).stepSequenceID(3 * stepID + 1).FTWIncr(freqstep).phaseJump(0);;
+				ms.enqueue(m);
+			}
+			else
+			{
+				Message m = Message::make().destination(MessageDestination::KA007)
+					.DAC(MessageDAC::DAC1).channel(channel)
+					.setting(MessageSetting::MOVEFREQUENCY)
+					.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0).instantFTW(1).ATWIncr(0).stepSequenceID(3 * stepID + 1).FTWIncr(0).phaseJump(0);;
+				ms.enqueue(m);
+			}
+		}
+
+		//step 3: ramp all tones to 0
+		for (int channel = 0; channel < 16; channel++) {
+			if (channel < nx) {
+				freq = FTW_LUT[
+					2 * (input.moves[stepID].endAOX[channel] + xDim * input.moves[stepID].endAOY[0])
+				];
+				Message m = Message::make().destination(MessageDestination::KA007)
+					.DAC(MessageDAC::DAC0).channel(channel)
+					.setting(MessageSetting::MOVEFREQUENCY)
+					.frequencyMHz(freq).amplitudePercent(0.002).phaseDegrees(0).instantFTW(1).ATWIncr(-ampStepMag).stepSequenceID(3 * stepID + 2).FTWIncr(0).phaseJump(0);;
+				ms.enqueue(m);
+				//Has trouble with ramping to 0 amp for some reason - set to ~1 LSB = 100/65535.
+			}
+			else
+			{
+				Message m = Message::make().destination(MessageDestination::KA007)
+					.DAC(MessageDAC::DAC0).channel(channel)
+					.setting(MessageSetting::MOVEFREQUENCY)
+					.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0).instantFTW(1).ATWIncr(0).stepSequenceID(3 * stepID + 2).FTWIncr(0).phaseJump(0);;
+				ms.enqueue(m);
+			}
+		}
+
+		for (int channel = 0; channel < 16; channel++) {
+			if (channel < ny) {
+				freq = FTW_LUT[
+					2 * (input.moves[stepID].endAOX[0] + xDim * input.moves[stepID].endAOY[channel]) + 1
+				];
+				Message m = Message::make().destination(MessageDestination::KA007)
+					.DAC(MessageDAC::DAC1).channel(channel)
+					.setting(MessageSetting::MOVEFREQUENCY)
+					.frequencyMHz(freq).amplitudePercent(0.002).phaseDegrees(0).instantFTW(1).ATWIncr(-ampStepMag).stepSequenceID(3 * stepID + 2).FTWIncr(0).phaseJump(0);;
+				ms.enqueue(m);
+			}
+			else
+			{
+				Message m = Message::make().destination(MessageDestination::KA007)
+					.DAC(MessageDAC::DAC1).channel(channel)
+					.setting(MessageSetting::MOVEFREQUENCY)
+					.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0).instantFTW(1).ATWIncr(0).stepSequenceID(3 * stepID + 2).FTWIncr(0).phaseJump(0);;
+				ms.enqueue(m);
+			}
+		}
+	}
+
+	////additional snapshot - unclear why needed, but prevents extra trigger issues.
+	//for (int channel = 0; channel < nx; channel++) {
+	//	Message m = Message::make().destination(MessageDestination::KA007)
+	//		.DAC(MessageDAC::DAC0).channel(channel)
+	//		.setting(MessageSetting::MOVEFREQUENCY)
+	//		.frequencyMHz(1).amplitudePercent(0).phaseDegrees(0).instantFTW(1).ATWIncr(-ampStepMag).stepSequenceID(3 * nMoves).FTWIncr(0).phaseJump(0);;
+	//	ms.enqueue(m);
+	//	//Always negative step back to 0 amp. 0 FTWIncr means do not need to recompute frequency values. But cannot be 0, since that looks like terminator.
+	//}
+
+	//for (int channel = 0; channel < ny; channel++) {
+	//	Message m = Message::make().destination(MessageDestination::KA007)
+	//		.DAC(MessageDAC::DAC1).channel(channel)
+	//		.setting(MessageSetting::MOVEFREQUENCY)
+	//		.frequencyMHz(1).amplitudePercent(0).phaseDegrees(0).instantFTW(1).ATWIncr(-ampStepMag).stepSequenceID(3 * nMoves).FTWIncr(0).phaseJump(0);;
+	//	ms.enqueue(m);
+	//}
+
+	{
+	Message m = Message::make().destination(MessageDestination::KA007)
+		.setting(MessageSetting::TERMINATE_SEQ);
+	ms.enqueue(m);
+	}
+
+	send(ms);
 }
 
 void gigaMoog::loadMoogScript(std::string scriptAddress)
@@ -145,8 +411,9 @@ void gigaMoog::send(MessageSender& ms)
 
 void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& variables, UINT variation)
 {
-
+	refreshLUT();
 	MessageSender ms;
+	bool test = false;
 
 	writeOff(ms);
 
@@ -302,8 +569,88 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vari
 				}
 			}
 		}
+		else if (word == "rearrange") {
+			Expression ampStepNew, freqStepNew;
+			std::string tmp, initAOX, initAOY;
+			currentMoogScript >> ampStepNew;
+			currentMoogScript >> freqStepNew;
+
+			ampStepMag = round(ampStepNew.evaluate(variables, variation));
+			if (ampStepMag > 134217727 || ampStepMag < 0) {
+				thrower("Warning: gmoog amplitude step out of range [-134217728, 134217727]");
+			}
+
+			freqStepMag = round(freqStepNew.evaluate(variables, variation));
+			if (freqStepMag > 511 || ampStepMag < 0) {
+				thrower("Warning: gmoog frequency step out of range [-512, 511]");
+			}
+
+			currentMoogScript >> tmp;
+			if (tmp == "initx")
+			{
+				currentMoogScript >> initAOX;
+				initialPositionsX.clear();
+				for (auto &ch : initAOX) { //convert string to boolean vector
+					if (ch == '0'){initialPositionsX.push_back(0);}
+					else if (ch == '1'){initialPositionsX.push_back(1);}
+					else {thrower("Error: non-boolean target value.");}
+				}
+			}
+			else
+			{
+				thrower("Error: must first specify initial x values.");
+			}
+			currentMoogScript >> tmp;
+			if (tmp == "inity")
+			{
+				currentMoogScript >> initAOY;
+				initialPositionsY.clear();
+				for (auto &ch : initAOY) { //convert string to boolean vector
+					if (ch == '0') {initialPositionsY.push_back(0);}
+					else if (ch == '1'){initialPositionsY.push_back(1);}
+					else {thrower("Error: non-boolean target value.");}
+				}
+			}
+			else
+			{
+				thrower("Error: must first specify initial y values.");
+			}
+
+			if (initAOX.length() != xDim || initAOY.length() != yDim)
+			{
+				thrower("Error: initial positions must match tweezer look up table size.");
+			}
+
+			currentMoogScript >> tmp;
+			if (tmp == "targetstart")
+			{
+				targetPositions.clear();
+				for (size_t i = 0; i < yDim; i++)
+				{
+					std::vector<bool> rowVect;
+					currentMoogScript >> tmp;
+					for (auto &ch : tmp) { //convert string to boolean vector
+						if (ch == '0') { rowVect.push_back(0); }
+						else if (ch == '1') { rowVect.push_back(1); }
+						else { thrower("Error: non-boolean target value."); }
+					}
+					if (rowVect.size() != xDim) {thrower("Error: invalid target dimensions");}
+					targetPositions.push_back(rowVect);
+				}
+				currentMoogScript >> tmp;
+				if (tmp != "targetend")
+				{
+					thrower("Error: invalid target dimensions");
+				}
+			}
+			else
+			{
+				thrower("Error: must specify target locations.");
+			}
+
+		}
 		else if (word == "test") {
-					//for (int channel = 0; channel < 16; channel++) {
+			//for (int channel = 0; channel < 16; channel++) {
 			//	Message m = Message::make().destination(MessageDestination::KA007)
 			//		.DAC(MessageDAC::DAC0).channel(channel)
 			//		.setting(MessageSetting::MOVEFREQUENCY)
@@ -326,6 +673,35 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vari
 			//		.frequencyMHz(235).amplitudePercent(5 + 5 * channel).phaseDegrees(180.0).instantFTW(0).ATWIncr(-1).stepSequenceID(2).FTWIncr(1).phaseJump(1);
 			//	ms.enqueue(m);
 			//};
+			test = true;
+			//{
+			//	Message m = Message::make().destination(MessageDestination::KA007)
+			//		.DAC(MessageDAC::DAC0).channel(0)
+			//		.setting(MessageSetting::MOVEFREQUENCY)
+			//		.frequencyMHz(100).amplitudePercent(100).phaseDegrees(180.0).instantFTW(0).ATWIncr(1024).stepSequenceID(0).FTWIncr(-1).phaseJump(0);
+			//	ms.enqueue(m);
+			//}
+			//{
+			//	Message m = Message::make().destination(MessageDestination::KA007)
+			//		.DAC(MessageDAC::DAC0).channel(0)
+			//		.setting(MessageSetting::MOVEFREQUENCY)
+			//		.frequencyMHz(120).amplitudePercent(20).phaseDegrees(180.0).instantFTW(0).ATWIncr(-1024).stepSequenceID(1).FTWIncr(1).phaseJump(0);
+			//	ms.enqueue(m);
+			//}
+			//{
+			//	Message m = Message::make().destination(MessageDestination::KA007)
+			//		.DAC(MessageDAC::DAC0).channel(0)
+			//		.setting(MessageSetting::MOVEFREQUENCY)
+			//		.frequencyMHz(110).amplitudePercent(0.1).phaseDegrees(180.0).instantFTW(0).ATWIncr(-1024).stepSequenceID(2).FTWIncr(-1).phaseJump(0);
+			//	ms.enqueue(m);
+			//}
+			//{
+			//	Message m = Message::make().destination(MessageDestination::KA007)
+			//		.DAC(MessageDAC::DAC0).channel(0)
+			//		.setting(MessageSetting::MOVEFREQUENCY)
+			//		.frequencyMHz(90).amplitudePercent(0.1).phaseDegrees(180.0).instantFTW(0).ATWIncr(-1024).stepSequenceID(3).FTWIncr(-1).phaseJump(0);
+			//	ms.enqueue(m);
+			//}
 		}
 		else
 		{
@@ -343,4 +719,7 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vari
 
 	send(ms);
 
+	if (test) {
+		writeRearrangeMoves(); //TODO TEMPORARY
+	}
 }

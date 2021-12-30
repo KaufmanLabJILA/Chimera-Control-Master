@@ -59,7 +59,12 @@
 	const std::string PYTHON_CODE_LOCATION = "C:/Users/KLab/Desktop/Chimera-Control-Master/";
 	// same as debug output location but with forward slashes for ease of use in python
 	const std::string PYTHON_INPUT_LOCATION = "C:/Users/KLab/Desktop/Chimera-Control-Master/Debug-Output";
-	const std::string PLOT_FILES_SAVE_LOCATION = PROJECT_LOCATION + "Plotting";
+	const std::string MASKS_FILE_LOCATION = PROJECT_LOCATION + "\\Image Processing\\" + "masks.npy";
+	const std::string MASKS_CROP_FILE_LOCATION = PROJECT_LOCATION + "\\Image Processing\\" + "maskPtsCrop.npy";
+	const std::string BG_IMAGE_FILE_LOCATION = PROJECT_LOCATION + "\\Image Processing\\" + "bgImg.npy";
+	const std::string TWEEZER_AMPLITUDE_LUT_FILE_LOCATION = PROJECT_LOCATION + "\\Tweezer LUT\\" + "ampLUT.npy";
+	const std::string TWEEZER_FREQUENCY_LUT_FILE_LOCATION = PROJECT_LOCATION + "\\Tweezer LUT\\" + "freqLUT.npy";
+	const std::string PLOT_FILES_SAVE_LOCATION = PROJECT_LOCATION + "\\Plotting\\";
 	const std::string LIB_PATH = PROJECT_LOCATION + "Waveforms-Library\\dummyLib\\";
 	const std::string DEFAULT_SCRIPT_FOLDER_PATH = PROJECT_LOCATION + "Default Scripts\\";
 	const std::string PROFILES_PATH = PROJECT_LOCATION + "Profiles\\";
@@ -689,7 +694,13 @@ const char GIGAMOOG_INFO_TEXT[] =
 "Snapshot ID, DAC number, channel number, instant frequency jump toggle, phase jump toggle, amplitude (%), amplitude increment, frequency (MHz), frequency increment, phase (degrees).\n"
 "Note that step increments must be of correct sign."
 "(C) hardreset:\n"
-"sets all output and move settings to 0 amp 0 freq."
+"sets all output and move settings to 0 amp 0 freq.\n"
+"(D) rearrange:\n"
+"rearrange <ampStep> <freqStep>\n"
+"initX <boolean string with 1 in x axis load locations>\n"
+"initY <boolean string with 1 in y axis load locations>\n"
+"targetStart <boolean 2D array for target locations> targetEnd\n"
+
 ;
 
 const char DDS_INFO_TEXT[] =
