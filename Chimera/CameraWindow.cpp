@@ -938,8 +938,8 @@ void CameraWindow::prepareAtomCruncher(ExperimentInput& input)
 		cnpy::NpyArray arrMasks = cnpy::npy_load(MASKS_FILE_LOCATION);
 		input.cruncherInput->masks = arrMasks.as_vec<int16>(); //load masks as a flattened list of longs (row major), passing by pointer to first element.
 		input.cruncherInput->nMask = arrMasks.shape[0];
-		input.cruncherInput->nx = arrMasks.shape[1];
-		input.cruncherInput->ny = arrMasks.shape[2]; //Get np array dimensions
+		input.cruncherInput->maskWidX = arrMasks.shape[1];
+		input.cruncherInput->maskWidY = arrMasks.shape[2]; //Get np array dimensions
 
 		cnpy::NpyArray arrCrops = cnpy::npy_load(MASKS_CROP_FILE_LOCATION);
 		input.cruncherInput->masksCrop = arrCrops.as_vec<int16>(); //This is flattened column major automatically for no goddamn reason.
@@ -1130,13 +1130,13 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 			{
 				tempImageROIs[imask] = 0;
 				//iterate from min to max x, y values in each mask
-				for (size_t iy = 0; iy < input->ny; iy++)
+				for (size_t iy = 0; iy < input->maskWidY; iy++)
 				{
-					for (size_t ix = 0; ix < input->nx; ix++)
+					for (size_t ix = 0; ix < input->maskWidX; ix++)
 					{
 						//select appropriate pixel in image and mask and take product. Also subtracting background in this step - doing it all at once to avoid saving image twice, but also want to keep raw image for plotting.
 						size_t indPixImg = (ix + input->masksCrop[imask]) + (input->imageDims.width)*(iy + input->masksCrop[imask + 2 * input->nMask]);
-						size_t indPixMask = (input->nx)*(input->ny)*imask + ix + iy * (input->nx);
+						size_t indPixMask = (input->maskWidX)*(input->maskWidY)*imask + ix + iy * (input->maskWidX);
 						try {
 							tempImageROIs[imask] += ((*input->imageQueue)[0][indPixImg] - input->bgImg[indPixImg]) * (input->masks[indPixMask]);
 						}

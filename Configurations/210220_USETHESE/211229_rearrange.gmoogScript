@@ -37,7 +37,7 @@ set DAC1 13 85.2615 207.43231984105608+yoff 45.0
 set DAC1 14 92.34099999999995 213.32910526670264+yoff 11.2
 set DAC1 15 100.0 219.2258906923492+yoff 0.0
 
-rearrange 1000000 511 %max is 134217727, 511
+rearrange 2 2 %max is 134217727, 511
 
 initx 1111111111111111
 inity 1111111111111111
@@ -65,6 +65,6 @@ targetend
 
 %%%
 
-test
+%test
 
 %hardreset %This takes ~ 2 minutes to run.

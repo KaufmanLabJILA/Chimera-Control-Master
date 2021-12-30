@@ -593,9 +593,13 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vari
 			{
 				currentMoogScript >> initAOX;
 				initialPositionsX.clear();
+				nTweezerX = 0;
 				for (auto &ch : initAOX) { //convert string to boolean vector
 					if (ch == '0'){initialPositionsX.push_back(0);}
-					else if (ch == '1'){initialPositionsX.push_back(1);}
+					else if (ch == '1'){
+						initialPositionsX.push_back(1);
+						nTweezerX++;
+					}
 					else {thrower("Error: non-boolean target value.");}
 				}
 			}
@@ -608,9 +612,13 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vari
 			{
 				currentMoogScript >> initAOY;
 				initialPositionsY.clear();
+				nTweezerY = 0;
 				for (auto &ch : initAOY) { //convert string to boolean vector
 					if (ch == '0') {initialPositionsY.push_back(0);}
-					else if (ch == '1'){initialPositionsY.push_back(1);}
+					else if (ch == '1'){
+						initialPositionsY.push_back(1);
+						nTweezerY++;
+					}
 					else {thrower("Error: non-boolean target value.");}
 				}
 			}

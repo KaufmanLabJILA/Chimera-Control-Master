@@ -12,12 +12,12 @@ moveSequence atomCruncher::getRearrangeMoves(void) {
 
 	moveSequence moveseq;
 
-	for (size_t iy = 0; iy < ny; iy++)
+	for (size_t iy = 0; iy < gmoog->nTweezerY; iy++)
 	{
 		moveSingle single;
-		for (size_t ix = 0; ix < nx; ix++)
+		for (size_t ix = 0; ix < gmoog->nTweezerX; ix++)
 		{
-			if ((*rearrangerAtomQueue)[0][ix + (nx)*iy])
+			if ((*rearrangerAtomQueue)[0][ix + (gmoog->nTweezerX)*iy])
 			{
 				single.startAOX.push_back(ix); //Place tweezers on all atoms in row
 				single.startAOY.push_back(iy);
@@ -26,10 +26,10 @@ moveSequence atomCruncher::getRearrangeMoves(void) {
 		moveseq.moves.push_back(single);
 	}
 
-	for (size_t iy = 0; iy < ny; iy++)
+	for (size_t iy = 0; iy < gmoog->nTweezerY; iy++)
 	{
 		int nAtomsInRow = moveseq.moves[iy].nx();
-		int nGap = (nx - nAtomsInRow) / 2;
+		int nGap = (gmoog->nTweezerX - nAtomsInRow) / 2;
 		for (size_t ix = 0; ix < nAtomsInRow; ix++)
 		{
 			moveseq.moves[iy].endAOX.push_back(nGap + ix); //Bunch up tweezers in center of row

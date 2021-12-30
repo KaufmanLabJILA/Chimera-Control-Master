@@ -24,7 +24,7 @@ public:
 	std::vector<int16> masks; //Pass by value, do not want these modified by other threads.
 	std::vector<long> bgImg;
 	std::vector<int16> masksCrop;
-	int nMask, nx, ny; //dimensions of masks. 
+	int nMask, maskWidX, maskWidY; //dimensions of masks. maskWidX, maskWidY are the WIDTH of each mask, not array dimensions
 	// options
 	bool plotterActive;
 	bool plotterNeedsImages;

@@ -37,7 +37,7 @@ public:
 	std::vector<bool> initialPositionsY;
 	std::vector<std::vector<bool>> targetPositions;
 	UINT targetNumber;
-
+	UINT nTweezerX, nTweezerY;
 private:
 	BoostAsyncSerial fpga;
 
