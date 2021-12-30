@@ -933,7 +933,6 @@ void CameraWindow::prepareAtomCruncher(ExperimentInput& input)
 	skipNext = false;
 	input.cruncherInput->skipNext = &skipNext;
 	input.cruncherInput->imageQueue = &imageQueue;
-
 	try {
 		//load masks from .npy file
 		cnpy::NpyArray arrMasks = cnpy::npy_load(MASKS_FILE_LOCATION);
@@ -954,7 +953,9 @@ void CameraWindow::prepareAtomCruncher(ExperimentInput& input)
 	// options
 	if (input.masterInput)
 	{
-		input.cruncherInput->rearrangerActive = input.masterInput->rearrangeInfo.active;
+		input.cruncherInput->gmoog = input.masterInput->gmoog; //TODO: make sure this is right.
+		//input.cruncherInput->rearrangerActive = input.masterInput->rearrangeInfo.active; //211229 - rearrangeInfo depreciated.
+		input.cruncherInput->rearrangerActive = input.masterInput->gmoog->rearrangerActive; //Now set rearranger active if it appears in gmoog script.
 	}
 	else
 	{
@@ -1148,11 +1149,13 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 		}
 		{
 			size_t iroi = 0;
+			input->nAtom = 0; //Keep track of how many atoms are loaded.
 			for (auto& roi : tempImageROIs) 
 			{
 				if (roi/100 >= input->thresholds[imageCount % input->picsPerRep]) //factor of 100 due to normalization of masks.
 				{
 					tempAtomArray[iroi] = true;
+					input->nAtom++;
 				}
 				iroi++;
 			}
@@ -1168,6 +1171,14 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 
 					(*input->rearrangerAtomQueue).push_back(tempAtomArray); //put atom array in rearrange queue
 					input->rearrangerConditionWatcher->notify_all();
+
+					if (input->nAtom > input->gmoog->targetNumber)
+					{
+						//REARRANGE
+						moveSequence moveseq = getRearrangeMoves(input);
+						input->gmoog->writeRearrangeMoves(moveseq);
+					}
+
 				}
 				input->finTime->push_back(std::chrono::high_resolution_clock::now());
 			}
@@ -1203,6 +1214,44 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 	return 0;
 }
 
+moveSequence CameraWindow::getRearrangeMoves(atomCruncherInput* input) {
+	//takes atomCruncherInput, which contains gmoog, and images. Generate moves based on these.
+	//input->gmoog->initialPositionsX;
+	//input->gmoog->initialPositionsY;
+	//input->rearrangerAtomQueue[0];
+	//input->gmoog->targetPositions;
+	//input->gmoog->targetNumber;
+	//input->nAtom;
+
+	moveSequence moveseq;
+
+	for (size_t iy = 0; iy < input->ny; iy++)
+	{
+		moveSingle single;
+		for (size_t ix = 0; ix < input->nx; ix++)
+		{
+			if ((*input->rearrangerAtomQueue)[0][ix + (input->nx)*iy])
+			{
+				single.startAOX.push_back(ix); //Place tweezers on all atoms in row
+				single.startAOY.push_back(iy);
+			}
+		}
+		moveseq.moves.push_back(single);
+	}
+
+	for (size_t iy = 0; iy < input->ny; iy++)
+	{
+		int nAtomsInRow = moveseq.moves[iy].nx();
+		int nGap = (input->nx - nAtomsInRow)/2;
+		for (size_t ix = 0; ix < nAtomsInRow; ix++)
+		{
+			moveseq.moves[iy].endAOX.push_back(nGap + ix); //Bunch up tweezers in center of row
+			moveseq.moves[iy].endAOY.push_back(iy);
+		}
+	}
+
+	return moveseq;
+}
 
 std::string CameraWindow::getStartMessage()
 {

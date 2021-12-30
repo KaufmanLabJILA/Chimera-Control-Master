@@ -6,6 +6,7 @@
 #include <array>
 #include "atomGrid.h"
 #include "imageParameters.h"
+#include "GigaMoog.h"
 
 struct atomCruncherInput
 {
@@ -16,6 +17,7 @@ struct atomCruncherInput
 	// what the thread watches...
 	std::atomic<bool>* cruncherThreadActive;
 	std::vector<std::vector<long>>* imageQueue;
+
 	std::vector<int16> masks; //Pass by value, do not want these modified by other threads.
 	std::vector<long> bgImg;
 	std::vector<int16> masksCrop;
@@ -31,9 +33,13 @@ struct atomCruncherInput
 	std::mutex* rearrangerLock;
 	std::condition_variable* rearrangerConditionWatcher;
 	// what the thread fills.
+
+	gigaMoog* gmoog;
+
 	std::vector<std::vector<long>>* plotterImageQueue;
 	std::vector<std::vector<bool>>* plotterAtomQueue;
 	std::vector<std::vector<bool>>* rearrangerAtomQueue;
+	size_t nAtom = 0;
 	std::array<int, 4> thresholds;
 	imageParameters imageDims;
 	UINT atomThresholdForSkip = UINT_MAX;

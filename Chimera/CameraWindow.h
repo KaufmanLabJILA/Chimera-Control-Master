@@ -97,6 +97,8 @@ class CameraWindow : public CDialog
 	private:
 		DECLARE_MESSAGE_MAP();
 
+		static moveSequence getRearrangeMoves(atomCruncherInput* input); //This probably should be defined somewhere else.
+
 		AndorCamera Andor;
 		CameraSettingsControl CameraSettings;
 		ColorBox box;

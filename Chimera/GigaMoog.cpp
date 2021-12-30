@@ -51,22 +51,23 @@ void gigaMoog::refreshLUT()
 
 }
 
-//void gigaMoog::writeRearrangeMoves(moveSequence input) {
-void gigaMoog::writeRearrangeMoves() {
-
-	moveSingle single;
-	moveSequence input;
-	for (size_t i = 0; i < 3; i++)
-	{
-		single.startAOX = { 0,10,20 };
-		single.startAOY = { 0 };
-		single.endAOX = { 0,13,20 };
-		single.endAOY = { 0 };
-		input.moves.push_back(single);
-	}
-
-	input.moves[1].endAOX = { 0,15,20 };
-	input.moves[2].endAOX = { 0,5,20 };
+void gigaMoog::writeRearrangeMoves(moveSequence input) {
+//// Test code for without input
+//void gigaMoog::writeRearrangeMoves() {
+//
+//	moveSingle single;
+//	moveSequence input;
+//	for (size_t i = 0; i < 3; i++)
+//	{
+//		single.startAOX = { 0,10,20 };
+//		single.startAOY = { 0 };
+//		single.endAOX = { 0,13,20 };
+//		single.endAOY = { 0 };
+//		input.moves.push_back(single);
+//	}
+//
+//	input.moves[1].endAOX = { 0,15,20 };
+//	input.moves[2].endAOX = { 0,5,20 };
 
 	UINT nMoves = input.nMoves();
 	if (nMoves>256/3)
@@ -414,6 +415,7 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vari
 	refreshLUT();
 	MessageSender ms;
 	bool test = false;
+	rearrangerActive = false;
 
 	writeOff(ms);
 
@@ -570,6 +572,7 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vari
 			}
 		}
 		else if (word == "rearrange") {
+			rearrangerActive = true;
 			Expression ampStepNew, freqStepNew;
 			std::string tmp, initAOX, initAOY;
 			currentMoogScript >> ampStepNew;
@@ -625,18 +628,24 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vari
 			if (tmp == "targetstart")
 			{
 				targetPositions.clear();
+				targetNumber = 0;
+
 				for (size_t i = 0; i < yDim; i++)
 				{
 					std::vector<bool> rowVect;
 					currentMoogScript >> tmp;
 					for (auto &ch : tmp) { //convert string to boolean vector
 						if (ch == '0') { rowVect.push_back(0); }
-						else if (ch == '1') { rowVect.push_back(1); }
+						else if (ch == '1') { 
+							rowVect.push_back(1);
+							targetNumber += 1; //count total desired atom number
+						}
 						else { thrower("Error: non-boolean target value."); }
 					}
 					if (rowVect.size() != xDim) {thrower("Error: invalid target dimensions");}
 					targetPositions.push_back(rowVect);
 				}
+
 				currentMoogScript >> tmp;
 				if (tmp != "targetend")
 				{
@@ -719,7 +728,7 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vari
 
 	send(ms);
 
-	if (test) {
-		writeRearrangeMoves(); //TODO TEMPORARY
-	}
+	//if (test) {
+	//	writeRearrangeMoves(); //TODO TEMPORARY
+	//}
 }
