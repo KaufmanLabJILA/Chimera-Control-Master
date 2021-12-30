@@ -193,7 +193,7 @@
     <ClInclude Include="AlertSystem.h" />
     <ClInclude Include="AndorRunSettings.h" />
     <ClInclude Include="ATMCD32D.H" />
-    <ClInclude Include="atomCruncherInput.h" />
+    <ClInclude Include="atomCruncher.h" />
     <ClInclude Include="atomGrid.h" />
     <ClInclude Include="awgCommand.h" />
     <ClInclude Include="beginningSettingsDialogProc.h" />
@@ -339,6 +339,7 @@
     <ClCompile Include="Segment.cpp" />
     <ClCompile Include="SerialSynth.cpp" />
     <ClCompile Include="SmsTextingControl.cpp" />
+    <ClCompile Include="atomCruncher.cpp" />
     <ClCompile Include="splashDialog.cpp" />
     <ClCompile Include="StatusControl.cpp" />
     <ClCompile Include="StatusIndicator.cpp" />

@@ -9,7 +9,7 @@
 #include "DataLogger.h"
 //#include "gnuplotter.h"
 #include "commonFunctions.h"
-#include "atomCruncherInput.h"
+#include "atomCruncher.h"
 #include "cameraPositions.h"
 #include "commonTypes.h"
 #include <bitset>
@@ -96,8 +96,6 @@ class CameraWindow : public CDialog
 		void stopPlotter( );
 	private:
 		DECLARE_MESSAGE_MAP();
-
-		static moveSequence getRearrangeMoves(atomCruncherInput* input); //This probably should be defined somewhere else.
 
 		AndorCamera Andor;
 		CameraSettingsControl CameraSettings;

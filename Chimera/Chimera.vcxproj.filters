@@ -185,6 +185,7 @@
       <Filter>Main Window</Filter>
     </ClCompile>
     <ClCompile Include="cnpy.cpp" />
+    <ClCompile Include="atomCruncher.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -373,9 +374,6 @@
     <ClInclude Include="AndorRunSettings.h">
       <Filter>Camera Window\Structures</Filter>
     </ClInclude>
-    <ClInclude Include="atomCruncherInput.h">
-      <Filter>Camera Window\Structures</Filter>
-    </ClInclude>
     <ClInclude Include="atomGrid.h">
       <Filter>Camera Window\Structures</Filter>
     </ClInclude>
@@ -440,6 +438,9 @@
     </ClInclude>
     <ClInclude Include="cnpy.h" />
     <ClInclude Include="moveSequence.h" />
+    <ClInclude Include="atomCruncher.h">
+      <Filter>Camera Window\Structures</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Icon2.ico">

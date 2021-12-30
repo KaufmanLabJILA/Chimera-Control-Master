@@ -924,7 +924,7 @@ AndorRunSettings CameraWindow::getRunSettings()
 
 void CameraWindow::prepareAtomCruncher(ExperimentInput& input)
 {
-	input.cruncherInput = new atomCruncherInput;
+	input.cruncherInput = new atomCruncher;
 	input.cruncherInput->plotterActive = plotThreadActive;
 	input.cruncherInput->imageDims = CameraSettings.getSettings().imageSettings;
 	atomCrunchThreadActive = true;
@@ -988,7 +988,7 @@ void CameraWindow::prepareAtomCruncher(ExperimentInput& input)
 // should consider modifying so that it can use an array of locations. At the moment doesn't.
 //UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 //{
-//	atomCruncherInput* input = (atomCruncherInput*)inputPtr; 
+//	atomCruncher* input = (atomCruncher*)inputPtr; 
 //	std::vector<long> monitoredPixelIndecies;
 //
 //	if ( input->gridInfo.topLeftCorner == coordinate( 0, 0 ) )
@@ -1102,7 +1102,7 @@ void CameraWindow::prepareAtomCruncher(ExperimentInput& input)
 //}
 UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 {
-	atomCruncherInput* input = (atomCruncherInput*)inputPtr;
+	atomCruncher* input = (atomCruncher*)inputPtr;
 	std::vector<long> monitoredAtomIndecies;
 
 	UINT imageCount = 0;
@@ -1175,7 +1175,7 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 					if (input->nAtom > input->gmoog->targetNumber)
 					{
 						//REARRANGE
-						moveSequence moveseq = getRearrangeMoves(input);
+						moveSequence moveseq = input->getRearrangeMoves();
 						input->gmoog->writeRearrangeMoves(moveseq);
 					}
 
@@ -1212,45 +1212,6 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 		(*input->imageQueue).erase((*input->imageQueue).begin());
 	}
 	return 0;
-}
-
-moveSequence CameraWindow::getRearrangeMoves(atomCruncherInput* input) {
-	//takes atomCruncherInput, which contains gmoog, and images. Generate moves based on these.
-	//input->gmoog->initialPositionsX;
-	//input->gmoog->initialPositionsY;
-	//input->rearrangerAtomQueue[0];
-	//input->gmoog->targetPositions;
-	//input->gmoog->targetNumber;
-	//input->nAtom;
-
-	moveSequence moveseq;
-
-	for (size_t iy = 0; iy < input->ny; iy++)
-	{
-		moveSingle single;
-		for (size_t ix = 0; ix < input->nx; ix++)
-		{
-			if ((*input->rearrangerAtomQueue)[0][ix + (input->nx)*iy])
-			{
-				single.startAOX.push_back(ix); //Place tweezers on all atoms in row
-				single.startAOY.push_back(iy);
-			}
-		}
-		moveseq.moves.push_back(single);
-	}
-
-	for (size_t iy = 0; iy < input->ny; iy++)
-	{
-		int nAtomsInRow = moveseq.moves[iy].nx();
-		int nGap = (input->nx - nAtomsInRow)/2;
-		for (size_t ix = 0; ix < nAtomsInRow; ix++)
-		{
-			moveseq.moves[iy].endAOX.push_back(nGap + ix); //Bunch up tweezers in center of row
-			moveseq.moves[iy].endAOY.push_back(iy);
-		}
-	}
-
-	return moveseq;
 }
 
 std::string CameraWindow::getStartMessage()
