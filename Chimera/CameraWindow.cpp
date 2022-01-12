@@ -838,7 +838,7 @@ void CameraWindow::prepareCamera( ExperimentInput& input )
 
 void CameraWindow::prepareAtomCruncher( ExperimentInput& input )
 {
-	input.cruncherInput = new atomCruncherInput;
+	input.cruncherInput = new atomCruncher;
 	input.cruncherInput->plotterActive = plotThreadActive;
 	input.cruncherInput->imageDims = CameraSettings.getSettings( ).imageSettings;
 	atomCrunchThreadActive = true;

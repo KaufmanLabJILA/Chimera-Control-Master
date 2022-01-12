@@ -13,7 +13,7 @@
 #include "Repetitions.h"
 //#include "TektronicsControl.h"
 #include "DataLogger.h"
-#include "atomCruncherInput.h"
+#include "atomCruncher.h"
 #include "realTimePlotterInput.h"
 #include "rerngParams.h"
 #include "commonTypes.h"

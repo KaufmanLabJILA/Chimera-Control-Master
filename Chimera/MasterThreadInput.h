@@ -12,7 +12,7 @@
 #include <vector>
 #include <atomic>
 #include <condition_variable>
-#include "atomCruncherInput.h"
+#include "atomCruncher.h"
 //for moog test:
 #include "SerialSynth.h"
 #include "DDS_SYNTH.h"
@@ -79,7 +79,7 @@ struct ExperimentInput
 		includesCameraRun( false ), masterInput( NULL ), plotterInput( NULL ), cruncherInput( NULL ) { }
 	MasterThreadInput* masterInput;
 	realTimePlotterInput* plotterInput;
-	atomCruncherInput* cruncherInput;
+	atomCruncher* cruncherInput;
 	AndorRunSettings camSettings;
 	bool includesCameraRun;
 };
