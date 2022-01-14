@@ -52,22 +52,6 @@ void gigaMoog::refreshLUT()
 }
 
 void gigaMoog::writeRearrangeMoves(moveSequence input) {
-//// Test code for without input
-//void gigaMoog::writeRearrangeMoves() {
-//
-//	moveSingle single;
-//	moveSequence input;
-//	for (size_t i = 0; i < 3; i++)
-//	{
-//		single.startAOX = { 0,10,20 };
-//		single.startAOY = { 0 };
-//		single.endAOX = { 0,13,20 };
-//		single.endAOY = { 0 };
-//		input.moves.push_back(single);
-//	}
-//
-//	input.moves[1].endAOX = { 0,15,20 };
-//	input.moves[2].endAOX = { 0,5,20 };
 
 	UINT nMoves = input.nMoves();
 	if (nMoves>256/3)
@@ -260,27 +244,27 @@ void gigaMoog::writeRearrangeMoves(moveSequence input) {
 		}
 	}
 
-	////additional snapshot - unclear why needed, but prevents extra trigger issues.
-	//for (int channel = 0; channel < nx; channel++) {
-	//	Message m = Message::make().destination(MessageDestination::KA007)
-	//		.DAC(MessageDAC::DAC0).channel(channel)
-	//		.setting(MessageSetting::MOVEFREQUENCY)
-	//		.frequencyMHz(1).amplitudePercent(0).phaseDegrees(0).instantFTW(1).ATWIncr(-ampStepMag).stepSequenceID(3 * nMoves).FTWIncr(0).phaseJump(0);;
-	//	ms.enqueue(m);
-	//	//Always negative step back to 0 amp. 0 FTWIncr means do not need to recompute frequency values. But cannot be 0, since that looks like terminator.
-	//}
+	//additional snapshot - unclear why needed, but prevents extra trigger issues.
+	for (int channel = 0; channel < nx; channel++) {
+		Message m = Message::make().destination(MessageDestination::KA007)
+			.DAC(MessageDAC::DAC0).channel(channel)
+			.setting(MessageSetting::MOVEFREQUENCY)
+			.frequencyMHz(1).amplitudePercent(0).phaseDegrees(0).instantFTW(1).ATWIncr(-ampStepMag).stepSequenceID(3 * nMoves).FTWIncr(0).phaseJump(0);;
+		ms.enqueue(m);
+		//Always negative step back to 0 amp. 0 FTWIncr means do not need to recompute frequency values. But cannot be 0, since that looks like terminator.
+	}
 
-	//for (int channel = 0; channel < ny; channel++) {
-	//	Message m = Message::make().destination(MessageDestination::KA007)
-	//		.DAC(MessageDAC::DAC1).channel(channel)
-	//		.setting(MessageSetting::MOVEFREQUENCY)
-	//		.frequencyMHz(1).amplitudePercent(0).phaseDegrees(0).instantFTW(1).ATWIncr(-ampStepMag).stepSequenceID(3 * nMoves).FTWIncr(0).phaseJump(0);;
-	//	ms.enqueue(m);
-	//}
+	for (int channel = 0; channel < ny; channel++) {
+		Message m = Message::make().destination(MessageDestination::KA007)
+			.DAC(MessageDAC::DAC1).channel(channel)
+			.setting(MessageSetting::MOVEFREQUENCY)
+			.frequencyMHz(1).amplitudePercent(0).phaseDegrees(0).instantFTW(1).ATWIncr(-ampStepMag).stepSequenceID(3 * nMoves).FTWIncr(0).phaseJump(0);;
+		ms.enqueue(m);
+	}
 
 	{
 	Message m = Message::make().destination(MessageDestination::KA007)
-		.setting(MessageSetting::TERMINATE_SEQ);
+		.setting(MessageSetting::TERMINATE_SEQ); //TERMINATE_SEQ swaps the written memory into active memory. gmload hardware trigger sets output based on active memory, but DOES NOT swap the memories. Swaps only occur with this TERMINATE_SEQ message.
 	ms.enqueue(m);
 	}
 
@@ -667,6 +651,7 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vari
 
 		}
 		else if (word == "test") {
+			test = true;
 			//for (int channel = 0; channel < 16; channel++) {
 			//	Message m = Message::make().destination(MessageDestination::KA007)
 			//		.DAC(MessageDAC::DAC0).channel(channel)
@@ -690,7 +675,6 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vari
 			//		.frequencyMHz(235).amplitudePercent(5 + 5 * channel).phaseDegrees(180.0).instantFTW(0).ATWIncr(-1).stepSequenceID(2).FTWIncr(1).phaseJump(1);
 			//	ms.enqueue(m);
 			//};
-			test = true;
 			//{
 			//	Message m = Message::make().destination(MessageDestination::KA007)
 			//		.DAC(MessageDAC::DAC0).channel(0)
@@ -730,13 +714,32 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vari
 
 	{
 		Message m = Message::make().destination(MessageDestination::KA007)
-			.setting(MessageSetting::TERMINATE_SEQ);
+			.setting(MessageSetting::TERMINATE_SEQ); //TERMINATE_SEQ swaps the written memory into active memory. gmload hardware trigger sets output based on active memory, but DOES NOT swap the memories. Swaps only occur with this TERMINATE_SEQ message.
 		ms.enqueue(m);
 	}
 
 	send(ms);
 
-	//if (test) {
-	//	writeRearrangeMoves(); //TODO TEMPORARY
-	//}
+	if (test) {
+		moveSingle single;
+		moveSequence testInput;
+		UINT8 ypos = 0;
+		for (size_t i = 0; i < 33; i++)
+		{
+			single.startAOX = { 0,8,15 };
+			single.startAOY = { ypos };
+			single.endAOX = { 0,14,15 };
+			single.endAOY = { ypos };
+			testInput.moves.push_back(single);
+			if ( i % 2 == 0) {
+				ypos += 1;
+			}
+			else {
+				ypos -= 1;
+			}
+		}
+		testInput.moves[0].endAOX = { 0,8,15 };
+		testInput.moves[19].endAOX = { 0,1,15 };
+		writeRearrangeMoves(testInput);
+	}
 }
