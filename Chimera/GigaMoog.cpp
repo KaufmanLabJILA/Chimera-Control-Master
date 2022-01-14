@@ -63,6 +63,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input) {
 	MessageSender ms;
 	//First write all zeroes for load
 	writeOff(ms);
+	writeMoveOff(ms);
 
 	UINT8 nx, ny;
 	double phase, amp, freq, ampPrev, freqPrev;
@@ -76,33 +77,36 @@ void gigaMoog::writeRearrangeMoves(moveSequence input) {
 		//step 1: ramp up tones at initial locations and phases
 		for (int channel = 0; channel < 16; channel++) {//TODO: 16 could be changed to 64 if using more tones for rearrangement
 			if (channel < nx) {
+				UINT8 hardwareChannel = channel % 2 + 8 * (channel / 2); //there are 256 memory locations for each group of 8 channels, want to populate blocks of memory evenly.
+
 				freq = FTW_LUT[
 					2 * (input.moves[stepID].startAOX[channel] + xDim * input.moves[stepID].startAOY[0])
 				];
 				amp = ATW_LUT[
 					2 * (input.moves[stepID].startAOX[channel] + xDim * input.moves[stepID].startAOY[0])
 				];
-				phase = fmod(180 * pow(channel + 1, 2) / nx, 360); //this assumes comb of even tones, imperfect, but also short duratio so not super critical, and fast.
+				phase = fmod(180 * pow(channel + 1, 2) / nx, 360); //this assumes comb of even tones, imperfect, but also short duration so not super critical, and fast.
 
 				Message m = Message::make().destination(MessageDestination::KA007)
-					.DAC(MessageDAC::DAC0).channel(channel)
+					.DAC(MessageDAC::DAC0).channel(hardwareChannel)
 					.setting(MessageSetting::MOVEFREQUENCY)
 					.frequencyMHz(freq).amplitudePercent(amp).phaseDegrees(phase).instantFTW(1).ATWIncr(ampStepMag).stepSequenceID(3 * stepID).FTWIncr(0).phaseJump(1);;
 				ms.enqueue(m);
 			}
-			else //populate extra channels with null moves.
-			{
-				Message m = Message::make().destination(MessageDestination::KA007)
-					.DAC(MessageDAC::DAC0).channel(channel)
-					.setting(MessageSetting::MOVEFREQUENCY)
-					.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0).instantFTW(1).ATWIncr(0).stepSequenceID(3 * stepID).FTWIncr(0).phaseJump(1);;
-				ms.enqueue(m);
-			}
+			//else //populate extra channels with null moves.
+			//{
+			//	Message m = Message::make().destination(MessageDestination::KA007)
+			//		.DAC(MessageDAC::DAC0).channel(channel)
+			//		.setting(MessageSetting::MOVEFREQUENCY)
+			//		.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0).instantFTW(1).ATWIncr(0).stepSequenceID(3 * stepID).FTWIncr(0).phaseJump(1);;
+			//	ms.enqueue(m);
+			//}
 
 		}
 
 		for (int channel = 0; channel < 16; channel++) {
 			if (channel < ny) {
+				UINT8 hardwareChannel = channel % 2 + 8 * (channel / 2); //there are 256 memory locations for each group of 8 
 				freq = FTW_LUT[
 					2 * (input.moves[stepID].startAOX[0] + xDim * input.moves[stepID].startAOY[channel]) + 1
 				];
@@ -112,19 +116,19 @@ void gigaMoog::writeRearrangeMoves(moveSequence input) {
 				phase = fmod(180 * pow(channel + 1, 2) / ny, 360);
 
 				Message m = Message::make().destination(MessageDestination::KA007)
-					.DAC(MessageDAC::DAC1).channel(channel)
+					.DAC(MessageDAC::DAC1).channel(hardwareChannel)
 					.setting(MessageSetting::MOVEFREQUENCY)
 					.frequencyMHz(freq).amplitudePercent(amp).phaseDegrees(phase).instantFTW(1).ATWIncr(ampStepMag).stepSequenceID(3 * stepID).FTWIncr(0).phaseJump(1);;
 				ms.enqueue(m);
 			}
-			else
-			{
-				Message m = Message::make().destination(MessageDestination::KA007)
-					.DAC(MessageDAC::DAC1).channel(channel)
-					.setting(MessageSetting::MOVEFREQUENCY)
-					.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0).instantFTW(1).ATWIncr(0).stepSequenceID(3 * stepID).FTWIncr(0).phaseJump(1);;
-				ms.enqueue(m);
-			}
+			//else
+			//{
+			//	Message m = Message::make().destination(MessageDestination::KA007)
+			//		.DAC(MessageDAC::DAC1).channel(channel)
+			//		.setting(MessageSetting::MOVEFREQUENCY)
+			//		.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0).instantFTW(1).ATWIncr(0).stepSequenceID(3 * stepID).FTWIncr(0).phaseJump(1);;
+			//	ms.enqueue(m);
+			//}
 
 		}
 
@@ -132,6 +136,8 @@ void gigaMoog::writeRearrangeMoves(moveSequence input) {
 		for (int channel = 0; channel < 16; channel++) {
 			if (channel < nx)
 			{
+				UINT8 hardwareChannel = channel % 2 + 8 * (channel / 2); //there are 256 memory locations for each group of 8 
+
 				freqPrev = FTW_LUT[
 					2 * (input.moves[stepID].startAOX[channel] + xDim * input.moves[stepID].startAOY[0])
 				];
@@ -149,24 +155,26 @@ void gigaMoog::writeRearrangeMoves(moveSequence input) {
 				freqstep = (freq < freqPrev) ? -freqStepMag : freqStepMag;
 
 				Message m = Message::make().destination(MessageDestination::KA007)
-					.DAC(MessageDAC::DAC0).channel(channel)
+					.DAC(MessageDAC::DAC0).channel(hardwareChannel)
 					.setting(MessageSetting::MOVEFREQUENCY)
 					.frequencyMHz(freq).amplitudePercent(amp).phaseDegrees(0).instantFTW(0).ATWIncr(ampstep).stepSequenceID(3 * stepID + 1).FTWIncr(freqstep).phaseJump(0);;
 				ms.enqueue(m);
 			}
-			else
-			{
-				Message m = Message::make().destination(MessageDestination::KA007)
-					.DAC(MessageDAC::DAC0).channel(channel)
-					.setting(MessageSetting::MOVEFREQUENCY)
-					.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0).instantFTW(1).ATWIncr(0).stepSequenceID(3 * stepID + 1).FTWIncr(0).phaseJump(0);;
-				ms.enqueue(m);
-			}
+			//else
+			//{
+			//	Message m = Message::make().destination(MessageDestination::KA007)
+			//		.DAC(MessageDAC::DAC0).channel(channel)
+			//		.setting(MessageSetting::MOVEFREQUENCY)
+			//		.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0).instantFTW(1).ATWIncr(0).stepSequenceID(3 * stepID + 1).FTWIncr(0).phaseJump(0);;
+			//	ms.enqueue(m);
+			//}
 		}
 
 		for (int channel = 0; channel < 16; channel++) {
 			if (channel < ny)
 			{
+				UINT8 hardwareChannel = channel % 2 + 8 * (channel / 2); //there are 256 memory locations for each group of 8 
+
 				freqPrev = FTW_LUT[
 					2 * (input.moves[stepID].startAOX[0] + xDim * input.moves[stepID].startAOY[channel]) + 1
 				];
@@ -184,63 +192,67 @@ void gigaMoog::writeRearrangeMoves(moveSequence input) {
 				freqstep = (freq < freqPrev) ? -freqStepMag : freqStepMag;
 
 				Message m = Message::make().destination(MessageDestination::KA007)
-					.DAC(MessageDAC::DAC1).channel(channel)
+					.DAC(MessageDAC::DAC1).channel(hardwareChannel)
 					.setting(MessageSetting::MOVEFREQUENCY)
 					.frequencyMHz(freq).amplitudePercent(amp).phaseDegrees(0).instantFTW(0).ATWIncr(ampstep).stepSequenceID(3 * stepID + 1).FTWIncr(freqstep).phaseJump(0);;
 				ms.enqueue(m);
 			}
-			else
-			{
-				Message m = Message::make().destination(MessageDestination::KA007)
-					.DAC(MessageDAC::DAC1).channel(channel)
-					.setting(MessageSetting::MOVEFREQUENCY)
-					.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0).instantFTW(1).ATWIncr(0).stepSequenceID(3 * stepID + 1).FTWIncr(0).phaseJump(0);;
-				ms.enqueue(m);
-			}
+			//else
+			//{
+			//	Message m = Message::make().destination(MessageDestination::KA007)
+			//		.DAC(MessageDAC::DAC1).channel(channel)
+			//		.setting(MessageSetting::MOVEFREQUENCY)
+			//		.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0).instantFTW(1).ATWIncr(0).stepSequenceID(3 * stepID + 1).FTWIncr(0).phaseJump(0);;
+			//	ms.enqueue(m);
+			//}
 		}
 
 		//step 3: ramp all tones to 0
 		for (int channel = 0; channel < 16; channel++) {
 			if (channel < nx) {
+				UINT8 hardwareChannel = channel % 2 + 8 * (channel / 2); //there are 256 memory locations for each group of 8 
+
 				freq = FTW_LUT[
 					2 * (input.moves[stepID].endAOX[channel] + xDim * input.moves[stepID].endAOY[0])
 				];
 				Message m = Message::make().destination(MessageDestination::KA007)
-					.DAC(MessageDAC::DAC0).channel(channel)
+					.DAC(MessageDAC::DAC0).channel(hardwareChannel)
 					.setting(MessageSetting::MOVEFREQUENCY)
 					.frequencyMHz(freq).amplitudePercent(0.002).phaseDegrees(0).instantFTW(1).ATWIncr(-ampStepMag).stepSequenceID(3 * stepID + 2).FTWIncr(0).phaseJump(0);;
 				ms.enqueue(m);
 				//Has trouble with ramping to 0 amp for some reason - set to ~1 LSB = 100/65535.
 			}
-			else
-			{
-				Message m = Message::make().destination(MessageDestination::KA007)
-					.DAC(MessageDAC::DAC0).channel(channel)
-					.setting(MessageSetting::MOVEFREQUENCY)
-					.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0).instantFTW(1).ATWIncr(0).stepSequenceID(3 * stepID + 2).FTWIncr(0).phaseJump(0);;
-				ms.enqueue(m);
-			}
+			//else
+			//{
+			//	Message m = Message::make().destination(MessageDestination::KA007)
+			//		.DAC(MessageDAC::DAC0).channel(channel)
+			//		.setting(MessageSetting::MOVEFREQUENCY)
+			//		.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0).instantFTW(1).ATWIncr(0).stepSequenceID(3 * stepID + 2).FTWIncr(0).phaseJump(0);;
+			//	ms.enqueue(m);
+			//}
 		}
 
 		for (int channel = 0; channel < 16; channel++) {
 			if (channel < ny) {
+				UINT8 hardwareChannel = channel % 2 + 8 * (channel / 2); //there are 256 memory locations for each group of 8 
+
 				freq = FTW_LUT[
 					2 * (input.moves[stepID].endAOX[0] + xDim * input.moves[stepID].endAOY[channel]) + 1
 				];
 				Message m = Message::make().destination(MessageDestination::KA007)
-					.DAC(MessageDAC::DAC1).channel(channel)
+					.DAC(MessageDAC::DAC1).channel(hardwareChannel)
 					.setting(MessageSetting::MOVEFREQUENCY)
 					.frequencyMHz(freq).amplitudePercent(0.002).phaseDegrees(0).instantFTW(1).ATWIncr(-ampStepMag).stepSequenceID(3 * stepID + 2).FTWIncr(0).phaseJump(0);;
 				ms.enqueue(m);
 			}
-			else
-			{
-				Message m = Message::make().destination(MessageDestination::KA007)
-					.DAC(MessageDAC::DAC1).channel(channel)
-					.setting(MessageSetting::MOVEFREQUENCY)
-					.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0).instantFTW(1).ATWIncr(0).stepSequenceID(3 * stepID + 2).FTWIncr(0).phaseJump(0);;
-				ms.enqueue(m);
-			}
+			//else
+			//{
+			//	Message m = Message::make().destination(MessageDestination::KA007)
+			//		.DAC(MessageDAC::DAC1).channel(channel)
+			//		.setting(MessageSetting::MOVEFREQUENCY)
+			//		.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0).instantFTW(1).ATWIncr(0).stepSequenceID(3 * stepID + 2).FTWIncr(0).phaseJump(0);;
+			//	ms.enqueue(m);
+			//}
 		}
 	}
 
@@ -304,6 +316,43 @@ void gigaMoog::loadMoogScript(std::string scriptAddress)
 	currentMoogScript.seekg(0);
 	//std::string str(currentMoogScript.str());
 	scriptFile.close();
+}
+
+void gigaMoog::writeMoveOff(MessageSender& ms) {
+	//channels grouped in sets of 8, each set has 256 locations in memory. 32*8=256.
+	for (int stepID = 0; stepID < 32; stepID++) {
+		for (int channel = 0; channel < 64; channel++) {
+			Message m = Message::make().destination(MessageDestination::KA007)
+				.DAC(MessageDAC::DAC0).channel(channel)
+				.setting(MessageSetting::MOVEFREQUENCY)
+				.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0.0).instantFTW(1).ATWIncr(0).stepSequenceID(stepID).FTWIncr(0).phaseJump(0);;
+			ms.enqueue(m);
+		}
+
+		for (int channel = 0; channel < 64; channel++) {
+			Message m = Message::make().destination(MessageDestination::KA007)
+				.DAC(MessageDAC::DAC1).channel(channel)
+				.setting(MessageSetting::MOVEFREQUENCY)
+				.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0.0).instantFTW(1).ATWIncr(0).stepSequenceID(stepID).FTWIncr(0).phaseJump(0);;
+			ms.enqueue(m);
+		}
+		//TODO: put back in after programming rate fixed, and when using both rails.
+		//for (int channel = 0; channel < 64; channel++) {
+		//	Message m = Message::make().destination(MessageDestination::KA007)
+		//		.DAC(MessageDAC::DAC2).channel(channel)
+		//		.setting(MessageSetting::MOVEFREQUENCY)
+		//		.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0.0).instantFTW(1).ATWIncr(0).stepSequenceID(stepID).FTWIncr(0).phaseJump(0);;
+		//	ms.enqueue(m);
+		//}
+
+		//for (int channel = 0; channel < 64; channel++) {
+		//	Message m = Message::make().destination(MessageDestination::KA007)
+		//		.DAC(MessageDAC::DAC3).channel(channel)
+		//		.setting(MessageSetting::MOVEFREQUENCY)
+		//		.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0.0).instantFTW(1).ATWIncr(0).stepSequenceID(stepID).FTWIncr(0).phaseJump(0);;
+		//	ms.enqueue(m);
+		//}
+	}
 }
 
 void gigaMoog::writeOff(MessageSender& ms) {
@@ -518,42 +567,25 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vari
 			ms.enqueue(m);
 		}
 		else if (word == "hardreset") {
-			writeOff(ms);
+			for (size_t i = 0; i < 2; i++) //write twice to reset both sets of memory.
+			{
+				{
+					MessageSender msReset;
+					writeOff(msReset);
+					writeMoveOff(msReset);
 
-			// RESET MOVE SETTINGS. TODO: do this more elegantly
-			for (int stepID = 0; stepID < 256; stepID++) {
-				for (int channel = 0; channel < 64; channel++) {
-					Message m = Message::make().destination(MessageDestination::KA007)
-						.DAC(MessageDAC::DAC0).channel(channel)
-						.setting(MessageSetting::MOVEFREQUENCY)
-						.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0.0).instantFTW(1).ATWIncr(0).stepSequenceID(stepID).FTWIncr(0).phaseJump(0);;
-					ms.enqueue(m);
-				}
+					// RESET MOVE SETTINGS. TODO: do this more elegantly - note channels grouped in blocks of 8, 256 memory locations for each block.
 
-				for (int channel = 0; channel < 64; channel++) {
-					Message m = Message::make().destination(MessageDestination::KA007)
-						.DAC(MessageDAC::DAC1).channel(channel)
-						.setting(MessageSetting::MOVEFREQUENCY)
-						.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0.0).instantFTW(1).ATWIncr(0).stepSequenceID(stepID).FTWIncr(0).phaseJump(0);;
-					ms.enqueue(m);
-				}
+					{
+						Message m = Message::make().destination(MessageDestination::KA007)
+							.setting(MessageSetting::TERMINATE_SEQ); //TERMINATE_SEQ swaps the written memory into active memory. gmload hardware trigger sets output based on active memory, but DOES NOT swap the memories. Swaps only occur with this TERMINATE_SEQ message.
+						msReset.enqueue(m);
+					}
 
-				for (int channel = 0; channel < 64; channel++) {
-					Message m = Message::make().destination(MessageDestination::KA007)
-						.DAC(MessageDAC::DAC2).channel(channel)
-						.setting(MessageSetting::MOVEFREQUENCY)
-						.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0.0).instantFTW(1).ATWIncr(0).stepSequenceID(stepID).FTWIncr(0).phaseJump(0);;
-					ms.enqueue(m);
-				}
-
-				for (int channel = 0; channel < 64; channel++) {
-					Message m = Message::make().destination(MessageDestination::KA007)
-						.DAC(MessageDAC::DAC3).channel(channel)
-						.setting(MessageSetting::MOVEFREQUENCY)
-						.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0.0).instantFTW(1).ATWIncr(0).stepSequenceID(stepID).FTWIncr(0).phaseJump(0);;
-					ms.enqueue(m);
+					send(msReset);
 				}
 			}
+			
 		}
 		else if (word == "rearrange") {
 			rearrangerActive = true;
@@ -724,7 +756,7 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vari
 		moveSingle single;
 		moveSequence testInput;
 		UINT8 ypos = 0;
-		for (size_t i = 0; i < 33; i++)
+		for (size_t i = 0; i < 16; i++)
 		{
 			single.startAOX = { 0,8,15 };
 			single.startAOY = { ypos };
@@ -739,7 +771,7 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vari
 			}
 		}
 		testInput.moves[0].endAOX = { 0,8,15 };
-		testInput.moves[19].endAOX = { 0,1,15 };
+		testInput.moves[15].endAOX = { 0,1,15 };
 		writeRearrangeMoves(testInput);
 	}
 }

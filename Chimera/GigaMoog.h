@@ -27,6 +27,8 @@ public:
 	void analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& variables, UINT variation);
 
 	virtual void writeOff(MessageSender& ms);
+	virtual void writeMoveOff(MessageSender& ms);
+
 	void send(MessageSender& ms);
 	void refreshLUT();
 
