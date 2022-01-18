@@ -1,0 +1,201 @@
+set DAC0 0 74.2293333333333 131.69700369588722+xoff 11.2
+set DAC0 1 66.01533333333332 137.4707365364356+xoff 45.0
+set DAC0 2 63.5526666666666 143.24446937698397+xoff 101.2
+set DAC0 3 60.96733333333335 149.01820221753235+xoff 180.0
+set DAC0 4 62.72599999999997 154.79193505808072+xoff 281.2
+set DAC0 5 64.54599999999998 160.5656678986291+xoff 45.0
+set DAC0 6 63.25866666666663 166.33940073917748+xoff 191.2
+set DAC0 7 66.60466666666665 172.11313357972585+xoff 0.0
+set DAC0 8 70.93866666666662 177.88686642027423+xoff 191.2
+set DAC0 9 72.2066666666666 183.6605992608226+xoff 45.0
+set DAC0 10 77.6233333333333 189.43433210137098+xoff 281.2
+set DAC0 11 77.99266666666664 195.20806494191936+xoff 180.0
+set DAC0 12 81.43466666666663 200.98179778246774+xoff 101.2
+set DAC0 13 89.54333333333325 206.7555306230161+xoff 45.0
+set DAC0 14 94.54799999999999 212.5292634635645+xoff 11.2
+set DAC0 15 100.0 218.30299630411287+xoff 0.0
+
+%%%Multi tone
+
+set DAC1 0 100 176.98202152220324+yoff 187.5
+set DAC1 1 100 176.98202152220324+yoff 187.5
+set DAC1 2 100 176.98202152220324+yoff 187.5
+
+setmove 0 DAC1 0 0 0 .02 -ampRate 176.98202152220324+yoff moveRate 0
+setmove 0 DAC1 1 0 0 .02 -ampRate 176.98202152220324+yoff moveRate 0
+setmove 0 DAC1 2 0 0 .02 -ampRate 176.98202152220324+yoff moveRate 0
+
+setmove 1 DAC1 0 0 0 100 ampRate 176.98202152220324+yoff moveRate 0
+setmove 1 DAC1 1 0 0 100 ampRate 176.98202152220324+yoff moveRate 0
+setmove 1 DAC1 2 0 0 100 ampRate 176.98202152220324+yoff moveRate 0
+setmove 2 DAC1 0 0 0 100 ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+setmove 2 DAC1 1 0 0 100 ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+setmove 2 DAC1 2 0 0 100 ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+setmove 3 DAC1 0 0 0 .02 -ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+setmove 3 DAC1 1 0 0 .02 -ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+setmove 3 DAC1 2 0 0 .02 -ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+
+setmove 4 DAC1 0 0 0 100 ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+setmove 4 DAC1 1 0 0 100 ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+setmove 4 DAC1 2 0 0 100 ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+setmove 5 DAC1 0 0 0 100 ampRate 176.98202152220324+yoff -moveRate 0
+setmove 5 DAC1 1 0 0 100 ampRate 176.98202152220324+yoff -moveRate 0
+setmove 5 DAC1 2 0 0 100 ampRate 176.98202152220324+yoff -moveRate 0
+setmove 6 DAC1 0 0 0 .02 -ampRate 176.98202152220324+yoff moveRate 0
+setmove 6 DAC1 1 0 0 .02 -ampRate 176.98202152220324+yoff moveRate 0
+setmove 6 DAC1 2 0 0 .02 -ampRate 176.98202152220324+yoff moveRate 0
+
+setmove 7 DAC1 0 0 0 100 ampRate 176.98202152220324+yoff moveRate 0
+setmove 7 DAC1 1 0 0 100 ampRate 176.98202152220324+yoff moveRate 0
+setmove 7 DAC1 2 0 0 100 ampRate 176.98202152220324+yoff moveRate 0
+setmove 8 DAC1 0 0 0 100 ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+setmove 8 DAC1 1 0 0 100 ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+setmove 8 DAC1 2 0 0 100 ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+setmove 9 DAC1 0 0 0 .02 -ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+setmove 9 DAC1 1 0 0 .02 -ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+setmove 9 DAC1 2 0 0 .02 -ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+
+setmove 10 DAC1 0 0 0 100 ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+setmove 10 DAC1 1 0 0 100 ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+setmove 10 DAC1 2 0 0 100 ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+setmove 11 DAC1 0 0 0 100 ampRate 176.98202152220324+yoff -moveRate 0
+setmove 11 DAC1 1 0 0 100 ampRate 176.98202152220324+yoff -moveRate 0
+setmove 11 DAC1 2 0 0 100 ampRate 176.98202152220324+yoff -moveRate 0
+setmove 12 DAC1 0 0 0 .02 -ampRate 176.98202152220324+yoff moveRate 0
+setmove 12 DAC1 1 0 0 .02 -ampRate 176.98202152220324+yoff moveRate 0
+setmove 12 DAC1 2 0 0 .02 -ampRate 176.98202152220324+yoff moveRate 0
+
+setmove 13 DAC1 0 0 0 100 ampRate 176.98202152220324+yoff moveRate 0
+setmove 13 DAC1 1 0 0 100 ampRate 176.98202152220324+yoff moveRate 0
+setmove 13 DAC1 2 0 0 100 ampRate 176.98202152220324+yoff moveRate 0
+setmove 14 DAC1 0 0 0 100 ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+setmove 14 DAC1 1 0 0 100 ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+setmove 14 DAC1 2 0 0 100 ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+setmove 15 DAC1 0 0 0 .02 -ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+setmove 15 DAC1 1 0 0 .02 -ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+setmove 15 DAC1 2 0 0 .02 -ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+
+setmove 16 DAC1 0 0 0 100 ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+setmove 16 DAC1 1 0 0 100 ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+setmove 16 DAC1 2 0 0 100 ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+setmove 17 DAC1 0 0 0 100 ampRate 176.98202152220324+yoff -moveRate 0
+setmove 17 DAC1 1 0 0 100 ampRate 176.98202152220324+yoff -moveRate 0
+setmove 17 DAC1 2 0 0 100 ampRate 176.98202152220324+yoff -moveRate 0
+setmove 18 DAC1 0 0 0 .02 -ampRate 176.98202152220324+yoff moveRate 0
+setmove 18 DAC1 1 0 0 .02 -ampRate 176.98202152220324+yoff moveRate 0
+setmove 18 DAC1 2 0 0 .02 -ampRate 176.98202152220324+yoff moveRate 0
+
+setmove 19 DAC1 0 0 0 100 ampRate 176.98202152220324+yoff moveRate 0
+setmove 19 DAC1 1 0 0 100 ampRate 176.98202152220324+yoff moveRate 0
+setmove 19 DAC1 2 0 0 100 ampRate 176.98202152220324+yoff moveRate 0
+setmove 20 DAC1 0 0 0 100 ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+setmove 20 DAC1 1 0 0 100 ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+setmove 20 DAC1 2 0 0 100 ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+setmove 21 DAC1 0 0 0 .02 -ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+setmove 21 DAC1 1 0 0 .02 -ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+setmove 21 DAC1 2 0 0 .02 -ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+
+setmove 22 DAC1 0 0 0 100 ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+setmove 22 DAC1 1 0 0 100 ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+setmove 22 DAC1 2 0 0 100 ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+setmove 23 DAC1 0 0 0 100 ampRate 176.98202152220324+yoff -moveRate 0
+setmove 23 DAC1 1 0 0 100 ampRate 176.98202152220324+yoff -moveRate 0
+setmove 23 DAC1 2 0 0 100 ampRate 176.98202152220324+yoff -moveRate 0
+setmove 24 DAC1 0 0 0 .02 -ampRate 176.98202152220324+yoff moveRate 0
+setmove 24 DAC1 1 0 0 .02 -ampRate 176.98202152220324+yoff moveRate 0
+setmove 24 DAC1 2 0 0 .02 -ampRate 176.98202152220324+yoff moveRate 0
+
+setmove 25 DAC1 0 0 0 100 ampRate 176.98202152220324+yoff moveRate 0
+setmove 25 DAC1 1 0 0 100 ampRate 176.98202152220324+yoff moveRate 0
+setmove 25 DAC1 2 0 0 100 ampRate 176.98202152220324+yoff moveRate 0
+setmove 26 DAC1 0 0 0 100 ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+setmove 26 DAC1 1 0 0 100 ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+setmove 26 DAC1 2 0 0 100 ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+setmove 27 DAC1 0 0 0 .02 -ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+setmove 27 DAC1 1 0 0 .02 -ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+setmove 27 DAC1 2 0 0 .02 -ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+
+setmove 28 DAC1 0 0 0 100 ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+setmove 28 DAC1 1 0 0 100 ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+setmove 28 DAC1 2 0 0 100 ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+setmove 29 DAC1 0 0 0 100 ampRate 176.98202152220324+yoff -moveRate 0
+setmove 29 DAC1 1 0 0 100 ampRate 176.98202152220324+yoff -moveRate 0
+setmove 29 DAC1 2 0 0 100 ampRate 176.98202152220324+yoff -moveRate 0
+setmove 30 DAC1 0 0 0 .02 -ampRate 176.98202152220324+yoff moveRate 0
+setmove 30 DAC1 1 0 0 .02 -ampRate 176.98202152220324+yoff moveRate 0
+setmove 30 DAC1 2 0 0 .02 -ampRate 176.98202152220324+yoff moveRate 0
+
+%%%Tweezers in lattice stuff:
+
+%set DAC1 0 100 176.98202152220324+yoff 187.5
+
+%setmove 0 DAC1 0 0 0 .02 -ampRate 176.98202152220324+yoff moveRate 0
+
+%setmove 1 DAC1 0 0 0 100 ampRate 176.98202152220324+yoff moveRate 0
+%setmove 2 DAC1 0 0 0 100 ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+%setmove 3 DAC1 0 0 0 .02 -ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+%
+%setmove 4 DAC1 0 0 0 100 ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+%setmove 5 DAC1 0 0 0 100 ampRate 176.98202152220324+yoff -moveRate 0
+%setmove 6 DAC1 0 0 0 .02 -ampRate 176.98202152220324+yoff moveRate 0
+%
+%setmove 7 DAC1 0 0 0 100 ampRate 176.98202152220324+yoff moveRate 0
+%setmove 8 DAC1 0 0 0 100 ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+%setmove 9 DAC1 0 0 0 .02 -ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+%
+%setmove 10 DAC1 0 0 0 100 ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+%setmove 11 DAC1 0 0 0 100 ampRate 176.98202152220324+yoff -moveRate 0
+%setmove 12 DAC1 0 0 0 .02 -ampRate 176.98202152220324+yoff moveRate 0
+%
+%setmove 13 DAC1 0 0 0 100 ampRate 176.98202152220324+yoff moveRate 0
+%setmove 14 DAC1 0 0 0 100 ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+%setmove 15 DAC1 0 0 0 .02 -ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+%
+%setmove 16 DAC1 0 0 0 100 ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+%setmove 17 DAC1 0 0 0 100 ampRate 176.98202152220324+yoff -moveRate 0
+%setmove 18 DAC1 0 0 0 .02 -ampRate 176.98202152220324+yoff moveRate 0
+%
+%setmove 19 DAC1 0 0 0 100 ampRate 176.98202152220324+yoff moveRate 0
+%setmove 20 DAC1 0 0 0 100 ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+%setmove 21 DAC1 0 0 0 .02 -ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+%
+%setmove 22 DAC1 0 0 0 100 ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+%setmove 23 DAC1 0 0 0 100 ampRate 176.98202152220324+yoff -moveRate 0
+%setmove 24 DAC1 0 0 0 .02 -ampRate 176.98202152220324+yoff moveRate 0
+%
+%setmove 25 DAC1 0 0 0 100 ampRate 176.98202152220324+yoff moveRate 0
+%setmove 26 DAC1 0 0 0 100 ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+%setmove 27 DAC1 0 0 0 .02 -ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+%
+%setmove 28 DAC1 0 0 0 100 ampRate 176.98202152220324+moveDistance*1.98202152+yoff moveRate 0
+%setmove 29 DAC1 0 0 0 100 ampRate 176.98202152220324+yoff -moveRate 0
+%setmove 30 DAC1 0 0 0 .02 -ampRate 176.98202152220324+yoff moveRate 0
+
+%%%Tweezers only stuff:
+
+%set DAC1 0 83.20249999999999 177.9483927128233+yoff 191.2
+%set DAC1 1 78.27099999999999 183.84517813846986+yoff 45.0
+
+%setmove 0 DAC1 0 0 0 83.20249999999999 ampRate 183.84517813846986-moveDistance+yoff moveRate 0
+%setmove 1 DAC1 0 0 0 78.27099999999999 ampRate 177.9483927128233+yoff -moveRate 0
+
+%setmove 0 DAC1 0 0 0 100 ampRate 180+moveDistance+yoff moveRate 0
+%setmove 1 DAC1 0 0 0 100 ampRate 180+yoff -moveRate 0
+%setmove 2 DAC1 0 0 0 100 ampRate 180+moveDistance+yoff moveRate 0
+%setmove 3 DAC1 0 0 0 100 ampRate 180+yoff -moveRate 0
+%setmove 4 DAC1 0 0 0 100 ampRate 180+moveDistance+yoff moveRate 0
+%setmove 5 DAC1 0 0 0 100 ampRate 180+yoff -moveRate 0
+%setmove 6 DAC1 0 0 0 100 ampRate 180+moveDistance+yoff moveRate 0
+%setmove 7 DAC1 0 0 0 100 ampRate 180+yoff -moveRate 0
+%setmove 8 DAC1 0 0 0 100 ampRate 180+moveDistance+yoff moveRate 0
+%setmove 9 DAC1 0 0 0 100 ampRate 180+yoff -moveRate 0
+%setmove 10 DAC1 0 0 0 100 ampRate 180+moveDistance+yoff moveRate 0
+%setmove 11 DAC1 0 0 0 100 ampRate 180+yoff -moveRate 0
+%setmove 12 DAC1 0 0 0 100 ampRate 180+moveDistance+yoff moveRate 0
+%setmove 13 DAC1 0 0 0 100 ampRate 180+yoff -moveRate 0
+%setmove 14 DAC1 0 0 0 100 ampRate 180+moveDistance+yoff moveRate 0
+%setmove 15 DAC1 0 0 0 100 ampRate 180+yoff -moveRate 0
+%setmove 16 DAC1 0 0 0 100 ampRate 180+moveDistance+yoff moveRate 0
+%setmove 17 DAC1 0 0 0 100 ampRate 180+yoff -moveRate 0
+%setmove 18 DAC1 0 0 0 100 ampRate 180+moveDistance+yoff moveRate 0
+%setmove 19 DAC1 0 0 0 100 ampRate 180+yoff -moveRate 0

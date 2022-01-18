@@ -43,34 +43,9 @@ snapshot 3 reps 2
 freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+.3 c_3p1+f_rad_3d c_3p1+f_rad_3d c_3p1+f_ax_3d c_3p1+f_rad_3d
 amps  0 0 30 92 0 0 3.5 2
 
-% spectroscopy2
+% SB COOL MOVE
 snapshot 4 reps 2
-freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+.3 79.74 c_3p1+f_rad_3d c_3p1+f_ax_3d c_3p1+1
-%freqs 80 c_3p0+.5 80 80 79.74 c_3p1+f_rad_3d c_3p1+f_ax_3d c_3p1+f_rad_3d
-amps  0 100 30 92 0 6 2. 2.5
-
-% phase jump
-snapshot 5 reps 2
-freqs 80 c_3p0+spec3p0/1000+1 80 c_3p0+spec3p0/1000+.3 79.74 c_3p1+f_rad_3d c_3p1+f_ax_3d c_3p1+1
-%freqs 80 c_3p0+.5 80 80 79.74 c_3p1+f_rad_3d c_3p1+f_ax_3d c_3p1+f_rad_3d
-amps  0 100 30 92 0 6 3 2
-
-% spectroscopy2
-snapshot 6 reps 2
-freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+.3 79.74 c_3p1+f_rad_3d c_3p1+.1 c_3p1-10
-%freqs 80 c_3p0+.5 80 80 79.74 c_3p1+f_rad_3d c_3p1+f_ax_3d c_3p1+f_rad_3d
-amps  0 100 30 92 0 6 3.5 5
-
-% phase jump
-snapshot 7 reps 2
-freqs 80 c_3p0+spec3p0/1000+1 80 c_3p0+spec3p0/1000+.3 79.74 c_3p1+f_rad_3d c_3p1+f_ax_3d c_3p1+1
-%freqs 80 c_3p0+.5 80 80 79.74 c_3p1+f_rad_3d c_3p1+f_ax_3d c_3p1+f_rad_3d
-amps  0 100 30 92 0 6 3 2
-
-% spectroscopy2
-snapshot 8 reps 2
-freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+.3 79.74 c_3p1+f_rad_3d c_3p1+f_ax_3d c_3p1+1
-%freqs 80 c_3p0+.5 80 80 79.74 c_3p1+f_rad_3d c_3p1+f_ax_3d c_3p1+f_rad_3d
-amps  0 100 30 92 0 6 3 2
+freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+.3 c_3p1+f_rad_3d c_3p1+f_rad_3d c_3p1+f_ax_3d c_3p1+.06
+amps  0 0 30 92 0 0 3.5 2
 
 end

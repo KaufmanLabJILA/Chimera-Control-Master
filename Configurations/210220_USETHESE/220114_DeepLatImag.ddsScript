@@ -3,7 +3,7 @@
 
 %%%
 
-% SB COOL TWEEZER
+% SB COOL
 reset
 %freqs 80 c_3p0+.2 80 80 79.74 c_3p1+f_rad c_3p1+faxcool c_3p1+f_rad2
 %amps  0 100 UVaopow 100 0 6 16 1
@@ -12,11 +12,11 @@ amps  0 0 30 92 0 7 6 0
 
 % SPECTROSCOPY
 snapshot 0 reps 2
-freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+.5 spec3p1 spec3p1 spec3p1 spec3p1
-amps  0 0 30 92 0 3.0 3.5 1.5
+%freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+.5 spec3p1 spec3p1 spec3p1 spec3p1
+%amps  0 0 30 92 0 3.0 3.5 1.5
 %for imaging optimization
-%freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+1 c_3p1+f_3d c_3p1+fcool c_3p1+fcools c_3p1+fcool+.001
-%amps  0 100 30 100 18 18 15 3
+freqs 80 c_3p0+1 80 80 79.74 c_3p1+0.11 c_3p1+f_ax_3d_imag c_3p1+0.11 
+amps  0 100 30 92 0 6.5 8 scan
 %freqs 80 c_3p0+1 80 80 79.74 c_3p1+f_rad c_3p1+f_ax_3d_imag c_3p1+f_rad_3d 
 %amps  0 100 30 100 0 6 12 5.5
 % for shelving:
