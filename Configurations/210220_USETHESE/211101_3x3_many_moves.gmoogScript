@@ -14,6 +14,14 @@ setmove 0 DAC1 0 0 0 89.14666666666663 ampRate 142.1977632557655+yoff+ycommon -m
 setmove 0 DAC1 1 0 0 92.41050000000001 ampRate 164.0+yoff+ycommon -moveRate 240.0
 setmove 0 DAC1 2 0 0 92.11516666666664 -ampRate 185.8022367442345+yoff+ycommon moveRate 180.0
 
+setmove 1 DAC0 0 0 0 100 ampRate 180 moveRate 60.0
+setmove 1 DAC0 1 0 0 100 ampRate 200 moveRate 240.0
+setmove 1 DAC0 2 0 0 100 ampRate 215 moveRate 180.0
+
+setmove 1 DAC1 0 0 0 100 ampRate 180 moveRate 60.0
+setmove 1 DAC1 1 0 0 100 ampRate 200 moveRate 240.0
+setmove 1 DAC1 2 0 0 100 ampRate 215 moveRate 180.0
+
 %%reset moves:
 
 %setmove 0 DAC0 3  1 1 0 0 0 0 0.0

@@ -9,7 +9,7 @@
 #include "DataLogger.h"
 //#include "gnuplotter.h"
 #include "commonFunctions.h"
-#include "atomCruncherInput.h"
+#include "atomCruncher.h"
 #include "cameraPositions.h"
 #include "commonTypes.h"
 #include <bitset>

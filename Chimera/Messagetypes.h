@@ -259,12 +259,28 @@ struct SetMoveFrequency : KA007_Message_Base
 		bits = p.get<int>("InstantFTW");
 
 		bits = bits << 28;
-		//conversion to 28-bit signed number
+		//conversion to 26-bit signed number. Highest 2 bits in 28 bit message get ignored.
 		int temp = p.get<int>("ATWIncr");
-		if (temp < -134217728)temp = -134217728;
-		if (temp > 134217727)temp = 134217727;
-		if (temp < 0)temp = temp + 268435456;
+		if (temp < -33554432)temp = -33554432;
+		if (temp > 33554431)temp = 33554431;
+		if (temp < 0)temp = temp + 67108864;
 		bits = bits | temp;
+
+		//bits = bits << 28;
+		////conversion to 28-bit signed number
+		//int temp = p.get<int>("ATWIncr");
+		//if (temp < -134217728)temp = -134217728;
+		//if (temp > 134217727)temp = 134217727;
+		//if (temp < 0)temp = temp + 268435456;
+		//bits = bits | temp;
+
+		//bits = bits << 26; // This does not seem to be correct
+		////conversion to 26-bit signed number
+		//int temp = p.get<int>("ATWIncr");
+		//if (temp < -33554432)temp = -33554432;
+		//if (temp > 33554431)temp = 33554431;
+		//if (temp < 0)temp = temp + 67108864;
+		//bits = bits | temp;
 
 		bits = bits << 8;
 		bits = bits | p.get<int>("StepSequenceID");

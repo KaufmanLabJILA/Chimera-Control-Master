@@ -176,6 +176,7 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <AdditionalIncludeDirectories>D:\Program Files\boost_1_60_0</AdditionalIncludeDirectories>
       <ShowIncludes>false</ShowIncludes>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -192,7 +193,7 @@
     <ClInclude Include="AlertSystem.h" />
     <ClInclude Include="AndorRunSettings.h" />
     <ClInclude Include="ATMCD32D.H" />
-    <ClInclude Include="atomCruncherInput.h" />
+    <ClInclude Include="atomCruncher.h" />
     <ClInclude Include="atomGrid.h" />
     <ClInclude Include="awgCommand.h" />
     <ClInclude Include="beginningSettingsDialogProc.h" />
@@ -202,6 +203,7 @@
     <ClInclude Include="CameraSettingsControl.h" />
     <ClInclude Include="CameraWindow.h" />
     <ClInclude Include="cleanString.h" />
+    <ClInclude Include="cnpy.h" />
     <ClInclude Include="ColorBox.h" />
     <ClInclude Include="commonTypes.h" />
     <ClInclude Include="Communicator.h" />
@@ -215,6 +217,7 @@
     <ClInclude Include="MessagePrinter.h" />
     <ClInclude Include="MessageSender.h" />
     <ClInclude Include="Messagetypes.h" />
+    <ClInclude Include="moveSequence.h" />
     <ClInclude Include="profileSettings.h" />
     <ClInclude Include="ProfileSystem.h" />
     <ClInclude Include="DacSettingsDialog.h" />
@@ -291,6 +294,7 @@
     <ClCompile Include="CameraSettingsControl.cpp" />
     <ClCompile Include="CameraWindow.cpp" />
     <ClCompile Include="cleanString.cpp" />
+    <ClCompile Include="cnpy.cpp" />
     <ClCompile Include="ColorBox.cpp" />
     <ClCompile Include="Communicator.cpp" />
     <ClCompile Include="DDS_SYNTH.cpp" />
@@ -335,6 +339,7 @@
     <ClCompile Include="Segment.cpp" />
     <ClCompile Include="SerialSynth.cpp" />
     <ClCompile Include="SmsTextingControl.cpp" />
+    <ClCompile Include="atomCruncher.cpp" />
     <ClCompile Include="splashDialog.cpp" />
     <ClCompile Include="StatusControl.cpp" />
     <ClCompile Include="StatusIndicator.cpp" />

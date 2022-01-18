@@ -12,7 +12,7 @@ class atomCruncher
 {
 public:
 
-	//moveSequence getRearrangeMoves(void);
+	moveSequence getRearrangeMoves(void);
 
 	chronoTimes* catchPicTime;
 	chronoTimes* finTime;

@@ -5,7 +5,7 @@
 #include "afxwin.h"
 
 /*
- * A class for a gui end control for setting various rearrangement parameters
+ * A class for a gui end control for setting various rearrangement parameters. 211229 DEPRECIATED
  */
 class rerngControl
 {
