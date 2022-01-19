@@ -457,6 +457,32 @@ void CameraWindow::handleAutoscaleSelection()
 
 LRESULT CameraWindow::onCameraFinish( WPARAM wParam, LPARAM lParam )
 {
+	// write all processed images - TODO: could do this in real time, but need to work out how to signal using events
+	AndorRunSettings currentSettings = Andor.getSettings();
+	if (lParam == -1)
+	{
+		UINT pictureNumber = currentSettings.totalPicsInExperiment;
+	}
+	UINT picNum = 1;
+	for (auto & atomArray : atomArrayQueue) {
+		if (currentSettings.cameraMode != "Continuous Single Scans Mode" && atomArray.size() != 0)
+		{
+			try
+			{
+				std::vector<UINT8> dataArray(atomArray.size()); //Dumb hacky fix.
+				for (size_t i = 0; i < atomArray.size(); i++)
+				{
+					dataArray[i] = atomArray[i];
+				}
+				dataHandler.writeAtomArray(picNum, dataArray);
+				picNum++;
+			}
+			catch (Error& err)
+			{
+				mainWindowFriend->getComm()->sendError(err.what());
+			}
+		};
+	}
 	// notify the andor object that it is done.
 	Andor.onFinish();
 	Andor.pauseThread();
@@ -972,6 +998,9 @@ void CameraWindow::prepareAtomCruncher(ExperimentInput& input)
 	input.cruncherInput->plotterAtomQueue = &plotterAtomQueue;
 	rearrangerAtomQueue.clear();
 	input.cruncherInput->rearrangerAtomQueue = &rearrangerAtomQueue;
+	atomArrayQueue.clear();
+	input.cruncherInput->atomArrayQueue = &atomArrayQueue;
+
 	input.cruncherInput->thresholds = CameraSettings.getThresholds();
 	input.cruncherInput->picsPerRep = CameraSettings.getSettings().picsPerRepetition;
 	input.cruncherInput->gridInfo = analysisHandler.getAtomGrid();
@@ -1135,7 +1164,7 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 					for (size_t ix = 0; ix < input->maskWidX; ix++)
 					{
 						//select appropriate pixel in image and mask and take product. Also subtracting background in this step - doing it all at once to avoid saving image twice, but also want to keep raw image for plotting.
-						size_t indPixImg = (ix + input->masksCrop[imask]) + (input->imageDims.width)*(iy + input->masksCrop[imask + 2 * input->nMask]);
+						size_t indPixImg = (ix + input->masksCrop[imask + 2 * input->nMask]) + (input->imageDims.width)*(iy + input->masksCrop[imask]); //column major indexing
 						size_t indPixMask = (input->maskWidX)*(input->maskWidY)*imask + ix + iy * (input->maskWidX);
 						try {
 							tempImageROIs[imask] += ((*input->imageQueue)[0][indPixImg] - input->bgImg[indPixImg]) * (input->masks[indPixMask]);
@@ -1146,7 +1175,7 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 					}
 				}
 			}
-		}
+		}		
 		{
 			size_t iroi = 0;
 			input->nAtom = 0; //Keep track of how many atoms are loaded.
@@ -1160,6 +1189,9 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 				iroi++;
 			}
 		}
+
+		(*input->atomArrayQueue).push_back(tempAtomArray); //save processed image
+
 		if (input->rearrangerActive)
 		{
 			// copies the array if first pic of rep. Only looks at first picture because its rearranging. Could change

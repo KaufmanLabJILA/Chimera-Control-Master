@@ -18,13 +18,14 @@ class DataLogger
 		DataLogger(std::string systemLocation);
 		void initializeDataFiles();
 		void writePic( UINT currentPictureNumber, std::vector<long> image, imageParameters dims );
+		void writeAtomArray(UINT currentPictureNumber, std::vector<UINT8> atomArray);
 		void logMasterParameters( MasterThreadInput* input);
 		void logFunctions(H5::Group& group);
 		void logDDSParameters(MasterThreadInput* input);
 		void logAWGParameters(MasterThreadInput* input);
 		//void logMoogParameters(MasterThreadInput* input);
 		void logMiscellaneous();
-		void logAndorSettings( AndorRunSettings settings, bool on );
+		void logAndorSettings( AndorRunSettings settings, bool on, int nMask);
 		//void logNiawgSettings( MasterThreadInput* input );
 		//void logAgilentSettings( const std::vector<Agilent*>& input );
 		void logVariables( const std::vector<variableType>& variables, H5::Group& group );
@@ -50,6 +51,13 @@ class DataLogger
 		H5::DataSpace picureSetDataSpace;
 		// just one pic
 		H5::DataSpace picDataSpace;
+
+		H5::DataSet atomArrayDataset;
+		// for the entire set
+		H5::DataSpace atomArraySetDataSpace;
+		// just one pic
+		H5::DataSpace atomArrayDataSpace;
+
 	    bool fileIsOpen;
 		std::string mostRecentInitializationDate;
 		std::string dataFilesBaseLocation;

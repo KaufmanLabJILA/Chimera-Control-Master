@@ -20,6 +20,7 @@ public:
 	// what the thread watches...
 	std::atomic<bool>* cruncherThreadActive;
 	std::vector<std::vector<long>>* imageQueue;
+	std::vector<std::vector<bool>>* atomArrayQueue;
 
 	std::vector<int16> masks; //Pass by value, do not want these modified by other threads.
 	std::vector<long> bgImg;

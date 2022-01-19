@@ -193,7 +193,7 @@ void DataLogger::initializeDataFiles()
 //	}
 //}
 
-void DataLogger::logAndorSettings( AndorRunSettings settings, bool on)
+void DataLogger::logAndorSettings( AndorRunSettings settings, bool on, int nMask)
 {
 	try
 	{
@@ -209,10 +209,17 @@ void DataLogger::logAndorSettings( AndorRunSettings settings, bool on)
 		hsize_t rank1[] = { 1 };
 		// pictures. These are permanent members of the class for speed during the writing process.	
 		hsize_t setDims[] = { ULONGLONG( settings.totalPicsInExperiment ), settings.imageSettings.width, settings.imageSettings.height };
-		hsize_t picDims[] = { 1, settings.imageSettings.width, settings.imageSettings.height };
-		picureSetDataSpace = H5::DataSpace( 3, setDims );
-		picDataSpace = H5::DataSpace( 3, picDims );
-		pictureDataset = andorGroup.createDataSet( "Pictures", H5::PredType::NATIVE_LONG, picureSetDataSpace );
+		hsize_t picDims[] = { 1, settings.imageSettings.width, settings.imageSettings.height }; 
+		picureSetDataSpace = H5::DataSpace( 3, setDims ); //single repetition
+		picDataSpace = H5::DataSpace( 3, picDims ); //single picture
+		pictureDataset = andorGroup.createDataSet( "Pictures", H5::PredType::NATIVE_LONG, picureSetDataSpace ); //full experiment
+
+		hsize_t atomArraySetDims[] = {ULONGLONG(settings.totalPicsInExperiment), nMask}; //single repetition
+		hsize_t atomArrayDims[] = { 1,  nMask };
+		atomArraySetDataSpace = H5::DataSpace(2, atomArraySetDims); //single repetition
+		atomArrayDataSpace = H5::DataSpace(2, atomArrayDims); //single picture
+		atomArrayDataset = andorGroup.createDataSet("Processed-Pictures", H5::PredType::NATIVE_LONG, atomArraySetDataSpace); //full experiment
+
 		writeDataSet( settings.cameraMode, "Camera-Mode", andorGroup );
 		writeDataSet( settings.exposureTimes, "Exposure-Times", andorGroup );
 		writeDataSet( settings.triggerMode, "Trigger-Mode", andorGroup );
@@ -467,6 +474,28 @@ void DataLogger::writePic(UINT currentPictureNumber, std::vector<long> image, im
 	}
 }
 
+void DataLogger::writeAtomArray(UINT currentPictureNumber, std::vector<UINT8> atomArray) //std::vector<bool> has different handling I don't want to deal with.
+{
+	if (fileIsOpen == false)
+	{
+		thrower("Tried to write to h5 file, but the file is closed!\r\n");
+	}
+	// MUST initialize status
+	// starting coordinates of write area in the h5 file of the array of picture data points.
+	hsize_t offset[] = { currentPictureNumber - 1, 0 };
+	hsize_t slabdim[2] = { 1, atomArray.size() };
+	std::vector<long> im(atomArray.size(), 0);
+	try
+	{
+		atomArraySetDataSpace.selectHyperslab(H5S_SELECT_SET, slabdim, offset);
+		atomArrayDataset.write(atomArray.data(), H5::PredType::NATIVE_UINT8, atomArrayDataSpace, atomArraySetDataSpace);
+	}
+	catch (H5::Exception& err)
+	{
+		thrower("Failed to write data to HDF5 file! Error: " + str(err.getDetailMsg()) + "\n");
+	}
+}
+
 
 void DataLogger::logMiscellaneous()
 {
@@ -483,6 +512,8 @@ void DataLogger::closeFile()
 	}
 	picureSetDataSpace.close();
 	pictureDataset.close();	
+	atomArraySetDataSpace.close();
+	atomArrayDataset.close();
 	file.close();
 	fileIsOpen = false;
 }
