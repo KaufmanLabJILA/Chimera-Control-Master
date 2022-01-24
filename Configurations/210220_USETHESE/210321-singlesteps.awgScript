@@ -6,7 +6,7 @@ reset
 %setsingle 0 ramptime 43 ryd_freq 1 0
 %setsingle 0 ramptime+uvtime 0 ryd_freq 0 0
 
-setsingle 0 0 43 ryd_freq 1 0
+setsingle 0 0 65 ryd_freq 1 0
 setsingle 0 uvtime 0 ryd_freq 0 0
 
 program 0
