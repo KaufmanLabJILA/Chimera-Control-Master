@@ -1,5 +1,8 @@
 rearrange amprate moverate %max is ampstep 134217727(?may be 26 bit), freqstep 511
 
+xoffset xoff
+yoffset yoff
+
 initx 1111111111111111
 inity 111111111111111111111111
 
@@ -33,6 +36,8 @@ targetstart
 targetend
 
 %%%
+
+rearrangeroff
 
 %test
 

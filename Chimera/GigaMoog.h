@@ -26,13 +26,15 @@ public:
 	void loadMoogScript(std::string scriptAddress);
 	void analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& variables, UINT variation);
 
+	virtual void writeLoad(MessageSender& ms);
 	virtual void writeOff(MessageSender& ms);
 	virtual void writeMoveOff(MessageSender& ms);
+	virtual void writeTerminator(MessageSender& ms);
 
 	void send(MessageSender& ms);
 	void refreshLUT();
 
-	void writeRearrangeMoves(moveSequence input);
+	void writeRearrangeMoves(moveSequence input, MessageSender& ms);
 
 	bool rearrangerActive = false;
 	std::vector<bool> initialPositionsX; //initial and target positions saved in gigamoog object mostly because it already handles the script, but these only get used by the rearrangement thread.
@@ -50,6 +52,7 @@ private:
 	//std::vector<unsigned long long int> FTW_LUT;
 	std::vector<double> ATW_LUT;
 	std::vector<double> FTW_LUT;
+	double xOffset, yOffset;
 	UINT xDim, yDim; //x and y dimensions of atom positions from LUT. Must be coordinated with number of masks in image processing.
 	int ampStepMag = 134217727;
 	int freqStepMag = 511;

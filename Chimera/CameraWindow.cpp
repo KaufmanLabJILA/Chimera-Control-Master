@@ -1204,11 +1204,15 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 					(*input->rearrangerAtomQueue).push_back(tempAtomArray); //put atom array in rearrange queue
 					input->rearrangerConditionWatcher->notify_all();
 
-					if (input->nAtom > input->gmoog->targetNumber)
+					if (input->nAtom >= input->gmoog->targetNumber)
 					{
 						//REARRANGE
-						moveSequence moveseq = input->getRearrangeMoves();
-						input->gmoog->writeRearrangeMoves(moveseq);
+						//moveSequence moveseq = input->getRearrangeMoves();
+						MessageSender ms;
+						input->gmoog->writeOff(ms); //Important to start with load tones off.
+						input->gmoog->writeRearrangeMoves(input->getRearrangeMoves(), ms);
+						input->gmoog->writeTerminator(ms);
+						input->gmoog->send(ms);
 					}
 
 				}
