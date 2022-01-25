@@ -348,14 +348,14 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 					input->ttls->waitTillFinished( variationInc, skipOption );
 					input->dacs->stopDacs();
 				}
-				if (input->gmoog->rearrangerActive)
-				{
-					//reset gmoog load settings if using rearrangement.
-					MessageSender ms;
-					input->gmoog->writeLoad(ms);
-					input->gmoog->writeTerminator(ms);
-					input->gmoog->send(ms);
-				}
+				//if (input->gmoog->rearrangerActive)
+				//{
+				//	//reset gmoog load settings if using rearrangement.
+				//	MessageSender ms;
+				//	input->gmoog->writeLoad(ms);
+				//	input->gmoog->writeTerminator(ms);
+				//	input->gmoog->send(ms);
+				//}
 			}
 			//input->ttls->disconnectDioFPGA(variationInc);
 			expUpdate( "\r\n", input->comm, input->quiet );

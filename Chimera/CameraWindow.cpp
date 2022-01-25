@@ -1209,7 +1209,7 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 						//REARRANGE
 						//moveSequence moveseq = input->getRearrangeMoves();
 						MessageSender ms;
-						input->gmoog->writeOff(ms); //Important to start with load tones off.
+						input->gmoog->writeLoad(ms); //Important to start with load tones off.
 						input->gmoog->writeRearrangeMoves(input->getRearrangeMoves(), ms);
 						input->gmoog->writeTerminator(ms);
 						input->gmoog->send(ms);
