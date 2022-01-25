@@ -1214,6 +1214,7 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 						input->gmoog->writeTerminator(ms);
 						input->gmoog->send(ms);
 					}
+					(*input->rearrangerAtomQueue).clear(); //clear the rearrange queue once we've completed or ignored the rearrangement.
 
 				}
 				input->finTime->push_back(std::chrono::high_resolution_clock::now());

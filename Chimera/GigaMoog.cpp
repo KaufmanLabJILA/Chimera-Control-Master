@@ -33,6 +33,8 @@ void gigaMoog::refreshLUT()
 	xDim = arrAmpLUT.shape[0];
 	yDim = arrAmpLUT.shape[1]; //Get np array dimensions
 
+	ATW_LUT.clear();
+	FTW_LUT.clear();
 	UINT i = 0;
 	for (auto& amp : ampLUT)
 	{
