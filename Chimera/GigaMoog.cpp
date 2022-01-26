@@ -71,34 +71,34 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 	double phase, amp, freq, ampPrev, freqPrev;
 	int ampstep, freqstep;
 
+	//step 0: turn off all load tones.
+	for (int channel = 0; channel < 16; channel++) {//TODO: 16 could be changed to 64 if using more tones for rearrangement
+		if (channel < nTweezerX)
+		{
+			UINT8 hardwareChannel = channel % 2 + 8 * (channel / 2);
+			Message m = Message::make().destination(MessageDestination::KA007)
+				.DAC(MessageDAC::DAC0).channel(hardwareChannel)
+				.setting(MessageSetting::MOVEFREQUENCY)
+				.frequencyMHz(0).amplitudePercent(0.01).phaseDegrees(0).instantFTW(1).ATWIncr(-ampStepMag).stepSequenceID(0).FTWIncr(0).phaseJump(1);;
+			ms.enqueue(m);
+		}
+	}
+	for (int channel = 0; channel < 24; channel++) {
+		if (channel < nTweezerY)
+		{
+			UINT8 hardwareChannel = channel;
+			Message m = Message::make().destination(MessageDestination::KA007)
+				.DAC(MessageDAC::DAC1).channel(hardwareChannel)
+				.setting(MessageSetting::MOVEFREQUENCY)
+				.frequencyMHz(0).amplitudePercent(0.01).phaseDegrees(0).instantFTW(1).ATWIncr(-ampStepMag).stepSequenceID(0).FTWIncr(0).phaseJump(1);;
+			ms.enqueue(m);
+		}
+	}
+
 	for (size_t stepID = 0; stepID < nMoves; stepID++)
 	{
 		nx = input.moves[stepID].nx();
 		ny = input.moves[stepID].ny();
-
-		//step 0: turn off all load tones.
-		for (int channel = 0; channel < 16; channel++) {//TODO: 16 could be changed to 64 if using more tones for rearrangement
-			if (channel<nTweezerX)
-			{
-				UINT8 hardwareChannel = channel % 2 + 8 * (channel / 2);
-				Message m = Message::make().destination(MessageDestination::KA007)
-					.DAC(MessageDAC::DAC0).channel(hardwareChannel)
-					.setting(MessageSetting::MOVEFREQUENCY)
-					.frequencyMHz(0).amplitudePercent(0.01).phaseDegrees(0).instantFTW(1).ATWIncr(-ampStepMag).stepSequenceID(0).FTWIncr(0).phaseJump(1);;
-				ms.enqueue(m);
-			}
-		}
-		for (int channel = 0; channel < 24; channel++) {
-			if (channel < nTweezerY)
-			{
-				UINT8 hardwareChannel = channel;
-				Message m = Message::make().destination(MessageDestination::KA007)
-					.DAC(MessageDAC::DAC1).channel(hardwareChannel)
-					.setting(MessageSetting::MOVEFREQUENCY)
-					.frequencyMHz(0).amplitudePercent(0.01).phaseDegrees(0).instantFTW(1).ATWIncr(-ampStepMag).stepSequenceID(0).FTWIncr(0).phaseJump(1);;
-				ms.enqueue(m);
-			}
-		}
 
 		//step 1: ramp up tones at initial locations and phases
 		for (int channel = 0; channel < 16; channel++) {//TODO: 16 could be changed to 64 if using more tones for rearrangement
@@ -401,19 +401,6 @@ void gigaMoog::loadMoogScript(std::string scriptAddress)
 }
 
 void gigaMoog::writeMoveOff(MessageSender& ms) {
-	////Temporary: only reset a few relevant channels.
-	//for (int stepID = 0; stepID < 3; stepID++) {
-	//	for (int channel = 0; channel < 16; channel++) {
-	//		UINT8 hardwareChannel = channel % 2 + 8 * (channel / 2);
-	//		Message m = Message::make().destination(MessageDestination::KA007)
-	//			.DAC(MessageDAC::DAC0).channel(hardwareChannel)
-	//			.setting(MessageSetting::MOVEFREQUENCY)
-	//			.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0.0).instantFTW(1).ATWIncr(0).stepSequenceID(stepID).FTWIncr(0).phaseJump(0);;
-	//		ms.enqueue(m);
-	//	}
-	//}
-	//channels grouped in sets of 8, each set has 256 locations in memory. 32*8=256.
-	//TODO: 220124 IMPORTANT - put back after testing 1D
 	for (int stepID = 0; stepID < 256; stepID++) {
 		for (int channel = 0; channel < 8; channel++) {
 			Message m = Message::make().destination(MessageDestination::KA007)
@@ -483,40 +470,6 @@ void gigaMoog::writeOff(MessageSender& ms) {
 		ms.enqueue(m);
 	}
 
-	//TODO: more clever way of writing move settings off.
-/*
-	for (int channel = 0; channel < 64; channel++) {
-		Message m = Message::make().destination(MessageDestination::KA007)
-			.DAC(MessageDAC::DAC0).channel(channel)
-			.setting(MessageSetting::MOVEFREQUENCY)
-			.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0.0).instantFTW(1).ATWIncr(0).stepSequenceID(0).FTWIncr(0).phaseJump(0);;
-		ms.enqueue(m);
-	}
-
-	for (int channel = 0; channel < 64; channel++) {
-		Message m = Message::make().destination(MessageDestination::KA007)
-			.DAC(MessageDAC::DAC1).channel(channel)
-			.setting(MessageSetting::MOVEFREQUENCY)
-			.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0.0).instantFTW(1).ATWIncr(0).stepSequenceID(0).FTWIncr(0).phaseJump(0);;
-		ms.enqueue(m);
-	}
-
-	for (int channel = 0; channel < 64; channel++) {
-		Message m = Message::make().destination(MessageDestination::KA007)
-			.DAC(MessageDAC::DAC2).channel(channel)
-			.setting(MessageSetting::MOVEFREQUENCY)
-			.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0.0).instantFTW(1).ATWIncr(0).stepSequenceID(0).FTWIncr(0).phaseJump(0);;
-		ms.enqueue(m);
-	}
-
-	for (int channel = 0; channel < 64; channel++) {
-		Message m = Message::make().destination(MessageDestination::KA007)
-			.DAC(MessageDAC::DAC3).channel(channel)
-			.setting(MessageSetting::MOVEFREQUENCY)
-			.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0.0).instantFTW(1).ATWIncr(0).stepSequenceID(0).FTWIncr(0).phaseJump(0);;
-		ms.enqueue(m);
-	}
-*/
 	//{
 	//	Message m = Message::make().destination(MessageDestination::KA007)
 	//		.setting(MessageSetting::TERMINATE_SEQ);
@@ -539,7 +492,7 @@ void gigaMoog::writeLoad(MessageSender& ms)
 		for (auto const& channelBool : initialPositionsX)
 		{
 			double phase, amp, freq;
-			if (iTweezer >= 24)
+			if (iTweezer > 16)
 			{
 				thrower("For safety, maximum number of x tones is limited to 16 in rearrangement mode");
 			}
@@ -563,15 +516,16 @@ void gigaMoog::writeLoad(MessageSender& ms)
 		for (auto const& channelBool : initialPositionsY)
 		{
 			double phase, amp, freq;
-			if (iTweezer >= 24)
+			if (iTweezer > 24)
 			{
 				thrower("For safety, maximum number of y tones is limited to 24 in rearrangement mode");
 			}
 			if (channelBool)
 			{
+				UINT8 hardwareChannel = iTweezer;
 				phase = fmod(180 * pow(iTweezer + 1, 2) / nTweezerY, 360); //this assumes comb of even tones.
 				Message m = Message::make().destination(MessageDestination::KA007)
-					.DAC(MessageDAC::DAC1).channel(iTweezer)
+					.DAC(MessageDAC::DAC1).channel(hardwareChannel)
 					.setting(MessageSetting::LOADFREQUENCY)
 					.frequencyMHz(FTW_LUT[1 + 2 * iMask] + yOffset).amplitudePercent(ATW_LUT[1 + 2 * iMask]).phaseDegrees(phase);;
 				ms.enqueue(m);
@@ -870,11 +824,6 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vari
 
 		single.startAOX = { 0,1,2,3,4,5,6,7 };
 		single.startAOY = { 0 };
-		single.endAOX = { 0,1,2,3,4,5,6,7 };
-		single.endAOY = { 0 };
-		testInput.moves.push_back(single);
-		single.startAOX = { 0,1,2,3,4,5,6,7 };
-		single.startAOY = { 0 };
 		single.endAOX = { 8,9,10,11,12,13,14,15 };
 		single.endAOY = { 0 };
 		testInput.moves.push_back(single);
@@ -885,6 +834,7 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vari
 		testInput.moves.push_back(single);
 		
 		writeOff(msTest);
+		writeLoad(msTest);
 		writeRearrangeMoves(testInput, msTest);
 		writeTerminator(msTest);
 		send(msTest);
