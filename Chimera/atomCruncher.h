@@ -12,7 +12,7 @@ class atomCruncher
 {
 public:
 
-	moveSequence getRearrangeMoves(void);
+	moveSequence getRearrangeMoves(std::string rearrangeType);
 
 	chronoTimes* catchPicTime;
 	chronoTimes* finTime;

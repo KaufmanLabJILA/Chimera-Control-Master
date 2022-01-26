@@ -42,6 +42,8 @@ public:
 	std::vector<std::vector<bool>> targetPositions;
 	UINT targetNumber;
 	UINT nTweezerX, nTweezerY;
+	std::string rearrangeMode;
+
 private:
 	BoostAsyncSerial fpga;
 

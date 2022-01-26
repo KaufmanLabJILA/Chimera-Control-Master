@@ -1211,7 +1211,7 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 						MessageSender ms;
 						input->gmoog->writeOff(ms); //Important to start with load tones off, so that every tone has explicit settings.
 						input->gmoog->writeLoad(ms); //Write load settings so that tweezers can be reset immediately after moves.
-						input->gmoog->writeRearrangeMoves(input->getRearrangeMoves(), ms);
+						input->gmoog->writeRearrangeMoves(input->getRearrangeMoves(input->gmoog->rearrangeMode), ms);
 						input->gmoog->writeTerminator(ms);
 						input->gmoog->send(ms);
 					}
