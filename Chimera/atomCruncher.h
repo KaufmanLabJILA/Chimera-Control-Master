@@ -13,6 +13,9 @@ class atomCruncher
 public:
 
 	moveSequence getRearrangeMoves(std::string rearrangeType);
+	void scrunchX(moveSequence& moveseq, bool firstStep);
+	void scrunchY(moveSequence& moveseq, bool firstStep);
+	void filterAtomQueue(void);
 
 	chronoTimes* catchPicTime;
 	chronoTimes* finTime;

@@ -39,6 +39,7 @@ public:
 	bool rearrangerActive = false;
 	std::vector<bool> initialPositionsX; //initial and target positions saved in gigamoog object mostly because it already handles the script, but these only get used by the rearrangement thread.
 	std::vector<bool> initialPositionsY;
+	std::vector<bool> initialPositions;
 	std::vector<std::vector<bool>> targetPositions;
 	UINT targetNumber;
 	UINT nTweezerX, nTweezerY;

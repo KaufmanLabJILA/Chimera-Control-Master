@@ -103,7 +103,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 
 		//step 1: ramp up tones at initial locations and phases
 		for (int channel = 0; channel < 16; channel++) {//TODO: 16 could be changed to 64 if using more tones for rearrangement
-			if (nx == 1 && channel < 3) //Triple up tones if only a single tone on.
+			if (ny != 0 && nx == 1 && channel < 3) //Triple up tones if only a single tone on.
 			{
 				//UINT8 hardwareChannel = 8 * channel; //there are 256 memory locations for each group of 8
 				UINT8 hardwareChannel = (channel * 8) % 64 + (channel * 8) / 64;
@@ -119,7 +119,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 					.frequencyMHz(freq).amplitudePercent(amp).phaseDegrees(0).instantFTW(1).ATWIncr(ampStepMag).stepSequenceID(3 * stepID + 1).FTWIncr(0).phaseJump(1);;
 				ms.enqueue(m);
 			}
-			else if (channel < nx) {
+			else if (ny != 0 && nx != 0 && channel < nx) {
 				UINT8 hardwareChannel = (channel * 8) % 64 + (channel * 8) / 64; //there are 256 memory locations for each group of 8 channels, want to populate blocks of memory evenly.
 
 				freq = FTW_LUT[
@@ -149,7 +149,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 		}
 
 		for (int channel = 0; channel < 16; channel++) {
-			if (ny == 1 && channel < 3) //Triple up tones if only a single tone on.
+			if (nx != 0 && ny == 1 && channel < 3) //Triple up tones if only a single tone on.
 			{
 				//UINT8 hardwareChannel = 8 * channel; //there are 256 memory locations for each group of 8
 				UINT8 hardwareChannel = (channel * 8) % 64 + (channel * 8) / 64;
@@ -166,7 +166,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 					.frequencyMHz(freq).amplitudePercent(amp).phaseDegrees(0).instantFTW(1).ATWIncr(ampStepMag).stepSequenceID(3 * stepID + 1).FTWIncr(0).phaseJump(1);;
 				ms.enqueue(m);
 			}
-			else if (channel < ny) {
+			else if (nx != 0 && ny != 0 && channel < ny) {
 				//UINT8 hardwareChannel = channel % 2 + 8 * (channel / 2); //there are 256 memory locations for each group of 8
 				UINT8 hardwareChannel = (channel * 8) % 64 + (channel * 8) / 64;
 				freq = FTW_LUT[
@@ -196,7 +196,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 
 		//step 2: ramp to new locations
 		for (int channel = 0; channel < 16; channel++) {
-			if (nx == 1 && channel < 3) //Triple up tones if only a single tone on.
+			if (ny != 0 && nx == 1 && channel < 3) //Triple up tones if only a single tone on.
 			{
 				UINT8 hardwareChannel = (channel * 8) % 64 + (channel * 8) / 64;
 				freqPrev = FTW_LUT[
@@ -221,7 +221,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 					.frequencyMHz(freq).amplitudePercent(amp).phaseDegrees(0).instantFTW(0).ATWIncr(ampstep).stepSequenceID(3 * stepID + 1 + 1).FTWIncr(freqstep).phaseJump(0);;
 				ms.enqueue(m);
 			}
-			else if (channel < nx)
+			else if (ny != 0 && nx != 0 && channel < nx)
 			{
 				UINT8 hardwareChannel = (channel * 8) % 64 + (channel * 8) / 64;
 				freqPrev = FTW_LUT[
@@ -258,7 +258,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 		}
 
 		for (int channel = 0; channel < 16; channel++) {
-			if (ny == 1 && channel < 3) //Triple up tones if only a single tone on.
+			if (nx != 0 && ny == 1 && channel < 3) //Triple up tones if only a single tone on.
 			{
 				UINT8 hardwareChannel = (channel * 8) % 64 + (channel * 8) / 64;
 				freqPrev = FTW_LUT[
@@ -283,7 +283,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 					.frequencyMHz(freq).amplitudePercent(amp).phaseDegrees(0).instantFTW(0).ATWIncr(ampstep).stepSequenceID(3 * stepID + 1 + 1).FTWIncr(freqstep).phaseJump(0);;
 				ms.enqueue(m);
 			}
-			else if (channel < ny)
+			else if (nx != 0 && ny != 0 && channel < ny)
 			{
 				UINT8 hardwareChannel = (channel * 8) % 64 + (channel * 8) / 64;
 				freqPrev = FTW_LUT[
@@ -321,7 +321,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 
 		//step 3: ramp all tones to 0
 		for (int channel = 0; channel < 16; channel++) {
-			if (nx == 1 && channel < 3) //Triple up tones if only a single tone on.
+			if (ny != 0 && nx == 1 && channel < 3) //Triple up tones if only a single tone on.
 			{
 				UINT8 hardwareChannel = (channel * 8) % 64 + (channel * 8) / 64;
 				freq = FTW_LUT[
@@ -333,7 +333,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 					.frequencyMHz(freq).amplitudePercent(0.01).phaseDegrees(0).instantFTW(1).ATWIncr(-ampStepMag).stepSequenceID(3 * stepID + 2 + 1).FTWIncr(0).phaseJump(0);;
 				ms.enqueue(m);
 			}
-			else if (channel < nx) {
+			else if (ny != 0 && nx != 0 && channel < nx) {
 				UINT8 hardwareChannel = (channel * 8) % 64 + (channel * 8) / 64;
 				freq = FTW_LUT[
 					2 * yDim * input.moves[stepID].endAOX[channel] + 2 * input.moves[stepID].endAOY[0] + 0
@@ -357,7 +357,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 		}
 
 		for (int channel = 0; channel < 16; channel++) {
-			if (ny == 1 && channel < 3) //Triple up tones if only a single tone on.
+			if (nx != 0 && ny == 1 && channel < 3) //Triple up tones if only a single tone on.
 			{
 				UINT8 hardwareChannel = (channel * 8) % 64 + (channel * 8) / 64;
 				freq = FTW_LUT[
@@ -369,7 +369,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 					.frequencyMHz(freq).amplitudePercent(0.01).phaseDegrees(0).instantFTW(1).ATWIncr(-ampStepMag).stepSequenceID(3 * stepID + 2 + 1).FTWIncr(0).phaseJump(0);;
 				ms.enqueue(m);
 			}
-			else if (channel < ny) {
+			else if (nx != 0 && ny != 0 && channel < ny) {
 				UINT8 hardwareChannel = (channel * 8) % 64 + (channel * 8) / 64;
 				freq = FTW_LUT[
 					2 * yDim * input.moves[stepID].endAOX[0] + 2 * input.moves[stepID].endAOY[channel] + 1
@@ -706,6 +706,16 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vari
 		{
 			thrower("Error: must first specify initial y values.");
 		}
+
+		initialPositions.clear();
+		for (auto &tweezerBoolY : initialPositionsY)
+		{
+			for (auto &tweezerBoolX : initialPositionsX)
+			{
+				initialPositions.push_back(tweezerBoolX*tweezerBoolY);
+			}
+		}
+
 
 		if (initAOX.length() != xDim || initAOY.length() != yDim)
 		{
