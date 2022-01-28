@@ -628,11 +628,11 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vari
 		std::string tmp, initAOX, initAOY;
 		currentMoogScript >> rearrangeMode;
 
-		if (rearrangeMode != "scrunchx" && rearrangeMode != "scrunchy" && rearrangeMode != "scrunchxy" && rearrangeMode != "scrunchyx" && rearrangeMode != "moses")
+		if (rearrangeMode != "scrunchx" && rearrangeMode != "scrunchy" && rearrangeMode != "scrunchxy" && rearrangeMode != "scrunchyx" && rearrangeMode != "tetris")
 		{
-			thrower("Invalid rearrangement mode. Valid options are scrunchx, scrunchy, scrunchxy, scrunchyx, and moses.");
+			thrower("Invalid rearrangement mode. Valid options are scrunchx, scrunchy, scrunchxy, scrunchyx, and tetris.");
 		}
-		if (rearrangeMode == "scrunchx" || rearrangeMode == "scrunchy" || rearrangeMode == "scrunchxy" || rearrangeMode == "scrunchyx")
+		if (rearrangeMode == "scrunchx" || rearrangeMode == "scrunchy" || rearrangeMode == "scrunchxy" || rearrangeMode == "scrunchyx" || rearrangeMode == "tetris")
 		{
 			currentMoogScript >> scrunchSpacingExpression;
 			scrunchSpacing = scrunchSpacingExpression.evaluate(variables, variation);
@@ -735,18 +735,28 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vari
 
 			for (size_t i = 0; i < yDim; i++)
 			{
-				std::vector<bool> rowVect;
+				//std::vector<bool> rowVect;
+				//currentMoogScript >> tmp;
+				//for (auto &ch : tmp) { //convert string to boolean vector
+				//	if (ch == '0') { rowVect.push_back(0); }
+				//	else if (ch == '1') {
+				//		rowVect.push_back(1);
+				//		targetNumber += 1; //count total desired atom number
+				//	}
+				//	else { thrower("Error: non-boolean target value."); }
+				//}
+				//if (rowVect.size() != xDim) { thrower("Error: invalid target dimensions"); }
+				//targetPositions.push_back(rowVect);
 				currentMoogScript >> tmp;
 				for (auto &ch : tmp) { //convert string to boolean vector
-					if (ch == '0') { rowVect.push_back(0); }
+					if (ch == '0') { targetPositions.push_back(0); }
 					else if (ch == '1') {
-						rowVect.push_back(1);
+						targetPositions.push_back(1);
 						targetNumber += 1; //count total desired atom number
 					}
 					else { thrower("Error: non-boolean target value."); }
 				}
-				if (rowVect.size() != xDim) { thrower("Error: invalid target dimensions"); }
-				targetPositions.push_back(rowVect);
+				if (tmp.size() != xDim) { thrower("Error: invalid target dimensions"); }
 			}
 
 			currentMoogScript >> tmp;

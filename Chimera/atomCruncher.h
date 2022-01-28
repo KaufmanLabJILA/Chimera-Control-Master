@@ -1,6 +1,7 @@
 #pragma once
 #include <atomic>
 #include <vector>
+#include <numeric>
 #include <mutex>
 #include "Windows.h"
 #include <array>
@@ -51,4 +52,5 @@ public:
 	imageParameters imageDims;
 	UINT atomThresholdForSkip = UINT_MAX;
 	std::atomic<bool>* skipNext;
+	int sourceColumnSum(int iColumn, std::vector<UINT8> rearrangerAtomVect);
 };
