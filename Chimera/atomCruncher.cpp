@@ -357,6 +357,9 @@ moveSequence atomCruncher::getRearrangeMoves(std::string rearrangeType) {
 		UINT wx = (gmoog->initialPositionsX.size()); //For convenience, could remove.
 		UINT wy = (gmoog->initialPositionsY.size());
 
+		//std::copy(gmoog->targetPositions.begin(), gmoog->targetPositions.end(), targetPositionsTemp);
+		targetPositionsTemp = gmoog->targetPositions; //Make a copy of the target positions that can be modified.
+
 		std::vector<UINT8> rearrangerAtomVect(((*rearrangerAtomQueue)[0]).size()); //Dumb hacky fix.
 		for (size_t i = 0; i < rearrangerAtomVect.size(); i++)
 		{
@@ -435,7 +438,7 @@ moveSequence atomCruncher::getRearrangeMoves(std::string rearrangeType) {
 
 			while (iyTarget < wy) //iterate through all target positions in column
 			{
-				if (gmoog->targetPositions[ixTarget + wx * iyTarget]) //if atom required at target
+				if (targetPositionsTemp[ixTarget + wx * iyTarget]) //if atom required at target
 				{
 					if (nColumnSource<1) //check if a source atom is available in current source column
 					{
@@ -452,7 +455,7 @@ moveSequence atomCruncher::getRearrangeMoves(std::string rearrangeType) {
 					nColumnSource--; //remove an atom from the source column
 
 					single.endAOY.push_back(iyTarget); //place tweezer at desired final location.
-					gmoog->targetPositions[ixTarget + wx * iyTarget] = 0; //erase filled target position.
+					targetPositionsTemp[ixTarget + wx * iyTarget] = 0; //erase filled target position.
 				}
 				iyTarget++; //iterate through target positions if no atom needed, or atom has been placed in target site.
 				//if no source, this loops breaks, and continues from the previous target position.

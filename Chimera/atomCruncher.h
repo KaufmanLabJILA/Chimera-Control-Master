@@ -47,6 +47,8 @@ public:
 	std::vector<std::vector<long>>* plotterImageQueue;
 	std::vector<std::vector<bool>>* plotterAtomQueue;
 	std::vector<std::vector<bool>>* rearrangerAtomQueue;
+	std::vector<UINT8> targetPositionsTemp;
+
 	size_t nAtom = 0;
 	std::array<int, 4> thresholds;
 	imageParameters imageDims;
