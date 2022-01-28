@@ -43,6 +43,7 @@ public:
 	std::vector<std::vector<bool>> targetPositions;
 	UINT targetNumber;
 	UINT nTweezerX, nTweezerY;
+	UINT scrunchSpacing;
 	std::string rearrangeMode;
 
 private:

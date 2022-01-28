@@ -624,13 +624,18 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vari
 	if (word == "rearrange")
 	{
 		rearrangerActive = true;
-		Expression ampStepNew, freqStepNew, xoff, yoff;
+		Expression ampStepNew, freqStepNew, xoff, yoff, scrunchSpacingExpression;
 		std::string tmp, initAOX, initAOY;
 		currentMoogScript >> rearrangeMode;
 
 		if (rearrangeMode != "scrunchx" && rearrangeMode != "scrunchy" && rearrangeMode != "scrunchxy" && rearrangeMode != "scrunchyx" && rearrangeMode != "moses")
 		{
 			thrower("Invalid rearrangement mode. Valid options are scrunchx, scrunchy, scrunchxy, scrunchyx, and moses.");
+		}
+		if (rearrangeMode == "scrunchx" || rearrangeMode == "scrunchy" || rearrangeMode == "scrunchxy" || rearrangeMode == "scrunchyx")
+		{
+			currentMoogScript >> scrunchSpacingExpression;
+			scrunchSpacing = scrunchSpacingExpression.evaluate(variables, variation);
 		}
 
 		currentMoogScript >> ampStepNew;
