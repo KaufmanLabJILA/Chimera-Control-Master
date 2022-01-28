@@ -36,7 +36,7 @@ public:
 
 	void writeRearrangeMoves(moveSequence input, MessageSender& ms);
 
-	bool rearrangerActive = true; //TODO: change back to false, add handling for parsing script before atomcruncher thread starts.
+	bool rearrangerActive = false; //TODO: add handling for parsing script before atomcruncher thread starts.
 	std::vector<bool> initialPositionsX; //initial and target positions saved in gigamoog object mostly because it already handles the script, but these only get used by the rearrangement thread.
 	std::vector<bool> initialPositionsY;
 	std::vector<bool> initialPositions;
