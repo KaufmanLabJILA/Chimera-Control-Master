@@ -861,8 +861,9 @@ namespace commonFunctions
 			}
 			try
 			{
+				Sleep(0.5);
 				multiExpInput->mainWin->profile.saveConfigurationOnly(multiExpInput->scriptWin, multiExpInput->mainWin, multiExpInput->auxWin, multiExpInput->camWin);
-				//Sleep(0.5);
+				Sleep(0.5);
 				prepareCamera(multiExpInput->mainWin, multiExpInput->camWin, input, false);
 				Sleep(0.5);
 				prepareMasterThread(multiExpInput->msgID, multiExpInput->scriptWin, multiExpInput->mainWin, multiExpInput->camWin, multiExpInput->auxWin, 

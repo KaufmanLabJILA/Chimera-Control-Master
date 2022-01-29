@@ -169,7 +169,7 @@ BOOL ScriptingWindow::OnInitDialog()
 	//	"Megamoog 1 Script",
 	//	{ IDC_MOOG_FUNCTION_COMBO, IDC_MOOG_EDIT },
 	//	mainWindowFriend->getRgbs()["theme BG2"]);
-	awgScript.initialize(480, 900, startLocation, tooltips, this, id, "AWG",
+	awgScript.initialize(640, 900, startLocation, tooltips, this, id, "AWG",
 		"AWG 1 (Subharmonicon) Script",
 		{ IDC_AWG_FUNCTION_COMBO, IDC_AWG_EDIT },
 		mainWindowFriend->getRgbs()["theme BG2"]);

@@ -1180,6 +1180,12 @@ void DacSystem::setMOTValues(VariableSystem* globalVariables)
 	}
 }
 
+void DacSystem::setTweezerServo()
+{
+	dacValues[4] = 5.84;
+	breakoutBoardEdits[4].SetWindowText("5.84");
+}
+
 void DacSystem::startDacs()
 {
 	daqStartTask( staticDac0 );

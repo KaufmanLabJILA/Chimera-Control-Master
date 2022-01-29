@@ -87,11 +87,11 @@ zrot
 0
 awgtrigger
 0
-dio6.4
+awgrb2
 0
-dio6.5
+awgrb4
 0
-dio6.6
+awgsbspec
 0
 dio6.7
 0
@@ -113,7 +113,7 @@ dio7.7
 0
 cameratrig
 0
-dio8.1
+awgrb3
 0
 dio8.2
 0
@@ -283,30 +283,34 @@ dds11
 0
 0 - 100
 100
-25
-bluemotcoil 2.5
-bluex 0.3851
-bluey 0.1781
-bluez 0.8099
-greenmotcoil 0.4
+29
+bluemotcoil 1.1
+bluex 0.38
+bluey 0.178
+bluez -0.2
+greenmotcoil 0.2
 greenx 0.096
 greeny 0.035
 greenz -0.3
-blueloadtime 200
+blueloadtime 400
 greenbroadloadtime 30
 greennarrowloadtime 50
-lacfreq 92.5
-lacpower 50.53
+lacfreq 92.43
+lacpower 38.45
 coolfreq 84.2586
-coolpower 6
-lactime 35
+coolpower 3.8944
+lactime 30
 cooltime 20
 greennarrowfreq 82.6
-greennarrowpower 6
-greennarrowpowerstart 20
+greennarrowpower 3.945
+greennarrowpowerstart 15.33
 bluefreq 110
 bluetime 120
-bluepower 30
+bluepower 29
 setpoint556 2.65
 comploadtime 20
-943 1083 1 946 1046 1
+rb1freq 99.8
+ddswait 2000
+ttlwait 0.1
+dacwait 10
+795 945 1 865 965 1
