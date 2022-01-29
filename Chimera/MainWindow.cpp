@@ -6,13 +6,12 @@
 #include "AuxiliaryWindow.h"
 #include <future>
 #include "resource.h"
-#include "makoCamera.h"
 //#include "TestWin.cpp"
 
 MainWindow::MainWindow(UINT id, CDialog* splash) : CDialog(id), profile(PROFILES_PATH), 
     masterConfig( MASTER_CONFIGURATION_FILE_ADDRESS ), 
 	appSplash( splash ),
-	dds(DDS_FPGA_ADDRESS), gmoog(GIGAMOOG_PORT, 115200), zynq_tcp() //115200
+	dds(DDS_FPGA_ADDRESS), gmoog(GIGAMOOG_PORT, 115200), awg(AWG_PORT, AWG_BAUD), zynq_tcp() //115200
 {
 	// create all the main rgbs and brushes. I want to make sure this happens before other windows are created.
 	mainRGBs["Light Green"]			= RGB( 163,	190, 140);
@@ -710,7 +709,8 @@ void MainWindow::fillMasterThreadInput(MasterThreadInput* input)
 {
 	input->python = &this->python;
 	input->masterScriptAddress = profile.getMasterAddressFromConfig();
-	input->moogScriptAddress = profile.getMoogAddressFromConfig();
+	//input->moogScriptAddress = profile.getMoogAddressFromConfig();
+	input->awgScriptAddress = profile.getAWGAddressFromConfig();
 	input->gmoogScriptAddress = profile.getGmoogAddressFromConfig();
 	input->settings = settings.getOptions();
 	input->repetitionNumber = getRepNumber();
@@ -718,7 +718,8 @@ void MainWindow::fillMasterThreadInput(MasterThreadInput* input)
 	input->profile = profile.getProfileSettings();
 	//input->niawg = &niawg;
 	input->comm = &comm;
-	input->moog = &moog;
+	//input->moog = &moog;
+	input->awg = &awg;
 	input->gmoog = &gmoog;
 
 	VariableSystem::generateKey( input->variables, input->settings.randomizeVariations );

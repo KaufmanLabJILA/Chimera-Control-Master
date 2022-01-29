@@ -3,7 +3,7 @@
 
 BoostAsyncSerial::BoostAsyncSerial(std::string portID, int baudrate)
 {
-	if (!GIGAMOOG_SAFEMODE) {
+	if (baudrate != -1) {
 		port_ = std::make_unique<boost::asio::serial_port>(io_service_);
 
 		port_->open(portID);

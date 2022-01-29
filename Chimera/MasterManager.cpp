@@ -85,9 +85,9 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 				dacShadeLocs, ddsShadeLocs, input->variables);
 		}
 		/// prep Moog 
-		if (input->runMoog) {
-			input->moog->analyzeMoogScript(input->moog, input->variables);
-		}
+		//if (input->runAWG) {
+		//	input->moog->analyzeMoogScript(input->moog, input->variables, 0);
+		//}
 		/// update ttl, dac, and dds looks & interaction based on which ones are used in the experiment. 
 		if (input->runMaster)
 		{
@@ -191,6 +191,18 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 			input->repetitionNumber = 1;
 		}
 
+		// added by WFM 220106. Due 10 "fake" runs at the beginning of the sequence, to allow things to thermalize.
+		for (int warmupinc=1; warmupinc<11; warmupinc++)
+		{
+			expUpdate("Warmup #" + str(warmupinc) + " out of 10" + "\r\n", input->comm,input->quiet);
+			input->dacs->setTweezerServo();
+			//input->ttls->forceTtl(1, 0, 1);
+			Sleep(1);
+			//input->ttls->forceTtl(1, 0, 0);
+
+		}
+		// end of WFM's addition
+
 		for (const UINT& variationInc : range(variations))
 		{
 			expUpdate("Variation #" + str(variationInc + 1) + "\r\n", input->comm, input->quiet);
@@ -214,6 +226,13 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 			if (!GIGAMOOG_SAFEMODE) {
 				input->gmoog->loadMoogScript(input->gmoogScriptAddress);
 				input->gmoog->analyzeMoogScript(input->gmoog, input->variables, variationInc);
+			}
+
+			if (input->runAWG && !AWG_SAFEMODE) {
+				//input->moog->loadMoogScript(input->moogScriptAddress);
+				//input->moog->analyzeMoogScript(input->moog, input->variables, variationInc);
+				input->awg->loadAWGScript(input->awgScriptAddress);
+				input->awg->analyzeAWGScript(input->awg, input->variables, variationInc);
 			}
 
 			input->comm->sendError(warnings);
@@ -473,9 +492,10 @@ void MasterManager::startExperimentThread(MasterThreadInput* input)
 		loadMasterScript(input->masterScriptAddress);
 		input->gmoog->loadMoogScript(input->gmoogScriptAddress);
 	}
-	if (input->runMoog)
+	if (input->runAWG)
 	{
-		input->moog->loadMoogScript(input->moogScriptAddress);
+		//input->moog->loadMoogScript(input->moogScriptAddress);
+		input->awg->loadAWGScript(input->awgScriptAddress);
 
 	}
 	// start thread. 

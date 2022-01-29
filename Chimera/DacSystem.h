@@ -43,6 +43,7 @@ class DacSystem
 		void setDACsSeq();
 		void zeroDACValues();
 		void setMOTValues(VariableSystem* globalVariables);
+		void setTweezerServo();
 		void startDacs();
 		void configureClocks( UINT variation, bool loadSkip );
 		void setDefaultValue(UINT dacNum, double val);

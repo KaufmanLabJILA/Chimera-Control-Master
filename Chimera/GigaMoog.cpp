@@ -11,7 +11,7 @@
 //const UINT gigaMoog::loadoffset = 2048; 
 //const UINT gigaMoog::moveoffset = 2560; 
 
-gigaMoog::gigaMoog(std::string portID, int baudrate) : fpga(portID, baudrate) {
+gigaMoog::gigaMoog(std::string portID, int baudrate) : fpga(portID, GIGAMOOG_SAFEMODE ? -1 : baudrate) {
 	if (!GIGAMOOG_SAFEMODE) {
 		//writeOff(); 
 	}
