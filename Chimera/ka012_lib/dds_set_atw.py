@@ -29,6 +29,6 @@ if __name__ == "__main__":
   # fifo.write_axis_fifo("\x00\x86\x28\xF5") #(76.45 MHZ: 0x271DE698)  (80 MHz: 0x28F5C378)
   # fifo.write_axis_fifo("\x00\xC1\xC3\x78")
 
-  with open("/dev/axis_fifo_0x0000000080005000", "r+b") as character:
+  with open("/dev/axis_fifo_0x0000000080005000", "wb") as character:
     # ~ writeWords(character)
-    writeToDDS(character,6,0x00011100) # 
+    writeToDDS(character,6,0x00011100) #

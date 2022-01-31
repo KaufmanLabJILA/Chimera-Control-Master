@@ -35,7 +35,7 @@ def writeWords(character):
 
 if __name__ == "__main__":
   print("writing to 5000")
-  with open("/dev/axis_fifo_0x0000000080005000", "r+b") as character:
+  with open("/dev/axis_fifo_0x0000000080005000", "wb") as character:
     # ~ writeWords(character)
     # writeToDDS(character,0,0x20000000)
     writeToDDS(character,4,0x23D70898)# (80 MHz: 0x28F5C378) (76.45 MHZ: 0x271DE698)
@@ -45,11 +45,11 @@ if __name__ == "__main__":
     # writeToDDS(character,0,0x00000000)
 
   print("writing to 6000")
-  with open("/dev/axis_fifo_0x0000000080006000", "r+b") as character:
+  with open("/dev/axis_fifo_0x0000000080006000", "wb") as character:
     # ~ writeWords(character)
     writeToDDS(character,4,0x3AE145D0) # 115 MHz
 
   print("writing to 7000")
-  with open("/dev/axis_fifo_0x0000000080007000", "r+b") as character:
+  with open("/dev/axis_fifo_0x0000000080007000", "wb") as character:
     # ~ writeWords(character)
     writeToDDS(character,4,0x23D70898) # 70 MHz

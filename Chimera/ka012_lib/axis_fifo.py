@@ -9,7 +9,7 @@ class AXIS_FIFO:
   def __init__(self, device=None):
     self.devicename = device
     if device is not None:
-      self.dev = open(device, "wb")
+      self.dev = open(device, "wb", buffering=0)
 
   def __del__(self):
     if self.devicename is not None:
@@ -31,7 +31,10 @@ class AXIS_FIFO:
     if MSB_first:
       word=word[::-1]
     if self.devicename is not None:
-      self.dev.write(word)
+      if isinstance(word,bytes):
+        self.dev.write(word)
+      else:
+        self.dev.write(word.encode("raw_unicode_escape"))
       self.dev.flush()
     else:
       txt = ''

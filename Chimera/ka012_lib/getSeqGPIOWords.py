@@ -1,10 +1,12 @@
 import struct
 
 def getWord(bytes):
-  return bytes[3] + bytes[2] + bytes[1] + bytes[0]
+  return bytes[3:4] + bytes[2:3] + bytes[1:2] + bytes[0:1]
+  # in python2 data_bytes[2] returns the third bytes in b'\x..' format, but in python3 data_bytes[2] returns the integer of that byte, need to use data_bytes[2:3]
 
 def getBankWord(bytes):
-  return bytes[0] + bytes[1] + bytes[2] + bytes[3]
+  return bytes[0:1] + bytes[1:2] + bytes[2:3] + bytes[3:4]
+  # in python2 data_bytes[2] returns the third bytes in b'\x..' format, but in python3 data_bytes[2] returns the integer of that byte, need to use data_bytes[2:3]
 
 def getSeqGPIOWords(point):
   address, time, banka, bankb =  point.address, point.time, point.outputA, point.outputB
@@ -20,7 +22,7 @@ def getSeqGPIOWords(point):
   #time
   words.append([])
   words[1].append(getWord(time_bytes))
-  
+
   #address for bank A
   address_bytes = struct.pack('>I', address + 0x8000)
   words.append([])
@@ -29,7 +31,7 @@ def getSeqGPIOWords(point):
   words.append([])
   words[3].append(getBankWord(banka_bytes))
 
-  
+
   #address for bank B
   address_bytes = struct.pack('>I', address + 0xC000)
   words.append([])
