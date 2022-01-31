@@ -47,7 +47,11 @@ public:
 	std::vector<std::vector<long>>* plotterImageQueue;
 	std::vector<std::vector<bool>>* plotterAtomQueue;
 	std::vector<std::vector<bool>>* rearrangerAtomQueue;
+	
 	std::vector<UINT8> targetPositionsTemp;
+	std::vector<bool> positions;
+	std::vector<bool> positionsX; //Temporary storage of initial positions XY for multi-step rearrangement procedures.
+	std::vector<bool> positionsY;
 
 	size_t nAtom = 0;
 	std::array<int, 4> thresholds;

@@ -103,7 +103,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 
 		//step 1: ramp up tones at initial locations and phases
 		for (int channel = 0; channel < 16; channel++) {//TODO: 16 could be changed to 64 if using more tones for rearrangement
-			if (ny != 0 && nx == 1 && channel < 3) //Triple up tones if only a single tone on.
+			if (ny > 1 && nx == 1 && channel < 3) //Triple up tones if only a single tone on, assuming y axis not already tripled.
 			{
 				//size_t hardwareChannel = 8 * channel; //there are 256 memory locations for each group of 8
 				size_t hardwareChannel = (channel * 8) % 64 + (channel * 8) / 64;
@@ -196,7 +196,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 
 		//step 2: ramp to new locations
 		for (int channel = 0; channel < 16; channel++) {
-			if (ny != 0 && nx == 1 && channel < 3) //Triple up tones if only a single tone on.
+			if (ny > 1 && nx == 1 && channel < 3) //Triple up tones if only a single tone on.
 			{
 				size_t hardwareChannel = (channel * 8) % 64 + (channel * 8) / 64;
 				freqPrev = FTW_LUT[
@@ -321,7 +321,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 
 		//step 3: ramp all tones to 0
 		for (int channel = 0; channel < 16; channel++) {
-			if (ny != 0 && nx == 1 && channel < 3) //Triple up tones if only a single tone on.
+			if (ny > 1 && nx == 1 && channel < 3) //Triple up tones if only a single tone on.
 			{
 				size_t hardwareChannel = (channel * 8) % 64 + (channel * 8) / 64;
 				freq = FTW_LUT[

@@ -63,8 +63,6 @@ targetend
 
 %%%
 
-%rearrangeroff
-
 %test
 
 %hardreset %This takes ~ 20 seconds to run.
