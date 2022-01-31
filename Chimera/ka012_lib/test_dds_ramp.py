@@ -57,7 +57,7 @@ class DDS_ramp_tester:
     #unused      <= gpio_in( 3 downto  2);
     #acc_chan    <= gpio_in( 1 downto  0);
 
-    self.fifo_dds_atw_seq.write_axis_fifo("\x01\x00" + struct.pack('>H', point.address))
+    self.fifo_dds_atw_seq.write_axis_fifo(b"\x01\x00" + struct.pack('>H', point.address))
     self.fifo_dds_atw_seq.write_axis_fifo(struct.pack('>I', point.time))
     self.fifo_dds_atw_seq.write_axis_fifo(struct.pack('>I', point.start*256*256 + point.steps))
     self.fifo_dds_atw_seq.write_axis_fifo(struct.pack('>I', point.incr*16+point.chan))
@@ -73,7 +73,7 @@ class DDS_ramp_tester:
     incr_hi = point.incr >> 28 #(point.incr & (0xffff << 28)) # acc_incr_hi    <= gpio_in(47 downto  32)
     incr_lo = point.incr & ((1 << 28) - 1)  # acc_incr_lo    <= gpio_in(31 downto  4)
 
-    self.fifo_dds_ftw_seq.write_axis_fifo("\x01\x00" + struct.pack('>H', point.address))
+    self.fifo_dds_ftw_seq.write_axis_fifo(b"\x01\x00" + struct.pack('>H', point.address))
     self.fifo_dds_ftw_seq.write_axis_fifo(struct.pack('>I', point.time))
     self.fifo_dds_ftw_seq.write_axis_fifo(struct.pack('>I', point.start))
     self.fifo_dds_ftw_seq.write_axis_fifo(struct.pack('>I', point.steps*256*256 + incr_hi))
@@ -122,17 +122,17 @@ class DDS_ramp_tester:
       points.append(GPIO_seq_point(address=4,time=0,outputA=0x00000000,outputB=0x00000000))
 
       for point in points:
-        print "add: ", point.address
-        print "time: ", point.time
-        print "outputA: ", point.outputA
-        print "outputB: ", point.outputB
+        print("add: ", point.address)
+        print("time: ", point.time)
+        print("outputA: ", point.outputA)
+        print("outputB: ", point.outputB)
 
       # with open("/dev/axis_fifo_0x0000000080004000", "r+b") as character:
       for point in points:
           # writeToSeqGPIO(character, point)
         seqWords = getSeqGPIOWords(point)
         for word in  seqWords:
-          # print word
+          # print(word)
           self.fifo_main_seq.write_axis_fifo(word[0], MSB_first=False)
 
 def program(tester):
@@ -155,7 +155,7 @@ if __name__ == "__main__":
   import sys
   import dds_lock_pll
 
-  tester = DDS_ramp_tester(fifo_devices['AD9959_1'], fifo_devices['AD9959_1_seq_atw'], fifo_devices['AD9959_1_seq_ftw'], fifo_devices['GPIO_seq'])
+  tester = DDS_ramp_tester(fifo_devices['AD9959_0'], fifo_devices['AD9959_0_seq_atw'], fifo_devices['AD9959_0_seq_ftw'], fifo_devices['GPIO_seq'])
   tester.mod_disable()
   reset()
   dds_lock_pll.dds_lock_pll()

@@ -16,7 +16,7 @@ def writeToDDS(dds_char_dev, address, data):
   words.append(data_bytes[1:2])
   words.append(struct.pack('<B', 192 + 1))
   words.append(b"\x00")
-  print(words)
+  # print(words)
   for word in words:
     dds_char_dev.write(word)
   dds_char_dev.flush()

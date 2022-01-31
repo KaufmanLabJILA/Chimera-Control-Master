@@ -171,6 +171,7 @@ class sequencer:
         # print point.steps * 256 * 256, incr_hi,incr_lo, point.incr, point.steps * 256 * 256 + incr_hi
         # print point.incr & (0xffff>>28), point.incr & ((1<<28)-1), (point.steps << 16) + incr_hi, (incr_lo << 4) + point.chan
         # print incr_hi, incr_lo, point.steps * 256 * 256 + incr_hi, incr_lo * 16 + point.chan
+        print('addr', point.address, 'time', point.time, 'start', point.start, 'steps', point.steps, 'incr', point.incr, 'channel', point.chan)
         fifo.write_axis_fifo(b"\x01\x00" + struct.pack('>H', point.address))
         fifo.write_axis_fifo(struct.pack('>I', point.time))
         fifo.write_axis_fifo(struct.pack('>I', point.start))
@@ -230,20 +231,20 @@ class sequencer:
         return points
 
     def dac_seq_write_points(self, byte_len, byte_buf, num_snapshots):
-        print('DAC points')
-        print(byte_buf)
+        # print('DAC points')
+        # print(byte_buf)
         points0 = []
         points1 = []
         points0Sorted = []
         points1Sorted = []
-        print('initialize DACs')
+        # print('initialize DACs')
         points0 = self.initialize_DAC(0)
         points1 = self.initialize_DAC(1)
 
         for ii in range(num_snapshots):
             # t is in 10ns, s is in V, end is in V, duration is in 10ns
             [t, chan, s, end, duration] = self.dac_read_point(byte_buf[ii*byte_len: ii*byte_len + byte_len])
-            print('time',t,'channel', chan,'start', s,'end', end,'duration', duration)
+            # print('time',t,'channel', chan,'start', s,'end', end,'duration', duration)
             num_steps = int(duration/self.dacRampTimeRes + 0.5)
             # num_steps = int(duration * self.accUpdateFreq) # duration is in us and accUpdateFreq is in MHz
             if (num_steps < 1):
@@ -255,7 +256,7 @@ class sequencer:
             	# print(s, end, num_steps, ramp_inc)
             if (end<s and ramp_inc != 0):
             	ramp_inc = int(self.dacIncrMax  + 1 - ramp_inc)
-            print('time',t,'channel', chan,'start', s,'end', end,'duration', duration, 'num_step',num_steps, 'ramp_inc: ', ramp_inc)
+            # print('time',t,'channel', chan,'start', s,'end', end,'duration', duration, 'num_step',num_steps, 'ramp_inc: ', ramp_inc)
             t = int(int(t/self.dacRampTimeRes + 0.5) * self.dacRampTimeRes + (chan%16))
             if (chan < 16):
                 points0.append(DAC_seq_point(address=len(points0),time=t,start=s,incr=ramp_inc,chan=chan,clr_incr=clr_incr))
@@ -403,7 +404,7 @@ class sequencer:
     	  self.write_ftw_point(self.fifo_dds_ftw_seq, point)
 
     def dio_seq_write_points(self, byte_len, byte_buf, num_snapshots):
-    	print('DIO points')
+    	# print('DIO points')
     	points=[]
     	for ii in range(num_snapshots):
     		[t, outA, outB] = self.dio_read_point(byte_buf[ii*byte_len: ii*byte_len + byte_len])
@@ -420,7 +421,7 @@ class sequencer:
     			self.fifo_dio_seq.write_axis_fifo(word[0], MSB_first=False)
 
     def dio_read_point(self, snapshot):
-    	print(snapshot)
+    	# print(snapshot)
     	snapshot_split = snapshot.split(b'_')
     	t = int(snapshot_split[0].strip(b't'), 16)
     	out = snapshot_split[1].strip(b'b').strip(b'\0')
@@ -429,7 +430,7 @@ class sequencer:
     	return [t, outA, outB]
 
     def dac_read_point(self, snapshot):
-    	print(snapshot)
+    	# print(snapshot)
     	snapshot_split = snapshot.split(b'_')
     	t = int(snapshot_split[0].strip(b't'), 16)
     	chan = int(snapshot_split[1].strip(b'c'), 16)
@@ -468,8 +469,8 @@ if __name__ == "__main__":
     			   b't00F61a80_b0000000000000000\0'
     #byte_buf_dds = 't00000064_c0001_f_s100.000_e050.000_000009ff0\0' \
     #			   't00010064_c0002_f_s080.000_e050.000_000009ff0\0'
-    byte_buf_dds = b't00000064_c0000_f_s080.000_e000.000_d00000000\0' \
-                    b't00010064_c0000_a_s100.000_e000.000_d00000000\0'
+    byte_buf_dds = b't00000064_c0000_f_s080.000_e000.000_d00000000\0'
+                    # b't00010064_c0000_a_s100.000_e000.000_d00000000\0'
 
     # byte_buf_dac = 't00000000_c0000_s05.000_e00.000_d0000c350\0' \
     # 			   't005b8d80_c0000_s05.000_e00.000_d0000c350\0'
@@ -483,19 +484,20 @@ if __name__ == "__main__":
     reset()
     dds_lock_pll.dds_lock_pll()
     #seq.set_DDS(1, 100, 10)
-    seq.dds_seq_write_points(46, byte_buf_dds, 2)
+    sleep(0.5)
+    seq.dds_seq_write_points(46, byte_buf_dds, 1)
     #time.sleep(0.005)
     #seq.set_DDS(1, 100, 0)
     # seq.dds_seq_write_atw_points()
     #seq.dds_seq_write_ftw_points()
     # seq.set_DAC(0, 1)
-    sleep(1)
+    sleep(0.5)
     seq.dac_seq_write_points(42, byte_buf_dac, 3)
-    sleep(1)
+    sleep(0.5)
     seq.dio_seq_write_points(28, byte_buf_dio, 4)
-    sleep(1)
+    sleep(0.5)
     seq.mod_enable()
-    sleep(1)
+    sleep(0.5)
     trigger()
-    sleep(1)
+    sleep(0.5)
     seq.mod_disable()
