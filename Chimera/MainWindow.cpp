@@ -205,6 +205,19 @@ void MainWindow::passConfigPress( )
 //	}
 //}
 
+void MainWindow::passGmoogIsOnPress( )
+{
+	if ( gmoog.rearrangerActive )
+	{
+		gmoog.rearrangerActive = false;
+		menu.CheckMenuItem(ID_GIGAMOOG_REARRANGERACTIVE, MF_UNCHECKED );
+	}
+	else
+	{
+		gmoog.rearrangerActive = true;
+		menu.CheckMenuItem(ID_GIGAMOOG_REARRANGERACTIVE, MF_CHECKED );
+	}
+}
 
 LRESULT MainWindow::onNoAtomsAlertMessage( WPARAM wp, LPARAM lp )
 {

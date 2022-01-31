@@ -430,7 +430,7 @@ moveSequence atomCruncher::getRearrangeMoves(std::string rearrangeType) {
 		int nColumnSource = sourceColumnSum(ixSource, rearrangerAtomVect); //number of atoms remaining in source column
 		int ixTarget = wx - 1;
 		
-		while (ixTarget >= 0) //iterate through target columns from the opposite side from scrunch. ixTarget must be int so that it can go negative for this condition to fail.
+		while (ixTarget >= 0 && ixSource >= 0) //iterate through target columns from the opposite side from scrunch. ixTarget must be int so that it can go negative for this condition to fail.
 		{
 			int iyTarget = 0;
 			int iySource = 0;

@@ -150,7 +150,7 @@
 #define ID_UWAVE_OPEN_SCRIPT            40125
 #define ID_UWAVE_SAVE_SCRIPT            40126
 #define ID_UWAVE_SAVE_SCRIPT_AS         40127
-#define ID_NIAWG_NIAWGISON              40128
+#define ID_GIGAMOOG_REARRANGERACTIVE    40128
 #define ID_PLOTTING_STOPPLOTTER         40129
 #define ID_SCRIPTS_MOOGSCRIPT           40130
 #define ID_RUNMENU_RUNNIAWG             40131
@@ -162,15 +162,15 @@
 #define ID_FILE_MY_AWG_SAVE             40149
 #define ID_FILE_MY_AWG_SAVEAS           40150
 #define ID_FILE_MY_AWG_NEW              40151
-
 #define MENU_ID_RANGE_END               40151
+#define ID_NIAWG_NIAWGISON              40152
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        134
-#define _APS_NEXT_COMMAND_VALUE         40152
+#define _APS_NEXT_COMMAND_VALUE         40153
 #define _APS_NEXT_CONTROL_VALUE         1032
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

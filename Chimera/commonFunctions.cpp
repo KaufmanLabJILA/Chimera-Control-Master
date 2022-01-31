@@ -754,6 +754,11 @@ namespace commonFunctions
 			//	mainWin->passNiawgIsOnPress( );
 			//	break;
 			//}
+			case ID_GIGAMOOG_REARRANGERACTIVE:
+			{
+				mainWin->passGmoogIsOnPress( );
+				break;
+			}
 			case ID_RUNMENU_ABORTCAMERA:
 			{
 				try

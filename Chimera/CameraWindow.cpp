@@ -981,7 +981,7 @@ void CameraWindow::prepareAtomCruncher(ExperimentInput& input)
 	{
 		input.cruncherInput->gmoog = input.masterInput->gmoog; //TODO: make sure this is right.
 		//input.cruncherInput->rearrangerActive = input.masterInput->rearrangeInfo.active; //211229 - rearrangeInfo depreciated.
-		input.cruncherInput->rearrangerActive = input.masterInput->gmoog->rearrangerActive; //Now set rearranger active if it appears in gmoog script. TODO: this is getting called before gmoog script is parsed.
+		input.cruncherInput->rearrangerActive = input.masterInput->gmoog->rearrangerActive; //Now set rearranger active depending on gmoog settings.
 	}
 	else
 	{

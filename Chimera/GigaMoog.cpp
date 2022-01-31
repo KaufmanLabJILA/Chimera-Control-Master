@@ -606,7 +606,7 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vari
 	bool test = false;
 	bool hardreset = false;
 
-	rearrangerActive = false;
+	//rearrangerActive = false;
 
 	writeOff(ms);
 
@@ -623,7 +623,7 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vari
 
 	if (word == "rearrange")
 	{
-		rearrangerActive = true;
+		//rearrangerActive = true;
 		Expression ampStepNew, freqStepNew, xoff, yoff, scrunchSpacingExpression;
 		std::string tmp, initAOX, initAOY;
 		currentMoogScript >> rearrangeMode;
@@ -779,10 +779,10 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vari
 			else if (word == "test") {
 				test = true;
 			}
-			else if (word == "rearrangeroff")
-			{
-				rearrangerActive = false;
-			}
+			//else if (word == "rearrangeroff")
+			//{
+			//	rearrangerActive = false;
+			//}
 			else
 			{
 				thrower("ERROR: unrecognized moog script command: \"" + word + "\"");

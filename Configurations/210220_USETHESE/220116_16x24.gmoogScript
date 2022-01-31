@@ -43,4 +43,4 @@ set DAC1 21 77.89566666666664 212.65840892185977+yoff+ycommon 30.0
 set DAC1 22 86.15666666666664 216.62245196626606+yoff+ycommon 7.5
 set DAC1 23 88.71766666666666 220.58649501067234+yoff+ycommon 0.0
 
-%hardreset %This takes ~ 2 minutes to run.
+%hardreset %This takes ~ 20 seconds to run.
