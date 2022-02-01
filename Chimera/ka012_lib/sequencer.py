@@ -68,7 +68,7 @@ class sequencer:
         self.dacRes = 65536 #0xffff
         self.dacRange = [-10, 10]
         self.dacRangeConv = float(167772)/self.dacRes
-        self.dacIncrMax = 0xfffffff # 16 atw + 12 acc = 28bit #268435455
+        self.dacIncrMax = 0xffffffff # 32bit
         self.dacRampTimeRes = 2000 #20us in the unit of system clk (10ns)
 
         self.ddsAmpRange = [0, 5]
@@ -362,8 +362,9 @@ class sequencer:
     		ftw_points2.append(DDS_ftw_seq_point(address=len(ftw_points2), time=0, start=0, steps=0, incr=0, chan=0))
 
     	for point in ftw_points0:
-    		print("ftw dds0")
-    		self.write_ftw_point(self.fifo_dds0_ftw_seq, point)
+            print("ftw dds0")
+            print('DDS_ftw_seq_point(address=',point.address,',time=',point.time,',start=',point.start,',steps=',point.steps,',incr=',point.incr,',chan=',point.chan,'))')
+            self.write_ftw_point(self.fifo_dds0_ftw_seq, point)
     	for point in ftw_points1:
     		print("ftw dds1")
     		self.write_ftw_point(self.fifo_dds1_ftw_seq, point)
@@ -393,15 +394,16 @@ class sequencer:
           self.write_atw_point(self.fifo_dds_atw_seq, point)
 
     def dds_seq_write_ftw_points(self):
-    	points=[]
-    	# points.append(DDS_ftw_seq_point(address=0,time=0,start=200000000,steps=0,incr=0,chan=0))
-    	# ~ points.append(DDS_ftw_seq_point(address=0,time=   0,start=800000,steps=10000,incr=30000,chan=0))
-    	points.append(DDS_ftw_seq_point(address=0,time=0,start=800000,steps=0,incr=0,chan=1))
-    	points.append(DDS_ftw_seq_point(address=1,time=20000,start=500000,steps=0,incr=0,chan=2))
-    	points.append(DDS_ftw_seq_point(address=2,time=0,start=0,steps=0,incr=0,chan=0))
+        points=[]
+        #these ramps should complete in just under 64 ms
+        points.append(DDS_ftw_seq_point(address=0,time=0,start=472446000,steps=0,incr=0,chan=0))
+        #points.append(DDS_ftw_seq_point(address=1,time=	20000, start=4000000,steps=0,incr=0,chan=0))
+        # points.append(DDS_ftw_seq_point(address=1,time=1,start=1000000,steps=1,incr=0,chan=3))
+        points.append(DDS_ftw_seq_point(address=1,time=0,start=0,steps=0,incr=0,chan=0))
 
-    	for point in points:
-    	  self.write_ftw_point(self.fifo_dds_ftw_seq, point)
+        for point in points:
+            print('DDS_ftw_seq_point(address=',point.address,',time=',point.time,',start=',point.start,',steps=',point.steps,',incr=',point.incr,',chan=',point.chan,'))')
+            self.write_ftw_point(self.fifo_dds0_ftw_seq, point)
 
     def dio_seq_write_points(self, byte_len, byte_buf, num_snapshots):
     	# print('DIO points')
@@ -447,10 +449,12 @@ class sequencer:
     	t = int(snapshot_split[0].strip(b't'), 16)
     	chan = int(snapshot_split[1].strip(b'c'), 16)
     	aorf = snapshot_split[2]
-    	if (aorf == 'f'):
+    	if (aorf == b'f'):
     		ddsConv = self.ddsFreqRangeConv
     	else:
     		ddsConv = self.ddsAmpRangeConv
+        # print(float(snapshot_split[3].strip(b's')))
+
     	start = int(float(snapshot_split[3].strip(b's'))*ddsConv)
     	end = int(float(snapshot_split[4].strip(b'e'))*ddsConv)
     	duration = int(snapshot_split[5].strip(b'd').strip(b'\0'), 16)
@@ -469,7 +473,7 @@ if __name__ == "__main__":
     			   b't00F61a80_b0000000000000000\0'
     #byte_buf_dds = 't00000064_c0001_f_s100.000_e050.000_000009ff0\0' \
     #			   't00010064_c0002_f_s080.000_e050.000_000009ff0\0'
-    byte_buf_dds = b't00000064_c0000_f_s080.000_e000.000_d00000000\0'
+    byte_buf_dds = b't00000064_c0000_f_s055.000_e000.000_d00000000\0'
                     # b't00010064_c0000_a_s100.000_e000.000_d00000000\0'
 
     # byte_buf_dac = 't00000000_c0000_s05.000_e00.000_d0000c350\0' \
@@ -486,6 +490,7 @@ if __name__ == "__main__":
     #seq.set_DDS(1, 100, 10)
     sleep(0.5)
     seq.dds_seq_write_points(46, byte_buf_dds, 1)
+    # seq.dds_seq_write_ftw_points()
     #time.sleep(0.005)
     #seq.set_DDS(1, 100, 0)
     # seq.dds_seq_write_atw_points()

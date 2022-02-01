@@ -295,7 +295,7 @@ greenz -0.3
 blueloadtime 400
 greenbroadloadtime 30
 greennarrowloadtime 50
-lacfreq 92.43
+lacfreq 91.94
 lacpower 38.45
 coolfreq 84.2586
 coolpower 3.8944
@@ -313,4 +313,4 @@ rb1freq 99.8
 ddswait 2000
 ttlwait 0.1
 dacwait 10
-943 1083 1 946 1046 1
+795 945 1 865 965 1
