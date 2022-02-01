@@ -295,7 +295,7 @@ greenz -0.3
 blueloadtime 400
 greenbroadloadtime 30
 greennarrowloadtime 50
-lacfreq 91.94
+lacfreq 92.43
 lacpower 38.45
 coolfreq 84.2586
 coolpower 3.8944
