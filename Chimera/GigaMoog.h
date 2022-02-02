@@ -16,6 +16,41 @@
 
 #include "moveSequence.h"
 
+class memoryController {
+	//Simple helper class to keep track of how much memory has been used, and what channels to use next.
+public:
+
+	memoryController() {
+		memBlocks.reserve(8); //reminder - always a lot faster to assign vector size ahead of time.
+		for (size_t i = 0; i < 8; i++)
+		{
+			memBlock mem(i);
+			memBlocks.push_back(mem);
+		}
+	}
+
+	std::vector<int> getNextChannels(int channelsNeeded);
+	inline void moveChannel(int blockID, int nmoves = 1) { memBlocks[blockID].usedMemory += nmoves; }; //inline because this function is very simple, but could get called a lot.
+
+private:
+	struct memBlock
+	{
+		int blockID; //each block contains 8 channels. 0-7, 8-15, 16-23, 24-31, 32-39, 40-47, 48-55, 56-63;
+		int channelID;
+		size_t usedMemory;
+
+		memBlock(int id) : blockID(id), channelID(0), usedMemory(0) {} //constructor just takes block ID, and assumes memory starts out empty.
+
+		bool operator < (const memBlock& mem) const //define a sorting operation that sorts by available memory
+		{
+			return (usedMemory < mem.usedMemory);
+		}
+	};
+
+	std::vector<memBlock> memBlocks;
+
+};
+
 class gigaMoog {
 
 public:

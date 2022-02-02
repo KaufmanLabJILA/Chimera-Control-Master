@@ -227,7 +227,10 @@ moveSequence atomCruncher::getRearrangeMoves(std::string rearrangeType) {
 					if (nColumnSource<1) //check if a source atom is available in current source column
 					{
 						ixSource -= (gmoog->scrunchSpacing); //if no atoms, move to the next source column and reset available atoms in column
-						nColumnSource = sourceColumnSum(ixSource, rearrangerAtomVect);
+						if (ixSource >=0)
+						{
+							nColumnSource = sourceColumnSum(ixSource, rearrangerAtomVect);
+						}
 						break;
 					}
 					while (!rearrangerAtomVect[ixSource + wx * iySource]) //find next atom in source column. This should be guaranteed due to counting nColumnSource.
