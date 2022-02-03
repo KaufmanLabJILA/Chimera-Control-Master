@@ -62,6 +62,8 @@
 	const std::string MASKS_FILE_LOCATION = PROJECT_LOCATION + "\\Image Processing\\" + "masks.npy";
 	const std::string MASKS_CROP_FILE_LOCATION = PROJECT_LOCATION + "\\Image Processing\\" + "maskPtsCrop.npy";
 	const std::string BG_IMAGE_FILE_LOCATION = PROJECT_LOCATION + "\\Image Processing\\" + "bgImg.npy";
+	const std::string SUBPIXELMASKS_FILE_LOCATION = PROJECT_LOCATION + "\\Image Processing\\" + "subpixelMasks.npy";
+	const std::string SUBPIXELLUT_FILE_LOCATION = PROJECT_LOCATION + "\\Tweezer LUT\\" + "subpixelLUT.npy";
 	const std::string TWEEZER_AMPLITUDE_LUT_FILE_LOCATION = PROJECT_LOCATION + "\\Tweezer LUT\\" + "ampLUT.npy";
 	const std::string TWEEZER_FREQUENCY_LUT_FILE_LOCATION = PROJECT_LOCATION + "\\Tweezer LUT\\" + "freqLUT.npy";
 	const std::string PLOT_FILES_SAVE_LOCATION = PROJECT_LOCATION + "\\Plotting\\";

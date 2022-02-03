@@ -162,15 +162,16 @@
 #define ID_FILE_MY_AWG_SAVE             40149
 #define ID_FILE_MY_AWG_SAVEAS           40150
 #define ID_FILE_MY_AWG_NEW              40151
-#define MENU_ID_RANGE_END               40151
 #define ID_NIAWG_NIAWGISON              40152
+#define ID_GIGAMOOG_AUTOTWEEZERALIGNACTIVE 40153
+#define MENU_ID_RANGE_END               40153
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        134
-#define _APS_NEXT_COMMAND_VALUE         40153
+#define _APS_NEXT_COMMAND_VALUE         40154
 #define _APS_NEXT_CONTROL_VALUE         1032
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

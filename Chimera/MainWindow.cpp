@@ -219,6 +219,20 @@ void MainWindow::passGmoogIsOnPress( )
 	}
 }
 
+void MainWindow::passAutoAlignIsOnPress()
+{
+	if (gmoog.autoTweezerOffsetActive)
+	{
+		gmoog.autoTweezerOffsetActive = false;
+		menu.CheckMenuItem(ID_GIGAMOOG_AUTOTWEEZERALIGNACTIVE, MF_UNCHECKED);
+	}
+	else
+	{
+		gmoog.autoTweezerOffsetActive = true;
+		menu.CheckMenuItem(ID_GIGAMOOG_AUTOTWEEZERALIGNACTIVE, MF_CHECKED);
+	}
+}
+
 LRESULT MainWindow::onNoAtomsAlertMessage( WPARAM wp, LPARAM lp )
 {
 	try

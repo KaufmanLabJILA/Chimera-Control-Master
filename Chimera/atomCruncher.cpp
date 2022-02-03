@@ -1,6 +1,111 @@
 #include "stdafx.h"
 #include "atomCruncher.h"
 
+std::vector<double> atomCruncher::sendXOffsetMHz() {
+	///helper function to pass these offsets back to the camera window, which saves the data once all the images have been taken
+	return gmoog->xOffsetAuto;
+}
+
+std::vector<double> atomCruncher::sendYOffsetMHz() {
+	///helper function to pass these offsets back to the camera window, which saves the data once all the images have been taken
+	return gmoog->yOffsetAuto;
+}
+
+void atomCruncher::getTweezerOffset(int* xOffPixels, int* yOffPixels, int* indexSubpixelMask) {
+	///modifies input pointers to pass newly computed offset values in units of pixels and subpixel mask offset.
+
+	//First find brightest pixel There is probably a more efficient way of doing this.
+
+	std::vector<size_t> macroSignals;
+
+	size_t indPixImg;
+	size_t indPixMask;
+
+	for (int yShift = -2; yShift < 3; yShift++) //TODO: for now range is just hard coded, 
+	{
+		for (int xShift = -2; xShift < 3; xShift++)
+		{
+			int integratedSignal = 0;
+			//iterate over whole image - just throw out boundary when shifting.
+			for (size_t iy = 0; iy < imageDims.height - abs(yShift); iy++)
+			{
+				for (size_t ix = 0; ix < imageDims.width - abs(xShift); ix++)
+				{
+					//select appropriate pixel in image and mask and take product. Also subtracting background in this step - doing it all at once to avoid saving image twice, but also want to keep raw image for plotting.
+
+					if (xShift >= 0 && yShift >= 0) // Handle indexing for negative mask roll.
+					{
+						indPixImg = (ix + xShift) + (iy + yShift) * imageDims.width; //positive roll of masks means starting with offset on image indexing.
+						indPixMask = (ix) + (iy) * imageDims.width;
+					}
+					else if (xShift >= 0 && yShift < 0)
+					{
+						indPixImg = (ix + xShift) + (iy) * imageDims.width;
+						indPixMask = (ix) + (iy + yShift) * imageDims.width; //negative roll of masks means starting with offset on mask indexing.
+					}
+					else if (xShift < 0 && yShift >= 0)
+					{
+						indPixImg = (ix) + (iy + yShift) * imageDims.width;
+						indPixMask = (ix + xShift) + (iy) * imageDims.width;
+					}
+					else if (xShift < 0 && yShift < 0)
+					{
+						indPixImg = (ix) + (iy) * imageDims.width;
+						indPixMask = (ix + xShift) + (iy + yShift) * imageDims.width;
+					}
+
+					integratedSignal += ((*imageQueue)[0][indPixImg] - bgImg[indPixImg]) * (subpixelMaskSingle[indPixMask]);
+				}
+			}
+			macroSignals.push_back(integratedSignal);
+		}
+	}
+
+	int maxSignalIndex = std::max_element(macroSignals.begin(), macroSignals.end()) - macroSignals.begin(); //find brightest signal
+	*xOffPixels = maxSignalIndex % 4 - 2;
+	*yOffPixels = maxSignalIndex / 4 - 2;
+
+	std::vector<size_t> subpixelSignals;
+	//Now given maximum pixel, repeat procedure for subpixel masks.
+	for (size_t i = 0; i < nSubpixel; i++)
+	{
+		int integratedSignal = 0;
+		//iterate over whole image - just throw out boundary when shifting.
+		for (size_t iy = 0; iy < imageDims.height - abs(*yOffPixels); iy++)
+		{
+			for (size_t ix = 0; ix < imageDims.width - abs(*xOffPixels); ix++)
+			{
+				//select appropriate pixel in image and mask and take product. Also subtracting background in this step - doing it all at once to avoid saving image twice, but also want to keep raw image for plotting.
+
+				if (*xOffPixels >= 0 && *yOffPixels >= 0) // Handle indexing for negative mask roll.
+				{
+					indPixImg = (ix + *xOffPixels) + (iy + *yOffPixels) * imageDims.width; //positive roll of masks means starting with offset on image indexing.
+					indPixMask = (ix)+(iy)* imageDims.width + i * imageDims.width * imageDims.height;
+				}
+				else if (*xOffPixels >= 0 && yOffPixels < 0)
+				{
+					indPixImg = (ix + *xOffPixels) + (iy)* imageDims.width;
+					indPixMask = (ix)+(iy + *yOffPixels) * imageDims.width + i * imageDims.width * imageDims.height; //negative roll of masks means starting with offset on mask indexing.
+				}
+				else if (ix + *xOffPixels < 0 && iy + *yOffPixels >= 0)
+				{
+					indPixImg = (ix)+(iy + *yOffPixels) * imageDims.width;
+					indPixMask = (ix + *xOffPixels) + (iy)* imageDims.width + i * imageDims.width * imageDims.height;
+				}
+				else if (ix + *xOffPixels < 0 && iy + *yOffPixels < 0)
+				{
+					indPixImg = (ix)+(iy)* imageDims.width;
+					indPixMask = (ix + *xOffPixels) + (iy + *yOffPixels) * imageDims.width + i * imageDims.width * imageDims.height;
+				}
+
+				integratedSignal += ((*imageQueue)[0][indPixImg] - bgImg[indPixImg]) * (subpixelMasks[indPixMask]);
+			}
+		}
+		subpixelSignals.push_back(integratedSignal);
+	}
+	*indexSubpixelMask = std::max_element(subpixelSignals.begin(), subpixelSignals.end()) - subpixelSignals.begin(); //find brightest signal
+}
+
 void atomCruncher::filterAtomQueue(void) {
 	//exclude atoms that were not on a target site.
 	for (size_t i = 0; i < positions.size(); i++)

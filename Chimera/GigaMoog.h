@@ -68,14 +68,22 @@ public:
 
 	void send(MessageSender& ms);
 	void refreshLUT();
+	void updateXYOffsetAuto();
 
 	void writeRearrangeMoves(moveSequence input, MessageSender& ms);
 
-	bool rearrangerActive = false; //TODO: add handling for parsing script before atomcruncher thread starts.
+	bool rearrangerActive = false;
+	bool autoTweezerOffsetActive = false;
 	std::vector<bool> initialPositionsX; //initial and target positions saved in gigamoog object mostly because it already handles the script, but these only get used by the rearrangement thread.
 	std::vector<bool> initialPositionsY;
 	std::vector<bool> initialPositions;
 	std::vector<UINT8> targetPositions;
+
+	int xPixelOffsetAuto = 0;
+	int yPixelOffsetAuto = 0;
+	int subpixelIndexOffsetAuto = 12;
+	std::vector<double> xOffsetAuto, yOffsetAuto;
+
 	UINT targetNumber;
 	UINT nTweezerX, nTweezerY;
 	UINT scrunchSpacing;
@@ -91,7 +99,10 @@ private:
 	//std::vector<unsigned long long int> FTW_LUT;
 	std::vector<double> ATW_LUT;
 	std::vector<double> FTW_LUT;
+	std::vector<double> subpixelLUT; //This must be synchronized with atomCruncher subpixel masks.
 	double xOffset, yOffset;
+	std::vector<double> xPix2MHz, yPix2MHz;
+	int nSubpixel;
 	UINT xDim, yDim; //x and y dimensions of atom positions from LUT. Must be coordinated with number of masks in image processing.
 	int ampStepMag = 134217727;
 	int freqStepMag = 511;

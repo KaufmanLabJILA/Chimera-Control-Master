@@ -309,6 +309,7 @@ BEGIN
     POPUP "&Gigamoog"
     BEGIN
         MENUITEM "Rearranger active",           ID_GIGAMOOG_REARRANGERACTIVE
+        MENUITEM "Auto tweezer align active",   ID_GIGAMOOG_AUTOTWEEZERALIGNACTIVE
     END
     POPUP "Andor"
     BEGIN

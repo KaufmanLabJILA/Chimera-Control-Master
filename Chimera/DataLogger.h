@@ -23,6 +23,8 @@ class DataLogger
 		void logFunctions(H5::Group& group);
 		void logDDSParameters(MasterThreadInput* input);
 		void logAWGParameters(MasterThreadInput* input);
+		void logGmoogParameters(MasterThreadInput* input);
+		void logTweezerOffsets(std::vector<double> xOffsetAuto, std::vector<double> yOffsetAuto);
 		//void logMoogParameters(MasterThreadInput* input);
 		void logMiscellaneous();
 		void logAndorSettings( AndorRunSettings settings, bool on, int nMask);

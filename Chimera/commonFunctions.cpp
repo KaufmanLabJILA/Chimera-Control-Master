@@ -759,6 +759,11 @@ namespace commonFunctions
 				mainWin->passGmoogIsOnPress( );
 				break;
 			}
+			case ID_GIGAMOOG_AUTOTWEEZERALIGNACTIVE:
+			{
+				mainWin->passAutoAlignIsOnPress();
+				break;
+			}
 			case ID_RUNMENU_ABORTCAMERA:
 			{
 				try
@@ -1151,7 +1156,7 @@ namespace commonFunctions
 		logger->logAndorSettings( input.camSettings, takeAndorPictures, input.cruncherInput->nMask);
 		logger->logMasterParameters( input.masterInput );
 		logger->logDDSParameters(input.masterInput);
-		//logger->logMoogParameters(input.masterInput);
+		logger->logGmoogParameters(input.masterInput);
 		logger->logAWGParameters(input.masterInput);
 		logger->logMiscellaneous();
 		//logger->closeFile(); //TODO: May have to remove this once andor is integrated.

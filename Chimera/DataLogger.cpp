@@ -366,39 +366,62 @@ void DataLogger::logDDSParameters(MasterThreadInput* input)
 	}
 }
 
-//void DataLogger::logMoogParameters(MasterThreadInput* input)
-//{
-//	try
-//	{
-//		if (input == NULL)
-//		{
-//			H5::Group runParametersGroup(file.createGroup("/Moog-Parameters:NA"));
-//			return;
-//		}
-//		H5::Group runParametersGroup(file.createGroup("/Moog-Parameters"));
-//		writeDataSet(input->runAWG, "Run-Moog", runParametersGroup);
-//		if (input->runAWG)
-//		{
-//			std::ifstream moogScript(input->moogScriptAddress);
-//			if (!moogScript.is_open())
-//			{
-//				thrower("ERROR: Failed to load Moog script!");
-//			}
-//			std::string scriptBuf(str(moogScript.rdbuf()));
-//			writeDataSet(scriptBuf, "Moog-Script", runParametersGroup);
-//			writeDataSet(input->moogScriptAddress, "Moog-Script-File-Address", runParametersGroup);
-//		}
-//		else
-//		{
-//			writeDataSet("", "NA:Moog-Script", runParametersGroup);
-//			writeDataSet("", "NA:Moog-Script-File-Address", runParametersGroup);
-//		}
-//	}
-//	catch (H5::Exception& err)
-//	{
-//		thrower("ERROR: Failed to log Moog parameters in HDF5 file: detail:" + err.getDetailMsg());
-//	}
-//}
+void DataLogger::logGmoogParameters(MasterThreadInput* input)
+{
+	try
+	{
+		if (input == NULL)
+		{
+			H5::Group runParametersGroup(file.createGroup("/Gmoog-Parameters:NA"));
+			return;
+		}
+		H5::Group runParametersGroup(file.createGroup("/Gmoog-Parameters"));
+		//H5::Group tweezerAutoOffsetGroup(file.createGroup("/Tweezer-auto-offset"));
+
+		writeDataSet(!MOOG_SAFEMODE, "Run-Gmoog", runParametersGroup);
+		if (!MOOG_SAFEMODE)
+		{
+			std::ifstream gmoogScript(input->gmoogScriptAddress);
+			if (!gmoogScript.is_open())
+			{
+				thrower("ERROR: Failed to load Gmoog script!");
+			}
+			std::string scriptBuf(str(gmoogScript.rdbuf()));
+			writeDataSet(scriptBuf, "Gmoog-Script", runParametersGroup);
+			writeDataSet(input->gmoogScriptAddress, "Gmoog-Script-File-Address", runParametersGroup);
+			writeDataSet(input->gmoog->autoTweezerOffsetActive, "auto-offset-active", runParametersGroup);
+			//writeDataSet(input->gmoog->xOffsetAuto, "x-auto-offset-MHz", tweezerAutoOffsetGroup);
+			//writeDataSet(input->gmoog->yOffsetAuto, "y-auto-offset-MHz", tweezerAutoOffsetGroup);
+		}
+		else
+		{
+			writeDataSet("", "NA:Gmoog-Script", runParametersGroup);
+			writeDataSet("", "NA:Gmoog-Script-File-Address", runParametersGroup);
+		}
+	}
+	catch (H5::Exception& err)
+	{
+		thrower("ERROR: Failed to log Gmoog parameters in HDF5 file: detail:" + err.getDetailMsg());
+	}
+}
+
+void DataLogger::logTweezerOffsets(std::vector<double> xOffsetAuto, std::vector<double> yOffsetAuto)
+{
+	if (fileIsOpen == false)
+	{
+		thrower("Tried to write to h5 file, but the file is closed!\r\n");
+	}
+	H5::Group tweezerAutoOffsetGroup(file.createGroup("/Tweezer-auto-offset"));
+	try
+	{
+		writeDataSet(xOffsetAuto, "x-auto-offset-MHz", tweezerAutoOffsetGroup);
+		writeDataSet(yOffsetAuto, "y-auto-offset-MHz", tweezerAutoOffsetGroup);
+	}
+	catch (H5::Exception& err)
+	{
+		thrower("Failed to write data to HDF5 file! Error: " + str(err.getDetailMsg()) + "\n");
+	}
+}
 
 void DataLogger::logAWGParameters(MasterThreadInput* input)
 {
@@ -416,7 +439,7 @@ void DataLogger::logAWGParameters(MasterThreadInput* input)
 			std::ifstream awgScript(input->awgScriptAddress);
 			if (!awgScript.is_open())
 			{
-				thrower("ERROR: Failed to load Moog script!");
+				thrower("ERROR: Failed to load AWG script!");
 			}
 			std::string scriptBuf(str(awgScript.rdbuf()));
 			writeDataSet(scriptBuf, "AWG-Script", runParametersGroup);

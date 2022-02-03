@@ -964,13 +964,27 @@ void CameraWindow::prepareAtomCruncher(ExperimentInput& input)
 		cnpy::NpyArray arrMasks = cnpy::npy_load(MASKS_FILE_LOCATION);
 		input.cruncherInput->masks = arrMasks.as_vec<int16>(); //load masks as a flattened list of longs (row major), passing by pointer to first element.
 		input.cruncherInput->nMask = arrMasks.shape[0];
-		input.cruncherInput->maskWidX = arrMasks.shape[1];
-		input.cruncherInput->maskWidY = arrMasks.shape[2]; //Get np array dimensions
+		input.cruncherInput->maskWidX = arrMasks.shape[2];
+		input.cruncherInput->maskWidY = arrMasks.shape[1]; //Get np array dimensions
 
 		cnpy::NpyArray arrCrops = cnpy::npy_load(MASKS_CROP_FILE_LOCATION);
 		input.cruncherInput->masksCrop = arrCrops.as_vec<int16>(); //This is flattened column major automatically for no goddamn reason.
 		cnpy::NpyArray arrBGImg = cnpy::npy_load(BG_IMAGE_FILE_LOCATION);
 		input.cruncherInput->bgImg = arrBGImg.as_vec<long>(); //row major
+
+		cnpy::NpyArray arrSubpixelMasks = cnpy::npy_load(SUBPIXELMASKS_FILE_LOCATION);
+		input.cruncherInput->subpixelMasks = arrSubpixelMasks.as_vec<int16>();
+		input.cruncherInput->nSubpixel = arrSubpixelMasks.shape[0];
+
+		if ((arrSubpixelMasks.shape[2] != input.cruncherInput->imageDims.width) || (arrSubpixelMasks.shape[1] != input.cruncherInput->imageDims.height))
+		{
+			thrower("Subpixel mask dimensions do not match image dimensions.");
+		}
+		std::copy(
+			input.cruncherInput->subpixelMasks.begin() + (arrSubpixelMasks.shape[1] * arrSubpixelMasks.shape[2]) * (arrSubpixelMasks.shape[0]/2),
+			input.cruncherInput->subpixelMasks.begin() + (arrSubpixelMasks.shape[1] * arrSubpixelMasks.shape[2]) * (arrSubpixelMasks.shape[0] / 2 + 1),
+			std::back_inserter(input.cruncherInput->subpixelMaskSingle)
+		); //copy central mask for convenience
 	}
 	catch (const std::runtime_error& e) {
 		errBox(e.what());
@@ -982,10 +996,12 @@ void CameraWindow::prepareAtomCruncher(ExperimentInput& input)
 		input.cruncherInput->gmoog = input.masterInput->gmoog; //TODO: make sure this is right.
 		//input.cruncherInput->rearrangerActive = input.masterInput->rearrangeInfo.active; //211229 - rearrangeInfo depreciated.
 		input.cruncherInput->rearrangerActive = input.masterInput->gmoog->rearrangerActive; //Now set rearranger active depending on gmoog settings.
+		input.cruncherInput->autoTweezerOffsetActive = input.masterInput->gmoog->autoTweezerOffsetActive;
 	}
 	else
 	{
 		input.cruncherInput->rearrangerActive = false;
+		input.cruncherInput->autoTweezerOffsetActive = false;
 	}
 	// locks
 	input.cruncherInput->imageLock = &imageLock;
@@ -1220,6 +1236,14 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 				}
 				input->finTime->push_back(std::chrono::high_resolution_clock::now());
 			}
+		}
+		if (imageCount % input->picsPerRep == 0) //Just always run this and store the measured values on first image. Control whether this gets applied in gmoog. input->autoTweezerOffsetActive
+		{
+			if (input->nAtom >= 100) //enforce enough atoms for decent single shot signal.
+			{
+				input->getTweezerOffset(&(input->gmoog->xPixelOffsetAuto), &(input->gmoog->yPixelOffsetAuto), &(input->gmoog->subpixelIndexOffsetAuto));
+			}
+			input->gmoog->updateXYOffsetAuto(); //Always update, so that offset list is up to date with reps.
 		}
 		if (input->plotterActive)
 		{

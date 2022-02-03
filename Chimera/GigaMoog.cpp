@@ -83,6 +83,11 @@ void gigaMoog::refreshLUT()
 		i++;
 	}
 
+	cnpy::NpyArray arrSubpixelLUT = cnpy::npy_load(SUBPIXELLUT_FILE_LOCATION);
+	subpixelLUT = arrSubpixelLUT.as_vec<double>();
+	nSubpixel = arrSubpixelLUT.shape[0];
+	xPix2MHz = { subpixelLUT[sqrt(nSubpixel)-1]*(-2), subpixelLUT[sqrt(nSubpixel)] * (-2) }; //y then x for consistency. Note, indices doubled because flattened array of doublets.
+	yPix2MHz = { subpixelLUT[nSubpixel - 1 + sqrt(nSubpixel) - 1] * 2 , subpixelLUT[nSubpixel - 1 + sqrt(nSubpixel) - 1 + 1] * 2 }; //y then x for consistency.
 }
 
 void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
@@ -694,6 +699,7 @@ void gigaMoog::send(MessageSender& ms)
 void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& variables, UINT variation)
 {
 	refreshLUT();
+
 	MessageSender ms;
 	bool test = false;
 	bool hardreset = false;
@@ -1033,3 +1039,21 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vari
 		}
 	}
 }
+
+void gigaMoog::updateXYOffsetAuto() {
+	std::vector<double> vx = xPix2MHz;	
+	std::transform(vx.begin(), vx.end(), vx.begin(),
+		std::bind(std::multiplies<double>(), std::placeholders::_1, xPixelOffsetAuto)); //convert offset in pixels to MHz
+
+	std::vector<double> vy = yPix2MHz;
+	std::transform(vy.begin(), vy.end(), vy.begin(),
+		std::bind(std::multiplies<double>(), std::placeholders::_1, yPixelOffsetAuto)); //convert offset in pixels to MHz
+
+	std::vector<double> vs(subpixelLUT.begin() + subpixelIndexOffsetAuto * 2 , subpixelLUT.begin() + subpixelIndexOffsetAuto * 2 + 2); //select appropriate offsets given subpixel masks.
+
+	std::transform(vs.begin(), vs.end(), vx.begin(), vs.begin(), std::plus<double>()); // add pixel offsets to vs
+	std::transform(vs.begin(), vs.end(), vy.begin(), vs.begin(), std::plus<double>());
+
+	xOffsetAuto.push_back(vs[1]);
+	yOffsetAuto.push_back(vs[0]);
+};

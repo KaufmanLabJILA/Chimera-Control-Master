@@ -13,6 +13,10 @@ class atomCruncher
 {
 public:
 
+	void getTweezerOffset(int* xOffPixels, int* yOffPixels, int* indexSubpixelMask);
+	std::vector<double> sendXOffsetMHz();
+	std::vector<double> sendYOffsetMHz();
+
 	moveSequence getRearrangeMoves(std::string rearrangeType);
 	void scrunchX(moveSequence& moveseq);
 	void scrunchY(moveSequence& moveseq);
@@ -27,13 +31,17 @@ public:
 	std::vector<std::vector<bool>>* atomArrayQueue;
 
 	std::vector<int16> masks; //Pass by value, do not want these modified by other threads.
+	std::vector<int16> subpixelMasks;
+	std::vector<int16> subpixelMaskSingle; //Centered mask
 	std::vector<long> bgImg;
 	std::vector<int16> masksCrop;
-	int nMask, maskWidX, maskWidY; //dimensions of masks. maskWidX, maskWidY are the WIDTH of each mask, not array dimensions
+	int nMask, maskWidX, maskWidY; //dimensions of masks. maskWidX, maskWidY are the WIDTH of each mask, not array dimensions. nMask is number of tweezer masks
+	int nSubpixel; // nSubpixel is the number of subpixel Masks, always spread uniformly over 1 pixel spacing. Image width is extracted from this mask, and compared to the actual image settings to confirm consistency.
 	// options
 	bool plotterActive;
 	bool plotterNeedsImages;
 	bool rearrangerActive;
+	bool autoTweezerOffsetActive;
 	UINT picsPerRep;
 	// locks
 	std::mutex* imageLock;
