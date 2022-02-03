@@ -634,6 +634,18 @@ void gigaMoog::writeOff(MessageSender& ms) {
 
 void gigaMoog::writeLoad(MessageSender& ms)
 {
+	//Since writeLoad always called before rearrange, just do auto tweezer offset here.
+	if (autoTweezerOffsetActive)
+	{
+		xOffset = xOffsetManual + xOffsetAuto;
+		yOffset = yOffsetManual + yOffsetAuto;
+	}
+	else
+	{
+		xOffset = xOffsetManual;
+		yOffset = yOffsetManual;
+	}
+
 	//Write load settings based on initXY
 
 	{
@@ -753,7 +765,7 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vari
 		if (tmp == "xoffset")
 		{
 			currentMoogScript >> xoff;
-			xOffset = xoff.evaluate(variables, variation);
+			xOffsetManual = xoff.evaluate(variables, variation);
 		}
 		else
 		{
@@ -764,7 +776,7 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vari
 		if (tmp == "yoffset")
 		{
 			currentMoogScript >> yoff;
-			yOffset = yoff.evaluate(variables, variation);
+			yOffsetManual = yoff.evaluate(variables, variation);
 		}
 		else
 		{

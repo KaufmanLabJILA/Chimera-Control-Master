@@ -101,6 +101,7 @@ private:
 	std::vector<double> FTW_LUT;
 	std::vector<double> subpixelLUT; //This must be synchronized with atomCruncher subpixel masks.
 	double xOffset, yOffset;
+	double xOffsetManual, yOffsetManual;
 	std::vector<double> xPix2MHz, yPix2MHz;
 	int nSubpixel;
 	UINT xDim, yDim; //x and y dimensions of atom positions from LUT. Must be coordinated with number of masks in image processing.
