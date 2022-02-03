@@ -1,16 +1,6 @@
 #include "stdafx.h"
 #include "atomCruncher.h"
 
-std::vector<double> atomCruncher::sendXOffsetMHz() {
-	///helper function to pass these offsets back to the camera window, which saves the data once all the images have been taken
-	return gmoog->xOffsetAuto;
-}
-
-std::vector<double> atomCruncher::sendYOffsetMHz() {
-	///helper function to pass these offsets back to the camera window, which saves the data once all the images have been taken
-	return gmoog->yOffsetAuto;
-}
-
 void atomCruncher::getTweezerOffset(int* xOffPixels, int* yOffPixels, int* indexSubpixelMask) {
 	///modifies input pointers to pass newly computed offset values in units of pixels and subpixel mask offset.
 

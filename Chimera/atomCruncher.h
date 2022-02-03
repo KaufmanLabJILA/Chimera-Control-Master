@@ -14,8 +14,6 @@ class atomCruncher
 public:
 
 	void getTweezerOffset(int* xOffPixels, int* yOffPixels, int* indexSubpixelMask);
-	std::vector<double> sendXOffsetMHz();
-	std::vector<double> sendYOffsetMHz();
 
 	moveSequence getRearrangeMoves(std::string rearrangeType);
 	void scrunchX(moveSequence& moveseq);
@@ -55,6 +53,8 @@ public:
 	std::vector<std::vector<long>>* plotterImageQueue;
 	std::vector<std::vector<bool>>* plotterAtomQueue;
 	std::vector<std::vector<bool>>* rearrangerAtomQueue;
+	std::vector<double>* xOffsetAutoQueue;
+	std::vector<double>* yOffsetAutoQueue;
 	
 	std::vector<UINT8> targetPositionsTemp;
 	std::vector<bool> positions;

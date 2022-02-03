@@ -1054,6 +1054,6 @@ void gigaMoog::updateXYOffsetAuto() {
 	std::transform(vs.begin(), vs.end(), vx.begin(), vs.begin(), std::plus<double>()); // add pixel offsets to vs
 	std::transform(vs.begin(), vs.end(), vy.begin(), vs.begin(), std::plus<double>());
 
-	xOffsetAuto.push_back(vs[1]);
-	yOffsetAuto.push_back(vs[0]);
+	xOffsetAuto = vs[1];
+	yOffsetAuto = vs[0];
 };

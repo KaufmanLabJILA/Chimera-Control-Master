@@ -82,7 +82,7 @@ public:
 	int xPixelOffsetAuto = 0;
 	int yPixelOffsetAuto = 0;
 	int subpixelIndexOffsetAuto = 12;
-	std::vector<double> xOffsetAuto, yOffsetAuto;
+	double xOffsetAuto, yOffsetAuto;
 
 	UINT targetNumber;
 	UINT nTweezerX, nTweezerY;

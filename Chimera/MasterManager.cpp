@@ -76,11 +76,6 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 												 input->variables );
 		}
 		// prep gmoog
-		if (!MOOG_SAFEMODE)
-		{
-			input->gmoog->xOffsetAuto.clear(); //clear auto offsets so that saved values only apply to current experiment.
-			input->gmoog->yOffsetAuto.clear();
-		}
 		//if (input->runAWG) {
 		//	input->moog->analyzeMoogScript(input->moog, input->variables, 0);
 		//}

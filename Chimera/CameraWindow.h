@@ -132,8 +132,8 @@ class CameraWindow : public CDialog
 		std::vector<std::vector<long>> plotterPictureQueue;
 		std::vector<std::vector<bool>> rearrangerAtomQueue;
 		std::vector<std::vector<bool>> atomArrayQueue;
-		std::vector<double> xOffsetAuto;
-		std::vector<double> yOffsetAuto;
+		std::vector<double> xOffsetAutoQueue;
+		std::vector<double> yOffsetAutoQueue;
 		std::mutex plotLock;
 		std::mutex rearrangerLock;
 		HANDLE atomCruncherThreadHandle;

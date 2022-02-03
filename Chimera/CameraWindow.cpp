@@ -483,6 +483,15 @@ LRESULT CameraWindow::onCameraFinish( WPARAM wParam, LPARAM lParam )
 			}
 		};
 	}
+	try
+	{
+		dataHandler.logTweezerOffsets(xOffsetAutoQueue, yOffsetAutoQueue);
+	}
+	catch (Error& err)
+	{
+		mainWindowFriend->getComm()->sendError(err.what());
+	}
+
 	// notify the andor object that it is done.
 	Andor.onFinish();
 	Andor.pauseThread();
@@ -1016,6 +1025,10 @@ void CameraWindow::prepareAtomCruncher(ExperimentInput& input)
 	input.cruncherInput->rearrangerAtomQueue = &rearrangerAtomQueue;
 	atomArrayQueue.clear();
 	input.cruncherInput->atomArrayQueue = &atomArrayQueue;
+	xOffsetAutoQueue.clear();
+	input.cruncherInput->xOffsetAutoQueue = &xOffsetAutoQueue;
+	yOffsetAutoQueue.clear();
+	input.cruncherInput->yOffsetAutoQueue = &yOffsetAutoQueue;
 
 	input.cruncherInput->thresholds = CameraSettings.getThresholds();
 	input.cruncherInput->picsPerRep = CameraSettings.getSettings().picsPerRepetition;
@@ -1244,6 +1257,8 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 				input->getTweezerOffset(&(input->gmoog->xPixelOffsetAuto), &(input->gmoog->yPixelOffsetAuto), &(input->gmoog->subpixelIndexOffsetAuto));
 			}
 			input->gmoog->updateXYOffsetAuto(); //Always update, so that offset list is up to date with reps.
+			(*input->xOffsetAutoQueue).push_back(input->gmoog->xOffsetAuto);
+			(*input->yOffsetAutoQueue).push_back(input->gmoog->yOffsetAuto);
 		}
 		if (input->plotterActive)
 		{
