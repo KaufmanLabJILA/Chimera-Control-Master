@@ -6,10 +6,10 @@ void atomCruncher::getTweezerOffset(int* xOffPixels, int* yOffPixels, int* index
 
 	//First find brightest pixel There is probably a more efficient way of doing this.
 
-	std::vector<size_t> macroSignals;
+	std::vector<int> macroSignals;
 
-	size_t indPixImg;
-	size_t indPixMask;
+	int indPixImg;
+	int indPixMask;
 
 	for (int yShift = -2; yShift < 3; yShift++) //TODO: for now range is just hard coded, 
 	{
@@ -17,9 +17,9 @@ void atomCruncher::getTweezerOffset(int* xOffPixels, int* yOffPixels, int* index
 		{
 			int integratedSignal = 0;
 			//iterate over whole image - just throw out boundary when shifting.
-			for (size_t iy = 0; iy < imageDims.height - abs(yShift); iy++)
+			for (int iy = 0; iy < imageDims.height - abs(yShift); iy++)
 			{
-				for (size_t ix = 0; ix < imageDims.width - abs(xShift); ix++)
+				for (int ix = 0; ix < imageDims.width - abs(xShift); ix++)
 				{
 					//select appropriate pixel in image and mask and take product. Also subtracting background in this step - doing it all at once to avoid saving image twice, but also want to keep raw image for plotting.
 
@@ -31,19 +31,19 @@ void atomCruncher::getTweezerOffset(int* xOffPixels, int* yOffPixels, int* index
 					else if (xShift >= 0 && yShift < 0)
 					{
 						indPixImg = (ix + xShift) + (iy) * imageDims.width;
-						indPixMask = (ix) + (iy + yShift) * imageDims.width; //negative roll of masks means starting with offset on mask indexing.
+						indPixMask = (ix) + (iy - yShift) * imageDims.width; //negative roll of masks means starting with offset on mask indexing.
 					}
 					else if (xShift < 0 && yShift >= 0)
 					{
 						indPixImg = (ix) + (iy + yShift) * imageDims.width;
-						indPixMask = (ix + xShift) + (iy) * imageDims.width;
+						indPixMask = (ix - xShift) + (iy) * imageDims.width;
 					}
 					else if (xShift < 0 && yShift < 0)
 					{
 						indPixImg = (ix) + (iy) * imageDims.width;
-						indPixMask = (ix + xShift) + (iy + yShift) * imageDims.width;
+						indPixMask = (ix - xShift) + (iy - yShift) * imageDims.width;
 					}
-
+					int tmp = (*imageQueue)[0].size();
 					integratedSignal += ((*imageQueue)[0][indPixImg] - bgImg[indPixImg]) * (subpixelMaskSingle[indPixMask]);
 				}
 			}
@@ -52,18 +52,18 @@ void atomCruncher::getTweezerOffset(int* xOffPixels, int* yOffPixels, int* index
 	}
 
 	int maxSignalIndex = std::max_element(macroSignals.begin(), macroSignals.end()) - macroSignals.begin(); //find brightest signal
-	*xOffPixels = maxSignalIndex % 4 - 2;
-	*yOffPixels = maxSignalIndex / 4 - 2;
+	*xOffPixels = maxSignalIndex % 5 - 2;
+	*yOffPixels = maxSignalIndex / 5 - 2;
 
-	std::vector<size_t> subpixelSignals;
+	std::vector<int> subpixelSignals;
 	//Now given maximum pixel, repeat procedure for subpixel masks.
-	for (size_t i = 0; i < nSubpixel; i++)
+	for (int i = 0; i < nSubpixel; i++)
 	{
 		int integratedSignal = 0;
 		//iterate over whole image - just throw out boundary when shifting.
-		for (size_t iy = 0; iy < imageDims.height - abs(*yOffPixels); iy++)
+		for (int iy = 0; iy < imageDims.height - abs(*yOffPixels); iy++)
 		{
-			for (size_t ix = 0; ix < imageDims.width - abs(*xOffPixels); ix++)
+			for (int ix = 0; ix < imageDims.width - abs(*xOffPixels); ix++)
 			{
 				//select appropriate pixel in image and mask and take product. Also subtracting background in this step - doing it all at once to avoid saving image twice, but also want to keep raw image for plotting.
 
@@ -75,17 +75,17 @@ void atomCruncher::getTweezerOffset(int* xOffPixels, int* yOffPixels, int* index
 				else if (*xOffPixels >= 0 && yOffPixels < 0)
 				{
 					indPixImg = (ix + *xOffPixels) + (iy)* imageDims.width;
-					indPixMask = (ix)+(iy + *yOffPixels) * imageDims.width + i * imageDims.width * imageDims.height; //negative roll of masks means starting with offset on mask indexing.
+					indPixMask = (ix)+(iy - *yOffPixels) * imageDims.width + i * imageDims.width * imageDims.height; //negative roll of masks means starting with offset on mask indexing.
 				}
-				else if (ix + *xOffPixels < 0 && iy + *yOffPixels >= 0)
+				else if (*xOffPixels < 0 && *yOffPixels >= 0)
 				{
 					indPixImg = (ix)+(iy + *yOffPixels) * imageDims.width;
-					indPixMask = (ix + *xOffPixels) + (iy)* imageDims.width + i * imageDims.width * imageDims.height;
+					indPixMask = (ix - *xOffPixels) + (iy)* imageDims.width + i * imageDims.width * imageDims.height;
 				}
-				else if (ix + *xOffPixels < 0 && iy + *yOffPixels < 0)
+				else if (*xOffPixels < 0 && *yOffPixels < 0)
 				{
 					indPixImg = (ix)+(iy)* imageDims.width;
-					indPixMask = (ix + *xOffPixels) + (iy + *yOffPixels) * imageDims.width + i * imageDims.width * imageDims.height;
+					indPixMask = (ix - *xOffPixels) + (iy - *yOffPixels) * imageDims.width + i * imageDims.width * imageDims.height;
 				}
 
 				integratedSignal += ((*imageQueue)[0][indPixImg] - bgImg[indPixImg]) * (subpixelMasks[indPixMask]);

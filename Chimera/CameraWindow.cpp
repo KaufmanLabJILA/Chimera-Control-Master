@@ -1255,9 +1255,10 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 			if (input->nAtom >= 100) //enforce enough atoms for decent single shot signal.
 			{
 				input->getTweezerOffset(&(input->gmoog->xPixelOffsetAuto), &(input->gmoog->yPixelOffsetAuto), &(input->gmoog->subpixelIndexOffsetAuto));
+
+				input->gmoog->updateXYOffsetAuto();
 			}
-			input->gmoog->updateXYOffsetAuto(); //Always update, so that offset list is up to date with reps.
-			(*input->xOffsetAutoQueue).push_back(input->gmoog->xOffsetAuto);
+			(*input->xOffsetAutoQueue).push_back(input->gmoog->xOffsetAuto); //Always store value, so that offset list is up to date with reps.
 			(*input->yOffsetAutoQueue).push_back(input->gmoog->yOffsetAuto);
 		}
 		if (input->plotterActive)
