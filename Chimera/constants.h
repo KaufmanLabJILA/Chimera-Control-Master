@@ -33,7 +33,8 @@
 	#define DAQMX_SAFEMODE false
 	#define RSG_SAFEMODE true
 	#define DDS_FPGA_ADDRESS "FT1I6IBSB" //Device Serial: FT1I6IBS, Use FT1I6IBSB in C++ to select Channel B
-	#define GIGAMOOG_PORT "COM6"
+	#define GIGAMOOG_PORT 1000
+	#define GIGAMOOG_IPADDRESS "127.0.0.1"
 	#define AWG_PORT "COM13"
 	#define AWG_BAUD 115200 /*921600*/ 
 	#define TOP_BOTTOM_TEK_SAFEMODE true

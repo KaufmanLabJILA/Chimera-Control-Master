@@ -8,7 +8,7 @@
 #include <thread>
 #include <chrono>
 
-#include "BoostAsyncSerial.h"
+#include "BoostUDP.h"
 #include <windows.h>
 
 #include "MessagePrinter.h"
@@ -54,7 +54,7 @@ private:
 class gigaMoog {
 
 public:
-	gigaMoog(std::string portID, int baudrate);
+	gigaMoog(std::string IPAddress, int port);
 	virtual ~gigaMoog(void);
 
 	//Attempt to parse moog script
@@ -90,7 +90,7 @@ public:
 	std::string rearrangeMode;
 
 private:
-	BoostAsyncSerial fpga;
+	BoostUDP fpga;
 
 	// the moog script file contents get dumped into this.
 	std::string currentMoogScriptText;

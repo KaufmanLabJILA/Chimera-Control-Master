@@ -44,7 +44,7 @@ std::vector<int> memoryController::getNextChannels(int channelsNeeded) {
 	return channelsOut;
 }
 
-gigaMoog::gigaMoog(std::string portID, int baudrate) : fpga(portID, baudrate) {
+gigaMoog::gigaMoog(std::string IPAddress, int port) : fpga(IPAddress, port) {
 	if (!GIGAMOOG_SAFEMODE) {
 		//writeOff();
 	}

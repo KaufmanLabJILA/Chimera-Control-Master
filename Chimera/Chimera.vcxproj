@@ -198,6 +198,7 @@
     <ClInclude Include="awgCommand.h" />
     <ClInclude Include="beginningSettingsDialogProc.h" />
     <ClInclude Include="BoostAsyncSerial.h" />
+    <ClInclude Include="BoostUDP.h" />
     <ClInclude Include="CameraImageDimensions.h" />
     <ClInclude Include="cameraPositions.h" />
     <ClInclude Include="CameraSettingsControl.h" />
@@ -290,6 +291,7 @@
     <ClCompile Include="AlertSystem.cpp" />
     <ClCompile Include="beginningSettingsDialogProc.cpp" />
     <ClCompile Include="BoostAsyncSerial.cpp" />
+    <ClCompile Include="BoostUDP.cpp" />
     <ClCompile Include="CameraImageDimensions.cpp" />
     <ClCompile Include="CameraSettingsControl.cpp" />
     <ClCompile Include="CameraWindow.cpp" />
