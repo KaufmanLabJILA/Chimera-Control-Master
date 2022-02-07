@@ -588,7 +588,7 @@ void gigaMoog::writeMoveOff(MessageSender& ms) {
 
 void gigaMoog::writeOff(MessageSender& ms) {
 
-	for (int channel = 0; channel < 64; channel++) {
+	for (int channel = 0; channel < 48; channel++) {
 		Message m = Message::make().destination(MessageDestination::KA007)
 			.DAC(MessageDAC::DAC0).channel(channel)
 			.setting(MessageSetting::LOADFREQUENCY)
@@ -596,7 +596,7 @@ void gigaMoog::writeOff(MessageSender& ms) {
 		ms.enqueue(m);
 	}
 
-	for (int channel = 0; channel < 64; channel++) {
+	for (int channel = 0; channel < 48; channel++) {
 		Message m = Message::make().destination(MessageDestination::KA007)
 			.DAC(MessageDAC::DAC1).channel(channel)
 			.setting(MessageSetting::LOADFREQUENCY)
@@ -604,7 +604,7 @@ void gigaMoog::writeOff(MessageSender& ms) {
 		ms.enqueue(m);
 	}
 
-	for (int channel = 0; channel < 64; channel++) {
+	for (int channel = 0; channel < 48; channel++) {
 		Message m = Message::make().destination(MessageDestination::KA007)
 			.DAC(MessageDAC::DAC2).channel(channel)
 			.setting(MessageSetting::LOADFREQUENCY)
@@ -612,7 +612,7 @@ void gigaMoog::writeOff(MessageSender& ms) {
 		ms.enqueue(m);
 	}
 
-	for (int channel = 0; channel < 64; channel++) {
+	for (int channel = 0; channel < 48; channel++) {
 		Message m = Message::make().destination(MessageDestination::KA007)
 			.DAC(MessageDAC::DAC3).channel(channel)
 			.setting(MessageSetting::LOADFREQUENCY)
@@ -661,7 +661,7 @@ void gigaMoog::writeLoad(MessageSender& ms)
 			if (channelBool)
 			{
 				//size_t hardwareChannel = iTweezer % 2 + 8 * (iTweezer / 2);
-				size_t hardwareChannel = (iTweezer * 8) % 64 + (iTweezer * 8) / 64;
+				size_t hardwareChannel = (iTweezer * 8) % 48 + (iTweezer * 8) / 48;
 				phase = fmod(180 * pow(iTweezer + 1, 2) / nTweezerX, 360); //this assumes comb of even tones.
 				Message m = Message::make().destination(MessageDestination::KA007)
 					.DAC(MessageDAC::DAC0).channel(hardwareChannel)
@@ -686,7 +686,7 @@ void gigaMoog::writeLoad(MessageSender& ms)
 			if (channelBool)
 			{
 				//size_t hardwareChannel = iTweezer;
-				size_t hardwareChannel = (iTweezer * 8) % 64 + (iTweezer * 8) / 64;
+				size_t hardwareChannel = (iTweezer * 8) % 48 + (iTweezer * 8) / 48;
 				phase = fmod(180 * pow(iTweezer + 1, 2) / nTweezerY, 360); //this assumes comb of even tones.
 				Message m = Message::make().destination(MessageDestination::KA007)
 					.DAC(MessageDAC::DAC1).channel(hardwareChannel)
@@ -718,7 +718,7 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vari
 
 	//rearrangerActive = false;
 
-	writeOff(ms);
+	//writeOff(ms);
 
 	currentMoogScriptText = currentMoogScript.str();
 	if (currentMoogScript.str() == "")

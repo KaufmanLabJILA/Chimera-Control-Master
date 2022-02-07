@@ -27,7 +27,8 @@ namespace Ethernettest
 
 			//socket.close();
 
-			BoostUDP gmoog("127.0.0.1", 13999);
+			BoostUDP gmoog("192.168.7.179", 804);
+			//BoostUDP gmoog("127.0.0.1", 13999);
 			//std::vector<unsigned char> dat{0xff, 0xff , 0xff , 0xff, 0xff , 0xff};
 			std::vector<int> dat(99999, 0x1f);
 			gmoog.write(dat);

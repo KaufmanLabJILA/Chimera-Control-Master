@@ -40,7 +40,7 @@ void BoostUDP::readhandler(const boost::system::error_code & error, std::size_t 
 	boost::mutex::scoped_lock look(mutex_);
 
 	if (error) {
-		//thrower("Error reading UPD message.");
+		//thrower("Error reading UDP message.");
 	}
 
 	int c;
@@ -71,7 +71,7 @@ void BoostUDP::read()
 void BoostUDP::write(std::vector<unsigned char> data)
 {
 	if (!socket_->is_open()) {
-		//thrower("UDP socket has not been opened");
+		thrower("UDP socket has not been opened");
 	}
 
 	while (data.size()>0)
@@ -95,7 +95,7 @@ void BoostUDP::write(std::vector<int> data)
 	std::vector<unsigned char> converted(data.size());
 	for (int idx = 0; idx < data.size(); idx++) {
 		if (data[idx] < 0 || data[idx] >255) {
-			//thrower("Byte value needs to be in range 0-255");
+			thrower("Byte value needs to be in range 0-255");
 		}
 		converted[idx] = data[idx];
 	}
