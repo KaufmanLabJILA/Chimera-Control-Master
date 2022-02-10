@@ -21,8 +21,8 @@ class memoryController {
 public:
 
 	memoryController() {
-		memBlocks.reserve(8); //reminder - always a lot faster to assign vector size ahead of time.
-		for (size_t i = 0; i < 8; i++)
+		memBlocks.reserve(6); //reminder - always a lot faster to assign vector size ahead of time.
+		for (size_t i = 0; i < 6; i++)
 		{
 			memBlock mem(i);
 			memBlocks.push_back(mem);
@@ -35,7 +35,7 @@ public:
 private:
 	struct memBlock
 	{
-		int blockID; //each block contains 8 channels. 0-7, 8-15, 16-23, 24-31, 32-39, 40-47, 48-55, 56-63;
+		int blockID; //each block contains 8 channels. 0-7, 8-15, 16-23, 24-31, 32-39, 40-47;
 		int channelID;
 		size_t usedMemory;
 

@@ -113,11 +113,11 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 	int ampstep, freqstep;
 
 	//step 0: turn off all load tones.
-	for (int channel = 0; channel < 16; channel++) {//TODO: 16 could be changed to 64 if using more tones for rearrangement
+	for (int channel = 0; channel < 16; channel++) {//TODO: 16 could be changed to 48 if using more tones for rearrangement
 		if (channel < nTweezerX)
 		{
 			//size_t hardwareChannel = channel % 2 + 8 * (channel / 2); //OLD
-			size_t hardwareChannel = (channel * 8) % 64 + (channel * 8) / 64;
+			size_t hardwareChannel = (channel * 8) % 48 + (channel * 8) / 48;
 			memoryDAC0.moveChannel(hardwareChannel / 8);
 			Message m = Message::make().destination(MessageDestination::KA007)
 				.DAC(MessageDAC::DAC0).channel(hardwareChannel)
@@ -129,7 +129,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 	for (int channel = 0; channel < 24; channel++) {
 		if (channel < nTweezerY)
 		{
-			size_t hardwareChannel = (channel * 8) % 64 + (channel * 8) / 64;
+			size_t hardwareChannel = (channel * 8) % 48 + (channel * 8) / 48;
 			memoryDAC1.moveChannel(hardwareChannel / 8);
 			Message m = Message::make().destination(MessageDestination::KA007)
 				.DAC(MessageDAC::DAC1).channel(hardwareChannel)
@@ -164,11 +164,11 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 		}
 
 		//step 1: ramp up tones at initial locations and phases
-		for (int channel = 0; channel < 16; channel++) {//TODO: 16 could be changed to 64 if using more tones for rearrangement
+		for (int channel = 0; channel < 16; channel++) {//TODO: 16 could be changed to 48 if using more tones for rearrangement
 			if (ny > 1 && nx == 1 && channel < 3) //Triple up tones if only a single tone on, assuming y axis not already tripled.
 			{
 				//size_t hardwareChannel = 8 * channel; //there are 256 memory locations for each group of 8
-				//size_t hardwareChannel = (channel * 8) % 64 + (channel * 8) / 64;
+				//size_t hardwareChannel = (channel * 8) % 48 + (channel * 8) / 48;
 				size_t hardwareChannel = hardwareChannelsDAC0[channel];
 				freq = FTW_LUT[
 					2 * yDim * input.moves[stepID].startAOX[0] + 2 * input.moves[stepID].startAOY[0] + 0
@@ -183,7 +183,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 				ms.enqueue(m);
 			}
 			else if (ny != 0 && nx != 0 && channel < nx) {
-				//size_t hardwareChannel = (channel * 8) % 64 + (channel * 8) / 64; //there are 256 memory locations for each group of 8 channels, want to populate blocks of memory evenly.
+				//size_t hardwareChannel = (channel * 8) % 48 + (channel * 8) / 48; //there are 256 memory locations for each group of 8 channels, want to populate blocks of memory evenly.
 				size_t hardwareChannel = hardwareChannelsDAC0[channel];
 				freq = FTW_LUT[
 					2 * yDim * input.moves[stepID].startAOX[channel] + 2 * input.moves[stepID].startAOY[0] + 0
@@ -201,7 +201,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 			}
 			//else //populate extra channels with null moves.
 			//{
-			//	//size_t hardwareChannel = (channel * 8) % 64 + (channel * 8) / 64;
+			//	//size_t hardwareChannel = (channel * 8) % 48 + (channel * 8) / 48;
 			//	size_t hardwareChannel = hardwareChannelsDAC0[channel];
 			//	Message m = Message::make().destination(MessageDestination::KA007)
 			//		.DAC(MessageDAC::DAC0).channel(hardwareChannel)
@@ -216,7 +216,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 			if (nx != 0 && ny == 1 && channel < 3) //Triple up tones if only a single tone on.
 			{
 				//size_t hardwareChannel = 8 * channel; //there are 256 memory locations for each group of 8
-				//size_t hardwareChannel = (channel * 8) % 64 + (channel * 8) / 64;
+				//size_t hardwareChannel = (channel * 8) % 48 + (channel * 8) / 48;
 				size_t hardwareChannel = hardwareChannelsDAC1[channel];
 				freq = FTW_LUT[
 					2 * yDim * input.moves[stepID].startAOX[0] + 2 * input.moves[stepID].startAOY[0] + 1
@@ -233,7 +233,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 			}
 			else if (nx != 0 && ny != 0 && channel < ny) {
 				//size_t hardwareChannel = channel % 2 + 8 * (channel / 2); //there are 256 memory locations for each group of 8
-				//size_t hardwareChannel = (channel * 8) % 64 + (channel * 8) / 64;
+				//size_t hardwareChannel = (channel * 8) % 48 + (channel * 8) / 48;
 				size_t hardwareChannel = hardwareChannelsDAC1[channel];
 				freq = FTW_LUT[
 					2 * yDim * input.moves[stepID].startAOX[0] + 2 * input.moves[stepID].startAOY[channel] + 1
@@ -251,7 +251,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 			}
 			//else //populate extra channels with null moves.
 			//{
-			//	//size_t hardwareChannel = (channel * 8) % 64 + (channel * 8) / 64;
+			//	//size_t hardwareChannel = (channel * 8) % 48 + (channel * 8) / 48;
 			//	size_t hardwareChannel = hardwareChannelsDAC1[channel];
 			//	Message m = Message::make().destination(MessageDestination::KA007)
 			//		.DAC(MessageDAC::DAC1).channel(hardwareChannel)
@@ -265,7 +265,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 		for (int channel = 0; channel < 16; channel++) {
 			if (ny > 1 && nx == 1 && channel < 3) //Triple up tones if only a single tone on.
 			{
-				//size_t hardwareChannel = (channel * 8) % 64 + (channel * 8) / 64;
+				//size_t hardwareChannel = (channel * 8) % 48 + (channel * 8) / 48;
 				size_t hardwareChannel = hardwareChannelsDAC0[channel];
 				freqPrev = FTW_LUT[
 					2 * yDim * input.moves[stepID].startAOX[0] + 2 * input.moves[stepID].startAOY[0] + 0
@@ -291,7 +291,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 			}
 			else if (ny != 0 && nx != 0 && channel < nx)
 			{
-				//size_t hardwareChannel = (channel * 8) % 64 + (channel * 8) / 64;
+				//size_t hardwareChannel = (channel * 8) % 48 + (channel * 8) / 48;
 				size_t hardwareChannel = hardwareChannelsDAC0[channel];
 				freqPrev = FTW_LUT[
 					2 * yDim * input.moves[stepID].startAOX[channel] + 2 * input.moves[stepID].startAOY[0] + 0
@@ -317,7 +317,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 			}
 			//else
 			//{
-			//	//size_t hardwareChannel = (channel * 8) % 64 + (channel * 8) / 64;
+			//	//size_t hardwareChannel = (channel * 8) % 48 + (channel * 8) / 48;
 			//	size_t hardwareChannel = hardwareChannelsDAC0[channel];
 			//	Message m = Message::make().destination(MessageDestination::KA007)
 			//		.DAC(MessageDAC::DAC0).channel(hardwareChannel)
@@ -330,7 +330,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 		for (int channel = 0; channel < 16; channel++) {
 			if (nx != 0 && ny == 1 && channel < 3) //Triple up tones if only a single tone on.
 			{
-				//size_t hardwareChannel = (channel * 8) % 64 + (channel * 8) / 64;
+				//size_t hardwareChannel = (channel * 8) % 48 + (channel * 8) / 48;
 				size_t hardwareChannel = hardwareChannelsDAC1[channel];
 				freqPrev = FTW_LUT[
 					2 * yDim * input.moves[stepID].startAOX[0] + 2 * input.moves[stepID].startAOY[0] + 1
@@ -356,7 +356,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 			}
 			else if (nx != 0 && ny != 0 && channel < ny)
 			{
-				//size_t hardwareChannel = (channel * 8) % 64 + (channel * 8) / 64;
+				//size_t hardwareChannel = (channel * 8) % 48 + (channel * 8) / 48;
 				size_t hardwareChannel = hardwareChannelsDAC1[channel];
 				freqPrev = FTW_LUT[
 					2 * yDim * input.moves[stepID].startAOX[0] + 2 * input.moves[stepID].startAOY[channel] + 1
@@ -382,7 +382,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 			}
 			//else
 			//{
-			//	//size_t hardwareChannel = (channel * 8) % 64 + (channel * 8) / 64;
+			//	//size_t hardwareChannel = (channel * 8) % 48 + (channel * 8) / 48;
 			//	size_t hardwareChannel = hardwareChannelsDAC1[channel];
 			//	Message m = Message::make().destination(MessageDestination::KA007)
 			//		.DAC(MessageDAC::DAC1).channel(hardwareChannel)
@@ -396,7 +396,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 		for (int channel = 0; channel < 16; channel++) {
 			if (ny > 1 && nx == 1 && channel < 3) //Triple up tones if only a single tone on.
 			{
-				//size_t hardwareChannel = (channel * 8) % 64 + (channel * 8) / 64;
+				//size_t hardwareChannel = (channel * 8) % 48 + (channel * 8) / 48;
 				size_t hardwareChannel = hardwareChannelsDAC0[channel];
 				freq = FTW_LUT[
 					2 * yDim * input.moves[stepID].endAOX[0] + 2 * input.moves[stepID].endAOY[0] + 0
@@ -408,7 +408,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 				ms.enqueue(m);
 			}
 			else if (ny != 0 && nx != 0 && channel < nx) {
-				//size_t hardwareChannel = (channel * 8) % 64 + (channel * 8) / 64;
+				//size_t hardwareChannel = (channel * 8) % 48 + (channel * 8) / 48;
 				size_t hardwareChannel = hardwareChannelsDAC0[channel];
 				freq = FTW_LUT[
 					2 * yDim * input.moves[stepID].endAOX[channel] + 2 * input.moves[stepID].endAOY[0] + 0
@@ -422,7 +422,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 			}
 			//else
 			//{
-			//	//size_t hardwareChannel = (channel * 8) % 64 + (channel * 8) / 64;
+			//	//size_t hardwareChannel = (channel * 8) % 48 + (channel * 8) / 48;
 			//	size_t hardwareChannel = hardwareChannelsDAC0[channel];
 			//	Message m = Message::make().destination(MessageDestination::KA007)
 			//		.DAC(MessageDAC::DAC0).channel(hardwareChannel)
@@ -435,7 +435,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 		for (int channel = 0; channel < 16; channel++) {
 			if (nx != 0 && ny == 1 && channel < 3) //Triple up tones if only a single tone on.
 			{
-				//size_t hardwareChannel = (channel * 8) % 64 + (channel * 8) / 64;
+				//size_t hardwareChannel = (channel * 8) % 48 + (channel * 8) / 48;
 				size_t hardwareChannel = hardwareChannelsDAC1[channel];
 				freq = FTW_LUT[
 					2 * yDim * input.moves[stepID].endAOX[0] + 2 * input.moves[stepID].endAOY[0] + 1
@@ -447,7 +447,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 				ms.enqueue(m);
 			}
 			else if (nx != 0 && ny != 0 && channel < ny) {
-				//size_t hardwareChannel = (channel * 8) % 64 + (channel * 8) / 64;
+				//size_t hardwareChannel = (channel * 8) % 48 + (channel * 8) / 48;
 				size_t hardwareChannel = hardwareChannelsDAC1[channel];
 				freq = FTW_LUT[
 					2 * yDim * input.moves[stepID].endAOX[0] + 2 * input.moves[stepID].endAOY[channel] + 1
@@ -460,7 +460,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 			}
 			//else
 			//{
-			//	//size_t hardwareChannel = (channel * 8) % 64 + (channel * 8) / 64;
+			//	//size_t hardwareChannel = (channel * 8) % 48 + (channel * 8) / 48;
 			//	size_t hardwareChannel = hardwareChannelsDAC1[channel];
 			//	Message m = Message::make().destination(MessageDestination::KA007)
 			//		.DAC(MessageDAC::DAC1).channel(hardwareChannel)
@@ -473,7 +473,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 
 	//additional snapshot ramping down all channels - unclear why needed, but prevents extra trigger issues.
 
-	for (int channel = 0; channel < 64; channel++) {//TODO: 16 could be changed to 64 if using more tones for rearrangement
+	for (int channel = 0; channel < 48; channel++) {//TODO: 16 could be changed to 48 if using more tones for rearrangement
 		{
 			Message m = Message::make().destination(MessageDestination::KA007)
 				.DAC(MessageDAC::DAC0).channel(channel)
@@ -552,7 +552,7 @@ void gigaMoog::loadMoogScript(std::string scriptAddress)
 
 void gigaMoog::writeMoveOff(MessageSender& ms) {
 	for (int stepID = 0; stepID < 256; stepID++) {
-		for (int channel = 0; channel < 8; channel++) {
+		for (int channel = 0; channel < 6; channel++) {
 			Message m = Message::make().destination(MessageDestination::KA007)
 				.DAC(MessageDAC::DAC0).channel(channel*8)
 				.setting(MessageSetting::MOVEFREQUENCY)
@@ -560,7 +560,7 @@ void gigaMoog::writeMoveOff(MessageSender& ms) {
 			ms.enqueue(m);
 		}
 
-		for (int channel = 0; channel < 8; channel++) {
+		for (int channel = 0; channel < 6; channel++) {
 			Message m = Message::make().destination(MessageDestination::KA007)
 				.DAC(MessageDAC::DAC1).channel(channel*8)
 				.setting(MessageSetting::MOVEFREQUENCY)
@@ -568,7 +568,7 @@ void gigaMoog::writeMoveOff(MessageSender& ms) {
 			ms.enqueue(m);
 		}
 		//TODO: put back in after programming rate fixed, and when using both rails.
-		//for (int channel = 0; channel < 64; channel++) {
+		//for (int channel = 0; channel < 48; channel++) {
 		//	Message m = Message::make().destination(MessageDestination::KA007)
 		//		.DAC(MessageDAC::DAC2).channel(channel)
 		//		.setting(MessageSetting::MOVEFREQUENCY)
@@ -576,7 +576,7 @@ void gigaMoog::writeMoveOff(MessageSender& ms) {
 		//	ms.enqueue(m);
 		//}
 
-		//for (int channel = 0; channel < 64; channel++) {
+		//for (int channel = 0; channel < 48; channel++) {
 		//	Message m = Message::make().destination(MessageDestination::KA007)
 		//		.DAC(MessageDAC::DAC3).channel(channel)
 		//		.setting(MessageSetting::MOVEFREQUENCY)
