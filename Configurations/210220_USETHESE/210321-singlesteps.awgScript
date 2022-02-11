@@ -12,8 +12,8 @@ reset
 %setsingle 0 9000+uvtime 0 ryd_freq 0 0
 
 %%% normal single step:
-setsingle 0 0 55 ryd_freq 1 0
-setsingle 0 uvtime 30 ryd_freq 0 0
+setsingle 0 0 65 ryd_freq 1 0
+setsingle 0 uvtime 0 ryd_freq 0 0
 
 program 0
 

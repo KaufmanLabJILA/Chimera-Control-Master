@@ -34,6 +34,20 @@ std::vector<int> MessageSender::getMessageBytes()
 	return bytevector;
 }
 
+std::vector<std::vector<int>> MessageSender::getMessageVectorBytes()
+{
+	std::vector<std::vector<int>> messagevector;
+	for (auto& message : queue) {
+		std::vector<int> bytevector;
+		for (auto& byte : KA007_Factory.getBytes(message.getParameters())) {
+			bytevector.push_back(byte);
+		}
+		messagevector.push_back(bytevector);
+	}
+	queue.clear();
+	return messagevector;
+}
+
 MessageBuilder Message::make()
 {
 	return MessageBuilder();

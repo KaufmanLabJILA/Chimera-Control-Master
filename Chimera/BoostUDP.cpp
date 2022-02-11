@@ -103,6 +103,34 @@ void BoostUDP::write(std::vector<int> data)
 	write(converted);
 }
 
+void BoostUDP::writeVector(std::vector<std::vector<unsigned char>> data)
+{
+	if (!socket_->is_open()) {
+		thrower("UDP socket has not been opened");
+	}
+
+	for (auto& message : data) {
+		socket_->send_to(boost::asio::buffer(message), remote_endpoint, 0, err);
+	}
+}
+
+void BoostUDP::writeVector(std::vector<std::vector<int>> data)
+{
+	std::vector<std::vector<unsigned char>> converted(data.size());
+	for (int idx = 0; idx < data.size(); idx++) {
+		converted[idx].resize(data[idx].size());
+		for (int idy = 0; idy < data[idx].size(); idy++)
+		{
+			if (data[idx][idy] < 0 || data[idx][idy] > 255) {
+				thrower("Byte value needs to be in range 0-255");
+			}
+			converted[idx][idy] = data[idx][idy];
+		}
+	}
+
+	writeVector(converted);
+}
+
 void BoostUDP::run()
 {
 	work = std::make_unique<boost::asio::io_service::work>(io_service_);

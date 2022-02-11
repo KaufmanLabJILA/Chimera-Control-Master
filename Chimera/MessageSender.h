@@ -13,6 +13,7 @@ public:
 	void enqueue(Message &m);
 	void getQueueElementCount();
 	std::vector<int> getMessageBytes();
+	std::vector<std::vector<int>> getMessageVectorBytes();
 private:
 	std::vector<Message> queue;
 	KA007_MessageFactory KA007_Factory;

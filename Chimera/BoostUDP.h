@@ -15,6 +15,8 @@ public:
 
 	void write(std::vector<unsigned char>);
 	void write(std::vector<int>);
+	void writeVector(std::vector<std::vector<unsigned char>>);
+	void writeVector(std::vector<std::vector<int>>);
 private:
 	boost::asio::io_service io_service_;
 	std::unique_ptr<boost::asio::ip::udp::socket> socket_;
