@@ -1153,6 +1153,7 @@ namespace commonFunctions
 	{
 		DataLogger* logger = camWin->getLogger();
 		logger->initializeDataFiles();
+
 		logger->logAndorSettings( input.camSettings, takeAndorPictures, input.cruncherInput->nMask);
 		logger->logMasterParameters( input.masterInput );
 		logger->logDDSParameters(input.masterInput);

@@ -103,15 +103,72 @@ void BoostUDP::write(std::vector<int> data)
 	write(converted);
 }
 
+//void BoostUDP::writeVector(std::vector<std::vector<unsigned char>> data)
+//{
+//	if (!socket_->is_open()) {
+//		thrower("UDP socket has not been opened");
+//	}
+//
+//	for (auto& message : data) {
+//		socket_->send_to(boost::asio::buffer(message), remote_endpoint, 0, err);
+//	}
+//
+//	//for (size_t i = 0; i < data.size(); i += 2)
+//	//{
+//	//	if (i+1 < data.size())
+//	//	{
+//	//		std::vector<unsigned char> packet;
+//	//		for (auto& byte : data[i]) {
+//	//			packet.push_back(byte);
+//	//		}
+//	//		for (auto& byte : data[i+1]) {
+//	//			packet.push_back(byte);
+//	//		}
+//	//		socket_->send_to(boost::asio::buffer(packet), remote_endpoint, 0, err);
+//	//	}
+//	//	else
+//	//	{
+//	//		socket_->send_to(boost::asio::buffer(data[i]), remote_endpoint, 0, err);
+//	//	}
+//	//}
+//}
+//
+//void BoostUDP::writeVector(std::vector<std::vector<int>> data)
+//{
+//	std::vector<std::vector<unsigned char>> converted(data.size());
+//	for (int idx = 0; idx < data.size(); idx++) {
+//		converted[idx].resize(data[idx].size());
+//		for (int idy = 0; idy < data[idx].size(); idy++)
+//		{
+//			if (data[idx][idy] < 0 || data[idx][idy] > 255) {
+//				thrower("Byte value needs to be in range 0-255");
+//			}
+//			converted[idx][idy] = data[idx][idy];
+//		}
+//	}
+//
+//	writeVector(converted);
+//}
+
 void BoostUDP::writeVector(std::vector<std::vector<unsigned char>> data)
 {
 	if (!socket_->is_open()) {
 		thrower("UDP socket has not been opened");
 	}
 
-	for (auto& message : data) {
-		socket_->send_to(boost::asio::buffer(message), remote_endpoint, 0, err);
+	std::vector<unsigned char> packet;
+	packet.reserve(550); //this stays allocated even upon clear().
+	for (int i = 0; i < data.size(); i++) {
+		for (auto& byte : data[i]) {
+			packet.push_back(byte);
+		}
+		if (packet.size() > 512 || i >= data.size()-1) //can end up being as large as 20 bytes > than this limit.
+		{
+			socket_->send_to(boost::asio::buffer(packet), remote_endpoint, 0, err);
+			packet.clear();
+		}
 	}
+	//socket_->send_to(boost::asio::buffer(data.back()), remote_endpoint, 0, err); //send terminator on its own.
 }
 
 void BoostUDP::writeVector(std::vector<std::vector<int>> data)
