@@ -76,16 +76,16 @@ void BoostUDP::write(std::vector<unsigned char> data)
 
 	while (data.size()>0)
 	{
-		if (data.size() < 1024) //maximum UDP packet size for ethernet (overly conservative)
+		if (data.size() < 1200) //maximum UDP packet size for ethernet (overly conservative, actually ~1500)
 		{
 			socket_->send_to(boost::asio::buffer(data), remote_endpoint, 0, err);
 			data.clear();
 		}
 		else
 		{
-			std::vector<unsigned char> dataSubset(data.begin(), data.begin() + 1024);
+			std::vector<unsigned char> dataSubset(data.begin(), data.begin() + 1200);
 			socket_->send_to(boost::asio::buffer(dataSubset), remote_endpoint, 0, err);
-			data.erase(data.begin(), data.begin() + 1024);
+			data.erase(data.begin(), data.begin() + 1200);
 		}
 	}
 }
@@ -157,18 +157,17 @@ void BoostUDP::writeVector(std::vector<std::vector<unsigned char>> data)
 	}
 
 	std::vector<unsigned char> packet;
-	packet.reserve(550); //this stays allocated even upon clear().
+	packet.reserve(280); //this stays allocated even upon clear().
 	for (int i = 0; i < data.size(); i++) {
 		for (auto& byte : data[i]) {
 			packet.push_back(byte);
 		}
-		if (packet.size() > 512 || i >= data.size()-1) //can end up being as large as 20 bytes > than this limit.
+		if (packet.size() > 256 || i >= data.size()-1) //can end up being as large as 20 bytes > than this limit.
 		{
 			socket_->send_to(boost::asio::buffer(packet), remote_endpoint, 0, err);
 			packet.clear();
 		}
 	}
-	//socket_->send_to(boost::asio::buffer(data.back()), remote_endpoint, 0, err); //send terminator on its own.
 }
 
 void BoostUDP::writeVector(std::vector<std::vector<int>> data)
