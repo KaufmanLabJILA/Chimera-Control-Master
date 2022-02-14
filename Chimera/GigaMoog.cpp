@@ -739,11 +739,11 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vari
 		std::string tmp, initAOX, initAOY;
 		currentMoogScript >> rearrangeMode;
 
-		if (rearrangeMode != "scrunchx" && rearrangeMode != "scrunchy" && rearrangeMode != "scrunchxy" && rearrangeMode != "scrunchyx" && rearrangeMode != "tetris")
+		if (rearrangeMode != "scrunchx" && rearrangeMode != "scrunchy" && rearrangeMode != "scrunchxy" && rearrangeMode != "scrunchyx" && rearrangeMode != "centerscrunchyx" &&rearrangeMode != "tetris")
 		{
 			thrower("Invalid rearrangement mode. Valid options are scrunchx, scrunchy, scrunchxy, scrunchyx, and tetris.");
 		}
-		if (rearrangeMode == "scrunchx" || rearrangeMode == "scrunchy" || rearrangeMode == "scrunchxy" || rearrangeMode == "scrunchyx" || rearrangeMode == "tetris")
+		if (rearrangeMode == "scrunchx" || rearrangeMode == "scrunchy" || rearrangeMode == "scrunchxy" || rearrangeMode == "scrunchyx" || rearrangeMode == "centerscrunchyx" || rearrangeMode == "tetris")
 		{
 			currentMoogScript >> scrunchSpacingExpression;
 			scrunchSpacing = scrunchSpacingExpression.evaluate(variables, variation);
@@ -1067,6 +1067,15 @@ void gigaMoog::updateXYOffsetAuto() {
 	std::transform(vs.begin(), vs.end(), vx.begin(), vs.begin(), std::plus<double>()); // add pixel offsets to vs
 	std::transform(vs.begin(), vs.end(), vy.begin(), vs.begin(), std::plus<double>());
 
-	xOffsetAuto = vs[1];
-	yOffsetAuto = vs[0];
+	if (xOffsetAuto == NULL || yOffsetAuto == NULL)
+	{
+		xOffsetAuto = vs[1];
+		yOffsetAuto = vs[0];
+	}
+	else
+	{
+		xOffsetAuto = (9 * xOffsetAuto + vs[1]) / 10;
+		yOffsetAuto = (9 * yOffsetAuto + vs[0]) / 10;
+	}
+
 };

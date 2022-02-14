@@ -16,8 +16,8 @@ public:
 	void getTweezerOffset(int* xOffPixels, int* yOffPixels, int* indexSubpixelMask);
 
 	moveSequence getRearrangeMoves(std::string rearrangeType);
-	void scrunchX(moveSequence& moveseq);
-	void scrunchY(moveSequence& moveseq);
+	void scrunchX(moveSequence& moveseq, bool centered);
+	void scrunchY(moveSequence& moveseq, bool centered);
 	void filterAtomQueue(void);
 
 	chronoTimes* catchPicTime;

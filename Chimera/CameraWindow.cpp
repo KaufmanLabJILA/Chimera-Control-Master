@@ -480,6 +480,7 @@ LRESULT CameraWindow::onCameraFinish( WPARAM wParam, LPARAM lParam )
 			catch (Error& err)
 			{
 				mainWindowFriend->getComm()->sendError(err.what());
+				break;
 			}
 		};
 	}

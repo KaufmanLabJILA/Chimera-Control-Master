@@ -104,7 +104,7 @@ void atomCruncher::filterAtomQueue(void) {
 	}
 }
 
-void atomCruncher::scrunchX(moveSequence& moveseq) {
+void atomCruncher::scrunchX(moveSequence& moveseq, bool centered = false) {
 	size_t iy = 0;
 	for (auto const& channelBoolY : positionsY)
 	{
@@ -127,7 +127,10 @@ void atomCruncher::scrunchX(moveSequence& moveseq) {
 
 			size_t nAtomsInRow = moveseq.moves.back().nx();
 			size_t nGap = 0;
-			//(positionsX.size() - 2 * nAtomsInRow) / 2;
+			if (centered)
+			{
+				nGap = positionsX.size()/2 - gmoog->scrunchSpacing * (nAtomsInRow/2);
+			}
 			for (size_t ix2 = 0; ix2 < nAtomsInRow; ix2++)
 			{
 				moveseq.moves.back().endAOX.push_back(nGap + (gmoog->scrunchSpacing) * ix2); //Bunch up tweezers in center of row
@@ -138,7 +141,7 @@ void atomCruncher::scrunchX(moveSequence& moveseq) {
 	}
 }
 
-void atomCruncher::scrunchY(moveSequence& moveseq) {
+void atomCruncher::scrunchY(moveSequence& moveseq, bool centered = false) {
 	size_t ix = 0;
 	for (auto const& channelBoolX : positionsX)
 	{
@@ -161,7 +164,10 @@ void atomCruncher::scrunchY(moveSequence& moveseq) {
 
 			size_t nAtomsInRow = moveseq.moves.back().ny();
 			size_t nGap = 0;
-			//(positionsY.size() - 2 * nAtomsInRow) / 2;
+			if (centered)
+			{
+				nGap = positionsY.size() / 2 - gmoog->scrunchSpacing * (nAtomsInRow / 2);
+			}
 			for (size_t iy2 = 0; iy2 < nAtomsInRow; iy2++)
 			{
 				moveseq.moves.back().endAOY.push_back(nGap + (gmoog->scrunchSpacing) * iy2); //Bunch up tweezers in center of row
@@ -201,6 +207,7 @@ moveSequence atomCruncher::getRearrangeMoves(std::string rearrangeType) {
 	{
 		scrunchX(moveseq);
 
+		//Update initial atom locations appropriately.
 		size_t nAtomsInRow = gmoog->nTweezerX;
 		size_t nGap = 0;
 		for (size_t ix = 0; ix < positionsX.size(); ix++)
@@ -230,6 +237,22 @@ moveSequence atomCruncher::getRearrangeMoves(std::string rearrangeType) {
 		}
 
 		scrunchX(moveseq);
+	}
+	else if (rearrangeType == "centerscrunchyx") {
+		scrunchY(moveseq, true);
+
+		size_t nAtomsInRow = gmoog->nTweezerY;
+		size_t nGap = positionsY.size() / 2 - gmoog->scrunchSpacing * (nAtomsInRow / 2);
+		for (size_t iy = 0; iy < positionsY.size(); iy++)
+		{
+			positionsY[iy] = false;
+			if (iy >= nGap && iy % (gmoog->scrunchSpacing) == 0 && iy < nGap + (gmoog->scrunchSpacing) * nAtomsInRow)
+			{
+				positionsY[iy] = true;
+			}
+		}
+
+		scrunchX(moveseq, true);
 	}
 	else if (rearrangeType == "tetris")
 	{

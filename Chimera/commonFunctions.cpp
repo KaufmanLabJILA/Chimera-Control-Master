@@ -292,7 +292,7 @@ namespace commonFunctions
 				}
 				try
 				{
-					commonFunctions::logParameters( input, camWin, false );
+					//commonFunctions::logParameters( input, camWin, false );
 				}
 				catch (Error& err)
 				{

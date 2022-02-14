@@ -82,7 +82,8 @@ public:
 	int xPixelOffsetAuto = 0;
 	int yPixelOffsetAuto = 0;
 	int subpixelIndexOffsetAuto = 12;
-	double xOffsetAuto, yOffsetAuto;
+	double xOffsetAuto = NULL;
+	double yOffsetAuto = NULL;
 
 	UINT targetNumber;
 	UINT nTweezerX, nTweezerY;
