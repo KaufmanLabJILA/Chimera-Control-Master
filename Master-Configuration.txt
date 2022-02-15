@@ -199,17 +199,32 @@ uvpm_h
 uvpm_v
 0 - 10
 0
-12
-xcoilval 0.018
-ycoilval 0.021
-zcoilval 0.0055
-bluecoilx -0.1
-bluecoily -0.025
-bluecoilz 0.025
-motcoils 4
-carrier_3p1_cons 79.946
-rsb 0.224
-asb 0.04
-carrier_3p0_cons 79.99
-rsbi 0.086
+27
+rmbx 0.005
+rmby 0.015
+rmbz 0.0245
+tune461 -0.2
+bluetuneval 0.25
+bluetune_imag 0.025
+lattice_pow -5
+ax_lattice_pow -5
+axial_phase_set 5.39
+xoff 0
+yoff 0
+xoff813 -2.12
+yoff813 -12.2
+f_rad 0.085
+f_rad2 0.106
+f_rmot_narrow 0.5
+swapmottime 55
+mirrorscanx 1.65
+mirrorscany 2.88
+dmbx 0.405
+dmby 0.861
+f_rad_3d 0.106
+f_ax_3d 0.045
+f_ax_3d_imag 0.105
+imagpowlat 0.1
+moverate 511
+amprate 6000
 75 375 1 100 400 1
