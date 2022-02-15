@@ -14,10 +14,10 @@ public:
 	//	return std::count(boolAOY.begin(), boolAOY.end(), true);
 	//}; //number of active tweezers
 
-	std::vector<UINT8> startAOX;
-	std::vector<UINT8> startAOY;
-	std::vector<UINT8> endAOX;
-	std::vector<UINT8> endAOY;
+	std::vector<int8> startAOX; //negative values allow for special handling, e.g. removing atoms.
+	std::vector<int8> startAOY;
+	std::vector<int8> endAOX;
+	std::vector<int8> endAOY;
 
 	inline UINT8 nx() {
 		return startAOX.size();

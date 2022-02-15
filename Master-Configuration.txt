@@ -208,7 +208,7 @@ bluetuneval 0.25
 bluetune_imag 0.025
 lattice_pow -5
 ax_lattice_pow -5
-axial_phase_set 5.39
+axial_phase_set 2.14
 xoff 0
 yoff 0
 xoff813 -2.12

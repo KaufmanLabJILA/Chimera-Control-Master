@@ -198,6 +198,37 @@ moveSequence atomCruncher::getRearrangeMoves(std::string rearrangeType) {
 	if (rearrangeType == "scrunchx")
 	{
 		scrunchX(moveseq);
+
+		////Additional handling to remove every othe atom in first column.
+
+		////Update initial atom locations appropriately.
+		//size_t nAtomsInRow = gmoog->nTweezerX;
+		//size_t nGap = 0;
+		//for (size_t ix = 0; ix < positionsX.size(); ix++)
+		//{
+		//	positionsX[ix] = false;
+		//	if (ix >= nGap && ix % (gmoog->scrunchSpacing) == 0 && ix < nGap + (gmoog->scrunchSpacing) * nAtomsInRow)
+		//	{
+		//		positionsX[ix] = true;
+		//	}
+		//}
+
+		//moveSingle single;
+		//size_t iy = 0;
+		//size_t ix = 0;
+		//for (auto const& channelBoolY : positionsY)
+		//{
+		//	if (channelBoolY && (*rearrangerAtomQueue)[0][ix + (positionsX.size())*iy] && iy % 4 == 0)
+		//	{
+		//		single.startAOY.push_back(iy); //Place tweezers on all atoms in row
+		//		single.endAOY.push_back(iy); //y does not move.
+		//		(*rearrangerAtomQueue)[0][ix + (positionsX.size())*iy] = 0; //remove atom from pickup location
+		//	}
+		//	iy++;
+		//}
+		//single.startAOX.push_back(ix); //Single tone in x
+		//single.endAOX.push_back(-1); //sweep x to remove atoms.
+		//moveseq.moves.push_back(single);
 	}
 	else if (rearrangeType == "scrunchy")
 	{
@@ -263,17 +294,17 @@ moveSequence atomCruncher::getRearrangeMoves(std::string rearrangeType) {
 		targetPositionsTemp = gmoog->targetPositions; //Make a copy of the target positions that can be modified.
 
 		std::vector<UINT8> rearrangerAtomVect(((*rearrangerAtomQueue)[0]).size()); //Dumb hacky fix.
-		for (size_t i = 0; i < rearrangerAtomVect.size(); i++)
+		for (int i = 0; i < rearrangerAtomVect.size(); i++)
 		{
 			rearrangerAtomVect[i] = (*rearrangerAtomQueue)[0][i];
 		}
 
 		UINT maxAtomRow = 0;
 		UINT numAtomRow = 0;
-		for (size_t iy = 0; iy < positionsY.size(); iy++) //Find which row has most atoms.
+		for (int iy = 0; iy < positionsY.size(); iy++) //Find which row has most atoms.
 		{
 			numAtomRow = 0;
-			for (size_t ix = 0; ix < positionsX.size(); ix++)
+			for (int ix = 0; ix < positionsX.size(); ix++)
 			{
 				if (rearrangerAtomVect[ix + wx * iy])
 				{
@@ -288,13 +319,13 @@ moveSequence atomCruncher::getRearrangeMoves(std::string rearrangeType) {
 
 		//scrunchX(moveseq); //scrunch atoms to left side (index 0 side)
 		////// This is slightly modified scrunchx to leave sharp edge to draw from.
-		size_t iy = 0;
+		int iy = 0;
 		for (auto const& channelBoolY : positionsY)
 		{
 			if (channelBoolY) //If first step, choose the rows with load tweezers. If not first step, choose the rows that atoms were scrunched to.
 			{
 				moveSingle single;
-				size_t ix = 0;
+				int ix = 0;
 				for (auto const& channelBoolX : positionsX)
 				{
 					if (channelBoolX && (*rearrangerAtomQueue)[0][ix + (positionsX.size())*iy])
@@ -308,10 +339,10 @@ moveSequence atomCruncher::getRearrangeMoves(std::string rearrangeType) {
 				single.endAOY.push_back(iy); //y does not move
 				moveseq.moves.push_back(single);
 
-				size_t nAtomsInRow = moveseq.moves.back().nx();
-				size_t nGap = (maxAtomRow - nAtomsInRow) * (gmoog->scrunchSpacing);
+				int nAtomsInRow = moveseq.moves.back().nx();
+				int nGap = (maxAtomRow - nAtomsInRow) * (gmoog->scrunchSpacing);
 				//(positionsX.size() - 2 * nAtomsInRow) / 2;
-				for (size_t ix2 = 0; ix2 < nAtomsInRow; ix2++)
+				for (int ix2 = 0; ix2 < nAtomsInRow; ix2++)
 				{
 					moveseq.moves.back().endAOX.push_back(nGap + (gmoog->scrunchSpacing) * ix2); //Bunch up tweezers in center of row
 					(*rearrangerAtomQueue)[0][nGap + (gmoog->scrunchSpacing) * ix2 + (positionsX.size())*iy] = 1; //place atom in dropoff location
@@ -321,7 +352,7 @@ moveSequence atomCruncher::getRearrangeMoves(std::string rearrangeType) {
 		}
 		//////
 		
-		for (size_t i = 0; i < rearrangerAtomVect.size(); i++) //Dumb hacky fix.
+		for (int i = 0; i < rearrangerAtomVect.size(); i++) //Dumb hacky fix.
 		{
 			rearrangerAtomVect[i] = (*rearrangerAtomQueue)[0][i];
 		}
@@ -364,6 +395,10 @@ moveSequence atomCruncher::getRearrangeMoves(std::string rearrangeType) {
 				}
 				iyTarget++; //iterate through target positions if no atom needed, or atom has been placed in target site.
 				//if no source, this loops breaks, and continues from the previous target position.
+			}
+			if (ixSource < 0) //TODO: work out why this is getting triggered. Should always have enough atoms.
+			{
+				break;
 			}
 			if (single.ny() > 0)
 			{

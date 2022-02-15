@@ -109,6 +109,11 @@ private:
 	int ampStepMag = 134217727;
 	int freqStepMag = 511;
 
+	double getFreqX(int xIndex, int yIndex);
+	double getAmpX(int xIndex, int yIndex);
+	double getFreqY(int xIndex, int yIndex);
+	double getAmpY(int xIndex, int yIndex);
+
 	static unsigned long long int getFTW(double frequency) {
 		//36-bit DDS
 		//1 MHz = 223696213.33333333333333333333333 FTW
