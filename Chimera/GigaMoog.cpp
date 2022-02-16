@@ -95,7 +95,11 @@ double gigaMoog::getFreqX(int xIndex, int yIndex) {
 
 	if (xIndex == -1 && yIndex >= 0) //special handling for atom removal
 	{
-		return 90 + xOffset;
+		return 60 + xOffset;
+	}
+	else if (xIndex == -2 && yIndex >= 0)
+	{
+		return 300 + xOffset;
 	}
 	else if (xIndex >= 0 && yIndex >= 0) 
 	{
@@ -110,7 +114,7 @@ double gigaMoog::getFreqX(int xIndex, int yIndex) {
 double gigaMoog::getAmpX(int xIndex, int yIndex) {
 	yIndex = (yIndex < 0) ? 0 : yIndex;
 
-	if (xIndex == -1 && yIndex >= 0) //special handling for atom removal
+	if ((xIndex == -1 || xIndex == -2) && yIndex >= 0) //special handling for atom removal
 	{
 		return ATW_LUT[2 * yDim * 0 + 2 * yIndex + 0];
 	}
@@ -129,7 +133,11 @@ double gigaMoog::getFreqY(int xIndex, int yIndex) {
 
 	if (xIndex >= 0 && yIndex == -1) //special handling for atom removal
 	{
-		return 90 + yOffset;
+		return 60 + yOffset;
+	}
+	else if (xIndex >= 0 && yIndex == -2)
+	{
+		return 300 + yOffset;
 	}
 	else if (xIndex >= 0 && yIndex >= 0)
 	{
@@ -144,7 +152,7 @@ double gigaMoog::getFreqY(int xIndex, int yIndex) {
 double gigaMoog::getAmpY(int xIndex, int yIndex) {
 	xIndex = (xIndex < 0) ? 0 : xIndex;
 
-	if (xIndex == -1 && yIndex >= 0) //special handling for atom removal
+	if (xIndex >= 0 && (yIndex == -1 || yIndex == -2)) //special handling for atom removal
 	{
 		return ATW_LUT[2 * yDim * xIndex + 2 * 0 + 1];
 	}
@@ -662,11 +670,13 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vari
 		std::string tmp, initAOX, initAOY;
 		currentMoogScript >> rearrangeMode;
 
-		if (rearrangeMode != "scrunchx" && rearrangeMode != "scrunchy" && rearrangeMode != "scrunchxy" && rearrangeMode != "scrunchyx" && rearrangeMode != "centerscrunchyx" &&rearrangeMode != "tetris")
-		{
-			thrower("Invalid rearrangement mode. Valid options are scrunchx, scrunchy, scrunchxy, scrunchyx, and tetris.");
-		}
-		if (rearrangeMode == "scrunchx" || rearrangeMode == "scrunchy" || rearrangeMode == "scrunchxy" || rearrangeMode == "scrunchyx" || rearrangeMode == "centerscrunchyx" || rearrangeMode == "tetris")
+		//TODO: put syntax checks back.
+
+		//if (rearrangeMode != "scrunchx" && rearrangeMode != "scrunchy" && rearrangeMode != "scrunchxy" && rearrangeMode != "scrunchyx" && rearrangeMode != "centerscrunchyx" &&rearrangeMode != "tetris")
+		//{
+		//	thrower("Invalid rearrangement mode. Valid options are scrunchx, scrunchy, scrunchxy, scrunchyx, and tetris.");
+		//}
+		//if (rearrangeMode == "scrunchx" || rearrangeMode == "scrunchy" || rearrangeMode == "scrunchxy" || rearrangeMode == "scrunchyx" || rearrangeMode == "centerscrunchyx" || rearrangeMode == "tetris")
 		{
 			currentMoogScript >> scrunchSpacingExpression;
 			scrunchSpacing = scrunchSpacingExpression.evaluate(variables, variation);
@@ -990,6 +1000,7 @@ void gigaMoog::updateXYOffsetAuto() {
 	std::transform(vs.begin(), vs.end(), vx.begin(), vs.begin(), std::plus<double>()); // add pixel offsets to vs
 	std::transform(vs.begin(), vs.end(), vy.begin(), vs.begin(), std::plus<double>());
 
+
 	if (xOffsetAuto == NULL || yOffsetAuto == NULL)
 	{
 		xOffsetAuto = vs[1];
@@ -997,8 +1008,8 @@ void gigaMoog::updateXYOffsetAuto() {
 	}
 	else
 	{
-		xOffsetAuto = (9 * xOffsetAuto + vs[1]) / 10;
-		yOffsetAuto = (9 * yOffsetAuto + vs[0]) / 10;
+		xOffsetAuto = (5 * xOffsetAuto + vs[1]) / 6;
+		yOffsetAuto = (5 * yOffsetAuto + vs[0]) / 6;
 	}
 
 };

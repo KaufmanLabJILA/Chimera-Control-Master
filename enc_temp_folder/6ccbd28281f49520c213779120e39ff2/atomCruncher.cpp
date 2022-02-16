@@ -149,9 +149,6 @@ void atomCruncher::scrunchX(moveSequence& moveseq, bool centered = false) {
 	}
 }
 
-void atomCruncher::equalizeY(moveSequence& moveseq) {
-}
-
 void atomCruncher::scrunchY(moveSequence& moveseq, bool centered = false) {
 	int ix = 0;
 	for (auto const& channelBoolX : positionsX)
