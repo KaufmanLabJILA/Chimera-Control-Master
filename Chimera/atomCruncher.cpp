@@ -150,6 +150,85 @@ void atomCruncher::scrunchX(moveSequence& moveseq, bool centered = false) {
 }
 
 void atomCruncher::equalizeY(moveSequence& moveseq) {
+	///Equalize the number of atoms in each column.
+
+	//switch to coordinate representation for convenience.
+	std::vector<int> positionCoordinatesX;
+	{
+		int ix = 0;
+		for (auto const& channelBoolX : positionsX)
+		{
+			if (channelBoolX) { 
+				positionCoordinatesX.push_back(ix);
+			}
+			ix++;
+		}
+	}
+
+	std::vector<int> positionCoordinatesY;
+	{
+		int iy = 0;
+		for (auto const& channelBoolY : positionsY)
+		{
+			if (channelBoolY) {
+				positionCoordinatesY.push_back(iy);
+			}
+			iy++;
+		}
+	}
+
+	// Calculate mean atom number per column.
+	int nxMean = 0;
+	std::vector<int> nxList;
+	for (auto const& coordX : positionCoordinatesX)
+	{
+		int nx = 0;
+		for (auto const& coordY : positionCoordinatesY)
+		{
+			if ((*rearrangerAtomQueue)[0][coordX + (positionsX.size())*coordY])
+				nx++;
+		}
+		nxMean += nx;
+		nxList.push_back(nx);
+	}
+	nxMean /= (gmoog->nTweezerX);
+	for (auto& element : nxList) // nxList now contains excess atoms.
+		element -= nxMean;
+
+	//iterate through columns, and move to adjacent column as needed.
+	int ixTweezer = 0; //tweezer index, can step by multiple lattice sites.
+	for (auto const& coordX : positionCoordinatesX)
+	{
+		if (ixTweezer >= positionCoordinatesX.size() - 1)
+		{
+			break; //end on second last load column.
+		}
+		if (nxList[ixTweezer] > 0) // move excess atoms out of column
+		{
+			moveSingle single;
+			for (auto const& coordY : positionCoordinatesY)
+			{
+				if ((*rearrangerAtomQueue)[0][coordX + (positionsX.size())*coordY]
+					&& !((*rearrangerAtomQueue)[0][positionCoordinatesX[ixTweezer+1] + (positionsX.size())*coordY])) // move only if site in adjacent loaded column is empty.
+				{
+					single.startAOY.push_back(coordY); //select atoms in column to move
+					single.endAOY.push_back(coordY);
+					(*rearrangerAtomQueue)[0][coordX + (positionsX.size())*coordY] = 0;
+					(*rearrangerAtomQueue)[0][positionCoordinatesX[ixTweezer + 1] + (positionsX.size())*coordY] = 1; //remove atom from pickup location and place in target
+					nxList[ixTweezer]--;
+					nxList[ixTweezer+1]++; //keep track of column atom numbers
+				}
+				if (nxList[ixTweezer] <= 0 )
+				{
+					break; //stop if all excess atoms have been moved.
+				}
+			}
+			single.startAOX.push_back(coordX); //Single tone in x
+			single.endAOX.push_back(positionCoordinatesX[ixTweezer + 1]); //x moves to next load column
+			moveseq.moves.push_back(single);
+		}
+		ixTweezer++;
+	}
 }
 
 void atomCruncher::scrunchY(moveSequence& moveseq, bool centered = false) {
@@ -251,6 +330,7 @@ moveSequence atomCruncher::getRearrangeMoves(std::string rearrangeType) {
 	}
 	else if (rearrangeType == "scrunchy")
 	{
+		equalizeY(moveseq);
 		scrunchY(moveseq);
 	}
 	else if (rearrangeType == "centerscrunchx")

@@ -18,6 +18,7 @@ public:
 	moveSequence getRearrangeMoves(std::string rearrangeType);
 	void scrunchX(moveSequence& moveseq, bool centered);
 	void scrunchY(moveSequence& moveseq, bool centered);
+	void equalizeY(moveSequence& moveseq);
 	void filterAtomQueue(void);
 
 	chronoTimes* catchPicTime;
