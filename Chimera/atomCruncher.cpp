@@ -472,7 +472,163 @@ moveSequence atomCruncher::getRearrangeMoves(std::string rearrangeType) {
 	}
 	else if (rearrangeType == "equaltetris")
 	{
+		int nPerColumn = equalizeY(moveseq);
+		scrunchYFixedLength(moveseq, nPerColumn);
 
+		UINT wx = (positionsX.size()); //For convenience, could remove.
+		UINT wy = (positionsY.size());
+
+		//std::copy(gmoog->targetPositions.begin(), gmoog->targetPositions.end(), targetPositionsTemp);
+		targetPositionsTemp = gmoog->targetPositions; //Make a copy of the target positions that can be modified.
+
+		std::vector<UINT8> rearrangerAtomVect(((*rearrangerAtomQueue)[0]).size()); //Dumb hacky fix.
+		for (int i = 0; i < rearrangerAtomVect.size(); i++)
+		{
+			rearrangerAtomVect[i] = (*rearrangerAtomQueue)[0][i];
+		}
+
+		//std::vector<bool> targetColumn(positionsY.size(), false);
+
+		int iySource = (gmoog->scrunchSpacing)*(nPerColumn - 1); //Start taking atoms from top-most scrunched row, iterate towards bottom.
+		int nRowSource = sourceRowSum(iySource, rearrangerAtomVect); //number of atoms remaining in source row
+		int iyTarget = wy - 1;
+
+		while (iyTarget >= 0 && iySource >= 0) //iterate through target rows from the opposite side from scrunch. iyTarget must be int so that it can go negative for this condition to fail.
+		{
+			int ixTarget = 0;
+			int ixSource = 0;
+			moveSingle single;
+
+			while (ixTarget < wx) //iterate through all target positions in row
+			{
+				if (targetPositionsTemp[ixTarget + wx * iyTarget]) //if atom required at target
+				{
+					if (nRowSource < 1) //check if a source atom is available in current source row
+					{
+						iySource -= (gmoog->scrunchSpacing); //if no atoms, move to the next source row and reset available atoms in row
+						if (iySource >= 0)
+						{
+							nRowSource = sourceRowSum(iySource, rearrangerAtomVect);
+						}
+						break;
+					}
+					while (!rearrangerAtomVect[ixSource + wx * iySource]) //find next atom in source row. This should be guaranteed due to counting nRowSource.
+					{
+						ixSource++;
+					}
+					single.startAOX.push_back(ixSource);
+					rearrangerAtomVect[ixSource + wx * iySource] = 0; //erase used source position.
+					nRowSource--; //remove an atom from the source row
+
+					single.endAOX.push_back(ixTarget); //place tweezer at desired final location.
+					targetPositionsTemp[ixTarget + wx * iyTarget] = 0; //erase filled target position.
+				}
+				ixTarget++; //iterate through target positions if no atom needed, or atom has been placed in target site.
+				//if no source, this loops breaks, and continues from the previous target position.
+			}
+			if (iySource < 0) //TODO: work out why this is getting triggered. Should always have enough atoms.
+			{
+				break;
+			}
+			if (single.nx() > 0)
+			{
+				single.startAOY.push_back(iySource); //tweezers at desired source row
+				single.endAOY.push_back(iyTarget); //tweezers at desired target row
+
+				moveseq.moves.push_back(single); //add the move to the sequence, which either fully populates a target row, or fully depletes a source row.
+			}
+			if (ixTarget >= wx) //only iterate to next target row if entire row has been populated/checked.
+			{
+				iyTarget--;
+			}
+		}
+	}
+	else if (rearrangeType == "equaltetris2")
+	{
+		int nPerColumn = equalizeY(moveseq);
+		scrunchYFixedLength(moveseq, nPerColumn);
+
+		UINT wx = (positionsX.size()); //For convenience, could remove.
+		UINT wy = (positionsY.size());
+
+		//std::copy(gmoog->targetPositions.begin(), gmoog->targetPositions.end(), targetPositionsTemp);
+		targetPositionsTemp = gmoog->targetPositions; //Make a copy of the target positions that can be modified.
+
+		std::vector<UINT8> rearrangerAtomVect(((*rearrangerAtomQueue)[0]).size()); //Dumb hacky fix.
+		for (int i = 0; i < rearrangerAtomVect.size(); i++)
+		{
+			rearrangerAtomVect[i] = (*rearrangerAtomQueue)[0][i];
+		}
+
+		//std::vector<bool> targetColumn(positionsY.size(), false);
+
+		int iySource = (gmoog->scrunchSpacing)*(nPerColumn - 1); //Start taking atoms from top-most scrunched row, iterate towards bottom.
+		int nRowSource = sourceRowSum(iySource, rearrangerAtomVect); //number of atoms remaining in source row
+		int iyTarget = wy - 1;
+
+		while (iyTarget >= 0 && iySource >= 0) //iterate through target rows from the opposite side from scrunch. iyTarget must be int so that it can go negative for this condition to fail.
+		{
+			int ixTarget = 0;
+			int ixSource = 0;
+			moveSingle fromReservoir, scrunch, toTarget;
+
+			while (ixTarget < wx) //iterate through all target positions in row
+			{
+				if (targetPositionsTemp[ixTarget + wx * iyTarget]) //if atom required at target
+				{
+					if (nRowSource < 1) //check if a source atom is available in current source row
+					{
+						iySource -= (gmoog->scrunchSpacing); //if no atoms, move to the next source row and reset available atoms in row
+						if (iySource >= 0)
+						{
+							nRowSource = sourceRowSum(iySource, rearrangerAtomVect);
+						}
+						break;
+					}
+					while (!rearrangerAtomVect[ixSource + wx * iySource]) //find next atom in source row. This should be guaranteed due to counting nRowSource.
+					{
+						ixSource++;
+					}
+					fromReservoir.startAOX.push_back(ixSource);
+					fromReservoir.endAOX.push_back(ixSource);
+					scrunch.startAOX.push_back(ixSource);
+
+					rearrangerAtomVect[ixSource + wx * iySource] = 0; //erase used source position.
+					nRowSource--; //remove an atom from the source row
+
+					scrunch.endAOX.push_back(ixTarget); //place tweezer at desired final location.
+					toTarget.startAOX.push_back(ixTarget);
+					toTarget.endAOX.push_back(ixTarget);
+
+					targetPositionsTemp[ixTarget + wx * iyTarget] = 0; //erase filled target position.
+				}
+				ixTarget++; //iterate through target positions if no atom needed, or atom has been placed in target site.
+				//if no source, this loops breaks, and continues from the previous target position.
+			}
+			if (iySource < 0) //TODO: work out why this is getting triggered. Should always have enough atoms.
+			{
+				break;
+			}
+			if (fromReservoir.nx() > 0)
+			{
+				fromReservoir.startAOY.push_back(iySource); //tweezers at desired source row
+				fromReservoir.endAOY.push_back(iySource + (iyTarget- iySource)/2); //tweezers at desired target row
+
+				scrunch.startAOY.push_back(iySource + (iyTarget - iySource) / 2);
+				scrunch.endAOY.push_back(iySource + (iyTarget - iySource) / 2);
+
+				toTarget.startAOY.push_back(iySource + (iyTarget - iySource) / 2);
+				toTarget.endAOY.push_back(iyTarget);
+
+				moveseq.moves.push_back(fromReservoir);
+				moveseq.moves.push_back(scrunch);
+				moveseq.moves.push_back(toTarget); //add the move to the sequence, which either fully populates a target row, or fully depletes a source row.
+			}
+			if (ixTarget >= wx) //only iterate to next target row if entire row has been populated/checked.
+			{
+				iyTarget--;
+			}
+		}
 	}
 	else if (rearrangeType == "tetris")
 	{
@@ -753,6 +909,20 @@ moveSequence atomCruncher::getRearrangeMoves(std::string rearrangeType) {
 	}
 	
 	return moveseq;
+}
+
+int atomCruncher::sourceRowSum(int iRow, std::vector<UINT8> rearrangerAtomVect)
+{
+	int nRowSource = 0; //number of atoms remaining in source column
+	for (int ix = 0; ix < (positionsX.size()); ix++) //calling size() shouldn't be slow, but check if this is limiting.
+	{
+		if (rearrangerAtomVect[ix + (positionsX.size()) * iRow])
+		{
+			nRowSource++;
+		}
+	}
+
+	return nRowSource;
 }
 
 int atomCruncher::sourceColumnSum(int iColumn, std::vector<UINT8> rearrangerAtomVect)

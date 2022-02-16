@@ -69,4 +69,5 @@ public:
 	UINT atomThresholdForSkip = UINT_MAX;
 	std::atomic<bool>* skipNext;
 	int sourceColumnSum(int iColumn, std::vector<UINT8> rearrangerAtomVect);
+	int sourceRowSum(int iRow, std::vector<UINT8> rearrangerAtomVect);
 };
