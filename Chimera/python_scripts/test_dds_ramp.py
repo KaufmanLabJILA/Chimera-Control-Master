@@ -7,7 +7,6 @@ from devices import gpio_devices
 from dac81416 import DAC81416
 from ad9959 import AD9959
 import struct
-import math
 
 from dds_lock_pll import writeToDDS
 from getSeqGPIOWords import getSeqGPIOWords
@@ -71,8 +70,8 @@ class DDS_ramp_tester:
     #acc_incr    <= gpio_in(47 downto  4);
     #acc_chan    <= to_integer(unsigned(gpio_in( 3 downto  0)));
 
-    incr_hi = int(math.floor(point.incr*1.0/2**28))
-    incr_lo = point.incr - incr_hi * 2**28
+    incr_hi = point.incr >> 28 #(point.incr & (0xffff << 28)) # acc_incr_hi    <= gpio_in(47 downto  32)
+    incr_lo = point.incr & ((1 << 28) - 1)  # acc_incr_lo    <= gpio_in(31 downto  4)
 
     self.fifo_dds_ftw_seq.write_axis_fifo("\x01\x00" + struct.pack('>H', point.address))
     self.fifo_dds_ftw_seq.write_axis_fifo(struct.pack('>I', point.time))
@@ -106,8 +105,8 @@ class DDS_ramp_tester:
     points=[]
     #these ramps should complete in just under 64 ms
     points.append(DDS_ftw_seq_point(address=0,time=0,start=800000,steps=10000,incr=120000,chan=0))
-    #points.append(DDS_ftw_seq_point(address=1,time=   20000, start=4000000,steps=0,incr=0,chan=0)) 
-    # points.append(DDS_ftw_seq_point(address=1,time=1,start=1000000,steps=1,incr=0,chan=3)) 
+    #points.append(DDS_ftw_seq_point(address=1,time=   20000, start=4000000,steps=0,incr=0,chan=0))
+    # points.append(DDS_ftw_seq_point(address=1,time=1,start=1000000,steps=1,incr=0,chan=3))
     points.append(DDS_ftw_seq_point(address=1,time=   0,start=     0,steps=    0,incr=    0,chan=0))
 
     for point in points:
