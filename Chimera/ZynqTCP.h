@@ -18,6 +18,7 @@ private:
 
 	const unsigned int timeConv = 100000; // SEQ time given in multiples of 10 ns, 1/DIO_TIME_RESOLUTION
 	const unsigned int timeConvDAC = 100000;
+	const unsigned int timeConvDDS = 1000;
 	const unsigned int dacRes = 0xffff; //16 bit dac resolution
 public:
 	ZynqTCP();
