@@ -6,14 +6,14 @@ reset
 %setsingle 0 ramptime 43 ryd_freq 1 0
 %setsingle 0 ramptime+uvtime 0 ryd_freq 0 0
 
-%setsingle 0 0 65 180 1 0
-%setsingle 0 4000 0 180 1 0
-%setsingle 0 7000 65 ryd_freq 1 0
-%setsingle 0 7000+uvtime 0 ryd_freq 0 0
+setsingle 0 0 65 180 1 0
+setsingle 0 4000 0 180 1 0
+setsingle 0 7000 65 ryd_freq 1 0
+setsingle 0 7000+uvtime 0 ryd_freq 0 0
 
 %%% normal single step:
-setsingle 0 0 65 ryd_freq 1 0
-setsingle 0 uvtime 0 ryd_freq 0 0
+%setsingle 0 0 65 ryd_freq 1 0
+%setsingle 0 uvtime 0 ryd_freq 0 0
 
 program 0
 
