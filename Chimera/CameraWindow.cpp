@@ -302,6 +302,7 @@ LRESULT CameraWindow::onCameraProgress( WPARAM wParam, LPARAM lParam )
 	//
 	{
 		std::lock_guard<std::mutex> locker( plotLock );
+		std::lock_guard<std::mutex> locker2( imageLock );
 		// TODO: add check to check if this is needed.
 		//211227: this check is never initializing the queue.
 		//if (imageQueue.size() == 0) {
@@ -1229,6 +1230,7 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 			if (imageCount % input->picsPerRep == 0)
 			{
 				{
+					std::lock_guard<std::mutex> locker2(*input->imageLock);
 					std::lock_guard<std::mutex> locker(*input->rearrangerLock); // When a lock_guard object is created, it attempts to take ownership of the mutex it is given. When control leaves the scope in which the lock_guard object was created, the lock_guard is destructed and the mutex is released.
 
 					(*input->rearrangerAtomQueue).push_back(tempAtomArray); //put atom array in rearrange queue
@@ -1236,14 +1238,22 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 
 					if (input->nAtom >= input->gmoog->targetNumber)
 					{
-						//REARRANGE
-						//moveSequence moveseq = input->getRearrangeMoves();
-						MessageSender ms;
-						input->gmoog->writeOff(ms); //Important to start with load tones off, so that every tone has explicit settings.
-						input->gmoog->writeLoad(ms); //Write load settings so that tweezers can be reset immediately after moves.
-						input->gmoog->writeRearrangeMoves(input->getRearrangeMoves(input->gmoog->rearrangeMode), ms);
-						input->gmoog->writeTerminator(ms);
-						input->gmoog->send(ms);
+						try
+						{
+							//REARRANGE
+							//moveSequence moveseq = input->getRearrangeMoves();
+							MessageSender ms;
+							input->gmoog->writeOff(ms); //Important to start with load tones off, so that every tone has explicit settings.
+							input->gmoog->writeLoad(ms); //Write load settings so that tweezers can be reset immediately after moves.
+							input->gmoog->writeRearrangeMoves(input->getRearrangeMoves(input->gmoog->rearrangeMode), ms);
+							input->gmoog->writeTerminator(ms);
+							input->gmoog->send(ms);
+						}
+						catch (Error& exception)
+						{
+							/*input->comm->sendError(exception.what());*/
+							//TODO: add handling for reporting rearrangement errors.
+						}
 					}
 					(*input->rearrangerAtomQueue).clear(); //clear the rearrange queue once we've completed or ignored the rearrangement.
 
@@ -1255,6 +1265,7 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 		{
 			if (input->nAtom >= 100) //enforce enough atoms for decent single shot signal.
 			{
+				std::lock_guard<std::mutex> locker(*input->imageLock);
 				input->getTweezerOffset(&(input->gmoog->xPixelOffsetAuto), &(input->gmoog->yPixelOffsetAuto), &(input->gmoog->subpixelIndexOffsetAuto));
 
 				input->gmoog->updateXYOffsetAuto();

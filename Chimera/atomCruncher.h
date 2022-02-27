@@ -18,8 +18,10 @@ public:
 	moveSequence getRearrangeMoves(std::string rearrangeType);
 	void scrunchX(moveSequence& moveseq, bool centered);
 	void scrunchY(moveSequence& moveseq, bool centered);
+	void scrunchYTarget(moveSequence& moveseq);
 	void scrunchYFixedLength(moveSequence& moveseq, int nPerColumn, bool centered);
 	int equalizeY(moveSequence& moveseq);
+	void enoughY(moveSequence& moveseq);
 	void filterAtomQueue(void);
 
 	chronoTimes* catchPicTime;
@@ -62,6 +64,8 @@ public:
 	std::vector<bool> positions;
 	std::vector<bool> positionsX; //Temporary storage of initial positions XY for multi-step rearrangement procedures.
 	std::vector<bool> positionsY;
+	std::vector<int> positionCoordinatesX;
+	std::vector<int> positionCoordinatesY;
 
 	size_t nAtom = 0;
 	std::array<int, 4> thresholds;

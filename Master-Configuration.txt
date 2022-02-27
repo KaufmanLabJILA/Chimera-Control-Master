@@ -211,9 +211,9 @@ lattice_pow -5
 lattice_zero -0.031
 ax_lattice_pow -5
 ax_lattice_zero -0.008
-axial_phase_set 6.95
+axial_phase_set 6
 xoff 0
-yoff 0
+yoff 0.3
 xoff813 -2.12
 yoff813 -12.2
 f_rad 0.085
