@@ -85,9 +85,9 @@ public:
 	double xOffsetAuto = NULL;
 	double yOffsetAuto = NULL;
 
-	UINT targetNumber;
-	UINT nTweezerX, nTweezerY;
-	UINT scrunchSpacing;
+	int targetNumber;
+	int nTweezerX, nTweezerY;
+	int scrunchSpacing;
 	std::string rearrangeMode;
 
 private:
