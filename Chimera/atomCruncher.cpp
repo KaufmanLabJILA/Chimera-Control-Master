@@ -326,7 +326,7 @@ int atomCruncher::equalizeY(moveSequence& moveseq) {
 }
 
 
-void atomCruncher::scrunchYTarget(moveSequence& moveseq) {
+void atomCruncher::scrunchYTarget(moveSequence& moveseq, bool constantMoves = false) {
 	UINT wx = (positionsX.size()); //For convenience, could remove.
 	UINT wy = (positionsY.size());
 
@@ -357,7 +357,7 @@ void atomCruncher::scrunchYTarget(moveSequence& moveseq) {
 			}
 			single.startAOX.push_back(ix); //Single tone in x
 			single.endAOX.push_back(ix); //x does not move
-			if (single.ny() > 0) { moveseq.moves.push_back(single); }
+			if (single.ny() > 0 || constantMoves) { moveseq.moves.push_back(single); }
 
 			int nAtomsInRow = moveseq.moves.back().ny();
 			int iyTarget = 0;
@@ -387,7 +387,7 @@ void atomCruncher::scrunchYTarget(moveSequence& moveseq) {
 	}
 }
 
-void atomCruncher::enoughY(moveSequence& moveseq) {
+void atomCruncher::enoughY(moveSequence& moveseq, bool constantMoves = false) {
 	///Ensure the number of atoms in each column is sufficient for target pattern.
 
 	std::vector<int> nxList;
@@ -446,9 +446,9 @@ void atomCruncher::enoughY(moveSequence& moveseq) {
 			}
 			single.startAOX.push_back(coordX); //Single tone in x
 			single.endAOX.push_back(positionCoordinatesX[ixTweezer + 1]); //x moves to next load column
-			if (single.ny() > 0) { moveseq.moves.push_back(single); }
+			if (single.ny() > 0 || constantMoves) { moveseq.moves.push_back(single); } //If constant number of moves are needed, always add the move, even if it's empty.
 		}
-		if (nxList[ixTweezer] < 0) // pull missing atoms into column
+		else if (nxList[ixTweezer] < 0) // pull missing atoms into column.
 		{
 			moveSingle single;
 			for (auto const& coordY : positionCoordinatesY)
@@ -470,7 +470,14 @@ void atomCruncher::enoughY(moveSequence& moveseq) {
 			}
 			single.startAOX.push_back(positionCoordinatesX[ixTweezer + 1]); //x moves from next load column
 			single.endAOX.push_back(coordX); //Single tone in x
-			if (single.ny() > 0) { moveseq.moves.push_back(single); }
+			if (single.ny() > 0 || constantMoves) { moveseq.moves.push_back(single); }
+		}
+		else if (constantMoves)
+		{
+			moveSingle single;
+			single.startAOX.push_back(coordX); //dummy move to maintain constant move number.
+			single.endAOX.push_back(coordX);
+			moveseq.moves.push_back(single);
 		}
 		ixTweezer++;
 	}
@@ -513,6 +520,32 @@ void atomCruncher::compressX(moveSequence& moveseq) {
 		single.endAOX.push_back(coordXtarget); //move entire column
 		if (single.ny() > 0) { moveseq.moves.push_back(single); }
 	}
+}
+
+void  atomCruncher::filterReservoir(moveSequence& moveseq) {
+	///Place tweezers on all positions to be kept
+	moveSingle single;
+	int ix = 0;
+	for (auto const& channelBoolX : gmoog->filterPositionsX) {
+		if (channelBoolX)
+		{
+			single.startAOX.push_back(ix);
+			single.endAOX.push_back(ix);
+		}
+		ix++;
+	}
+
+	int iy = 0;
+	for (auto const& channelBoolY : gmoog->filterPositionsY) {
+		if (channelBoolY)
+		{
+			single.startAOY.push_back(iy);
+			single.endAOY.push_back(iy);
+		}
+		iy++;
+	}
+
+	moveseq.moves.push_back(single);
 }
 
 moveSequence atomCruncher::getRearrangeMoves(std::string rearrangeType) {
@@ -630,6 +663,13 @@ moveSequence atomCruncher::getRearrangeMoves(std::string rearrangeType) {
 	{
 		enoughY(moveseq);
 		scrunchYTarget(moveseq);
+		compressX(moveseq);
+	}
+	else if (rearrangeType == "filterarbscrunchycompressx")
+	{
+		enoughY(moveseq, true);
+		scrunchYTarget(moveseq, true);
+		filterReservoir(moveseq);
 		compressX(moveseq);
 	}
 	else if (rearrangeType == "arbequalscrunchy")

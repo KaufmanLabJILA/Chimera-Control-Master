@@ -667,7 +667,7 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vari
 	{
 		//rearrangerActive = true;
 		Expression ampStepNew, freqStepNew, xoff, yoff, scrunchSpacingExpression;
-		std::string tmp, initAOX, initAOY;
+		std::string tmp, initAOX, initAOY, filterAOX, filterAOY;
 		currentMoogScript >> rearrangeMode;
 
 		//TODO: put syntax checks back.
@@ -769,6 +769,46 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vari
 		if (initAOX.length() != xDim || initAOY.length() != yDim)
 		{
 			thrower("Error: initial positions must match tweezer look up table size.");
+		}
+
+		currentMoogScript >> tmp;
+		if (tmp == "filterx")
+		{
+			currentMoogScript >> filterAOX;
+			filterPositionsX.clear();
+			nFilterTweezerX = 0;
+			for (auto &ch : filterAOX) { //convert string to boolean vector
+				if (ch == '0') { filterPositionsX.push_back(0); }
+				else if (ch == '1') {
+					filterPositionsX.push_back(1);
+					nFilterTweezerX++;
+				}
+				else { thrower("Error: non-boolean target value."); }
+			}
+		}
+		else
+		{
+			thrower("Error: must first specify filter x values.");
+		}
+
+		currentMoogScript >> tmp;
+		if (tmp == "filtery")
+		{
+			currentMoogScript >> filterAOY;
+			filterPositionsY.clear();
+			nFilterTweezerY = 0;
+			for (auto &ch : filterAOY) { //convert string to boolean vector
+				if (ch == '0') { filterPositionsY.push_back(0); }
+				else if (ch == '1') {
+					filterPositionsY.push_back(1);
+					nFilterTweezerY++;
+				}
+				else { thrower("Error: non-boolean target value."); }
+			}
+		}
+		else
+		{
+			thrower("Error: must first specify filter y values.");
 		}
 
 		currentMoogScript >> tmp;

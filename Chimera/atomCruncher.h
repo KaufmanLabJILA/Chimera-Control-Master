@@ -18,11 +18,12 @@ public:
 	moveSequence getRearrangeMoves(std::string rearrangeType);
 	void scrunchX(moveSequence& moveseq, bool centered);
 	void compressX(moveSequence& moveseq);
+	void filterReservoir(moveSequence& moveseq);
 	void scrunchY(moveSequence& moveseq, bool centered);
-	void scrunchYTarget(moveSequence& moveseq);
+	void scrunchYTarget(moveSequence& moveseq, bool constantMoves);
 	void scrunchYFixedLength(moveSequence& moveseq, int nPerColumn, bool centered);
 	int equalizeY(moveSequence& moveseq);
-	void enoughY(moveSequence& moveseq);
+	void enoughY(moveSequence& moveseq, bool constantMoves);
 	void filterAtomQueue(void);
 
 	chronoTimes* catchPicTime;

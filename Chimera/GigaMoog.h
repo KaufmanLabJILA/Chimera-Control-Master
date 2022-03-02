@@ -78,6 +78,8 @@ public:
 	std::vector<bool> initialPositionsY;
 	std::vector<bool> initialPositions;
 	std::vector<UINT8> targetPositions;
+	std::vector<bool> filterPositionsX;
+	std::vector<bool> filterPositionsY;
 
 	int xPixelOffsetAuto = 0;
 	int yPixelOffsetAuto = 0;
@@ -87,6 +89,7 @@ public:
 
 	int targetNumber;
 	int nTweezerX, nTweezerY;
+	int nFilterTweezerX, nFilterTweezerY;
 	int scrunchSpacing;
 	std::string rearrangeMode;
 
