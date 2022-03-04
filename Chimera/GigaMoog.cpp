@@ -1027,6 +1027,7 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vari
 }
 
 void gigaMoog::updateXYOffsetAuto() {
+	///Updates the offsets in MHz
 	std::vector<double> vx = xPix2MHz;	
 	std::transform(vx.begin(), vx.end(), vx.begin(),
 		std::bind(std::multiplies<double>(), std::placeholders::_1, xPixelOffsetAuto)); //convert offset in pixels to MHz

@@ -2,7 +2,7 @@
 #include "atomCruncher.h"
 
 void atomCruncher::getTweezerOffset(int* xOffPixels, int* yOffPixels, int* indexSubpixelMask) {
-	///modifies input pointers to pass newly computed offset values in units of pixels and subpixel mask offset.
+	///modifies input pointers to pass newly computed offset values in units of pixels and subpixel mask offset. Also updates masksCrop appropriately.
 
 	//First find brightest pixel There is probably a more efficient way of doing this.
 
@@ -94,6 +94,20 @@ void atomCruncher::getTweezerOffset(int* xOffPixels, int* yOffPixels, int* index
 		subpixelSignals.push_back(integratedSignal);
 	}
 	*indexSubpixelMask = std::max_element(subpixelSignals.begin(), subpixelSignals.end()) - subpixelSignals.begin(); //find brightest signal
+}
+
+void atomCruncher::offsetMasks(int xOffPixels, int yOffPixels) {
+	///update masksCrop to offset masks by integer number of pixels.
+	for (size_t i = 0; i < masksCrop.size()/2; i++)
+	{
+		masksCrop[i] = masksCropOriginal[i] + yOffPixels;
+	}
+	for (size_t i = masksCrop.size() / 2; i < masksCrop.size(); i++)
+	{
+		masksCrop[i] = masksCropOriginal[i] + xOffPixels;
+	}
+
+	//size_t indPixImg = (ix + input->masksCrop[imask + 2 * input->nMask]) + (input->imageDims.width)*(iy + input->masksCrop[imask]); //column major indexing
 }
 
 void atomCruncher::filterAtomQueue(void) {

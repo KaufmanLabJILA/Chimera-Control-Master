@@ -979,6 +979,7 @@ void CameraWindow::prepareAtomCruncher(ExperimentInput& input)
 		input.cruncherInput->maskWidY = arrMasks.shape[1]; //Get np array dimensions
 
 		cnpy::NpyArray arrCrops = cnpy::npy_load(MASKS_CROP_FILE_LOCATION);
+		input.cruncherInput->masksCropOriginal = arrCrops.as_vec<int16>(); //This is flattened column major automatically for no goddamn reason.
 		input.cruncherInput->masksCrop = arrCrops.as_vec<int16>(); //This is flattened column major automatically for no goddamn reason.
 		cnpy::NpyArray arrBGImg = cnpy::npy_load(BG_IMAGE_FILE_LOCATION);
 		input.cruncherInput->bgImg = arrBGImg.as_vec<long>(); //row major
@@ -1008,6 +1009,10 @@ void CameraWindow::prepareAtomCruncher(ExperimentInput& input)
 		//input.cruncherInput->rearrangerActive = input.masterInput->rearrangeInfo.active; //211229 - rearrangeInfo depreciated.
 		input.cruncherInput->rearrangerActive = input.masterInput->gmoog->rearrangerActive; //Now set rearranger active depending on gmoog settings.
 		input.cruncherInput->autoTweezerOffsetActive = input.masterInput->gmoog->autoTweezerOffsetActive;
+		if (input.cruncherInput->autoTweezerOffsetActive) //Ensure that first image in experiment has updated mask locations.
+		{
+			input.cruncherInput->offsetMasks((input.cruncherInput->gmoog->xPixelOffsetAuto), (input.cruncherInput->gmoog->yPixelOffsetAuto));
+		}
 	}
 	else
 	{
@@ -1040,10 +1045,6 @@ void CameraWindow::prepareAtomCruncher(ExperimentInput& input)
 	input.cruncherInput->atomThresholdForSkip = mainWindowFriend->getMainOptions().atomThresholdForSkip;
 	input.cruncherInput->rearrangerConditionWatcher = &rearrangerConditionVariable;
 }
-
-
-// this thread has one purpose: watch the image vector thread for new images, determine where atoms are, and pass them
-// to the threads waiting on atom info.
 
 // should consider modifying so that it can use an array of locations. At the moment doesn't.
 //UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
@@ -1267,8 +1268,8 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 			{
 				std::lock_guard<std::mutex> locker(*input->imageLock);
 				input->getTweezerOffset(&(input->gmoog->xPixelOffsetAuto), &(input->gmoog->yPixelOffsetAuto), &(input->gmoog->subpixelIndexOffsetAuto));
-
 				input->gmoog->updateXYOffsetAuto();
+				input->offsetMasks((input->gmoog->xPixelOffsetAuto), (input->gmoog->yPixelOffsetAuto));
 			}
 			(*input->xOffsetAutoQueue).push_back(input->gmoog->xOffsetAuto); //Always store value, so that offset list is up to date with reps.
 			(*input->yOffsetAutoQueue).push_back(input->gmoog->yOffsetAuto);
