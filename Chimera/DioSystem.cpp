@@ -10,7 +10,7 @@
 #include "AuxiliaryWindow.h"
 
 //for DioFPGA connect:
-#include "ftd2xx.h"
+//#include "ftd2xx.h"
 #include <windows.h>
 #include <sstream>
 

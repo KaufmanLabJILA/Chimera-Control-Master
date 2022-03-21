@@ -288,7 +288,7 @@ bluemotcoil 1.1
 bluex 0.38
 bluey 0.178
 bluez 0.15
-greenmotcoil 0.5
+greenmotcoil 0.2
 greenx 0.09626
 greeny 0.03502
 greenz -0.2979
@@ -302,11 +302,11 @@ coolpower 4.5
 lactime 30
 cooltime 20
 greennarrowfreq 82.6
-greennarrowpower 3.4
-greennarrowpowerstart 12
+greennarrowpower 3.9
+greennarrowpowerstart 15
 bluefreq 110
-bluetime 80
-bluepower 60
+bluetime 120
+bluepower 15
 setpoint556 2.65
 comploadtime 20
 rb1freq 99.8
