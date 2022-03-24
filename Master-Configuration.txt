@@ -200,7 +200,7 @@ uvpm_v
 0 - 10
 0
 29
-rmbx 0.005
+rmbx 0.0045
 rmby 0.015
 rmbz 0.0245
 tune461 -0.2
@@ -208,15 +208,15 @@ bluetuneval 0.25
 bluetune_imag 0.025
 tweezer_zero 0.016
 lattice_pow -5
-lattice_zero -0.031
-ax_lattice_pow -5
+lattice_zero -0.0335
+ax_lattice_pow -4.9
 ax_lattice_zero -0.009
-axial_phase_set 9
+axial_phase_set 3.5
 xoff 0
-yoff 0.3
+yoff 0
 xoff813 -2.12
 yoff813 -12.2
-f_rad 0.085
+f_rad 0.075
 f_rad2 0.106
 f_rmot_narrow 0.5
 swapmottime 55
