@@ -1264,7 +1264,8 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 		}
 		if (imageCount % input->picsPerRep == 0) //Just always run this and store the measured values on first image. Control whether this gets applied in gmoog. input->autoTweezerOffsetActive
 		{
-			if (input->nAtom >= 100) //enforce enough atoms for decent single shot signal.
+			//if (input->nAtom >= 100) //enforce enough atoms for decent single shot signal.
+			if (true) //always check, due to jumps by 1 lattice spacing.
 			{
 				std::lock_guard<std::mutex> locker(*input->imageLock);
 				input->getTweezerOffset(&(input->gmoog->xPixelOffsetAuto), &(input->gmoog->yPixelOffsetAuto), &(input->gmoog->subpixelIndexOffsetAuto));

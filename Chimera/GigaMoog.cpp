@@ -1047,10 +1047,46 @@ void gigaMoog::updateXYOffsetAuto() {
 		xOffsetAuto = vs[1];
 		yOffsetAuto = vs[0];
 	}
+	//else
+	//{
+	//	if (std::abs(xOffsetAuto - vs[1]) > 1.6) // if a large jump, immediately go to new value. 
+	//	{
+	//		xOffsetAuto = vs[1];
+	//	}
+	//	else
+	//	{
+	//		xOffsetAuto = (5 * xOffsetAuto + vs[1]) / 6;
+	//	}
+	//	if (std::abs(yOffsetAuto - vs[0]) > 1.6)
+	//	{
+	//		yOffsetAuto = vs[0];
+	//	}
+	//	else
+	//	{
+	//		yOffsetAuto = (5 * yOffsetAuto + vs[0]) / 6;
+	//	}
+	//}
 	else
 	{
 		xOffsetAuto = (5 * xOffsetAuto + vs[1]) / 6;
 		yOffsetAuto = (5 * yOffsetAuto + vs[0]) / 6;
+	}
+
+	if (xOffsetAuto > 1.3)
+	{
+		xOffsetAuto -= 1.9; //TODO: don't hard code this, just use LUT.
+	}
+	else if (xOffsetAuto < -1.3)
+	{
+		xOffsetAuto += 1.9;
+	}
+	if (yOffsetAuto > 1.3)
+	{
+		yOffsetAuto -= 1.9;
+	}
+	else if (yOffsetAuto < -1.3)
+	{
+		yOffsetAuto += 1.9;
 	}
 
 };

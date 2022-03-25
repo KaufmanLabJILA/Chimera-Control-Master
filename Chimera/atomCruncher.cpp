@@ -55,6 +55,25 @@ void atomCruncher::getTweezerOffset(int* xOffPixels, int* yOffPixels, int* index
 	*xOffPixels = maxSignalIndex % 5 - 2;
 	*yOffPixels = maxSignalIndex / 5 - 2;
 
+	//Recenter on next lattice site in lock range if getting close to the edge.
+	//if (*xOffPixels == 2)
+	//{
+	//	*xOffPixels = -1;
+	//}
+	//else if (*xOffPixels == -2)
+	//{
+	//	*xOffPixels = 1;
+	//}
+
+	//if (*yOffPixels == 2)
+	//{
+	//	*yOffPixels = -1;
+	//}
+	//else if (*yOffPixels == -2)
+	//{
+	//	*yOffPixels = 1;
+	//}
+
 	std::vector<int> subpixelSignals;
 	//Now given maximum pixel, repeat procedure for subpixel masks.
 	for (int i = 0; i < nSubpixel; i++)
