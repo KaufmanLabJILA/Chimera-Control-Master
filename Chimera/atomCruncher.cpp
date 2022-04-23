@@ -698,6 +698,12 @@ moveSequence atomCruncher::getRearrangeMoves(std::string rearrangeType) {
 		scrunchYTarget(moveseq);
 		compressX(moveseq);
 	}
+	else if (rearrangeType == "filterarbscrunchy")
+	{
+		enoughY(moveseq, true);
+		scrunchYTarget(moveseq, true);
+		filterReservoir(moveseq);
+	}
 	else if (rearrangeType == "filterarbscrunchycompressx")
 	{
 		enoughY(moveseq, true);

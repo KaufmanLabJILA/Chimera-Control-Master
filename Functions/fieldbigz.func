@@ -7,8 +7,8 @@ def fieldbigz():
   dac: bigzcoil 0
   off: bigzantihelm
   t += 1
-  dac: bigzcoil 1.79 %0.28 %0.66 %1.75 %.11
-  t += 7.5 %3.91 %7.25 %3.9
+  dac: bigzcoil 1.775 %1.79 %0.28 %0.66 %1.75 %.11
+  t += 7.4 %7.5 %3.91 %7.25 %3.9
   dac: bigzcoil 2 %0.5 %1 %2 %.2
 
 %%% Low field condition
@@ -20,6 +20,15 @@ def fieldbigz():
   %t += 3.9
   %dac: bigzcoil .2
 %%%
+
+%%% Even lower field condition
+  %t += 4
+  %dac: bigzcoil 0
+  %off: bigzantihelm
+  %t += 1
+  %dac: bigzcoil .1
+%%%
+
   t += 15
 
 

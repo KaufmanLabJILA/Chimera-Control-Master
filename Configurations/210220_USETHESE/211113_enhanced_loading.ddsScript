@@ -7,7 +7,7 @@
 reset
 %freqs 80 c_3p0+.2 80 80 79.74 c_3p1+f_rad c_3p1+faxcool c_3p1+f_rad2
 %amps  0 100 UVaopow 100 0 6 16 1
-freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+.5 c_3p1+f_cmot c_3p1+f_rad c_3p1+0.03 c_3p1+f_rad2
+freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+.5 c_3p1 c_3p1+f_rad c_3p1+0.03 c_3p1+f_rad2
 amps  0 0 30 100 0 7 6 0
 
 % SPECTROSCOPY

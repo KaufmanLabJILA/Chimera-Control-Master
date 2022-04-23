@@ -1,0 +1,25 @@
+% Master-Script See the "?" for info on commands.
+def enhanced_lacs(lactime):
+ dac: y1coil by_lacs
+ dac: y2coil by_lacs
+ dac: x1coil .014-0.005
+ t += .1
+ on: rp707
+ on: rp679
+ %on: imag461
+ %on: radial2
+ on: radial
+ on: axial
+ %on: red3dnarrow
+
+ t += lactime
+ off: radial2
+ off: axial
+ off: radial
+ off: imag461
+ off: shut707
+ off: shut679
+ off: rp707
+ off: rp679
+ off: red3dnarrow
+ t += 0.1

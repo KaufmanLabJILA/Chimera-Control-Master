@@ -1218,6 +1218,10 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 					tempAtomArray[iroi] = true;
 					input->nAtom++;
 				}
+				else
+				{
+					tempAtomArray[iroi] = false;
+				}
 				iroi++;
 			}
 		}

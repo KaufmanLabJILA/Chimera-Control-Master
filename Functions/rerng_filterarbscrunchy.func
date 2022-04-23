@@ -1,0 +1,88 @@
+% Master-Script See the "?" for info on commands.
+def rerng_filterarbscrunchy():
+
+on: t515hold
+pulseon: gmload .0001
+t += .1
+pulseon: gmmove .0001
+t += .1
+on: tweezershut
+t += 5
+
+%pulseon: trigger .1
+
+on: radial2
+%on: axial
+
+repeat: 31
+ pulseon: gmmove .0001
+ t += .08
+% t += 100.1
+ pulseon: gmmove .0001
+ t += .8
+% t += 100.1
+ pulseon: gmmove .0001
+ t += .08
+% t += 100.1
+end
+
+%%%Filter reservoir atoms
+pulseon: gmmove .0001
+t += .08
+%t += 100.1
+pulseon: gmmove .0001
+t += .8
+%t += 100.1
+off: radial2
+
+%daclinspace: latticepow lattice_pow lattice_zero 3 15
+%t += 4
+%daclinspace: axialpow ax_lattice_pow ax_lattice_zero 3 15
+%t += 10
+%daclinspace: axialpow ax_lattice_zero ax_lattice_pow 3 15
+%t += 4
+%daclinspace: latticepow lattice_zero lattice_pow 3 15
+%t += 5
+
+pulseon: resetdds .1
+t += .2
+repeat: 5
+ pulseon: stepdds 0.007
+ t += .1
+end
+t += .1
+
+on: radial2
+daclinspace: axialpow ax_lattice_pow ax_lattice_zero 3 15
+t += 4
+daclinspace: latticepow lattice_pow lattice_zero 3 15
+t += 10
+off: radial2
+daclinspace: axialpow ax_lattice_zero ax_lattice_pow 3 15
+t += 4
+daclinspace: latticepow lattice_zero lattice_pow 3 15
+t += 5
+
+pulseon: resetdds .1
+t += .2
+repeat: 2
+ pulseon: stepdds 0.007
+ t += .1
+end
+t += .1
+
+on: radial2
+pulseon: gmmove .0001
+t += .08
+
+off: radial2
+off: axial
+
+off: tweezershut
+t += 5
+
+dac: tweezerpow tweezer_pow
+pulseon: gmload .0001
+t += 1
+off: t515hold
+
