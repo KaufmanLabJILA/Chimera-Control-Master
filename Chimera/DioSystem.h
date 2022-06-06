@@ -12,7 +12,7 @@
 //#include <string>
 //#include <iostream>
 //#include <stdio.h>
-#include "RC028.h"
+//#include "RC028.h"
 #include "ZynqTCP.h"
 //#include <windows.h>
 //#include <chrono>
@@ -116,8 +116,8 @@ class DioSystem
 
 		//for DioFPGA connection
 		int connType;
-		FT_HANDLE ftHandle;
-		HANDLE m_hSerialComm;
+		//FT_HANDLE ftHandle;
+		//HANDLE m_hSerialComm;
 
 		//Zynq tcp connection
 		ZynqTCP zynq_tcp;

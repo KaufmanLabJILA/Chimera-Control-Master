@@ -164,12 +164,8 @@
     <ClCompile Include="saveTextFileFromEdit.cpp" />
     <ClCompile Include="DebugOptionsControl.cpp" />
     <ClCompile Include="rerngControl.cpp" />
-    <ClCompile Include="RC028.cpp" />
     <ClCompile Include="TestWin.cpp" />
     <ClCompile Include="SerialSynth.cpp">
-      <Filter>Main Window</Filter>
-    </ClCompile>
-    <ClCompile Include="DDS_SYNTH.cpp">
       <Filter>Main Window</Filter>
     </ClCompile>
     <ClCompile Include="BoostAsyncSerial.cpp">
@@ -429,12 +425,8 @@
     <ClInclude Include="rerngParams.h" />
     <ClInclude Include="rerngStructures.h" />
     <ClInclude Include="rerngthreadinput.h" />
-    <ClInclude Include="RC028.h" />
     <ClInclude Include="TestWin.h" />
     <ClInclude Include="SerialSynth.h">
-      <Filter>Main Window</Filter>
-    </ClInclude>
-    <ClInclude Include="DDS_SYNTH.h">
       <Filter>Main Window</Filter>
     </ClInclude>
     <ClInclude Include="DdsState.h">

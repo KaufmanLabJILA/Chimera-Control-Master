@@ -24,7 +24,7 @@
 
 //megamoog controller
 #include "SerialSynth.h"
-#include "DDS_SYNTH.h"
+//#include "DDS_SYNTH.h"
 #include "GigaMoog.h"
 #include "fpgaAWG.h"
 
@@ -135,7 +135,7 @@ class MainWindow : public CDialog
 		//SerialSynth moog;
 		fpgaAWG awg;
 		gigaMoog gmoog;
-		DDS_SYNTH dds;
+		//DDS_SYNTH dds;
 
 		ColorBox boxes;
 		// auxiliary members

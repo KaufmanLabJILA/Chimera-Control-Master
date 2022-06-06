@@ -1,6 +1,6 @@
 #pragma once
 #include <windows.h>
-#include "ftd2xx.h"
+//#include "ftd2xx.h"
 
 #define NUMPOINTS         2048
 #define MSGLENGTH         7

@@ -132,7 +132,7 @@ void VariableSystem::handleOpenConfig(std::ifstream& configFile, int versionMajo
 	// Number of Variables
 	UINT varNum;
 	configFile >> varNum;
-	if (varNum > 100)
+	if (varNum > 1000)
 	{
 		int answer = promptBox("ERROR: variable number retrieved from file appears suspicious. The number is "
 								+ str(varNum) + ". Is this accurate?", MB_YESNO);

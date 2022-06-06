@@ -49,7 +49,6 @@ void DioSystem::handleSaveConfig(std::ofstream& saveFile)
 
 void DioSystem::handleOpenConfig(std::ifstream& openFile, int versionMajor, int versionMinor)
 {
-	//connectDioFPGA();
 	ProfileSystem::checkDelimiterLine(openFile, "TTLS");
 	std::vector<std::vector<bool>> ttlStates;
 	ttlStates.resize(getTtlBoardSize().first);
@@ -75,7 +74,6 @@ void DioSystem::handleOpenConfig(std::ifstream& openFile, int versionMajor, int 
 		}
 		rowInc++;
 	}
-	//disconnectDioFPGA();
 	ProfileSystem::checkDelimiterLine(openFile, "END_TTLS");
 }
 
@@ -126,78 +124,15 @@ void DioSystem::setTtlStatusNoForceOut(std::array< std::array<bool, 8>, 8 > stat
 }
 
 DioSystem::~DioSystem() {
-	disconnectDioFPGA();
+	//disconnectDioFPGA();
 }
 
 DioSystem::DioSystem()
 {
-	if (DIO_FPGA_SAFEMODE) {
-		return;
-	}
-	try
-	{
-		connectDioFPGA();
-	}
-	catch (Error& exception)
-	{
-		errBox(exception.what());
-	}
-
 	if (DIO_SAFEMODE)
 	{
 		// don't try to load.
 		return;
-	}
-	/// load modules
-	// this first module is required for the second module which I actually load functions from.
-	HMODULE dio = LoadLibrary("DIO64_Visa32.dll");
-	if (!dio)
-	{
-		int err = GetLastError();
-		errBox("Failed to load dio64_32.dll! Windows Error Code: " + str(err));
-	}
-	// initialize function pointers. This only requires the DLLs to be loaded (which requires them to be present on the machine...) 
-	// so it's not in a safemode block.
-	raw_DIO64_OpenResource = (DIO64_OpenResource)GetProcAddress(dio, "DIO64_OpenResource");
-	raw_DIO64_Open = (DIO64_Open)GetProcAddress(dio, "DIO64_Open");
-	raw_DIO64_Load = (DIO64_Load)GetProcAddress(dio, "DIO64_Load");
-	raw_DIO64_Close = (DIO64_Close)GetProcAddress(dio, "DIO64_Close");
-	raw_DIO64_Mode = (DIO64_Mode)GetProcAddress(dio, "DIO64_Mode");
-	raw_DIO64_GetAttr = (DIO64_GetAttr)GetProcAddress(dio, "DIO64_GetAttr");
-	raw_DIO64_SetAttr = (DIO64_SetAttr)GetProcAddress(dio, "DIO64_SetAttr");
-
-	raw_DIO64_In_Read = (DIO64_In_Read)GetProcAddress(dio, "DIO64_In_Read");
-	raw_DIO64_In_Start = (DIO64_In_Start)GetProcAddress(dio, "DIO64_In_Start");
-	raw_DIO64_In_Read = (DIO64_In_Read)GetProcAddress(dio, "DIO64_In_Read");
-	raw_DIO64_In_Status = (DIO64_In_Status)GetProcAddress(dio, "DIO64_In_Status");
-	raw_DIO64_In_Stop = (DIO64_In_Stop)GetProcAddress(dio, "DIO64_In_Stop");
-
-	raw_DIO64_Out_Config = (DIO64_Out_Config)GetProcAddress(dio, "DIO64_Out_Config");
-	raw_DIO64_Out_ForceOutput = (DIO64_Out_ForceOutput)GetProcAddress(dio, "DIO64_Out_ForceOutput");
-	raw_DIO64_Out_GetInput = (DIO64_Out_GetInput)GetProcAddress(dio, "DIO64_Out_GetInput");
-	raw_DIO64_Out_Start = (DIO64_Out_Start)GetProcAddress(dio, "DIO64_Out_Start");
-	raw_DIO64_Out_Status = (DIO64_Out_Status)GetProcAddress(dio, "DIO64_Out_Status");
-	raw_DIO64_Out_Stop = (DIO64_Out_Stop)GetProcAddress(dio, "DIO64_Out_Stop");
-
-	raw_DIO64_Out_Write = (DIO64_Out_Write)GetProcAddress(dio, "DIO64_Out_Write");
-
-	// Open and Load DIO64
-	try
-	{
-		int result;
-		char* filename = "C:\\DIO64Visa\\DIO64Visa_Release Beta 2\\DIO64.CAT";
-		char* resourceName = "PXI18::11::INSTR";
-		WORD temp[4] = { -1, -1, -1, -1 };
-		double tempd = 10000000;
-		dioOpenResource(resourceName, 0, 0);
-		//dioOpen( 0, 0 );
-		dioLoad(0, filename, 0, 4);
-		dioOutConfig(0, 0, temp, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, tempd);
-		// done initializing.
-	}
-	catch (Error& exception)
-	{
-		errBox(exception.what());
 	}
 }
 
@@ -378,7 +313,6 @@ void DioSystem::rearrange(UINT width, UINT height, fontMap fonts)
 
 void DioSystem::handleInvert()
 {
-	//connectDioFPGA();
 	for (UINT row = 0; row < ttlStatus.size(); row++)
 	{
 		for (UINT number = 0; number < ttlStatus[row].size(); number++)
@@ -553,7 +487,6 @@ void DioSystem::handleTTLPress(int id)
 		}
 		if (holdStatus == false)
 		{
-			//connectDioFPGA();
 			if (ttlStatus[row][number])
 			{
 				forceTtl(row, number, 0);
@@ -562,7 +495,6 @@ void DioSystem::handleTTLPress(int id)
 			{
 				forceTtl(row, number, 1);
 			}
-			//disconnectDioFPGA();
 		}
 		else
 		{
@@ -589,7 +521,6 @@ void DioSystem::handleHoldPress()
 	{
 		holdStatus = false;
 		// make changes
-		//connectDioFPGA();
 		for (UINT rowInc = 0; rowInc < ttlHoldStatus.size(); rowInc++)
 		{
 			for (UINT numberInc = 0; numberInc < ttlHoldStatus[0].size(); numberInc++)
@@ -612,7 +543,6 @@ void DioSystem::handleHoldPress()
 				ttlPushControls[rowInc][numberInc].RedrawWindow();
 			}
 		}
-		//disconnectDioFPGA();
 	}
 	else
 	{
@@ -908,82 +838,14 @@ int DioSystem::getNameIdentifier(std::string name, UINT& row, UINT& number)
 	return -1;
 }
 
-//void DioSystem::connectDioFPGA(UINT variation) {
-//	//This is the serial number of the FTDI chip "FT1VAHJP" - B is added to select channel B
-//	dioFPGA[variation].connectasync("FT1VAHJPB");
-//}
-
 int DioSystem::connectDioFPGA()
 {
-	const char devSerial[] = "FT1VAHJPB"; //This is the serial number of the FTDI chip "FT1VAHJP" - B is added to select channel B
-	FT_STATUS ftStatus;
-	DWORD numDevs;
-	ftStatus = FT_ListDevices(&numDevs, NULL, FT_LIST_NUMBER_ONLY);
-
-	if (numDevs > 0)
-	{
-		ftStatus = FT_OpenEx((PVOID)devSerial, FT_OPEN_BY_SERIAL_NUMBER, &this->ftHandle);
-		if (ftStatus != FT_OK) {
-			thrower("Error opening Dio FPGA");
-			return 1;
-		}
-		ftStatus = FT_SetUSBParameters(this->ftHandle, 65536, 65536);
-		if (ftStatus != FT_OK) {
-			thrower("Error opening Dio FPGA");
-			return 1;
-		}
-		this->connType = ASYNC;
-		return 0;
-	}
-	else
-	{
-		thrower("Dio FPGA not found.");;
-		return 1;
-	}
-
-
+	return 0;
 }
-
-//void DioSystem::disconnectDioFPGA(UINT variation) {
-//	dioFPGA[variation].disconnect();
-//}
-
 
 int DioSystem::disconnectDioFPGA()
 {
-	if (this->connType == SERIAL)
-	{
-		if (this->m_hSerialComm != INVALID_HANDLE_VALUE)
-		{
-			CloseHandle(this->m_hSerialComm);
-			m_hSerialComm = INVALID_HANDLE_VALUE;
-			//cout << "Serial connection closed..." << endl;
-			this->connType = NONE;
-			return 0;
-		}
-		return 1;
-	}
-	else if (this->connType == ASYNC)
-	{
-		FT_STATUS ftStatus;
-		ftStatus = FT_Close(this->ftHandle);
-		if (ftStatus == FT_OK) {
-			// FT_Write OK
-			//cout << "Async connection closed" << endl;
-			return 0;
-		}
-		else {
-			// FT_Write Failed
-			thrower("Error closing async DIO FPGA connection");
-			return 1;
-		}
-	}
-	else
-	{
-		thrower("No DIO FPGA connection to close...");
-		return 1;
-	}
-
+	return 0;
 }
 
 void DioSystem::writeTtlDataToFPGA(UINT variation, bool loadSkip) //arguments unused, just paralleling original DIO structure
@@ -1132,7 +994,6 @@ void DioSystem::interpretKey(std::vector<variableType>& variables)
 	// and interpret the command list for each variation.
 	for (UINT variationNum = 0; variationNum < variations; variationNum++)
 	{
-		//dioFPGA[variationNum].init(connType, ftHandle, m_hSerialComm);
 		for (UINT commandInc = 0; commandInc < ttlCommandFormList.size(); commandInc++)
 		{
 
@@ -1479,7 +1340,6 @@ std::string DioSystem::getErrorMessage(int errorCode)
 
 void DioSystem::zeroBoard()
 {
-	//connectDioFPGA();
 	for (UINT row = 0; row < ttlStatus.size(); row++)
 	{
 		for (UINT number = 0; number < ttlStatus[row].size(); number++)
@@ -1487,7 +1347,6 @@ void DioSystem::zeroBoard()
 			//forceTtl(row, number, 0);
 		}
 	}
-	//disconnectDioFPGA();
 }
 
 
@@ -1669,15 +1528,6 @@ void DioSystem::fpgaForceOutput(std::array<unsigned short, 4> buffer) //UNTESTED
 		fpgaBanks[i + 1] = (int)xhigh;
 	}
 
-
-	//dioFPGA[0].setPoint(1, 10000, fpgaBanks[0], fpgaBanks[1], fpgaBanks[2], fpgaBanks[3], fpgaBanks[4], fpgaBanks[5], fpgaBanks[6], fpgaBanks[7]);
-	//dioFPGA[0].setPoint(2, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-	////Could call the functions that contain these but this felt more appropriate since this isn't in a standard call  
-	////connectDioFPGA();
-	//dioFPGA[0].write();
-	//dioFPGA[0].arm_trigger();
-	//dioFPGA[0].trigger();
-	//disconnectDioFPGA();
 }
 
 void DioSystem::dioOutGetInput(WORD board, WORD& buffer)

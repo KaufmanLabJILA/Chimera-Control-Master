@@ -16,7 +16,7 @@
 #include "atomCruncherInput.h"
 //for moog test:
 #include "SerialSynth.h"
-#include "DDS_SYNTH.h"
+//#include "DDS_SYNTH.h"
 #include "GigaMoog.h"
 #include "fpgaAWG.h"
 

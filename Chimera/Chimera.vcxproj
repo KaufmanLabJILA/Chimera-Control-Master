@@ -23,7 +23,7 @@
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>NIPXIe5451ArbWvFmGen20</RootNamespace>
     <ProjectName>Chimera</ProjectName>
-    <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -36,7 +36,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
   </PropertyGroup>
@@ -207,7 +207,6 @@
     <ClInclude Include="DdsState.h" />
     <ClInclude Include="DDSStructures.h" />
     <ClInclude Include="DDSSystem.h" />
-    <ClInclude Include="DDS_SYNTH.h" />
     <ClInclude Include="DebugOptionsControl.h" />
     <ClInclude Include="Expression.h" />
     <ClInclude Include="fpgaawg.h" />
@@ -247,7 +246,6 @@
     <ClInclude Include="Control.h" />
     <ClInclude Include="externals.h" />
     <ClInclude Include="MainWindow.h" />
-    <ClInclude Include="RC028.h" />
     <ClInclude Include="realTimePlotterInput.h" />
     <ClInclude Include="rearrangementStructures.h" />
     <ClInclude Include="rearrangementThreadInput.h" />
@@ -302,7 +300,6 @@
     <ClCompile Include="ColorBox.cpp" />
     <ClCompile Include="Communicator.cpp" />
     <ClCompile Include="DDSSystem.cpp" />
-    <ClCompile Include="DDS_SYNTH.cpp" />
     <ClCompile Include="DebugOptionsControl.cpp" />
     <ClCompile Include="Expression.cpp" />
     <ClCompile Include="fpgaAWG.cpp" />
@@ -335,7 +332,6 @@
     <ClCompile Include="PlotDesignerDialog.cpp" />
     <ClCompile Include="PlottingInfo.cpp" />
     <ClCompile Include="ProfileIndicator.cpp" />
-    <ClCompile Include="RC028.cpp" />
     <ClCompile Include="RearrangeControl.cpp" />
     <ClCompile Include="Repetitions.cpp" />
     <ClCompile Include="rerngControl.cpp" />

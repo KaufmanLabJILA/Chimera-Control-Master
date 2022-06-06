@@ -300,7 +300,6 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 				}
 			}
 			//input->comm->sendGrabMakoFrame();
-			//input->ttls->disconnectDioFPGA(variationInc); 
 			expUpdate("\r\n", input->comm, input->quiet);
 		}
 		/// conclude. 
@@ -312,7 +311,6 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 			// means. 
 			input->dacs->stopDacs();
 			input->dacs->unshadeDacs();
-			//input->ttls->disconnectDioFPGA(); 
 		}
 		if (input->runMaster)
 		{
@@ -354,7 +352,6 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 		if (input->runMaster)
 		{
 			input->ttls->unshadeTtls();
-			//input->ttls->disconnectDioFPGA(); 
 			input->dacs->unshadeDacs();
 		}
 		if (input->thisObj->isAborting)

@@ -43,7 +43,7 @@ gm1
 0
 gm2
 0
-qubitshutter
+greenmotshutter
 0
 greenbroad
 0
@@ -87,13 +87,13 @@ zrot
 0
 awgtrigger
 0
-awgrb2
+tweezerslm
 0
-awgrb4
+clock
 0
 awgsbspec
 0
-dio6.7
+clockrepump
 0
 dio7.0
 0
@@ -115,7 +115,7 @@ cameratrig
 0
 awgrb3
 0
-dio8.2
+pump
 0
 dio8.3
 0
@@ -142,14 +142,14 @@ z1coil
 tweezerdepth
 -10 - 10
 0
-power556
+slmdepth
 -10 - 10
 0
-motcoils
--10 - 10
+clockpiezohor
+-4 - 4
 0
-nc
--10 - 10
+clockpiezover
+-10 - 0
 0
 imagingpow
 -10 - 10
@@ -283,34 +283,46 @@ dds11
 0
 0 - 100
 100
-29
+41
 bluemotcoil 1.1
-bluex 0.38
+bluex 0.3791
 bluey 0.178
 bluez 0.15
 greenmotcoil 0.2
 greenx 0.09626
 greeny 0.03502
 greenz -0.2979
-blueloadtime 400
-greenbroadloadtime 30
-greennarrowloadtime 50
-lacfreq 92.43
-lacpower 51.39
-coolfreq 84.2586
-coolpower 4.5
+blueloadtime 150
+greenbroadloadtime 25
+greennarrowloadtime 20
+lacfreq 91.3
+lacpower 50
+coolfreq 91.3224
+coolpower 29.88
 lactime 30
-cooltime 20
+cooltime 10
 greennarrowfreq 82.6
-greennarrowpower 3.9
-greennarrowpowerstart 15
+greennarrowpower 2
+greennarrowpowerstart 3.5
 bluefreq 110
-bluetime 120
-bluepower 15
+bluetime 300
+bluepower 30
 setpoint556 2.65
 comploadtime 20
 rb1freq 99.8
 ddswait 2000
 ttlwait 0.1
 dacwait 10
-795 945 1 865 965 1
+greenpower 24
+greentime 30
+greenfreq 75.98
+imgcooltime 10
+loadtime 32
+loadfreq 82.33
+depth -1.98
+axialcoolfreq 75.752
+axialcoolpower 17.2885
+slmpowerfactor 1.92
+xmagic 1.5
+ymagic 0.436542
+815 930 1 875 955 1
