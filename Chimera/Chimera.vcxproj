@@ -29,7 +29,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
   </PropertyGroup>
@@ -81,8 +81,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\klab\anaconda3\include;$(ProjectDir)\Packages\64-Bit-Libs\boost_1_64_0;$(IncludePath);$(ProjectDir)\Packages\64-Bit-Libs\Debug\HDF5-1.10.1-win64\include;C:\ProgramData\Anaconda3\include;C:\Program Files\Andor SDK3</IncludePath>
-    <LibraryPath>$(ProjectDir)\Packages\64-Bit-Libs\boost_1_64_0\lib-64bit;$(ProjectDir)\Packages\64-Bit-Libs\Debug\HDF5-1.10.1-win64\lib;$(ProjectDir)\Packages\64-Bit-Libs\Debug\Python;$(ProjectDir)\Packages\64-Bit-Libs\Release\Python;C:\Program Files\Andor SDK3;$(LibraryPath);C:\Program Files (x86)\National Instruments\Shared\ExternalCompilerSupport\C\lib64\msvc;C:\Users\klab\Anaconda3\libs;C:\ProgramData\Anaconda3\libs</LibraryPath>
+    <IncludePath>C:\Users\klab\anaconda3\include;B:\Yb heap\Experiment_code_Yb\Chimera-Control-Master\Chimera\Packages\64-Bit-Libs\boost_1_64_0;$(IncludePath);$(ProjectDir)\Packages\64-Bit-Libs\Debug\HDF5-1.10.1-win64\include;C:\ProgramData\Anaconda3\include;C:\Program Files\Andor SDK3</IncludePath>
+    <LibraryPath>B:\Yb heap\Experiment_code_Yb\Chimera-Control-Master\Chimera\Packages\64-Bit-Libs\boost_1_64_0\lib-64bit;$(ProjectDir)\Packages\64-Bit-Libs\Debug\HDF5-1.10.1-win64\lib;$(ProjectDir)\Packages\64-Bit-Libs\Debug\Python;$(ProjectDir)\Packages\64-Bit-Libs\Release\Python;C:\Program Files\Andor SDK3;$(LibraryPath);C:\Program Files (x86)\National Instruments\Shared\ExternalCompilerSupport\C\lib64\msvc;C:\ProgramData\Anaconda3\libs</LibraryPath>
     <ExecutablePath>$(VC_ExecutablePath_x64);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(FxCopDir);$(PATH)</ExecutablePath>
     <ExcludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(MSBuild_ExecutablePath);$(VC_LibraryPath_x64);</ExcludePath>
   </PropertyGroup>

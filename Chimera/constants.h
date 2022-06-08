@@ -11,143 +11,13 @@
 // build and debug other aspects of the program.
 
 //#define MASTER_COMPUTER
-#define DEEP_THOUGHT
+//#define DEEP_THOUGHT
+#define SAMANTHA
 //#define ADAMS_LAB
 // #define DESKTOP_COMPUTER
 //#define SALAMIS_TABLET
 //#define PAL9000
 /// File Locations
-
-#ifdef ADAMS_LAB
-	#define PYTHON_HOME L"C:\\ProgramData\\Anaconda3\\"
-	#define MOOG_SAFEMODE true
-	#define AWG_SAFEMODE false
-	#define GIGAMOOG_SAFEMODE true 
-	#define NIAWG_SAFEMODE true
-	#define ANDOR_SAFEMODE true
-	#define PYTHON_SAFEMODE true
-	#define DIO_SAFEMODE true
-	#define DIO_FPGA_SAFEMODE false
-	#define DIO_ARM_MODE true
-	#define DDS_SAFEMODE false
-	#define DAQMX_SAFEMODE false
-	#define RSG_SAFEMODE true
-	#define DDS_FPGA_ADDRESS "FT1I6IBSB" //Device Serial: FT1I6IBS, Use FT1I6IBSB in C++ to select Channel B
-	#define GIGAMOOG_PORT "COM6" 
-	#define AWG_PORT "COM17"
-	#define AWG_BAUD 115200 /*921600*/ 
-	#define TOP_BOTTOM_TEK_SAFEMODE true
-	#define TOP_BOTTOM_TEK_USB_ADDRESS "USB0::0x0699::0x0343::C021681::0::INSTR"
-	#define EO_AXIAL_TEK_SAFEMODE true
-	#define EO_AXIAL_TEK_USB_ADDRESS "USB0::0x0699::0x034C::C010386::0::INSTR"
-	#define TOP_BOTTOM_AGILENT_SAFEMODE true
-	#define TOP_BOTTOM_AGILENT_USB_ADDRESS "USB0::0x0957::0x2307::MY50002574::0::INSTR"
-	#define UWAVE_AXIAL_AGILENT_SAFEMODE true
-	#define UWAVE_AXIAL_AGILENT_USB_ADDRESS "USB0::0x0957::0x2C07::MY52810615::0::INSTR"
-	#define INTENSITY_SAFEMODE true
-	#define INTENSITY_AGILENT_USB_ADDRESS "USB0::0x0957::0x2307::MY50004500::0::INSTR"
-	#define FLASHING_SAFEMODE true
-	#define FLASHING_AGILENT_USB_ADDRESS "USB0::0x0957::0x2307::MY50003003::0::INSTR"
-	#define TESTING_AGILENT_USB_ADDRESS "USB0::0x0957::0x2C07::MY52801397::0::INSTR"
-	#define AXIAL_AGILENT_SAFEMODE true
-	#define AXIAL_AGILENT_USB_ADDRESS ""
-	#define UWAVE_SAFEMODE true
-	#define UWAVE_AGILENT_USB_ADDRESS ""
-
-	const std::string PROJECT_LOCATION = "C:\\Users\\KLab\\Desktop\\Chimera-Control-Master\\";
-	const std::string DATABASE_LOCATION = "A:\\";
-	const std::string PYTHON_CODE_LOCATION = "C:/Users/KLab/Desktop/Chimera-Control-Master/";
-	// same as debug output location but with forward slashes for ease of use in python
-	const std::string PYTHON_INPUT_LOCATION = "C:/Users/KLab/Desktop/Chimera-Control-Master/Debug-Output";
-	const std::string PLOT_FILES_SAVE_LOCATION = PROJECT_LOCATION + "Plotting";
-	const std::string LIB_PATH = PROJECT_LOCATION + "Waveforms-Library\\dummyLib\\";
-	const std::string DEFAULT_SCRIPT_FOLDER_PATH = PROJECT_LOCATION + "Default Scripts\\";
-	const std::string PROFILES_PATH = PROJECT_LOCATION + "Profiles\\";
-	const std::string DATA_SAVE_LOCATION = DATABASE_LOCATION;
-	const std::string MUSIC_LOCATION = PROJECT_LOCATION + "Camerawg\\Final Fantasy VII - Victory Fanfare [HQ].mp3";
-	const std::string FUNCTIONS_FOLDER_LOCATION = PROJECT_LOCATION + "Functions\\";
-	const std::string MASTER_CONFIGURATION_FILE_ADDRESS = PROJECT_LOCATION + "Master-Configuration.txt";
-	const std::string MOT_ROUTINE_ADDRESS = PROJECT_LOCATION + "Master Profiles\\Hotkey Experiments\\MOT\\turnOnMot.mScript";
-	const std::string DEBUG_OUTPUT_LOCATION = PROJECT_LOCATION + "Debug-Output\\";
-	const std::string TIMING_OUTPUT_LOCATION = PROJECT_LOCATION + "Data\\";
-	const std::string NIAWG_WAVEFORM_OUTPUT_LOCATION = TIMING_OUTPUT_LOCATION;
-
-	//Test file for moog
-	const std::string MOOG_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_MOOG_SCRIPT.moogScript";
-	const std::string DDS_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_DDS_SCRIPT.ddsScript";
-#endif
-
-#ifdef PAL9000
-	#define PYTHON_HOME L"C:\\ProgramData\\Anaconda3\\"
-	#define MOOG_SAFEMODE true
-	#define AWG_SAFEMODE true
-	#define GIGAMOOG_SAFEMODE true
-	#define NIAWG_SAFEMODE true
-	#define ANDOR_SAFEMODE true
-	#define MAKO_SAFEMODE true
-	#define PYTHON_SAFEMODE true
-	#define DIO_SAFEMODE true
-	#define DIO_FPGA_SAFEMODE true
-	#define DIO_ARM_MODE true
-	#define DDS_SAFEMODE true
-	#define DAQMX_SAFEMODE true
-	#define RSG_SAFEMODE true
-	#define ZNYQ_SAFEMODE true
-	#define ZYNQ_ADDRESS "10.10.0.2"
-	#define ZYNQ_PORT "8080"
-	#define ZYNQ_MAX_BUFF 64
-	#define DIO_LEN_BYTE_BUF 28
-	#define DAC_LEN_BYTE_BUF 42
-	#define DDS_LEN_BYTE_BUF 46
-	#define DAC_TIME_RESOLUTION 1.6 // in ms
-	#define DDS_TIME_RESOLUTION 1.6 // in ms
-	#define DDS_MAX_AMP 100 // in mW
-	#define DDS_FPGA_ADDRESS "FT1I6IBSB" //Device Serial: FT1I6IBS, Use FT1I6IBSB in C++ to select Channel B
-	#define GIGAMOOG_PORT "COM6"
-	#define AWG_PORT "COM17"
-	#define AWG_BAUD 115200 /*921600*/ 
-	#define TOP_BOTTOM_TEK_SAFEMODE true
-	#define TOP_BOTTOM_TEK_USB_ADDRESS "USB0::0x0699::0x0343::C021681::0::INSTR"
-	#define EO_AXIAL_TEK_SAFEMODE true
-	#define EO_AXIAL_TEK_USB_ADDRESS "USB0::0x0699::0x034C::C010386::0::INSTR"
-	#define TOP_BOTTOM_AGILENT_SAFEMODE true
-	#define TOP_BOTTOM_AGILENT_USB_ADDRESS "USB0::0x0957::0x2307::MY50002574::0::INSTR"
-	#define UWAVE_AXIAL_AGILENT_SAFEMODE true
-	#define UWAVE_AXIAL_AGILENT_USB_ADDRESS "USB0::0x0957::0x2C07::MY52810615::0::INSTR"
-	#define INTENSITY_SAFEMODE true
-	#define INTENSITY_AGILENT_USB_ADDRESS "USB0::0x0957::0x2307::MY50004500::0::INSTR"
-	#define FLASHING_SAFEMODE true
-	#define FLASHING_AGILENT_USB_ADDRESS "USB0::0x0957::0x2307::MY50003003::0::INSTR"
-	#define TESTING_AGILENT_USB_ADDRESS "USB0::0x0957::0x2C07::MY52801397::0::INSTR"
-	#define AXIAL_AGILENT_SAFEMODE true
-	#define AXIAL_AGILENT_USB_ADDRESS ""
-	#define UWAVE_SAFEMODE true
-	#define UWAVE_AGILENT_USB_ADDRESS ""
-
-	const std::string PROJECT_LOCATION = "C:\\Users\\KLab\\Documents\\Chimera-Control-Master\\";
-	const std::string DATABASE_LOCATION = "A:\\Yb_data\\";
-	const std::string PYTHON_CODE_LOCATION = "C:/Users/Klab/Documents/Chimera-Control-Master/";
-	// same as debug output location but with forward slashes for ease of use in python
-	const std::string PYTHON_INPUT_LOCATION = "C:/Users/Klab/Documents/Chimera-Control-Master/Debug-Output";
-	const std::string PLOT_FILES_SAVE_LOCATION = PROJECT_LOCATION + "Plotting";
-	const std::string LIB_PATH = PROJECT_LOCATION + "Waveforms-Library\\dummyLib\\";
-	const std::string DEFAULT_SCRIPT_FOLDER_PATH = PROJECT_LOCATION + "Default Scripts\\";
-	const std::string PROFILES_PATH = PROJECT_LOCATION + "Profiles\\";
-	const std::string DATA_SAVE_LOCATION = DATABASE_LOCATION;
-	const std::string MUSIC_LOCATION = PROJECT_LOCATION + "Camerawg\\Final Fantasy VII - Victory Fanfare [HQ].mp3";
-	const std::string FUNCTIONS_FOLDER_LOCATION = PROJECT_LOCATION + "Functions\\";
-	const std::string MASTER_CONFIGURATION_FILE_ADDRESS = PROJECT_LOCATION + "Master-Configuration.txt";
-	const std::string MOT_ROUTINE_ADDRESS = PROJECT_LOCATION + "Master Profiles\\Hotkey Experiments\\MOT\\turnOnMot.mScript";
-	const std::string DEBUG_OUTPUT_LOCATION = PROJECT_LOCATION + "Debug-Output\\";
-	const std::string TIMING_OUTPUT_LOCATION = PROJECT_LOCATION + "Data\\";
-	const std::string NIAWG_WAVEFORM_OUTPUT_LOCATION = TIMING_OUTPUT_LOCATION;
-
-	//Test file for moog
-	const std::string MOOG_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_MOOG_SCRIPT.moogScript";
-	const std::string AWG_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_AWG_SCRIPT.awgScript";
-	const std::string GMOOG_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_GMOOG_SCRIPT.moogScript";
-	const std::string DDS_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_DDS_SCRIPT.ddsScript";
-#endif
 
 #ifdef DEEP_THOUGHT
 	#define PYTHON_HOME L"C:\\Users\\klab\\Anaconda3\\"
@@ -222,46 +92,64 @@
 	const std::string DDS_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_DDS_SCRIPT.ddsScript";
 #endif
 
-#ifdef SALAMIS_TABLET
-	#define PYTHON_HOME L"C:\\ProgramData\\Anaconda3\\"
-	#define MOOG_SAFEMODE true
-	#define NIAWG_SAFEMODE true
-	#define ANDOR_SAFEMODE true
-	#define PYTHON_SAFEMODE true
-	#define DIO_SAFEMODE true
-	#define DIO_FPGA_SAFEMODE true
-	#define DIO_ARM_MODE true
-	#define DDS_SAFEMODE true
-	#define DAQMX_SAFEMODE true
-	#define RSG_SAFEMODE true
-	#define DDS_FPGA_ADDRESS "FT1I6IBSB" //Device Serial: FT1I6IBS Use FT1I6IBSB in C++ to select Channel B.
-	#define TOP_BOTTOM_TEK_SAFEMODE true
-	#define TOP_BOTTOM_TEK_USB_ADDRESS "USB0::0x0699::0x0343::C021681::0::INSTR"
-	#define EO_AXIAL_TEK_SAFEMODE true
-	#define EO_AXIAL_TEK_USB_ADDRESS "USB0::0x0699::0x034C::C010386::0::INSTR"
-	#define TOP_BOTTOM_AGILENT_SAFEMODE true
-	#define TOP_BOTTOM_AGILENT_USB_ADDRESS "USB0::0x0957::0x2307::MY50002574::0::INSTR"
-	#define UWAVE_AXIAL_AGILENT_SAFEMODE true
-	#define UWAVE_AXIAL_AGILENT_USB_ADDRESS "USB0::0x0957::0x2C07::MY52810615::0::INSTR"
-	#define INTENSITY_SAFEMODE true
-	#define INTENSITY_AGILENT_USB_ADDRESS "USB0::0x0957::0x2307::MY50004500::0::INSTR"
-	#define FLASHING_SAFEMODE true
-	#define FLASHING_AGILENT_USB_ADDRESS "USB0::0x0957::0x2307::MY50003003::0::INSTR"
-	#define TESTING_AGILENT_USB_ADDRESS "USB0::0x0957::0x2C07::MY52801397::0::INSTR"
-	#define AXIAL_AGILENT_SAFEMODE true
-	#define AXIAL_AGILENT_USB_ADDRESS ""
-	#define UWAVE_SAFEMODE true
-	#define UWAVE_AGILENT_USB_ADDRESS ""
+#ifdef SAMANTHA
+#define PYTHON_HOME L"C:\\Users\\klab\\Anaconda3\\"
+#define MOOG_SAFEMODE true
+#define AWG_SAFEMODE true
+#define GIGAMOOG_SAFEMODE true
+#define NIAWG_SAFEMODE true
+#define ANDOR_SAFEMODE true
+#define MAKO_SAFEMODE true
+#define PYTHON_SAFEMODE true
+#define DIO_SAFEMODE true
+#define DIO_FPGA_SAFEMODE true
+#define DIO_ARM_MODE false
+#define DDS_SAFEMODE true
+#define DAQMX_SAFEMODE true
+#define RSG_SAFEMODE true
+#define ZYNQ_SAFEMODE true
+#define ZYNQ_ADDRESS "10.10.0.2"
+#define ZYNQ_PORT "8080"
+#define ZYNQ_MAX_BUFF 64
+#define DIO_LEN_BYTE_BUF 28
+#define DAC_LEN_BYTE_BUF 44
+#define DDS_LEN_BYTE_BUF 46
+#define DIO_TIME_RESOLUTION = 1e-5; // in ms, 10ns
+#define DAC_TIME_RESOLUTION 0.02 // in ms, 50 kHz update rate
+#define DDS_TIME_RESOLUTION 1.6 // in ms
+#define DDS_MAX_AMP 100 // in mW
+#define DDS_FPGA_ADDRESS "FT1I6IBSB" //Device Serial: FT1I6IBS, Use FT1I6IBSB in C++ to select Channel B
+#define GIGAMOOG_PORT "COM6"
+#define AWG_PORT "COM13"
+#define AWG_BAUD 115200 /*921600*/ 
+#define TOP_BOTTOM_TEK_SAFEMODE true
+#define TOP_BOTTOM_TEK_USB_ADDRESS "USB0::0x0699::0x0343::C021681::0::INSTR"
+#define EO_AXIAL_TEK_SAFEMODE true
+#define EO_AXIAL_TEK_USB_ADDRESS "USB0::0x0699::0x034C::C010386::0::INSTR"
+#define TOP_BOTTOM_AGILENT_SAFEMODE true
+#define TOP_BOTTOM_AGILENT_USB_ADDRESS "USB0::0x0957::0x2307::MY50002574::0::INSTR"
+#define UWAVE_AXIAL_AGILENT_SAFEMODE true
+#define UWAVE_AXIAL_AGILENT_USB_ADDRESS "USB0::0x0957::0x2C07::MY52810615::0::INSTR"
+#define INTENSITY_SAFEMODE true
+#define INTENSITY_AGILENT_USB_ADDRESS "USB0::0x0957::0x2307::MY50004500::0::INSTR"
+#define FLASHING_SAFEMODE true
+#define FLASHING_AGILENT_USB_ADDRESS "USB0::0x0957::0x2307::MY50003003::0::INSTR"
+#define TESTING_AGILENT_USB_ADDRESS "USB0::0x0957::0x2C07::MY52801397::0::INSTR"
+#define AXIAL_AGILENT_SAFEMODE true
+#define AXIAL_AGILENT_USB_ADDRESS ""
+#define UWAVE_SAFEMODE true
+#define UWAVE_AGILENT_USB_ADDRESS ""
 
-	const std::string PROJECT_LOCATION = "C:\\Users\\ayoung\\Documents\\Chimera_Control_AY\\Chimera-Control-Master\\";
-	const std::string PYTHON_CODE_LOCATION = "C:/Users/ayoung/Documents/Chimera_Control_AY/Chimera-Control-Master/";
+	const std::string PROJECT_LOCATION = "B:\\Yb heap\\Experiment_code_Yb\\Chimera-Control-Master\\";
+	const std::string DATABASE_LOCATION = "B:\\Yb heap\\Yb_data\\";
+	const std::string PYTHON_CODE_LOCATION = "B:\\Yb heap\\Experiment_code_Yb\\Chimera-Control-Master\\";
 	// same as debug output location but with forward slashes for ease of use in python
-	const std::string PYTHON_INPUT_LOCATION = "C:/Users/ayoung/Documents/Chimera_Control_AY/Chimera-Control-Master/Debug-Output";
+	const std::string PYTHON_INPUT_LOCATION = "B:\\Yb heap\\Experiment_code_Yb\\Chimera-Control-Master\\Debug-Output";
 	const std::string PLOT_FILES_SAVE_LOCATION = PROJECT_LOCATION + "Plotting";
 	const std::string LIB_PATH = PROJECT_LOCATION + "Waveforms-Library\\dummyLib\\";
 	const std::string DEFAULT_SCRIPT_FOLDER_PATH = PROJECT_LOCATION + "Default Scripts\\";
 	const std::string PROFILES_PATH = PROJECT_LOCATION + "Profiles\\";
-	const std::string DATA_SAVE_LOCATION = PROJECT_LOCATION + "Data\\";
+	const std::string DATA_SAVE_LOCATION = DATABASE_LOCATION;
 	const std::string MUSIC_LOCATION = PROJECT_LOCATION + "Camerawg\\Final Fantasy VII - Victory Fanfare [HQ].mp3";
 	const std::string FUNCTIONS_FOLDER_LOCATION = PROJECT_LOCATION + "Functions\\";
 	const std::string MASTER_CONFIGURATION_FILE_ADDRESS = PROJECT_LOCATION + "Master-Configuration.txt";
@@ -272,100 +160,9 @@
 
 	//Test file for moog
 	const std::string MOOG_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_MOOG_SCRIPT.moogScript";
+	const std::string AWG_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_AWG_SCRIPT.awgScript";
+	const std::string GMOOG_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_GMOOG_SCRIPT.moogScript";
 	const std::string DDS_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_DDS_SCRIPT.ddsScript";
-#endif
-
-#ifdef SPECTRE
-	#define PYTHON_HOME L"C:\\Users\\klab\\Anaconda3\\"
-	#define GIGAMOOG_SAFEMODE true
-	#define DDS_SAFEMODE true
-	#define NIAWG_SAFEMODE true
-	#define ANDOR_SAFEMODE true
-	#define PYTHON_SAFEMODE true
-	#define DIO_SAFEMODE true
-	#define DIO_FPGA_SAFEMODE true
-	#define DAQMX_SAFEMODE true
-	#define RSG_SAFEMODE true
-	#define TOP_BOTTOM_TEK_SAFEMODE true
-	#define TOP_BOTTOM_TEK_USB_ADDRESS "USB0::0x0699::0x0343::C021681::0::INSTR"
-	#define EO_AXIAL_TEK_SAFEMODE true
-	#define EO_AXIAL_TEK_USB_ADDRESS "USB0::0x0699::0x034C::C010386::0::INSTR"
-	#define TOP_BOTTOM_AGILENT_SAFEMODE true
-	#define TOP_BOTTOM_AGILENT_USB_ADDRESS "USB0::0x0957::0x2307::MY50002574::0::INSTR"
-	#define AXIAL_AGILENT_SAFEMODE true
-	#define AXIAL_AGILENT_USB_ADDRESS "USB0::0x0957::0x2C07::MY52810615::0::INSTR"
-	#define INTENSITY_SAFEMODE true
-	#define INTENSITY_AGILENT_USB_ADDRESS "USB0::0x0957::0x2307::MY50004500::0::INSTR"
-	#define FLASHING_SAFEMODE true
-	#define FLASHING_AGILENT_USB_ADDRESS "USB0::0x0957::0x2307::MY50003003::0::INSTR"
-	#define TESTING_AGILENT_USB_ADDRESS "USB0::0x0957::0x2C07::MY52801397::0::INSTR"
-	#define UWAVE_SAFEMODE true
-	#define UWAVE_AGILENT_USB_ADDRESS "USB0::0x0957::0x2C07::MY52801397::0::INSTR"
-
-	const std::string PROJECT_LOCATION = "C:\\Users\\klab\\Documents\\Chimera-Control\\";
-	const std::string PYTHON_CODE_LOCATION = "C:/Users/klab/Documents/Chimera-Control/Chimera";
-	// same as debug output location but with forward slashes for ease of use in python
-	const std::string PYTHON_INPUT_LOCATION = "C:/Users/klab/Documents/Chimera-Control/Debug-Output/";
-	const std::string PLOT_FILES_SAVE_LOCATION = PROJECT_LOCATION + "Plotting";
-	const std::string LIB_PATH = PROJECT_LOCATION + "Waveforms-Library\\dummyLib\\";
-	const std::string DEFAULT_SCRIPT_FOLDER_PATH = PROJECT_LOCATION + "Default Scripts\\";
-	const std::string PROFILES_PATH = PROJECT_LOCATION + "Profiles\\";
-	const std::string DATA_SAVE_LOCATION = PROJECT_LOCATION + "Data\\";
-	const std::string MUSIC_LOCATION = PROJECT_LOCATION + "Camerawg\\Final Fantasy VII - Victory Fanfare [HQ].mp3";
-	const std::string FUNCTIONS_FOLDER_LOCATION = PROJECT_LOCATION + "Functions\\";
-	const std::string MASTER_CONFIGURATION_FILE_ADDRESS = PROJECT_LOCATION + "Master-Configuration.txt";
-	const std::string MOT_ROUTINE_ADDRESS = PROJECT_LOCATION + "Master Profiles\\Hotkey Experiments\\MOT\\turnOnMot.mScript";
-	const std::string DEBUG_OUTPUT_LOCATION = PROJECT_LOCATION + "Debug-Output\\";
-	const std::string TIMING_OUTPUT_LOCATION = PROJECT_LOCATION + "\\Data\\";
-	const std::string NIAWG_WAVEFORM_OUTPUT_LOCATION = TIMING_OUTPUT_LOCATION;
-#endif
-
-#ifdef MASTER_COMPUTER
-	#define NIAWG_SAFEMODE false
-	#define ANDOR_SAFEMODE false
-	#define PYTHON_SAFEMODE false
-	#define DIO_SAFEMODE false
-	#define DAQMX_SAFEMODE false
-	#define RSG_SAFEMODE false
-	#define TOP_BOTTOM_TEK_SAFEMODE false
-	#define TOP_BOTTOM_TEK_USB_ADDRESS "USB0::0x0699::0x0343::C021681::0::INSTR"
-	#define EO_AXIAL_TEK_SAFEMODE false
-	#define EO_AXIAL_TEK_USB_ADDRESS "USB0::0x0699::0x034C::C010386::0::INSTR"
-	#define TOP_BOTTOM_AGILENT_SAFEMODE false
-	#define TOP_BOTTOM_AGILENT_USB_ADDRESS "USB0::0x0957::0x2307::MY50002574::0::INSTR"
-	#define AXIAL_AGILENT_SAFEMODE false
-	#define AXIAL_AGILENT_USB_ADDRESS "USB0::0x0957::0x2C07::MY52810615::0::INSTR"
-	#define INTENSITY_SAFEMODE false
-	#define INTENSITY_AGILENT_USB_ADDRESS "USB0::0x0957::0x2307::MY50004500::0::INSTR"
-	#define FLASHING_SAFEMODE false
-	#define FLASHING_AGILENT_USB_ADDRESS "USB0::0x0957::0x2307::MY50003003::0::INSTR"
-	#define UWAVE_SAFEMODE false
-	#define UWAVE_AGILENT_USB_ADDRESS "USB0::0x0957::0x2C07::MY52801397::0::INSTR"
-
-
-	#define PYTHON_HOME L"C:\\Program Files (x86)\\Anaconda3\\"
-
-	#define CODE_ROOT "C:\\Users\\Regal-Lab\\Documents\\Chimera-Control"
-	const std::string PLOT_FILES_SAVE_LOCATION = str(CODE_ROOT) + "\\Plotting";
-	const std::string PYTHON_CODE_LOCATION = "C:/Users/Regal-Lab/Documents/Chimera-Control/Chimera";
-	const std::string PYTHON_INPUT_LOCATION = "C:/Users/Regal-Lab/Documents/Chimera-Control/Debug-Output/";
-	const std::string LIB_PATH = str(CODE_ROOT) + "\\Waveforms-Library\\WaveLibrary-320-MSpS-0.1-PowerLevel\\";
-	const std::string DEFAULT_SCRIPT_FOLDER_PATH = str(CODE_ROOT) + "\\Default Scripts\\";
-	const std::string CODE_LOGGING_FILES_PATH = "D:\\Code Versions\\";
-	const std::string ACTUAL_CODE_FOLDER_PATH = str(CODE_ROOT) + "\\Chimera\\";
-	const std::string PROFILES_PATH = str(CODE_ROOT) + "\\Profiles\\";
-	const std::string DATA_SAVE_LOCATION = "J:\\Data Repository\\New Data Repository\\";
-	const std::string KEY_ORIGINAL_SAVE_LOCATION = "C:\\Shared\\";
-	const std::string MUSIC_LOCATION = str(CODE_ROOT) + "\\Final Fantasy VII - Victory Fanfare [HQ].mp3";
-	const std::string FUNCTIONS_FOLDER_LOCATION = str(CODE_ROOT) + "\\Functions\\";
-	const std::string MASTER_CONFIGURATION_FILE_ADDRESS(str(CODE_ROOT) + "\\Master-Configuration.txt");
-	const std::string LOGGING_FILE_ADDRESS = str(CODE_ROOT) + "\\Master-Log.txt";
-	const std::string KEY_ADDRESS = "\\\\Callisto\\Shared\\key.txt";
-	const std::string MOT_ROUTINE_ADDRESS = PROFILES_PATH + "Hotkey Experiments\\MOT\\turnOnMot.mScript";
-	const std::string DEBUG_OUTPUT_LOCATION = str(CODE_ROOT) + "\\Debug-Output\\";
-	const std::string TIMING_OUTPUT_LOCATION = DATA_SAVE_LOCATION + "\\2017\\September\\September 8\\Raw Data\\";
-	// location where wave data can be outputted for analyzing with another computer.
-	const std::string NIAWG_WAVEFORM_OUTPUT_LOCATION = DATA_SAVE_LOCATION + "2017\\September\\September 7\\Raw Data\\";
 #endif
 
 //Moog constants
