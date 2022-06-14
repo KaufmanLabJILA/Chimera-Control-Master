@@ -16,6 +16,7 @@ template <typename type> struct scriptInfo
 	//type moog; 
 	type awg;
 	type gmoog; 
+	type DDS;
 	type master; 
 }; 
  
@@ -76,7 +77,14 @@ class ScriptingWindow : public CDialog
 		void openGmoogScript(std::string name); 
 		void saveGmoogScript(); 
 		void saveGmoogScriptAs(CWnd* parent); 
-		void gmoogEditChange(); 
+		void gmoogEditChange();
+
+		void newDdsScript();
+		void openDdsScript(CWnd* parent);
+		void openDdsScript(std::string name);
+		void saveDdsScript();
+		void saveDdsScriptAs(CWnd* parent);
+		void ddsEditChange();
  
 		void newMasterScript(); 
 		std::string openMasterScriptFolder(CWnd* parent);
@@ -117,7 +125,7 @@ class ScriptingWindow : public CDialog
 		// 
 		cToolTips tooltips; 
  
-		Script masterScript, awgScript, gmoogScript; /*moogScript, */
+		Script masterScript, awgScript, gmoogScript, ddsScript; /*moogScript, */
 		ColorBox statusBox; 
 		ProfileIndicator profileDisplay; 
  

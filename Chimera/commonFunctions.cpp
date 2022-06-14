@@ -326,6 +326,7 @@ namespace commonFunctions
 					//scriptWin->saveMoogScript();
 					scriptWin->saveAWGScript();
 					scriptWin->saveGmoogScript();
+					scriptWin->saveDdsScript();
 
 					try {
 						scriptWin->saveMasterFunction_nocatch();
@@ -366,146 +367,6 @@ namespace commonFunctions
 				camWin->stopPlotter( );
 				break;
 			}
-			/*case ID_FILE_MY_INTENSITY_NEW:
-			{
-				scriptWin->newIntensityScript();
-				break;
-			}
-			case ID_FILE_MY_INTENSITY_OPEN:
-			{
-				scriptWin->openIntensityScript(parent);
-				break;
-			}
-			case ID_FILE_MY_INTENSITY_SAVE:
-			{
-				scriptWin->saveIntensityScript();
-				break;
-			}
-			case ID_FILE_MY_INTENSITY_SAVEAS:
-			{
-				scriptWin->saveIntensityScriptAs(parent);
-				break;
-			}*/
-			/*case ID_TOP_BOTTOM_NEW_SCRIPT:
-			{
-				auxWin->newAgilentScript(TopBottom);
-				break;
-			}
-			case ID_TOP_BOTTOM_OPEN_SCRIPT:
-			{
-				auxWin->openAgilentScript( TopBottom, parent );
-				break;
-			}
-			case ID_TOP_BOTTOM_SAVE_SCRIPT:
-			{
-				auxWin->saveAgilentScript(TopBottom);
-				break;
-			}
-			case ID_TOP_BOTTOM_SAVE_SCRIPT_AS:
-			{
-				auxWin->saveAgilentScriptAs( TopBottom, parent );
-				break;
-			}
-			case ID_AXIAL_NEW_SCRIPT:
-			{
-				auxWin->newAgilentScript(Axial);
-				break;
-			}
-			case ID_AXIAL_OPEN_SCRIPT:
-			{
-				auxWin->openAgilentScript( Axial, parent );
-				break;
-			}
-			case ID_AXIAL_SAVE_SCRIPT:
-			{
-				auxWin->saveAgilentScript(Axial);
-				break;
-			}
-			case ID_AXIAL_SAVE_SCRIPT_AS:
-			{
-				auxWin->saveAgilentScriptAs( Axial, parent );
-				break;
-			}
-			case ID_FLASHING_NEW_SCRIPT:
-			{
-				auxWin->newAgilentScript( Flashing );
-				break;
-			}
-			case ID_FLASHING_OPEN_SCRIPT:
-			{
-				auxWin->openAgilentScript( Flashing, parent );
-				break;
-			}
-			case ID_FLASHING_SAVE_SCRIPT:
-			{
-				auxWin->saveAgilentScript( Flashing );
-				break;
-			}
-			case ID_FLASHING_SAVE_SCRIPT_AS:
-			{
-				auxWin->saveAgilentScriptAs( Flashing, parent );
-				break;
-			}
-			case ID_UWAVE_NEW_SCRIPT:
-			{
-				auxWin->newAgilentScript( Microwave );
-				break;
-			}
-			case ID_UWAVE_OPEN_SCRIPT:
-			{
-				auxWin->openAgilentScript( Microwave, parent );
-				break;
-			}
-			case ID_UWAVE_SAVE_SCRIPT:
-			{
-				auxWin->saveAgilentScript( Microwave );
-				break;
-			}
-			case ID_UWAVE_SAVE_SCRIPT_AS:
-			{
-				auxWin->saveAgilentScriptAs( Microwave, parent );
-				break; 
-			}*/
-			/*case ID_FILE_MY_VERTICAL_NEW:
-			{
-				scriptWin->newVerticalScript();
-				break;
-			}
-			case ID_FILE_MY_VERTICAL_OPEN:
-			{
-				scriptWin->openVerticalScript(parent);
-				break;
-			}
-			case ID_FILE_MY_VERTICAL_SAVE:
-			{
-				scriptWin->saveVerticalScript();
-				break;
-			}
-			case ID_FILE_MY_VERTICAL_SAVEAS:
-			{
-				scriptWin->saveVerticalScriptAs(parent);
-				break;
-			}*/
-			//case ID_FILE_MY_MOOG_NEW:
-			//{
-			//	scriptWin->newMoogScript();
-			//	break;
-			//}
-			//case ID_FILE_MY_MOOG_OPEN:
-			//{
-			//	scriptWin->openMoogScript(parent);
-			//	break;
-			//}
-			//case ID_FILE_MY_MOOG_SAVE:
-			//{
-			//	scriptWin->saveMoogScript();
-			//	break;
-			//}
-			//case ID_FILE_MY_MOOG_SAVEAS:
-			//{
-			//	scriptWin->saveMoogScriptAs(parent);
-			//	break;
-			//}
 			case ID_FILE_MY_AWG_NEW:
 			{
 				scriptWin->newAWGScript();
@@ -544,6 +405,26 @@ namespace commonFunctions
 			case ID_FILE_MY_GIGAMOOG_SAVEAS:
 			{
 				scriptWin->saveGmoogScriptAs(parent);
+				break;
+			}
+			case ID_FILE_MY_DDS_NEW:
+			{
+				scriptWin->newDdsScript();
+				break;
+			}
+			case ID_FILE_MY_DDS_OPEN:
+			{
+				scriptWin->openDdsScript(parent);
+				break;
+			}
+			case ID_FILE_MY_DDS_SAVE:
+			{
+				scriptWin->saveDdsScript();
+				break;
+			}
+			case ID_FILE_MY_DDS_SAVEAS:
+			{
+				scriptWin->saveDdsScriptAs(parent);
 				break;
 			}
 			case ID_MASTERSCRIPT_NEW:

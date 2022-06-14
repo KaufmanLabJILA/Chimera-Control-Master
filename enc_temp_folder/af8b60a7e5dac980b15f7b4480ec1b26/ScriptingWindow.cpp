@@ -99,7 +99,6 @@ void ScriptingWindow::OnSize(UINT nType, int cx, int cy)
 		auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames());
 	masterScript.colorEntireScript(auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(),
 		auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames());
-
 	SetRedraw(true);
 	RedrawWindow();
 }
@@ -264,6 +263,7 @@ scriptInfo<bool> ScriptingWindow::getScriptSavedStatuses()
 {
 	scriptInfo<bool> status;
 
+	//status.moog = moogScript.savedStatus();
 	status.awg = awgScript.savedStatus();
 	status.gmoog = gmoogScript.savedStatus();
 	status.DDS = ddsScript.savedStatus();
@@ -322,6 +322,12 @@ HBRUSH ScriptingWindow::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	}
 	}
 } 
+
+//void ScriptingWindow::moogEditChange()
+//{
+//	moogScript.handleEditChange();
+//	SetTimer(SYNTAX_TIMER_ID, SYNTAX_TIMER_LENGTH, NULL);
+//}
 
 void ScriptingWindow::awgEditChange()
 {

@@ -37,6 +37,10 @@
 #define ID_FILE_MY_GIGAMOOG_SAVEAS      40006
 #define ID_FILE_MY_GIGAMOOG_OPEN        40007
 #define ID_FILE_MY_GIGAMOOG_NEW         40008
+#define ID_FILE_MY_DDS_OPEN             40014
+#define ID_FILE_MY_DDS_SAVE             40015
+#define ID_FILE_MY_DDS_SAVEAS           40016
+#define ID_FILE_MY_DDS_NEW              40017
 #define ID_FILE_MY_CONFIG_SAVEAS        40010
 #define ID_FILE_MY_CONFIG_OPEN          40011
 #define ID_HELP_SCRIPT                  40012
@@ -154,12 +158,13 @@
 #define ID_ACCELERATOR_F4               40132
 #define ID_ACCELERATOR_SINGLESHOT       40133
 #define ID_RUNMENU_RUNSINGLESHOT        40134
-#define MENU_ID_RANGE_END               40134
 #define ID_SCRIPTS_FUNCTIONS            40142
 #define ID_FILE_MY_AWG_OPEN             40148
 #define ID_FILE_MY_AWG_SAVE             40149
 #define ID_FILE_MY_AWG_SAVEAS           40150
 #define ID_FILE_MY_AWG_NEW              40151
+
+#define MENU_ID_RANGE_END               40151
 
 // Next default values for new objects
 // 
