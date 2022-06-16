@@ -210,17 +210,35 @@ bool DDSSystem::isValidDDSName(std::string name)
 
 void DDSSystem::rearrange(UINT width, UINT height, fontMap fonts)
 {
-	/*dacTitle.rearrange( width, height, fonts);
-	dacSetButton.rearrange( width, height, fonts);
-	zeroDacs.rearrange( width, height, fonts);
-	for (auto& control : dacLabels)
+	ddsTitle.rearrange( width, height, fonts);
+	dds0Title.rearrange(width, height, fonts);
+	dds1Title.rearrange(width, height, fonts);
+	dds2Title.rearrange(width, height, fonts);
+	ddsSetButton.rearrange( width, height, fonts);
+	ddsPLLButton.rearrange( width, height, fonts);
+	dds0FreqAmp.rearrange(width, height, fonts);
+	dds1FreqAmp.rearrange(width, height, fonts);
+	dds2FreqAmp.rearrange(width, height, fonts);
+	for (auto& label : ampLabels)
+	{
+		label.rearrange(width, height, fonts);
+	}
+	for (auto& label : freqLabels)
+	{
+		label.rearrange(width, height, fonts);
+	}
+	for (auto& control : ddsLabels)
 	{
 		control.rearrange( width, height, fonts);
 	}
-	for (auto& control : breakoutBoardEdits)
+	for (auto& control : breakoutBoardFreqEdits)
 	{
 		control.rearrange( width, height, fonts);
-	}*/
+	}
+	for (auto& control : breakoutBoardAmpEdits)
+	{
+		control.rearrange(width, height, fonts);
+	}
 }
 
 

@@ -198,6 +198,9 @@
     <ClCompile Include="fpgaAWG.cpp">
       <Filter>Main Window</Filter>
     </ClCompile>
+    <ClCompile Include="DDS_SYNTH.cpp">
+      <Filter>Auxiliary Window</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -467,6 +470,9 @@
     </ClInclude>
     <ClInclude Include="fpgaawg.h">
       <Filter>Main Window</Filter>
+    </ClInclude>
+    <ClInclude Include="DDS_SYNTH.h">
+      <Filter>Auxiliary Window</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

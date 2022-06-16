@@ -10,6 +10,11 @@ DDS_SYNTH::DDS_SYNTH(const char devSerial[]) {
 		this->connType = NONE;
 		connectasync(devSerial);
 		lockPLLs();
+
+		if (DDS_RUNTEST) {
+			std::string scriptAddress = PROJECT_LOCATION + "Configurations\\After_rebuild\\191121_515.ddsScript";
+			loadDDSScript(scriptAddress);
+		}
 	}
 }
 

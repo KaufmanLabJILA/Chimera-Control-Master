@@ -335,7 +335,10 @@ bool DacSystem::isValidDACName(std::string name)
 void DacSystem::rearrange(UINT width, UINT height, fontMap fonts)
 {
 	dacTitle.rearrange( width, height, fonts);
+	dac0Title.rearrange(width, height, fonts);
+	dac1Title.rearrange(width, height, fonts);
 	dacSetButton.rearrange( width, height, fonts);
+	dacSetMOTButton.rearrange(width, height, fonts);
 	zeroDacs.rearrange( width, height, fonts);
 	for (auto& control : dacLabels)
 	{

@@ -837,26 +837,30 @@ std::string ProfileSystem::getMasterAddressFromConfig()
 	std::getline(configFile, line);
 	std::getline(configFile, line);
 	std::getline(configFile, line);
+	std::getline(configFile, line);
 	std::string newPath;
 	getline(configFile, newPath);
 	return newPath;
 }
 
-//std::string ProfileSystem::getMoogAddressFromConfig()
-//{
-//	std::string configurationAddress;
-//	configurationAddress = currentProfile.categoryPath + currentProfile.configuration + "." + CONFIG_EXTENSION;
-//	std::fstream configFile(configurationAddress);
-//	if (!configFile.is_open())
-//	{
-//		thrower("ERROR: Failed to open configuration file.");
-//	}
-//	std::string line, word, address, newPath;
-//	std::getline(configFile, line);
-//	std::getline(configFile, line);
-//	getline(configFile, newPath);
-//	return newPath;
-//}
+std::string ProfileSystem::getDdsAddressFromConfig()
+{
+	std::string configurationAddress;
+	configurationAddress = currentProfile.categoryPath + currentProfile.configuration + "." + CONFIG_EXTENSION;
+	std::fstream configFile(configurationAddress);
+	if (!configFile.is_open())
+	{
+		thrower("ERROR: Failed to open configuration file.");
+	}
+	std::string line, word, address;
+	std::getline(configFile, line);
+	std::getline(configFile, line);
+	std::getline(configFile, line);
+	std::getline(configFile, line);
+	std::string newPath;
+	getline(configFile, newPath);
+	return newPath;
+}
 
 std::string ProfileSystem::getAWGAddressFromConfig()
 {

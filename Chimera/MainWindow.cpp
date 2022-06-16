@@ -709,7 +709,7 @@ void MainWindow::fillMasterThreadInput(MasterThreadInput* input)
 {
 	input->python = &this->python;
 	input->masterScriptAddress = profile.getMasterAddressFromConfig();
-	//input->moogScriptAddress = profile.getMoogAddressFromConfig();
+	input->ddsScriptAddress = profile.getDdsAddressFromConfig();
 	input->awgScriptAddress = profile.getAWGAddressFromConfig();
 	input->gmoogScriptAddress = profile.getGmoogAddressFromConfig();
 	input->settings = settings.getOptions();

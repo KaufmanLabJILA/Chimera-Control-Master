@@ -318,19 +318,10 @@ UINT AuxiliaryWindow::getTotalVariationNumber()
 void AuxiliaryWindow::OnSize(UINT nType, int cx, int cy)
 {
 	SetRedraw(false);
-	/*topBottomTek.rearrange(cx, cy, getFonts());
-	eoAxialTek.rearrange(cx, cy, getFonts());
-
-	for (auto& ag : agilents)
-	{
-		ag.rearrange(cx, cy, getFonts());
-	}
-
-	RhodeSchwarzGenerator.rearrange(cx, cy, getFonts());
-*/
+	
 	ttlBoard.rearrange(cx, cy, getFonts());
 	dacBoards.rearrange(cx, cy, getFonts());
-	//ddsBoards.rearrange(cx, cy, getFonts());
+	ddsBoards.rearrange(cx, cy, getFonts());
 
 	configVariables.rearrange(cx, cy, getFonts());
 	globalVariables.rearrange(cx, cy, getFonts());

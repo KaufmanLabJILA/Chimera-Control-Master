@@ -50,5 +50,5 @@ public:
 	void writeArrDeltaAmp(UINT8 device, UINT8 channel, UINT8 index, double deltaamp);
 
 	void loadDDSScript(std::string scriptAddress);
-	//void programDDS(DDS_SYNTH* dds, std::vector<variableType>& vars, UINT variation);
+	void programDDS(DDS_SYNTH* dds, std::vector<variableType>& vars, UINT variation);
 };

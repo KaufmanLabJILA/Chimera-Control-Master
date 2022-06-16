@@ -104,7 +104,8 @@
 #define DIO_SAFEMODE true
 #define DIO_FPGA_SAFEMODE true
 #define DIO_ARM_MODE false
-#define DDS_SAFEMODE true
+#define DDS_SAFEMODE false
+#define DDS_RUNTEST true
 #define DAQMX_SAFEMODE true
 #define RSG_SAFEMODE true
 #define ZYNQ_SAFEMODE true
