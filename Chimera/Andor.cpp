@@ -207,13 +207,13 @@ void AndorCamera::armCamera(CameraWindow* camWin, double& minKineticCycleTime)
 	setADChannel(0); //changed to 0
 	if (runSettings.emGainModeIsOn)
 	{
-		setHSSpeed(0, 3); //note index = 3 is 1 MHz for our iXon
+		setHSSpeed(0, ANDOR_HSS_INDEX); //note index = 3 is 1 MHz for our iXon
 	}
 	else
 	{
 		setHSSpeed(1, 0);
 	}
-	setVSSpeed(3); //TODO: change "1" to meaningful value.
+	setVSSpeed(ANDOR_VSS_INDEX); //TODO: change "1" to meaningful value.
 	setVSAmplitude(0);
 	//int hsN, vsN;
 
@@ -619,9 +619,9 @@ void AndorCamera::setGainMode()
 		// Set Gain
 		int numGain;
 		getNumberOfPreAmpGains(numGain);
-		setPreAmpGain(2);
+		setPreAmpGain(ANDOR_PREAMP_INDEX);
 		float myGain;
-		getPreAmpGain(2, myGain);
+		getPreAmpGain(ANDOR_PREAMP_INDEX, myGain);
 		// 1 is for conventional gain mode.
 		setOutputAmplifier(1);
 	}
@@ -629,7 +629,7 @@ void AndorCamera::setGainMode()
 	{
 		// 0 is for em gain mode.
 		setOutputAmplifier(0);
-		setPreAmpGain(2);
+		setPreAmpGain(ANDOR_PREAMP_INDEX);
 		if (runSettings.emGainLevel > 300)
 		{
 			setEmGainSettingsAdvanced(1);
