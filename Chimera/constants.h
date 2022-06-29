@@ -98,13 +98,13 @@
 #define AWG_SAFEMODE true
 #define GIGAMOOG_SAFEMODE true
 #define NIAWG_SAFEMODE true
-#define ANDOR_SAFEMODE true
+#define ANDOR_SAFEMODE false
 #define MAKO_SAFEMODE true
 #define PYTHON_SAFEMODE true
 #define DIO_SAFEMODE true
 #define DIO_FPGA_SAFEMODE true
 #define DIO_ARM_MODE false
-#define DDS_SAFEMODE false
+#define DDS_SAFEMODE true
 #define DDS_RUNTEST true
 #define DAQMX_SAFEMODE true
 #define RSG_SAFEMODE true
@@ -119,7 +119,7 @@
 #define DAC_TIME_RESOLUTION 0.02 // in ms, 50 kHz update rate
 #define DDS_TIME_RESOLUTION 1.6 // in ms
 #define DDS_MAX_AMP 100 // in mW
-#define DDS_FPGA_ADDRESS "FT1I6IBSB" //Device Serial: FT1I6IBS, Use FT1I6IBSB in C++ to select Channel B
+#define DDS_FPGA_ADDRESS "FT3OUIF6A" //"FT3OUIF6B"
 #define GIGAMOOG_PORT "COM6"
 #define AWG_PORT "COM13"
 #define AWG_BAUD 115200 /*921600*/ 

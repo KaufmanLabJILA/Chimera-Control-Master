@@ -1156,6 +1156,8 @@ BOOL CameraWindow::OnInitDialog()
 	//
 	pics.setSinglePicture( this, CameraSettings.readImageParameters( this ) );
 	Andor.setSettings( CameraSettings.getSettings() );
+	std::string andorInfo = Andor.getSystemInfo();
+	mainWindowFriend->getComm()->sendStatus(andorInfo);
 
 	// load the menu
 	menu.LoadMenu( IDR_MAIN_MENU );

@@ -10,7 +10,7 @@
 
 MainWindow::MainWindow(UINT id, CDialog* splash) : CDialog(id), profile(PROFILES_PATH), 
     masterConfig( MASTER_CONFIGURATION_FILE_ADDRESS ), 
-	appSplash( splash ),
+	appSplash( splash ), dds(DDS_FPGA_ADDRESS),
 	gmoog(GIGAMOOG_PORT, 115200), awg(AWG_PORT, AWG_BAUD), zynq_tcp() //115200
 {
 	// create all the main rgbs and brushes. I want to make sure this happens before other windows are created.
@@ -716,11 +716,11 @@ void MainWindow::fillMasterThreadInput(MasterThreadInput* input)
 	input->repetitionNumber = getRepNumber();
 	input->debugOptions = debugger.getOptions();
 	input->profile = profile.getProfileSettings();
-	//input->niawg = &niawg;
+
 	input->comm = &comm;
-	//input->moog = &moog;
 	input->awg = &awg;
 	input->gmoog = &gmoog;
+	input->dds = &dds;
 
 	VariableSystem::generateKey( input->variables, input->settings.randomizeVariations );
 	// it's important to do this after the key is generated so that the constants have their values.

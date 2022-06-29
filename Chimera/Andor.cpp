@@ -36,6 +36,7 @@ AndorCamera::AndorCamera()
 		NumberOfAcqBuffers = 10;
 		NumberOfImageBuffers = 10;
 		cameraIsArmed = false;
+		//std::string andorinfo = getSystemInfo();
 		initialize();
 		//setBaselineClamp(1);
 		//setShutter(0, 5, 30, 30); //Shutter open for any series, 30ms open/close time.

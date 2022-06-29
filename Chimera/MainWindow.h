@@ -135,7 +135,7 @@ class MainWindow : public CDialog
 		//SerialSynth moog;
 		fpgaAWG awg;
 		gigaMoog gmoog;
-		//DDS_SYNTH dds;
+		DDS_SYNTH dds;
 
 		ColorBox boxes;
 		// auxiliary members
