@@ -1038,9 +1038,8 @@ namespace commonFunctions
 	{
 		DataLogger* logger = camWin->getLogger();
 		logger->initializeDataFiles();
-		logger->logAndorSettings( input.camSettings, takeAndorPictures );
+		logger->logAndorSettings(input.camSettings, takeAndorPictures, input.cruncherInput->nMask);
 		logger->logMasterParameters( input.masterInput );
-		//logger->logMoogParameters(input.masterInput);
 		logger->logAWGParameters(input.masterInput);
 		logger->logMiscellaneous();
 		//logger->closeFile(); //TODO: May have to remove this once andor is integrated.

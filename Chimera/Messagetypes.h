@@ -218,22 +218,22 @@ struct SetMoveFrequency : KA007_Message_Base
 		bytes.push_back(p.get<int>("Channel") + 64 * mult);
 		//payload
 		//upper 64 bit
-			//36-bit FTW
-			//16-bit ATW
-			//12-bit PTW
+		  //36-bit FTW
+		  //16-bit ATW
+		  //12-bit PTW
 		//lower 64 bit
-			// 4-bit instant move
-			//28-bit ATW increment
-			// 8-bit step sequence
-			// 8-bit empty
-			//12-bit FTW increment
-			// 4-bit Phase jump enable
+		  // 4-bit instant move
+		  //28-bit ATW increment
+		  // 8-bit step sequence
+		  // 8-bit empty
+		  //12-bit FTW increment
+		  // 4-bit Phase jump enable
 		auto bits = KA007_Message_Base::getFTW(p.get<double>("Frequency"));
 
 		//process amplitude
 		//Percent to 16-bit number
 		auto ATW = p.get<double>("Amplitude");
-		if (ATW < 0.0 || ATW > 100.0) throw std::runtime_error("invalid amplitude");
+		if (ATW < 0.0 || ATW > 100.0) thrower("invalid amplitude");
 		ATW *= 655.35;
 		int ATW_bits = (int)ATW;
 
@@ -243,7 +243,7 @@ struct SetMoveFrequency : KA007_Message_Base
 		//process phase
 		//Degrees to 12-bit
 		auto PTW = p.get<double>("Phase");
-		if (PTW < 0.0 || PTW > 360.0) throw std::runtime_error("invalid phase");
+		if (PTW < 0.0 || PTW > 360.0) thrower("invalid phase");
 		PTW /= 360.0;
 		PTW *= 4096;
 		int PTW_bits = (int)PTW;
@@ -259,12 +259,28 @@ struct SetMoveFrequency : KA007_Message_Base
 		bits = p.get<int>("InstantFTW");
 
 		bits = bits << 28;
-		//conversion to 28-bit signed number
+		//conversion to 26-bit signed number. Highest 2 bits in 28 bit message get ignored.
 		int temp = p.get<int>("ATWIncr");
-		if (temp < -134217728)temp = -134217728;
-		if (temp > 134217727)temp = 134217727;
-		if (temp < 0)temp = temp + 268435456;
+		if (temp < -33554432)temp = -33554432;
+		if (temp > 33554431)temp = 33554431;
+		if (temp < 0)temp = temp + 67108864;
 		bits = bits | temp;
+
+		//bits = bits << 28;
+		////conversion to 28-bit signed number
+		//int temp = p.get<int>("ATWIncr");
+		//if (temp < -134217728)temp = -134217728;
+		//if (temp > 134217727)temp = 134217727;
+		//if (temp < 0)temp = temp + 268435456;
+		//bits = bits | temp;
+
+		//bits = bits << 26; // This does not seem to be correct
+		////conversion to 26-bit signed number
+		//int temp = p.get<int>("ATWIncr");
+		//if (temp < -33554432)temp = -33554432;
+		//if (temp > 33554431)temp = 33554431;
+		//if (temp < 0)temp = temp + 67108864;
+		//bits = bits | temp;
 
 		bits = bits << 8;
 		bits = bits | p.get<int>("StepSequenceID");
@@ -333,6 +349,11 @@ public:
 			return bytes.getBytes(params);
 		};
 
+		factories[MessageSetting::MOVEFREQUENCY] = [](KA007ParameterContainer params) {
+			auto bytes = SetMoveFrequency();
+			return bytes.getBytes(params);
+		};
+
 		factories[MessageSetting::TERMINATE_SEQ] = [](KA007ParameterContainer params) {
 			auto bytes = TerminateSequence();
 			return bytes.getBytes(params);
@@ -379,6 +400,31 @@ public:
 
 	MessageBuilder& phaseDegrees(const double &phase) {
 		message_.parameters_.set("Phase", phase);
+		return *this;
+	}
+
+	MessageBuilder& instantFTW(const bool &freqjump) {
+		message_.parameters_.set("InstantFTW", freqjump);
+		return *this;
+	}
+
+	MessageBuilder& ATWIncr(const int &ampstep) {
+		message_.parameters_.set("ATWIncr", ampstep);
+		return *this;
+	}
+
+	MessageBuilder& stepSequenceID(const int &stepnum) {
+		message_.parameters_.set("StepSequenceID", stepnum);
+		return *this;
+	}
+
+	MessageBuilder& FTWIncr(const int &freqstep) {
+		message_.parameters_.set("FTWIncr", freqstep);
+		return *this;
+	}
+
+	MessageBuilder& phaseJump(const bool &phasejump) {
+		message_.parameters_.set("PhaseJump", phasejump);
 		return *this;
 	}
 

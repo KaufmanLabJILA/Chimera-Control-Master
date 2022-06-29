@@ -81,7 +81,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\klab\anaconda3\include;B:\Yb heap\Experiment_code_Yb\Chimera-Control-Master\Chimera\Packages\64-Bit-Libs\boost_1_64_0;$(IncludePath);$(ProjectDir)\Packages\64-Bit-Libs\Debug\HDF5-1.10.1-win64\include;C:\Program Files\Andor SDK3;B:\Yb heap\Experiment_code_Yb\Chimera-Control-Master\Chimera\Packages\cnpy\cnpy-master</IncludePath>
+    <IncludePath>C:\Users\klab\anaconda3\include;B:\Yb heap\Experiment_code_Yb\Chimera-Control-Master\Chimera\Packages\64-Bit-Libs\boost_1_64_0;$(IncludePath);$(ProjectDir)\Packages\64-Bit-Libs\Debug\HDF5-1.10.1-win64\include;C:\Program Files\Andor SDK3</IncludePath>
     <LibraryPath>B:\Yb heap\Experiment_code_Yb\Chimera-Control-Master\Chimera\Packages\64-Bit-Libs\boost_1_64_0\lib-64bit;$(ProjectDir)\Packages\64-Bit-Libs\Debug\HDF5-1.10.1-win64\lib;$(ProjectDir)\Packages\64-Bit-Libs\Debug\Python;$(ProjectDir)\Packages\64-Bit-Libs\Release\Python;C:\Program Files\Andor SDK3;$(LibraryPath);C:\Program Files (x86)\National Instruments\Shared\ExternalCompilerSupport\C\lib64\msvc;C:\Users\klab\anaconda3\libs</LibraryPath>
     <ExecutablePath>$(VC_ExecutablePath_x64);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(FxCopDir);$(PATH)</ExecutablePath>
     <ExcludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(MSBuild_ExecutablePath);$(VC_LibraryPath_x64);</ExcludePath>
@@ -190,16 +190,17 @@
     <ClInclude Include="AlertSystem.h" />
     <ClInclude Include="AndorRunSettings.h" />
     <ClInclude Include="ATMCD32D.H" />
-    <ClInclude Include="atomCruncherInput.h" />
     <ClInclude Include="atomGrid.h" />
     <ClInclude Include="awgCommand.h" />
     <ClInclude Include="beginningSettingsDialogProc.h" />
     <ClInclude Include="BoostAsyncSerial.h" />
+    <ClInclude Include="BoostUDP.h" />
     <ClInclude Include="CameraImageDimensions.h" />
     <ClInclude Include="cameraPositions.h" />
     <ClInclude Include="CameraSettingsControl.h" />
     <ClInclude Include="CameraWindow.h" />
     <ClInclude Include="cleanString.h" />
+    <ClInclude Include="cnpy.h" />
     <ClInclude Include="ColorBox.h" />
     <ClInclude Include="commonTypes.h" />
     <ClInclude Include="Communicator.h" />
@@ -216,6 +217,7 @@
     <ClInclude Include="MessagePrinter.h" />
     <ClInclude Include="MessageSender.h" />
     <ClInclude Include="Messagetypes.h" />
+    <ClInclude Include="moveSequence.h" />
     <ClInclude Include="profileSettings.h" />
     <ClInclude Include="ProfileSystem.h" />
     <ClInclude Include="DacSettingsDialog.h" />
@@ -294,10 +296,12 @@
     <ClCompile Include="AlertSystem.cpp" />
     <ClCompile Include="beginningSettingsDialogProc.cpp" />
     <ClCompile Include="BoostAsyncSerial.cpp" />
+    <ClCompile Include="BoostUDP.cpp" />
     <ClCompile Include="CameraImageDimensions.cpp" />
     <ClCompile Include="CameraSettingsControl.cpp" />
     <ClCompile Include="CameraWindow.cpp" />
     <ClCompile Include="cleanString.cpp" />
+    <ClCompile Include="cnpy.cpp" />
     <ClCompile Include="ColorBox.cpp" />
     <ClCompile Include="Communicator.cpp" />
     <ClCompile Include="DDSSystem.cpp" />

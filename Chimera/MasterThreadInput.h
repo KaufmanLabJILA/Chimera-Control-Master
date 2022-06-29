@@ -11,7 +11,7 @@
 #include <vector>
 #include <atomic>
 #include <condition_variable>
-#include "atomCruncherInput.h"
+#include "atomCruncher.h"
 #include "SerialSynth.h"
 #include "DDS_SYNTH.h"
 #include "GigaMoog.h"
@@ -71,10 +71,10 @@ struct MasterThreadInput
 struct ExperimentInput
 {
 	ExperimentInput::ExperimentInput() :
-		includesCameraRun(false), multipleExperiments(false), masterInput(NULL), plotterInput(NULL), cruncherInput(NULL) { };
+		includesCameraRun(false), masterInput(NULL), plotterInput(NULL), cruncherInput(NULL) { }
 	MasterThreadInput* masterInput;
 	realTimePlotterInput* plotterInput;
-	atomCruncherInput* cruncherInput;
+	atomCruncher* cruncherInput;
 	AndorRunSettings camSettings;
 	bool includesCameraRun;
 	bool multipleExperiments;

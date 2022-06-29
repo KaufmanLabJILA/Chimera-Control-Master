@@ -1,4 +1,4 @@
-##pragma once
+#pragma once
 #include <atomic>
 #include <vector>
 #include <numeric>
@@ -8,6 +8,7 @@
 #include "atomGrid.h"
 #include "imageParameters.h"
 #include "GigaMoog.h"
+#include "moveSequence.h"
 
 class atomCruncher
 {

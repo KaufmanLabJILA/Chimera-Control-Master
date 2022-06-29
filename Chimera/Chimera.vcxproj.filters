@@ -201,6 +201,12 @@
     <ClCompile Include="DDS_SYNTH.cpp">
       <Filter>Auxiliary Window</Filter>
     </ClCompile>
+    <ClCompile Include="BoostUDP.cpp">
+      <Filter>Main Window</Filter>
+    </ClCompile>
+    <ClCompile Include="cnpy.cpp">
+      <Filter>Constants, Externals, Etc.</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -392,9 +398,6 @@
     <ClInclude Include="AndorRunSettings.h">
       <Filter>Camera Window\Structures</Filter>
     </ClInclude>
-    <ClInclude Include="atomCruncherInput.h">
-      <Filter>Camera Window\Structures</Filter>
-    </ClInclude>
     <ClInclude Include="atomGrid.h">
       <Filter>Camera Window\Structures</Filter>
     </ClInclude>
@@ -473,6 +476,15 @@
     </ClInclude>
     <ClInclude Include="DDS_SYNTH.h">
       <Filter>Auxiliary Window</Filter>
+    </ClInclude>
+    <ClInclude Include="moveSequence.h">
+      <Filter>Camera Window</Filter>
+    </ClInclude>
+    <ClInclude Include="BoostUDP.h">
+      <Filter>Main Window</Filter>
+    </ClInclude>
+    <ClInclude Include="cnpy.h">
+      <Filter>Constants, Externals, Etc.</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
