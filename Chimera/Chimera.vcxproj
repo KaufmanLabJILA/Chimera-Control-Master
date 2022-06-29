@@ -200,7 +200,7 @@
     <ClInclude Include="CameraSettingsControl.h" />
     <ClInclude Include="CameraWindow.h" />
     <ClInclude Include="cleanString.h" />
-    <ClInclude Include="cnpy-master\cnpy.h" />
+    <ClInclude Include="cnpy.h" />
     <ClInclude Include="ColorBox.h" />
     <ClInclude Include="commonTypes.h" />
     <ClInclude Include="Communicator.h" />
@@ -301,7 +301,7 @@
     <ClCompile Include="CameraSettingsControl.cpp" />
     <ClCompile Include="CameraWindow.cpp" />
     <ClCompile Include="cleanString.cpp" />
-    <ClCompile Include="cnpy-master\cnpy.cpp" />
+    <ClCompile Include="cnpy.cpp" />
     <ClCompile Include="ColorBox.cpp" />
     <ClCompile Include="Communicator.cpp" />
     <ClCompile Include="DDSSystem.cpp" />
