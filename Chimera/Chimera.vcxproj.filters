@@ -204,7 +204,7 @@
     <ClCompile Include="BoostUDP.cpp">
       <Filter>Main Window</Filter>
     </ClCompile>
-    <ClCompile Include="cnpy.cpp">
+    <ClCompile Include="cnpy-master\cnpy.cpp">
       <Filter>Constants, Externals, Etc.</Filter>
     </ClCompile>
   </ItemGroup>
@@ -483,7 +483,7 @@
     <ClInclude Include="BoostUDP.h">
       <Filter>Main Window</Filter>
     </ClInclude>
-    <ClInclude Include="cnpy.h">
+    <ClInclude Include="cnpy-master\cnpy.h">
       <Filter>Constants, Externals, Etc.</Filter>
     </ClInclude>
   </ItemGroup>
