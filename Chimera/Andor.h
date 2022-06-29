@@ -53,6 +53,7 @@ public:
 	void queryStatus(int& status);
 	void getTemperatureRange(int& min, int& max);
 	void getTemperature(int& temp);
+	int getTemperatureCode();
 
 	void setShutter(int typ, int mode, int closingtime, int openingtime);
 	void setAccumulationCycleTime();

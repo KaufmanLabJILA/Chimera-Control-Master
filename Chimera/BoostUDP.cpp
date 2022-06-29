@@ -4,30 +4,34 @@
 
 BoostUDP::BoostUDP(std::string IPAddress, int port)
 {
-	if (port == -1) {
-		return;
-		//handle AWG safemode.
+	if (!GIGAMOOG_SAFEMODE) {
+		if (port == -1) {
+			return;
+			//handle AWG safemode.
+		}
+
+		socket_ = std::make_unique<boost::asio::ip::udp::socket>(io_service_);
+		remote_endpoint = boost::asio::ip::udp::endpoint(boost::asio::ip::address::from_string(IPAddress), port);
+
+		socket_->open(boost::asio::ip::udp::v4());
+
+		io_thread = boost::thread(boost::bind(&BoostUDP::run, this));
+		read();
 	}
-
-	socket_ = std::make_unique<boost::asio::ip::udp::socket>(io_service_);
-	remote_endpoint = boost::asio::ip::udp::endpoint(boost::asio::ip::address::from_string(IPAddress), port);
-
-	socket_->open(boost::asio::ip::udp::v4());
-
-	io_thread = boost::thread(boost::bind(&BoostUDP::run, this));
-	read();
 }
 
 BoostUDP::~BoostUDP()
 {
-	io_service_.stop();
+	if (!GIGAMOOG_SAFEMODE) {
+		io_service_.stop();
 
-	if (socket_) {
-		socket_->cancel();
-		socket_->close();
+		if (socket_) {
+			socket_->cancel();
+			socket_->close();
+		}
+
+		io_thread.join();
 	}
-
-	io_thread.join();
 }
 
 void BoostUDP::setReadCallback(const boost::function<void(int)>& read_callback)

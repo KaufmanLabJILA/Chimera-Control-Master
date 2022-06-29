@@ -92,7 +92,9 @@ namespace commonFunctions
 
 					logParameters( input, camWin, true );
 
-					camWin->startAtomCruncher(input);
+					if (!ATOMCRUNCHER_SAFEMODE) {
+						camWin->startAtomCruncher(input);
+					}
 					camWin->startPlotterThread(input);
 					camWin->startCamera();
 					if (input.masterInput->settings.saveMakoImages) {
@@ -191,7 +193,9 @@ namespace commonFunctions
 					//
 					commonFunctions::logParameters( input, camWin, true);
 					//
-					camWin->startAtomCruncher( input );
+					if (!ATOMCRUNCHER_SAFEMODE) {
+						camWin->startAtomCruncher(input);
+					}
 					camWin->startPlotterThread( input );
 					camWin->startCamera();
 					mainWin->getComm()->sendColorBox( Camera, 'G' );

@@ -873,6 +873,19 @@ void CameraWindow::prepareCamera(ExperimentInput& input)
 	input.camSettings = CameraSettings.getSettings();
 	/// start the camera.
 	Andor.setSettings(input.camSettings);
+
+	//get some info about andor settings
+	float vss;
+	float hss;
+	float pgain;
+	int numhspeeds;
+	// compare to the Andor et functions to see which indices you should read
+	Andor.getVSSpeed(3, &vss);
+	Andor.getHSSpeed(0, 0, 3, &hss);
+	Andor.getPreAmpGain(2, pgain);
+	Andor.getNumberHSSpeeds(0, 0, &numhspeeds);
+	mainWindowFriend->getComm()->sendStatus("Vertical shift speed = " + str(vss) + " us\nHorizontal shift speed = " + str(hss) + " MHz\n"
+		"Pre-amp gain = " + str(pgain) + "\n\r");
 }
 
 

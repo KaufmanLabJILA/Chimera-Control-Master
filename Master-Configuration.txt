@@ -325,4 +325,4 @@ axialcoolpower 17.2885
 slmpowerfactor 1.92
 xmagic 1.5
 ymagic 0.436542
-815 930 1 875 955 1
+200 300 1 200 300 1

@@ -207,6 +207,9 @@
     <ClCompile Include="cnpy.cpp">
       <Filter>Constants, Externals, Etc.</Filter>
     </ClCompile>
+    <ClCompile Include="atomCruncher.cpp">
+      <Filter>Camera Window</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -485,6 +488,9 @@
     </ClInclude>
     <ClInclude Include="cnpy.h">
       <Filter>Constants, Externals, Etc.</Filter>
+    </ClInclude>
+    <ClInclude Include="atomCruncher.h">
+      <Filter>Camera Window</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

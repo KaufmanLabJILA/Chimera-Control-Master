@@ -97,6 +97,7 @@
 #define MOOG_SAFEMODE true
 #define AWG_SAFEMODE true
 #define GIGAMOOG_SAFEMODE true
+#define ATOMCRUNCHER_SAFEMODE true
 #define NIAWG_SAFEMODE true
 #define ANDOR_SAFEMODE false
 #define MAKO_SAFEMODE true

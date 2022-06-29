@@ -60,7 +60,7 @@ void DataLogger::initializeDataFiles()
 
 	// Create the string of the date.
 	std::string finalSaveFolder;
-	finalSaveFolder = yearStr + monthStr + dayStr + "\\";
+	finalSaveFolder = "chimera_ixon_tests_" + yearStr + monthStr + dayStr + "\\";
 
 	// right now the save folder IS the date...
 	currentSaveFolder = finalSaveFolder;

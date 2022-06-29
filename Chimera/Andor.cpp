@@ -33,8 +33,6 @@ AndorCamera::AndorCamera()
 	try
 	{
 		initialize();
-		setBaselineClamp(1);
-		//setBaselineOffset(0); //TODO: put this back?
 		setShutter(0, 5, 30, 30); //Shutter open for any series, 30ms open/close time.
 		setDMAParameters(1, 0.0001f);
 		// TODO: turn fan back off, fanmode 2
@@ -45,98 +43,6 @@ AndorCamera::AndorCamera()
 	{
 		errBox(err.what());
 	}
-	/*
-	//appendColoredText("Initializing......................... ", eRichEditMessageBoxRichEditHandle, IDC_RICH_EDIT_MESSAGE_BOX_RICH_EDIT_ID, defaultCharFormat,
-	//				  eInitializeDialogBoxHandle);
-	//initializationUpdate(errorMessage, defaultCharFormat, redCharFormat, greenCharFormat);
-	if (!ANDOR_SAFEMODE)
-	{
-		// Get camera eCameraCapabilities
-		//errorMessage = myAndor::andorErrorChecker(GetCapabilities(&eCameraCapabilities));
-	}
-	//eCameraCapabilities.
-	//appendColoredText("Get Andor Capabilities information... ", eRichEditMessageBoxRichEditHandle, IDC_RICH_EDIT_MESSAGE_BOX_RICH_EDIT_ID, defaultCharFormat,
-	//				  eInitializeDialogBoxHandle);
-	//initializationUpdate(errorMessage, defaultCharFormat, redCharFormat, greenCharFormat);
-	if (!ANDOR_SAFEMODE)
-	{
-		// Get Head Model
-		//errorMessage = myAndor::andorErrorChecker(GetHeadModel(eModel));
-	}
-	//appendColoredText("Get Head Model information........... ", eRichEditMessageBoxRichEditHandle, IDC_RICH_EDIT_MESSAGE_BOX_RICH_EDIT_ID, defaultCharFormat,
-	//				  eInitializeDialogBoxHandle);
-	//initializationUpdate(errorMessage, defaultCharFormat, redCharFormat, greenCharFormat);
-	if (!ANDOR_SAFEMODE)
-	{
-		// Get detector information
-		//errorMessage = myAndor::andorErrorChecker(GetDetector(&eXPixels, &eYPixels));
-	}
-	else
-	{
-		//eXPixels = 512;
-		//eYPixels = 512;
-	}
-	//appendColoredText("Get Detector information............. ", eRichEditMessageBoxRichEditHandle, IDC_RICH_EDIT_MESSAGE_BOX_RICH_EDIT_ID, defaultCharFormat,
-	//				  eInitializeDialogBoxHandle);
-	//initializationUpdate(errorMessage, defaultCharFormat, redCharFormat, greenCharFormat);
-	if (!ANDOR_SAFEMODE)
-	{
-		// Set Vertical speed to recommended
-		//GetFastestRecommendedVSSpeed(&eVerticalSpeedNumber, &speed);
-		//errorMessage = myAndor::andorErrorChecker(SetVSSpeed(eVerticalSpeedNumber));
-	}
-	//appendColoredText("Set Vertical Speed................... ", eRichEditMessageBoxRichEditHandle, IDC_RICH_EDIT_MESSAGE_BOX_RICH_EDIT_ID, defaultCharFormat,
-	//				  eInitializeDialogBoxHandle);
-	//initializationUpdate(errorMessage, defaultCharFormat, redCharFormat, greenCharFormat);
-	// Set Horizontal Speed to max
-	STemp = 0;
-	eHorizontalSpeedNumber = 0;
-	eADNumber = 0;
-	if (!ANDOR_SAFEMODE)
-	{
-		errorMessage = myAndor::andorErrorChecker(GetNumberADChannels(&nAD));
-	}
-	//appendColoredText("Get number AD Channel................ ", eRichEditMessageBoxRichEditHandle, IDC_RICH_EDIT_MESSAGE_BOX_RICH_EDIT_ID, defaultCharFormat,
-	//				  eInitializeDialogBoxHandle);
-	//initializationUpdate(errorMessage, defaultCharFormat, redCharFormat, greenCharFormat);
-	if (!ANDOR_SAFEMODE)
-	{
-		errorMessage = myAndor::andorErrorChecker(SetBaselineClamp(1));
-	}
-	//appendColoredText("Set Baseline Clamp................... ", eRichEditMessageBoxRichEditHandle, IDC_RICH_EDIT_MESSAGE_BOX_RICH_EDIT_ID, defaultCharFormat,
-					  eInitializeDialogBoxHandle);
-	//initializationUpdate(errorMessage, defaultCharFormat, redCharFormat, greenCharFormat);
-	if (!ANDOR_SAFEMODE)
-	{
-		errorMessage = myAndor::andorErrorChecker(SetBaselineOffset(0));
-	}
-	//appendColoredText("Set Baseline Offset Value............ ", eRichEditMessageBoxRichEditHandle, IDC_RICH_EDIT_MESSAGE_BOX_RICH_EDIT_ID, defaultCharFormat,
-					  eInitializeDialogBoxHandle);
-	//initializationUpdate(errorMessage, defaultCharFormat, redCharFormat, greenCharFormat);
-	if (!ANDOR_SAFEMODE)
-	{
-		// Setting this makes the camera ALWAYS send an image as soon as it receives it instead of waiting a couple images before notifying the computer.
-		// It does this wait if you don't set this and the images are taken very fast, e.g. < 15 ms.
-		errorMessage = myAndor::andorErrorChecker(SetDMAParameters(1, 0.0001));
-	}
-	/*
-	//appendColoredText("Set DMA Parameters................... ", eRichEditMessageBoxRichEditHandle, IDC_RICH_EDIT_MESSAGE_BOX_RICH_EDIT_ID, defaultCharFormat,
-					  eInitializeDialogBoxHandle);
-	//initializationUpdate(errorMessage, defaultCharFormat, redCharFormat, greenCharFormat);
-
-	if (!(*input->plotter).is_open())
-	{
-		errorMessage = "GNUPLOT didn't open correctly.";
-	}
-	else
-	{
-		errorMessage = "GOOD";
-	}
-	//appendColoredText("Opening GNUPLOT...................... ", eRichEditMessageBoxRichEditHandle, IDC_RICH_EDIT_MESSAGE_BOX_RICH_EDIT_ID, defaultCharFormat,
-	//				  eInitializeDialogBoxHandle);
-	//initializationUpdate(errorMessage, defaultCharFormat, redCharFormat, greenCharFormat);
-	*/
-
 
 }
 
@@ -301,7 +207,7 @@ void AndorCamera::armCamera(CameraWindow* camWin, double& minKineticCycleTime)
 	setADChannel(0); //changed to 0
 	if (runSettings.emGainModeIsOn)
 	{
-		setHSSpeed(0, 0);
+		setHSSpeed(0, 3); //note index = 3 is 1 MHz for our iXon
 	}
 	else
 	{
@@ -542,10 +448,10 @@ void AndorCamera::setCameraTriggerMode()
 void AndorCamera::setTemperature()
 {
 	// Get the current temperature
-	if (runSettings.temperatureSetting < -60 || runSettings.temperatureSetting > 25)
+	if (runSettings.temperatureSetting < -80 || runSettings.temperatureSetting > 25)
 	{
 		int answer = promptBox("Warning: The selected temperature is outside the normal temperature range of the "
-			"camera (-60 through 25 C). Proceed anyways?", MB_OKCANCEL);
+			"camera (-80 through 25 C). Proceed anyways?", MB_OKCANCEL);
 		if (answer == IDCANCEL)
 		{
 			return;
@@ -742,7 +648,7 @@ void AndorCamera::changeTemperatureSetting(bool turnTemperatureControlOff)
 	char aBuffer[256];
 	int minimumAllowedTemp, maximumAllowedTemp;
 	// the default, in case the program is in safemode.
-	minimumAllowedTemp = -60;
+	minimumAllowedTemp = -80;
 	maximumAllowedTemp = 25;
 	// clear buffer
 	wsprintf(aBuffer, "");
@@ -1271,6 +1177,20 @@ void AndorCamera::getTemperature(int& temp)
 	if (!ANDOR_SAFEMODE)
 	{
 		andorErrorChecker(GetTemperature(&temp));
+	}
+}
+
+int AndorCamera::getTemperatureCode()
+{
+	int temp = MAXINT;
+	int tempcode = MAXINT;
+	if (!ANDOR_SAFEMODE)
+	{
+		tempcode = GetTemperature(&temp);
+		return tempcode;
+	}
+	else {
+		return 0;
 	}
 }
 
