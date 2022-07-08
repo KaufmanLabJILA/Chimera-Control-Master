@@ -29,7 +29,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
   </PropertyGroup>
@@ -81,8 +81,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\klab\anaconda3\include;$(ProjectDir)\Packages\64-Bit-Libs\boost_1_64_0;$(IncludePath);$(ProjectDir)\Packages\64-Bit-Libs\Debug\HDF5-1.10.1-win64\include;C:\ProgramData\Anaconda3\include;C:\Program Files\Andor SDK3</IncludePath>
-    <LibraryPath>$(ProjectDir)\Packages\64-Bit-Libs\boost_1_64_0\lib-64bit;$(ProjectDir)\Packages\64-Bit-Libs\Debug\HDF5-1.10.1-win64\lib;$(ProjectDir)\Packages\64-Bit-Libs\Debug\Python;$(ProjectDir)\Packages\64-Bit-Libs\Release\Python;C:\Program Files\Andor SDK3;$(LibraryPath);C:\Program Files (x86)\National Instruments\Shared\ExternalCompilerSupport\C\lib64\msvc;C:\Users\klab\Anaconda3\libs;C:\ProgramData\Anaconda3\libs</LibraryPath>
+    <IncludePath>C:\Users\klab\anaconda3\include;B:\Yb heap\Experiment_code_Yb\Chimera-Control-Master\Chimera\Packages\64-Bit-Libs\boost_1_64_0;$(IncludePath);$(ProjectDir)\Packages\64-Bit-Libs\Debug\HDF5-1.10.1-win64\include;C:\Program Files\Andor SDK</IncludePath>
+    <LibraryPath>B:\Yb heap\Experiment_code_Yb\Chimera-Control-Master\Chimera\Packages\64-Bit-Libs\boost_1_64_0\lib-64bit;$(ProjectDir)\Packages\64-Bit-Libs\Debug\HDF5-1.10.1-win64\lib;$(ProjectDir)\Packages\64-Bit-Libs\Debug\Python;$(ProjectDir)\Packages\64-Bit-Libs\Release\Python;C:\Program Files\Andor SDK;$(LibraryPath);C:\Program Files (x86)\National Instruments\Shared\ExternalCompilerSupport\C\lib64\msvc;C:\Users\klab\anaconda3\libs</LibraryPath>
     <ExecutablePath>$(VC_ExecutablePath_x64);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(FxCopDir);$(PATH)</ExecutablePath>
     <ExcludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(MSBuild_ExecutablePath);$(VC_LibraryPath_x64);</ExcludePath>
   </PropertyGroup>
@@ -136,7 +136,7 @@
       <AdditionalLibraryDirectories>C:\Program Files\Andor SDK3</AdditionalLibraryDirectories>
       <TreatLinkerWarningAsErrors>
       </TreatLinkerWarningAsErrors>
-      <AdditionalDependencies>atmcd64m.lib;python36_d.lib;libhdf5_cpp_D.lib;libhdf5_D.lib;libzlib_D.lib;libszip_D.lib;NIDAQmx.lib;atcorem.lib;ftd2xx.lib</AdditionalDependencies>
+      <AdditionalDependencies>atmcd64m.lib;python36_d.lib;libhdf5_cpp_D.lib;libhdf5_D.lib;libzlib_D.lib;libszip_D.lib;NIDAQmx.lib;ftd2xx.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -190,16 +190,18 @@
     <ClInclude Include="AlertSystem.h" />
     <ClInclude Include="AndorRunSettings.h" />
     <ClInclude Include="ATMCD32D.H" />
-    <ClInclude Include="atomCruncherInput.h" />
+    <ClInclude Include="atomCruncher.h" />
     <ClInclude Include="atomGrid.h" />
     <ClInclude Include="awgCommand.h" />
     <ClInclude Include="beginningSettingsDialogProc.h" />
     <ClInclude Include="BoostAsyncSerial.h" />
+    <ClInclude Include="BoostUDP.h" />
     <ClInclude Include="CameraImageDimensions.h" />
     <ClInclude Include="cameraPositions.h" />
     <ClInclude Include="CameraSettingsControl.h" />
     <ClInclude Include="CameraWindow.h" />
     <ClInclude Include="cleanString.h" />
+    <ClInclude Include="cnpy.h" />
     <ClInclude Include="ColorBox.h" />
     <ClInclude Include="commonTypes.h" />
     <ClInclude Include="Communicator.h" />
@@ -207,6 +209,7 @@
     <ClInclude Include="DdsState.h" />
     <ClInclude Include="DDSStructures.h" />
     <ClInclude Include="DDSSystem.h" />
+    <ClInclude Include="DDS_SYNTH.h" />
     <ClInclude Include="DebugOptionsControl.h" />
     <ClInclude Include="Expression.h" />
     <ClInclude Include="fpgaawg.h" />
@@ -215,6 +218,7 @@
     <ClInclude Include="MessagePrinter.h" />
     <ClInclude Include="MessageSender.h" />
     <ClInclude Include="Messagetypes.h" />
+    <ClInclude Include="moveSequence.h" />
     <ClInclude Include="profileSettings.h" />
     <ClInclude Include="ProfileSystem.h" />
     <ClInclude Include="DacSettingsDialog.h" />
@@ -291,15 +295,19 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AlertSystem.cpp" />
+    <ClCompile Include="atomCruncher.cpp" />
     <ClCompile Include="beginningSettingsDialogProc.cpp" />
     <ClCompile Include="BoostAsyncSerial.cpp" />
+    <ClCompile Include="BoostUDP.cpp" />
     <ClCompile Include="CameraImageDimensions.cpp" />
     <ClCompile Include="CameraSettingsControl.cpp" />
     <ClCompile Include="CameraWindow.cpp" />
     <ClCompile Include="cleanString.cpp" />
+    <ClCompile Include="cnpy.cpp" />
     <ClCompile Include="ColorBox.cpp" />
     <ClCompile Include="Communicator.cpp" />
     <ClCompile Include="DDSSystem.cpp" />
+    <ClCompile Include="DDS_SYNTH.cpp" />
     <ClCompile Include="DebugOptionsControl.cpp" />
     <ClCompile Include="Expression.cpp" />
     <ClCompile Include="fpgaAWG.cpp" />

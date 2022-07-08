@@ -4,19 +4,16 @@
 #include "DacSystem.h"
 #include "DDSSystem.h"
 #include "VariableSystem.h"
-//#include "RhodeSchwarz.h"
 #include "GpibFlume.h"
 #include "DebugOptionsControl.h"
-//#include "Agilent.h"
 #include "EmbeddedPythonHandler.h"
 #include <chrono>
 #include <vector>
 #include <atomic>
 #include <condition_variable>
-#include "atomCruncherInput.h"
-//for moog test:
+#include "atomCruncher.h"
 #include "SerialSynth.h"
-//#include "DDS_SYNTH.h"
+#include "DDS_SYNTH.h"
 #include "GigaMoog.h"
 #include "fpgaAWG.h"
 
@@ -43,19 +40,15 @@ struct MasterThreadInput
 	DioSystem* ttls;
 	DacSystem* dacs;
 	DDSSystem* ddss;
+	DDS_SYNTH* dds;
 	UINT repetitionNumber;
 	std::vector<variableType> variables;
 	std::vector<variableType> constants;
 	MasterManager* thisObj;
 	std::string masterScriptAddress;
 	Communicator* comm;
-	//RhodeSchwarz* rsg;
 	debugInfo debugOptions;
-	//std::vector<Agilent*> agilents;
-	//TektronicsControl* topBottomTek;
-	//TektronicsControl* eoAxialTek;
 	VariableSystem* globalControl;
-	//NiawgController* niawg;
 	UINT intensityAgilentNumber;
 	bool quiet;
 	mainOptions settings;
@@ -78,10 +71,10 @@ struct MasterThreadInput
 struct ExperimentInput
 {
 	ExperimentInput::ExperimentInput() :
-		includesCameraRun(false), multipleExperiments(false), masterInput(NULL), plotterInput(NULL), cruncherInput(NULL) { };
+		includesCameraRun(false), masterInput(NULL), plotterInput(NULL), cruncherInput(NULL) { }
 	MasterThreadInput* masterInput;
 	realTimePlotterInput* plotterInput;
-	atomCruncherInput* cruncherInput;
+	atomCruncher* cruncherInput;
 	AndorRunSettings camSettings;
 	bool includesCameraRun;
 	bool multipleExperiments;

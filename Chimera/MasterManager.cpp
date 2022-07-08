@@ -147,6 +147,10 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 				input->ttls->checkFinalFormatTimes(variationInc);
 				input->dacs->checkTimingsWork(variationInc);
 
+				if (!DDS_SAFEMODE) {
+					input->dds->loadDDSScript(input->ddsScriptAddress);
+					input->dds->programDDS(input->dds, input->variables, variationInc);
+				}
 			}
 			//input->rsg->orderEvents( variationInc ); 
 		}

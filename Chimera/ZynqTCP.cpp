@@ -15,6 +15,10 @@ ZynqTCP::~ZynqTCP() {
 
 int ZynqTCP::sendWithCatch(const SOCKET& socket, const char* byte_buf, int buffLen, int flags)
 {
+	if (ZYNQ_SAFEMODE) {
+		return 0;
+	}
+
 	int BytesSent;
 	BytesSent = send(socket, byte_buf, buffLen, flags);
 	if (BytesSent == SOCKET_ERROR)

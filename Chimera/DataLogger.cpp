@@ -23,7 +23,7 @@ void DataLogger::deleteFile(Communicator* comm)
 		thrower("ERROR: Can't delete current h5 file, the h5 file is open!");
 	}
 	std::string fileAddress = dataFilesBaseLocation + currentSaveFolder + "\\Raw Data\\data_"
-		+ str( currentDataFileNumber ) + ".h5";
+		+ str(currentDataFileNumber) + ".h5";
 	int success = DeleteFile(cstr(fileAddress));
 	if (success == false)
 	{
@@ -31,7 +31,7 @@ void DataLogger::deleteFile(Communicator* comm)
 	}
 	else
 	{
-		comm->sendStatus( "Deleted h5 file located at \"" + fileAddress + "\"\r\n" );
+		comm->sendStatus("Deleted h5 file located at \"" + fileAddress + "\"\r\n");
 	}
 }
 
@@ -43,7 +43,7 @@ void DataLogger::initializeDataFiles()
 	/// First, create the folder for today's h5 data.
 	// Get the date and use it to set the folder where this data run will be saved.
 	// get time now
-	
+
 	time_t timeInt = time(0);
 	struct tm timeStruct;
 	localtime_s(&timeStruct, &timeInt);
@@ -60,33 +60,33 @@ void DataLogger::initializeDataFiles()
 
 	// Create the string of the date.
 	std::string finalSaveFolder;
-	finalSaveFolder = "Yb_" + yearStr + monthStr + dayStr + "\\";
+	finalSaveFolder = "chimera_ixon_tests_" + yearStr + monthStr + dayStr + "\\";
 
 	// right now the save folder IS the date...
 	currentSaveFolder = finalSaveFolder;
 	// create date's folder.
 	int result = 1;
 	struct stat info;
-	int resultStat = stat( cstr( dataFilesBaseLocation + finalSaveFolder ), &info );
+	int resultStat = stat(cstr(dataFilesBaseLocation + finalSaveFolder), &info);
 	if (resultStat != 0)
 	{
-		result = CreateDirectory( cstr( dataFilesBaseLocation + finalSaveFolder ), 0 );
+		result = CreateDirectory(cstr(dataFilesBaseLocation + finalSaveFolder), 0);
 	}
 	if (!result)
 	{
-		thrower( "ERROR: Failed to create save location for data at location " + dataFilesBaseLocation + finalSaveFolder +
-				 ". Make sure you have access to the jilafile or change the save location. Error: " + str(GetLastError()) 
-				 + "\r\n" );
+		thrower("ERROR: Failed to create save location for data at location " + dataFilesBaseLocation + finalSaveFolder +
+			". Make sure you have access to the jilafile or change the save location. Error: " + str(GetLastError())
+			+ "\r\n");
 	}
 	finalSaveFolder += "\\Raw Data";
-	resultStat = stat( cstr( dataFilesBaseLocation + finalSaveFolder ), &info );
+	resultStat = stat(cstr(dataFilesBaseLocation + finalSaveFolder), &info);
 	if (resultStat != 0)
 	{
-		result = CreateDirectory( cstr( dataFilesBaseLocation + finalSaveFolder ), 0 );
+		result = CreateDirectory(cstr(dataFilesBaseLocation + finalSaveFolder), 0);
 	}
 	if (!result)
 	{
-		thrower( "ERROR: Failed to create save location for data! Error: " + str( GetLastError() ) + "\r\n" );
+		thrower("ERROR: Failed to create save location for data! Error: " + str(GetLastError()) + "\r\n");
 	}
 	finalSaveFolder += "\\";
 	/// Get a filename appropriate for the data
@@ -98,7 +98,7 @@ void DataLogger::initializeDataFiles()
 	struct stat statBuffer;
 	// figure out the next file number
 	while ((stat(cstr(dataFilesBaseLocation + finalSaveFolder + "data_" + str(fileNum) + ".h5"),
-		   &statBuffer) == 0))
+		&statBuffer) == 0))
 	{
 		fileNum++;
 	}
@@ -106,32 +106,32 @@ void DataLogger::initializeDataFiles()
 	finalSaveFileName = "data_" + str(fileNum) + ".h5";
 	// update this, which is used later to move the key file.
 	currentDataFileNumber = fileNum;
-	
+
 	try
 	{
 		// create the file. H5F_ACC_TRUNC means it will overwrite files with the same name.
-		file = H5::H5File( cstr( dataFilesBaseLocation + finalSaveFolder + finalSaveFileName ), H5F_ACC_TRUNC );
-		H5::Group ttlsGroup( file.createGroup( "/TTLs" ) );
+		file = H5::H5File(cstr(dataFilesBaseLocation + finalSaveFolder + finalSaveFileName), H5F_ACC_TRUNC);
+		H5::Group ttlsGroup(file.createGroup("/TTLs"));
 		// initial settings
 		// list of commands
-		H5::Group dacsGroup( file.createGroup( "/DACs" ) );
+		H5::Group dacsGroup(file.createGroup("/DACs"));
 		// initial settings
 		// list of commands
-		H5::Group tektronicsGroup( file.createGroup( "/Tektronics" ) );
+		H5::Group tektronicsGroup(file.createGroup("/Tektronics"));
 		// mode, freq, power
-		H5::Group miscellaneousGroup( file.createGroup( "/Miscellaneous" ) );
-		time_t t = time( 0 );   // get time now
+		H5::Group miscellaneousGroup(file.createGroup("/Miscellaneous"));
+		time_t t = time(0);   // get time now
 		struct tm now;
-		localtime_s( &now, &t );
-		std::string dateString = str( now.tm_year + 1900 ) + "-" + str( now.tm_mon + 1 ) + "-" + str( now.tm_mday );
-		writeDataSet( dateString, "Run-Date", miscellaneousGroup );
-		std::string timeString = str( now.tm_hour) + ":" + str( now.tm_min) + ":" + str( now.tm_sec) + ":";
-		writeDataSet( timeString, "Time-Of-Logging", miscellaneousGroup );
+		localtime_s(&now, &t);
+		std::string dateString = str(now.tm_year + 1900) + "-" + str(now.tm_mon + 1) + "-" + str(now.tm_mday);
+		writeDataSet(dateString, "Run-Date", miscellaneousGroup);
+		std::string timeString = str(now.tm_hour) + ":" + str(now.tm_min) + ":" + str(now.tm_sec) + ":";
+		writeDataSet(timeString, "Time-Of-Logging", miscellaneousGroup);
 		fileIsOpen = true;
 	}
 	catch (H5::Exception err)
 	{
-		thrower( "ERROR: Failed to initialize HDF5 data file: " + err.getDetailMsg() );
+		thrower("ERROR: Failed to initialize HDF5 data file: " + err.getDetailMsg());
 	}
 }
 
@@ -193,95 +193,102 @@ void DataLogger::initializeDataFiles()
 //	}
 //}
 
-void DataLogger::logAndorSettings( AndorRunSettings settings, bool on)
+void DataLogger::logAndorSettings(AndorRunSettings settings, bool on, int nMask)
 {
 	try
 	{
-		if ( !on )
+		if (!on)
 		{
-			H5::Group andorGroup( file.createGroup( "/Andor:NA" ) );
+			H5::Group andorGroup(file.createGroup("/Andor:NA"));
 			return;
 		}
 		// in principle there are some other low level settings or things that aren't used very often which I could include 
 		// here. I'm gonna leave this for now though.
 
-		H5::Group andorGroup( file.createGroup( "/Andor" ) );
+		H5::Group andorGroup(file.createGroup("/Andor"));
 		hsize_t rank1[] = { 1 };
 		// pictures. These are permanent members of the class for speed during the writing process.	
-		hsize_t setDims[] = { ULONGLONG( settings.totalPicsInExperiment ), settings.imageSettings.width, settings.imageSettings.height };
+		hsize_t setDims[] = { ULONGLONG(settings.totalPicsInExperiment), settings.imageSettings.width, settings.imageSettings.height };
 		hsize_t picDims[] = { 1, settings.imageSettings.width, settings.imageSettings.height };
-		picureSetDataSpace = H5::DataSpace( 3, setDims );
-		picDataSpace = H5::DataSpace( 3, picDims );
-		pictureDataset = andorGroup.createDataSet( "Pictures", H5::PredType::NATIVE_LONG, picureSetDataSpace );
-		writeDataSet( settings.cameraMode, "Camera-Mode", andorGroup );
-		writeDataSet( settings.exposureTime, "Exposure-Times", andorGroup );
-		writeDataSet( settings.triggerMode, "Trigger-Mode", andorGroup );
-		writeDataSet( settings.emGainModeIsOn, "EM-Gain-Mode-On", andorGroup );
-		if ( settings.emGainModeIsOn )
+		picureSetDataSpace = H5::DataSpace(3, setDims); //single repetition
+		picDataSpace = H5::DataSpace(3, picDims); //single picture
+		pictureDataset = andorGroup.createDataSet("Pictures", H5::PredType::NATIVE_LONG, picureSetDataSpace); //full experiment
+
+		hsize_t atomArraySetDims[] = { ULONGLONG(settings.totalPicsInExperiment), nMask }; //single repetition
+		hsize_t atomArrayDims[] = { 1,  nMask };
+		atomArraySetDataSpace = H5::DataSpace(2, atomArraySetDims); //single repetition
+		atomArrayDataSpace = H5::DataSpace(2, atomArrayDims); //single picture
+		atomArrayDataset = andorGroup.createDataSet("Processed-Pictures", H5::PredType::NATIVE_LONG, atomArraySetDataSpace); //full experiment
+
+		writeDataSet(settings.cameraMode, "Camera-Mode", andorGroup);
+		writeDataSet(settings.exposureTimes, "Exposure-Times", andorGroup);
+		writeDataSet(settings.triggerMode, "Trigger-Mode", andorGroup);
+		writeDataSet(settings.emGainModeIsOn, "EM-Gain-Mode-On", andorGroup);
+		if (settings.emGainModeIsOn)
 		{
-			writeDataSet( settings.emGainLevel, "EM-Gain-Level", andorGroup );
+			writeDataSet(settings.emGainLevel, "EM-Gain-Level", andorGroup);
 		}
 		else
 		{
-			writeDataSet( -1, "NA:EM-Gain-Level", andorGroup );
+			writeDataSet(-1, "NA:EM-Gain-Level", andorGroup);
 		}
 		// image settings
-		H5::Group imageDims = andorGroup.createGroup( "Image-Dimensions" );
-		writeDataSet( settings.imageSettings.top, "Top", andorGroup );
-		writeDataSet( settings.imageSettings.bottom, "Bottom", andorGroup );
-		writeDataSet( settings.imageSettings.left, "Left", andorGroup );
-		writeDataSet( settings.imageSettings.right, "Right", andorGroup );
-		writeDataSet( settings.imageSettings.horizontalBinning, "Horizontal-Binning", andorGroup );
-		writeDataSet( settings.imageSettings.verticalBinning, "Vertical-Binning", andorGroup );
-		writeDataSet( settings.temperatureSetting, "Temperature-Setting", andorGroup );
-		writeDataSet( settings.picsPerRepetition, "Pictures-Per-Repetition", andorGroup );
-		writeDataSet( settings.repetitionsPerVariation, "Repetitions-Per-Variation", andorGroup );
-		writeDataSet( settings.totalVariations, "Total-Variation-Number", andorGroup );
+		H5::Group imageDims = andorGroup.createGroup("Image-Dimensions");
+		writeDataSet(settings.imageSettings.top, "Top", andorGroup);
+		writeDataSet(settings.imageSettings.bottom, "Bottom", andorGroup);
+		writeDataSet(settings.imageSettings.left, "Left", andorGroup);
+		writeDataSet(settings.imageSettings.right, "Right", andorGroup);
+		writeDataSet(settings.imageSettings.horizontalBinning, "Horizontal-Binning", andorGroup);
+		writeDataSet(settings.imageSettings.verticalBinning, "Vertical-Binning", andorGroup);
+		writeDataSet(settings.temperatureSetting, "Temperature-Setting", andorGroup);
+		writeDataSet(settings.picsPerRepetition, "Pictures-Per-Repetition", andorGroup);
+		writeDataSet(settings.repetitionsPerVariation, "Repetitions-Per-Variation", andorGroup);
+		writeDataSet(settings.totalVariations, "Total-Variation-Number", andorGroup);
 	}
-	catch ( H5::Exception err )
+	catch (H5::Exception err)
 	{
-		thrower( "ERROR: Failed to log andor parameters in HDF5 file: " + err.getDetailMsg( ) );
+		thrower("ERROR: Failed to log andor parameters in HDF5 file: " + err.getDetailMsg());
 	}
 }
 
 
-void DataLogger::logMasterParameters( MasterThreadInput* input )
+void DataLogger::logMasterParameters(MasterThreadInput* input)
 {
 	try
 	{
-		if ( input == NULL )
+		if (input == NULL)
 		{
-			H5::Group runParametersGroup( file.createGroup( "/Master-Parameters:NA" ) );
+			H5::Group runParametersGroup(file.createGroup("/Master-Parameters:NA"));
 			return;
 		}
-		H5::Group runParametersGroup( file.createGroup( "/Master-Parameters" ) );
-		writeDataSet( input->runMaster, "Run-Master", runParametersGroup );
+		H5::Group runParametersGroup(file.createGroup("/Master-Parameters"));
+		writeDataSet(input->runMaster, "Run-Master", runParametersGroup);
 		writeDataSet(input->repetitionNumber, "Repetitions", runParametersGroup);
 		logVariables(input->variables, runParametersGroup);
 
-		if ( input->runMaster )
+		if (input->runMaster)
 		{
-			std::ifstream masterScript( input->masterScriptAddress );
-			if ( !masterScript.is_open( ) )
+			std::ifstream masterScript(input->masterScriptAddress);
+			if (!masterScript.is_open())
 			{
-				thrower( "ERROR: Failed to load master script!" );
+				thrower("ERROR: Failed to load master script!");
 			}
-			std::string scriptBuf( str( masterScript.rdbuf( ) ) );
-			writeDataSet( scriptBuf, "Master-Script", runParametersGroup);
-			writeDataSet( input->masterScriptAddress, "Master-Script-File-Address", runParametersGroup );
+			std::string scriptBuf(str(masterScript.rdbuf()));
+			writeDataSet(scriptBuf, "Master-Script", runParametersGroup);
+			writeDataSet(input->masterScriptAddress, "Master-Script-File-Address", runParametersGroup);
 		}
 		else
 		{
-			writeDataSet( "", "NA:Master-Script", runParametersGroup );
-			writeDataSet( "", "NA:Master-Script-File-Address", runParametersGroup );
+			writeDataSet("", "NA:Master-Script", runParametersGroup);
+			writeDataSet("", "NA:Master-Script-File-Address", runParametersGroup);
 		}
 		logFunctions(runParametersGroup);
 		//logNiawgSettings( input );
 		//logAgilentSettings( input->agilents );
 	}
-	catch ( H5::Exception& err )
+	catch (H5::Exception& err)
 	{
-		thrower( "ERROR: Failed to log master parameters in HDF5 file: detail:" + err.getDetailMsg( ) );
+		thrower("ERROR: Failed to log master parameters in HDF5 file: detail:" + err.getDetailMsg());
 	}
 }
 
@@ -325,39 +332,96 @@ void DataLogger::logFunctions(H5::Group& group)
 	}
 }
 
-//void DataLogger::logMoogParameters(MasterThreadInput* input)
-//{
-//	try
-//	{
-//		if (input == NULL)
-//		{
-//			H5::Group runParametersGroup(file.createGroup("/Moog-Parameters:NA"));
-//			return;
-//		}
-//		H5::Group runParametersGroup(file.createGroup("/Moog-Parameters"));
-//		writeDataSet(input->runMoog, "Run-Moog", runParametersGroup);
-//		if (input->runMoog)
-//		{
-//			std::ifstream moogScript(input->moogScriptAddress);
-//			if (!moogScript.is_open())
-//			{
-//				thrower("ERROR: Failed to load Moog script!");
-//			}
-//			std::string scriptBuf(str(moogScript.rdbuf()));
-//			writeDataSet(scriptBuf, "Moog-Script", runParametersGroup);
-//			writeDataSet(input->moogScriptAddress, "Moog-Script-File-Address", runParametersGroup);
-//		}
-//		else
-//		{
-//			writeDataSet("", "NA:Moog-Script", runParametersGroup);
-//			writeDataSet("", "NA:Moog-Script-File-Address", runParametersGroup);
-//		}
-//	}
-//	catch (H5::Exception& err)
-//	{
-//		thrower("ERROR: Failed to log Moog parameters in HDF5 file: detail:" + err.getDetailMsg());
-//	}
-//}
+void DataLogger::logDDSParameters(MasterThreadInput* input)
+{
+	try
+	{
+		if (input == NULL)
+		{
+			H5::Group runParametersGroup(file.createGroup("/DDS-Parameters:NA"));
+			return;
+		}
+		H5::Group runParametersGroup(file.createGroup("/DDS-Parameters"));
+		writeDataSet(input->runMaster, "Run-DDS", runParametersGroup);
+		if (input->runMaster)
+		{
+			std::ifstream ddsScript(input->ddsScriptAddress);
+			if (!ddsScript.is_open())
+			{
+				thrower("ERROR: Failed to load DDS script!");
+			}
+			std::string scriptBuf(str(ddsScript.rdbuf()));
+			writeDataSet(scriptBuf, "DDS-Script", runParametersGroup);
+			writeDataSet(input->ddsScriptAddress, "DDS-Script-File-Address", runParametersGroup);
+		}
+		else
+		{
+			writeDataSet("", "NA:DDS-Script", runParametersGroup);
+			writeDataSet("", "NA:DDS-Script-File-Address", runParametersGroup);
+		}
+	}
+	catch (H5::Exception& err)
+	{
+		thrower("ERROR: Failed to log DDS parameters in HDF5 file: detail:" + err.getDetailMsg());
+	}
+}
+
+void DataLogger::logGmoogParameters(MasterThreadInput* input)
+{
+	try
+	{
+		if (input == NULL)
+		{
+			H5::Group runParametersGroup(file.createGroup("/Gmoog-Parameters:NA"));
+			return;
+		}
+		H5::Group runParametersGroup(file.createGroup("/Gmoog-Parameters"));
+		//H5::Group tweezerAutoOffsetGroup(file.createGroup("/Tweezer-auto-offset"));
+
+		writeDataSet(!MOOG_SAFEMODE, "Run-Gmoog", runParametersGroup);
+		if (!MOOG_SAFEMODE)
+		{
+			std::ifstream gmoogScript(input->gmoogScriptAddress);
+			if (!gmoogScript.is_open())
+			{
+				thrower("ERROR: Failed to load Gmoog script!");
+			}
+			std::string scriptBuf(str(gmoogScript.rdbuf()));
+			writeDataSet(scriptBuf, "Gmoog-Script", runParametersGroup);
+			writeDataSet(input->gmoogScriptAddress, "Gmoog-Script-File-Address", runParametersGroup);
+			writeDataSet(input->gmoog->autoTweezerOffsetActive, "auto-offset-active", runParametersGroup);
+			//writeDataSet(input->gmoog->xOffsetAuto, "x-auto-offset-MHz", tweezerAutoOffsetGroup);
+			//writeDataSet(input->gmoog->yOffsetAuto, "y-auto-offset-MHz", tweezerAutoOffsetGroup);
+		}
+		else
+		{
+			writeDataSet("", "NA:Gmoog-Script", runParametersGroup);
+			writeDataSet("", "NA:Gmoog-Script-File-Address", runParametersGroup);
+		}
+	}
+	catch (H5::Exception& err)
+	{
+		thrower("ERROR: Failed to log Gmoog parameters in HDF5 file: detail:" + err.getDetailMsg());
+	}
+}
+
+void DataLogger::logTweezerOffsets(std::vector<double> xOffsetAuto, std::vector<double> yOffsetAuto)
+{
+	if (fileIsOpen == false)
+	{
+		thrower("Tried to write to h5 file, but the file is closed!\r\n");
+	}
+	H5::Group tweezerAutoOffsetGroup(file.createGroup("/Tweezer-auto-offset"));
+	try
+	{
+		writeDataSet(xOffsetAuto, "x-auto-offset-MHz", tweezerAutoOffsetGroup);
+		writeDataSet(yOffsetAuto, "y-auto-offset-MHz", tweezerAutoOffsetGroup);
+	}
+	catch (H5::Exception& err)
+	{
+		thrower("Failed to write data to HDF5 file! Error: " + str(err.getDetailMsg()) + "\n");
+	}
+}
 
 void DataLogger::logAWGParameters(MasterThreadInput* input)
 {
@@ -375,7 +439,7 @@ void DataLogger::logAWGParameters(MasterThreadInput* input)
 			std::ifstream awgScript(input->awgScriptAddress);
 			if (!awgScript.is_open())
 			{
-				thrower("ERROR: Failed to load Moog script!");
+				thrower("ERROR: Failed to load AWG script!");
 			}
 			std::string scriptBuf(str(awgScript.rdbuf()));
 			writeDataSet(scriptBuf, "AWG-Script", runParametersGroup);
@@ -393,21 +457,21 @@ void DataLogger::logAWGParameters(MasterThreadInput* input)
 	}
 }
 
-void DataLogger::logVariables( const std::vector<variableType>& variables, H5::Group& group )
+void DataLogger::logVariables(const std::vector<variableType>& variables, H5::Group& group)
 {
-	H5::Group variableGroup = group.createGroup( "Variables" );
-	for ( auto& variable : variables )
+	H5::Group variableGroup = group.createGroup("Variables");
+	for (auto& variable : variables)
 	{
 		H5::DataSet varSet;
-		if ( variable.constant )
+		if (variable.constant)
 		{
-			varSet = writeDataSet( variable.ranges.front( ).initialValue, variable.name, variableGroup );
+			varSet = writeDataSet(variable.ranges.front().initialValue, variable.name, variableGroup);
 		}
 		else
 		{
-			varSet = writeDataSet( variable.keyValues, variable.name, variableGroup );
+			varSet = writeDataSet(variable.keyValues, variable.name, variableGroup);
 		}
-		writeAttribute( variable.constant, "Constant", varSet );
+		writeAttribute(variable.constant, "Constant", varSet);
 	}
 }
 
@@ -419,13 +483,35 @@ void DataLogger::writePic(UINT currentPictureNumber, std::vector<long> image, im
 	}
 	// MUST initialize status
 	// starting coordinates of write area in the h5 file of the array of picture data points.
-	hsize_t offset[] = { currentPictureNumber-1, 0, 0 };
+	hsize_t offset[] = { currentPictureNumber - 1, 0, 0 };
 	hsize_t slabdim[3] = { 1, dims.width, dims.height };
-	std::vector<long> im( image.size(), 0 );
+	std::vector<long> im(image.size(), 0);
 	try
 	{
-		picureSetDataSpace.selectHyperslab( H5S_SELECT_SET, slabdim, offset );
-		pictureDataset.write( image.data(), H5::PredType::NATIVE_LONG, picDataSpace, picureSetDataSpace );
+		picureSetDataSpace.selectHyperslab(H5S_SELECT_SET, slabdim, offset);
+		pictureDataset.write(image.data(), H5::PredType::NATIVE_LONG, picDataSpace, picureSetDataSpace);
+	}
+	catch (H5::Exception& err)
+	{
+		thrower("Failed to write data to HDF5 file! Error: " + str(err.getDetailMsg()) + "\n");
+	}
+}
+
+void DataLogger::writeAtomArray(UINT currentPictureNumber, std::vector<UINT8> atomArray) //std::vector<bool> has different handling I don't want to deal with.
+{
+	if (fileIsOpen == false)
+	{
+		thrower("Tried to write to h5 file, but the file is closed!\r\n");
+	}
+	// MUST initialize status
+	// starting coordinates of write area in the h5 file of the array of picture data points.
+	hsize_t offset[] = { currentPictureNumber - 1, 0 };
+	hsize_t slabdim[2] = { 1, atomArray.size() };
+	std::vector<long> im(atomArray.size(), 0);
+	try
+	{
+		atomArraySetDataSpace.selectHyperslab(H5S_SELECT_SET, slabdim, offset);
+		atomArrayDataset.write(atomArray.data(), H5::PredType::NATIVE_UINT8, atomArrayDataSpace, atomArraySetDataSpace);
 	}
 	catch (H5::Exception& err)
 	{
@@ -448,7 +534,9 @@ void DataLogger::closeFile()
 		return;
 	}
 	picureSetDataSpace.close();
-	pictureDataset.close();	
+	pictureDataset.close();
+	atomArraySetDataSpace.close();
+	atomArrayDataset.close();
 	file.close();
 	fileIsOpen = false;
 }
@@ -456,7 +544,7 @@ void DataLogger::closeFile()
 
 UINT DataLogger::getNextFileNumber()
 {
-	return currentDataFileNumber+1;
+	return currentDataFileNumber + 1;
 }
 
 
@@ -494,171 +582,170 @@ int DataLogger::getDataFileNumber()
 //}
 
 
-H5::DataSet DataLogger::writeDataSet( bool data, std::string name, H5::Group& group )
+H5::DataSet DataLogger::writeDataSet(bool data, std::string name, H5::Group& group)
 {
 	try
 	{
 		hsize_t rank1[] = { 1 };
-		H5::DataSet dset = group.createDataSet( cstr( name ), H5::PredType::NATIVE_HBOOL, H5::DataSpace( 1, rank1 ) );
-		dset.write( &data, H5::PredType::NATIVE_HBOOL );
+		H5::DataSet dset = group.createDataSet(cstr(name), H5::PredType::NATIVE_HBOOL, H5::DataSpace(1, rank1));
+		dset.write(&data, H5::PredType::NATIVE_HBOOL);
 		return dset;
 	}
-	catch ( H5::Exception& err )
+	catch (H5::Exception& err)
 	{
-		thrower( "ERROR: error while writing bool data set to H5 File. bool was " + str( data ) 
-				 + ". Dataset name was " + name + ". Error was :\r\n" + err.getDetailMsg( ) );
+		thrower("ERROR: error while writing bool data set to H5 File. bool was " + str(data)
+			+ ". Dataset name was " + name + ". Error was :\r\n" + err.getDetailMsg());
 	}
 }
 
 
-H5::DataSet DataLogger::writeDataSet( ULONGLONG data, std::string name, H5::Group& group )
+H5::DataSet DataLogger::writeDataSet(ULONGLONG data, std::string name, H5::Group& group)
 {
 	try
 	{
 		hsize_t rank1[] = { 1 };
-		H5::DataSet dset = group.createDataSet( cstr( name ), H5::PredType::NATIVE_ULLONG, H5::DataSpace( 1, rank1 ) );
-		dset.write( &data, H5::PredType::NATIVE_ULLONG );
+		H5::DataSet dset = group.createDataSet(cstr(name), H5::PredType::NATIVE_ULLONG, H5::DataSpace(1, rank1));
+		dset.write(&data, H5::PredType::NATIVE_ULLONG);
 		return dset;
 	}
-	catch ( H5::Exception& err )
+	catch (H5::Exception& err)
 	{
-		thrower( "ERROR: error while writing uint data set to H5 File. uint was " + str( data )
-				 + ". Dataset name was " + name + ". Error was :\r\n" + err.getDetailMsg( ) );
+		thrower("ERROR: error while writing uint data set to H5 File. uint was " + str(data)
+			+ ". Dataset name was " + name + ". Error was :\r\n" + err.getDetailMsg());
 	}
 }
 
 
-H5::DataSet DataLogger::writeDataSet( UINT data, std::string name, H5::Group& group )
+H5::DataSet DataLogger::writeDataSet(UINT data, std::string name, H5::Group& group)
 {
 	try
 	{
 		hsize_t rank1[] = { 1 };
-		H5::DataSet dset = group.createDataSet( cstr( name ), H5::PredType::NATIVE_UINT, H5::DataSpace( 1, rank1 ) );
-		dset.write( &data, H5::PredType::NATIVE_UINT );
+		H5::DataSet dset = group.createDataSet(cstr(name), H5::PredType::NATIVE_UINT, H5::DataSpace(1, rank1));
+		dset.write(&data, H5::PredType::NATIVE_UINT);
 		return dset;
 	}
-	catch ( H5::Exception& err )
+	catch (H5::Exception& err)
 	{
-		thrower( "ERROR: error while writing uint data set to H5 File. uint was " + str( data ) 
-				 + ". Dataset name was " + name + ". Error was :\r\n" + err.getDetailMsg( ) );
+		thrower("ERROR: error while writing uint data set to H5 File. uint was " + str(data)
+			+ ". Dataset name was " + name + ". Error was :\r\n" + err.getDetailMsg());
 	}
 }
 
 
-H5::DataSet DataLogger::writeDataSet( int data, std::string name, H5::Group& group )
+H5::DataSet DataLogger::writeDataSet(int data, std::string name, H5::Group& group)
 {
 	try
 	{
 		hsize_t rank1[] = { 1 };
-		H5::DataSet dset = group.createDataSet( cstr( name ), H5::PredType::NATIVE_INT, H5::DataSpace( 1, rank1 ) );
-		dset.write( &data, H5::PredType::NATIVE_INT );
+		H5::DataSet dset = group.createDataSet(cstr(name), H5::PredType::NATIVE_INT, H5::DataSpace(1, rank1));
+		dset.write(&data, H5::PredType::NATIVE_INT);
 		return dset;
 	}
-	catch ( H5::Exception& err )
+	catch (H5::Exception& err)
 	{
-		thrower( "ERROR: error while writing int data set to H5 File. int was " + str( data ) 
-				 + ". Dataset name was " + name + ". Error was :\r\n" + err.getDetailMsg( ) );
+		thrower("ERROR: error while writing int data set to H5 File. int was " + str(data)
+			+ ". Dataset name was " + name + ". Error was :\r\n" + err.getDetailMsg());
 	}
 }
 
 
-H5::DataSet DataLogger::writeDataSet( double data, std::string name, H5::Group& group )
+H5::DataSet DataLogger::writeDataSet(double data, std::string name, H5::Group& group)
 {
 	try
 	{
 		hsize_t rank1[] = { 1 };
-		H5::DataSet dset = group.createDataSet( cstr( name ), H5::PredType::NATIVE_DOUBLE, H5::DataSpace( 1, rank1 ) );
-		dset.write( &data, H5::PredType::NATIVE_DOUBLE );
+		H5::DataSet dset = group.createDataSet(cstr(name), H5::PredType::NATIVE_DOUBLE, H5::DataSpace(1, rank1));
+		dset.write(&data, H5::PredType::NATIVE_DOUBLE);
 		return dset;
 	}
-	catch ( H5::Exception& err )
+	catch (H5::Exception& err)
 	{
-		thrower( "ERROR: error while writing double data set to H5 File. double was " + str(data) + ". Dataset name was " + name + ". Error was :\r\n" + err.getDetailMsg( ) );
+		thrower("ERROR: error while writing double data set to H5 File. double was " + str(data) + ". Dataset name was " + name + ". Error was :\r\n" + err.getDetailMsg());
 	}
 }
 
 
-H5::DataSet DataLogger::writeDataSet( std::vector<float> dataVec, std::string name, H5::Group& group )
+H5::DataSet DataLogger::writeDataSet(std::vector<float> dataVec, std::string name, H5::Group& group)
 {
 	try
 	{
 		hsize_t rank1[] = { 1 };
-		rank1[0] = dataVec.size( );
-		H5::DataSet dset = group.createDataSet( cstr( name ), H5::PredType::NATIVE_FLOAT, H5::DataSpace( 1, rank1 ) );
+		rank1[0] = dataVec.size();
+		H5::DataSet dset = group.createDataSet(cstr(name), H5::PredType::NATIVE_FLOAT, H5::DataSpace(1, rank1));
 		// get from the key file
-		dset.write( dataVec.data( ), H5::PredType::NATIVE_FLOAT );
+		dset.write(dataVec.data(), H5::PredType::NATIVE_FLOAT);
 		return dset;
 	}
-	catch ( H5::Exception& err )
+	catch (H5::Exception& err)
 	{
-		thrower( "ERROR: error while writing double float data set to H5 File. Dataset name was " + name
-				 + ". Error was :\r\n" + err.getDetailMsg( ) );
+		thrower("ERROR: error while writing double float data set to H5 File. Dataset name was " + name
+			+ ". Error was :\r\n" + err.getDetailMsg());
 	}
 }
 
 
-H5::DataSet DataLogger::writeDataSet( std::vector<double> dataVec, std::string name, H5::Group& group )
+H5::DataSet DataLogger::writeDataSet(std::vector<double> dataVec, std::string name, H5::Group& group)
 {
 	try
 	{
 		hsize_t rank1[] = { 1 };
-		rank1[0] = dataVec.size( );
-		H5::DataSet dset = group.createDataSet( cstr( name ), H5::PredType::NATIVE_DOUBLE, H5::DataSpace( 1, rank1 ) );
+		rank1[0] = dataVec.size();
+		H5::DataSet dset = group.createDataSet(cstr(name), H5::PredType::NATIVE_DOUBLE, H5::DataSpace(1, rank1));
 		// get from the key file
-		dset.write( dataVec.data( ), H5::PredType::NATIVE_DOUBLE );
+		dset.write(dataVec.data(), H5::PredType::NATIVE_DOUBLE);
 		return dset;
 	}
-	catch ( H5::Exception& err )
+	catch (H5::Exception& err)
 	{
-		thrower( "ERROR: error while writing double vector data set to H5 File. Dataset name was " + name
-				 + ". Error was :\r\n" + err.getDetailMsg( ) );
+		thrower("ERROR: error while writing double vector data set to H5 File. Dataset name was " + name
+			+ ". Error was :\r\n" + err.getDetailMsg());
 	}
 }
 
 
-H5::DataSet DataLogger::writeDataSet( std::string data, std::string name, H5::Group& group )
+H5::DataSet DataLogger::writeDataSet(std::string data, std::string name, H5::Group& group)
 {
 	try
 	{
-		hsize_t rank1[] = { data.length( ) };
-		H5::DataSet dset = group.createDataSet( cstr( name ), H5::PredType::C_S1, H5::DataSpace( 1, rank1 ) );
-		dset.write( cstr( data ), H5::PredType::C_S1 );
+		hsize_t rank1[] = { data.length() };
+		H5::DataSet dset = group.createDataSet(cstr(name), H5::PredType::C_S1, H5::DataSpace(1, rank1));
+		dset.write(cstr(data), H5::PredType::C_S1);
 		return dset;
 	}
-	catch ( H5::Exception& err )
+	catch (H5::Exception& err)
 	{
-		thrower( "ERROR: error while writing string data set to H5 File. String was " + data 
-				 + ". Dataset name was " + name + ". Error was :\r\n" + err.getDetailMsg( ) );
+		thrower("ERROR: error while writing string data set to H5 File. String was " + data
+			+ ". Dataset name was " + name + ". Error was :\r\n" + err.getDetailMsg());
 	}
 }
 
-void DataLogger::writeAttribute( double data, std::string name, H5::DataSet& dset )
+void DataLogger::writeAttribute(double data, std::string name, H5::DataSet& dset)
 {
 	try
 	{
 		hsize_t rank1[] = { 1 };
-		H5::Attribute attr = dset.createAttribute( cstr( name ), H5::PredType::NATIVE_DOUBLE, H5::DataSpace( 1, rank1 ) );
-		attr.write( H5::PredType::NATIVE_DOUBLE, &data );
+		H5::Attribute attr = dset.createAttribute(cstr(name), H5::PredType::NATIVE_DOUBLE, H5::DataSpace(1, rank1));
+		attr.write(H5::PredType::NATIVE_DOUBLE, &data);
 	}
-	catch ( H5::Exception& err )
+	catch (H5::Exception& err)
 	{
-		thrower( "ERROR: error while writing bool attribute to H5 File. bool was " + str( data )
-				 + ". Dataset name was " + name + ". Error was :\r\n" + err.getDetailMsg( ) );
+		thrower("ERROR: error while writing bool attribute to H5 File. bool was " + str(data)
+			+ ". Dataset name was " + name + ". Error was :\r\n" + err.getDetailMsg());
 	}
 }
 
-void DataLogger::writeAttribute( bool data, std::string name, H5::DataSet& dset )
+void DataLogger::writeAttribute(bool data, std::string name, H5::DataSet& dset)
 {
 	try
 	{
 		hsize_t rank1[] = { 1 };
-		H5::Attribute attr = dset.createAttribute( cstr(name), H5::PredType::NATIVE_HBOOL, H5::DataSpace( 1, rank1 ) );
-		attr.write( H5::PredType::NATIVE_HBOOL, &data);
+		H5::Attribute attr = dset.createAttribute(cstr(name), H5::PredType::NATIVE_HBOOL, H5::DataSpace(1, rank1));
+		attr.write(H5::PredType::NATIVE_HBOOL, &data);
 	}
-	catch ( H5::Exception& err )
+	catch (H5::Exception& err)
 	{
-		thrower( "ERROR: error while writing bool attribute to H5 File. bool was " + str(data)
-				 + ". Dataset name was " + name + ". Error was :\r\n" + err.getDetailMsg( ) );
+		thrower("ERROR: error while writing bool attribute to H5 File. bool was " + str(data)
+			+ ". Dataset name was " + name + ". Error was :\r\n" + err.getDetailMsg());
 	}
 }
-

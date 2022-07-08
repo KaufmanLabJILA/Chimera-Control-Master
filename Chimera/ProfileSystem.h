@@ -28,7 +28,7 @@ public:
 	void allSettingsReadyCheck(ScriptingWindow* scriptWindow, MainWindow* mainWin, AuxiliaryWindow* auxWin,
 		CameraWindow* camWin);
 	std::string getMasterAddressFromConfig();
-	//std::string getMoogAddressFromConfig();
+	std::string getDdsAddressFromConfig();
 	std::string getAWGAddressFromConfig();
 	std::string getGmoogAddressFromConfig();
 	void saveSequence();

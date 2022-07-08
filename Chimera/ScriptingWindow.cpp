@@ -24,6 +24,7 @@ BEGIN_MESSAGE_MAP(ScriptingWindow, CDialog)
 	ON_EN_CHANGE(IDC_AWG_EDIT, &ScriptingWindow::awgEditChange)
 	ON_EN_CHANGE(IDC_GMOOG_EDIT, &ScriptingWindow::gmoogEditChange)
 	ON_EN_CHANGE(IDC_MASTER_EDIT, &ScriptingWindow::masterEditChange)
+	ON_EN_CHANGE(IDC_DDS_EDIT, &ScriptingWindow::ddsEditChange)
 
 	ON_COMMAND(IDOK, &ScriptingWindow::catchEnter)
 
@@ -82,20 +83,23 @@ void ScriptingWindow::catchEnter()
 void ScriptingWindow::OnSize(UINT nType, int cx, int cy)
 {
 	SetRedraw(false);
-	//moogScript.rearrange(cx, cy, mainWindowFriend->getFonts());
+
 	awgScript.rearrange(cx, cy, mainWindowFriend->getFonts());
 	gmoogScript.rearrange(cx, cy, mainWindowFriend->getFonts());
+	ddsScript.rearrange(cx, cy, mainWindowFriend->getFonts());
 	masterScript.rearrange(cx, cy, mainWindowFriend->getFonts());
 	statusBox.rearrange(cx, cy, mainWindowFriend->getFonts());
 	profileDisplay.rearrange(cx, cy, mainWindowFriend->getFonts());
-	//moogScript.colorEntireScript(auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(),
-	//	auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames());
+
 	awgScript.colorEntireScript(auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(),
 		auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames());
 	gmoogScript.colorEntireScript(auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(),
 		auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames());
+	ddsScript.colorEntireScript(auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(),
+		auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames());
 	masterScript.colorEntireScript(auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(),
 		auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames());
+
 	SetRedraw(true);
 	RedrawWindow();
 }
@@ -105,9 +109,9 @@ BOOL ScriptingWindow::OnToolTipText(UINT id, NMHDR * pNMHDR, LRESULT * pResult)
 {
 	try
 	{
-		//moogScript.handleToolTip(pNMHDR, pResult);
 		awgScript.handleToolTip(pNMHDR, pResult);
 		gmoogScript.handleToolTip(pNMHDR, pResult);
+		ddsScript.handleToolTip(pNMHDR, pResult);
 		masterScript.handleToolTip(pNMHDR, pResult);
 	}
 	catch (Error&)
@@ -128,10 +132,6 @@ BOOL ScriptingWindow::PreTranslateMessage(MSG* pMsg)
 	return CDialog::PreTranslateMessage(pMsg);
 }
 
-//void ScriptingWindow::handleMoogScriptComboChange()
-//{
-//	//verticalNiawgScript.childComboChangeHandler( mainWindowFriend, auxWindowFriend ); 
-//}
 
 void ScriptingWindow::handleAWGScriptComboChange()
 {
@@ -165,23 +165,25 @@ BOOL ScriptingWindow::OnInitDialog()
 	int id = 2000;
 
 	POINT startLocation = { 0, 28 };
-	//moogScript.initialize(640, 900, startLocation, tooltips, this, id, "Moog",
-	//	"Megamoog 1 Script",
-	//	{ IDC_MOOG_FUNCTION_COMBO, IDC_MOOG_EDIT },
-	//	mainWindowFriend->getRgbs()["theme BG2"]);
-	awgScript.initialize(640, 900, startLocation, tooltips, this, id, "AWG",
+	awgScript.initialize(480, 900, startLocation, tooltips, this, id, "AWG",
 		"AWG 1 (Subharmonicon) Script",
 		{ IDC_AWG_FUNCTION_COMBO, IDC_AWG_EDIT },
 		mainWindowFriend->getRgbs()["theme BG2"]);
 
-	startLocation = { 640, 28 };
-	gmoogScript.initialize(640, 900, startLocation, tooltips, this, id, "Gmoog",
+	startLocation = { 480, 28 };
+	gmoogScript.initialize(480, 900, startLocation, tooltips, this, id, "Gmoog",
 		"Gigamoog 1 Script",
 		{ IDC_GMOOG_FUNCTION_COMBO, IDC_GMOOG_EDIT },
 		mainWindowFriend->getRgbs()["theme BG1"]);
-	startLocation = { 1280, 28 };
-	masterScript.initialize(640, 900, startLocation, tooltips, this, id, "Master", "Master Script",
-		{ IDC_MASTER_FUNCTION_COMBO, IDC_MASTER_EDIT }, mainWindowFriend->getRgbs()["theme BG2"]);
+
+	startLocation = { 960, 28 };
+	ddsScript.initialize(480, 900, startLocation, tooltips, this, id, "DDS",
+		"DDS Script", { IDC_DDS_FUNCTION_COMBO, IDC_DDS_EDIT }, mainWindowFriend->getRgbs()["theme BG2"]);
+
+	startLocation = { 1440, 28 };
+	masterScript.initialize(480, 900, startLocation, tooltips, this, id, "Master", "Master Script",
+		{ IDC_MASTER_FUNCTION_COMBO, IDC_MASTER_EDIT }, mainWindowFriend->getRgbs()["theme BG1"]);
+
 	startLocation = { 1700, 3 };
 	statusBox.initialize(startLocation, id, this, 300, tooltips);
 	profileDisplay.initialize({ 0,3 }, id, this, tooltips);
@@ -209,6 +211,8 @@ void ScriptingWindow::OnTimer(UINT_PTR eventID)
 		auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames());
 	gmoogScript.handleTimerCall(auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(),
 		auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames());
+	ddsScript.handleTimerCall(auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(),
+		auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames());
 	masterScript.handleTimerCall(auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(),
 		auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames());
 }
@@ -219,6 +223,7 @@ void ScriptingWindow::checkScriptSaves()
 	//moogScript.checkSave(getProfile().categoryPath, mainWindowFriend->getRunInfo());
 	awgScript.checkSave(getProfile().categoryPath, mainWindowFriend->getRunInfo());
 	gmoogScript.checkSave(getProfile().categoryPath, mainWindowFriend->getRunInfo());
+	ddsScript.checkSave(getProfile().categoryPath, mainWindowFriend->getRunInfo());
 	masterScript.checkSave(getProfile().categoryPath, mainWindowFriend->getRunInfo());
 }
 
@@ -248,6 +253,7 @@ scriptInfo<std::string> ScriptingWindow::getScriptNames()
 	//names.moog = moogScript.getScriptName();
 	names.awg = awgScript.getScriptName();
 	names.gmoog = gmoogScript.getScriptName();
+	names.DDS = ddsScript.getScriptName();
 	return names;
 }
 
@@ -258,9 +264,9 @@ scriptInfo<bool> ScriptingWindow::getScriptSavedStatuses()
 {
 	scriptInfo<bool> status;
 
-	//status.moog = moogScript.savedStatus();
 	status.awg = awgScript.savedStatus();
 	status.gmoog = gmoogScript.savedStatus();
+	status.DDS = ddsScript.savedStatus();
 
 	return status;
 }
@@ -274,6 +280,7 @@ scriptInfo<std::string> ScriptingWindow::getScriptAddresses()
 	//addresses.moog = moogScript.getScriptPathAndName();
 	addresses.awg = awgScript.getScriptPathAndName();
 	addresses.gmoog = gmoogScript.getScriptPathAndName();
+	addresses.DDS = ddsScript.getScriptPathAndName();
 	addresses.master = masterScript.getScriptPathAndName();
 
 	return addresses;
@@ -316,12 +323,6 @@ HBRUSH ScriptingWindow::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	}
 } 
 
-//void ScriptingWindow::moogEditChange()
-//{
-//	moogScript.handleEditChange();
-//	SetTimer(SYNTAX_TIMER_ID, SYNTAX_TIMER_LENGTH, NULL);
-//}
-
 void ScriptingWindow::awgEditChange()
 {
 	awgScript.handleEditChange();
@@ -334,31 +335,18 @@ void ScriptingWindow::gmoogEditChange()
 	SetTimer(SYNTAX_TIMER_ID, SYNTAX_TIMER_LENGTH, NULL);
 }
 
+void ScriptingWindow::ddsEditChange()
+{
+	ddsScript.handleEditChange();
+	SetTimer(SYNTAX_TIMER_ID, SYNTAX_TIMER_LENGTH, NULL);
+}
+
 /// Commonly Called Functions 
 /*
 	The following set of functions, mostly revolving around saving etc. of the script files, are called by all of the
 	window objects because they are associated with the menu at the top of each screen
 */
 ///  
-
-
-//void ScriptingWindow::newMoogScript()
-//{
-//	try
-//	{
-//		moogScript.checkSave(getProfile().categoryPath, mainWindowFriend->getRunInfo());
-//		moogScript.newScript();
-//		updateConfigurationSavedStatus(false);
-//		moogScript.updateScriptNameText(getProfile().categoryPath);
-//		moogScript.colorEntireScript(auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(),
-//			auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames());
-//	}
-//	catch (Error& err)
-//	{
-//		comm()->sendError(err.what());
-//	}
-//
-//}
 
 void ScriptingWindow::newAWGScript()
 {
@@ -387,26 +375,6 @@ profileSettings ScriptingWindow::getProfile()
 }
 
 
-//void ScriptingWindow::openMoogScript(CWnd* parent)
-//{
-//	try
-//	{
-//		moogScript.checkSave(getProfile().categoryPath, mainWindowFriend->getRunInfo());
-//		std::string moogOpenName = openWithExplorer(parent, MOOG_SCRIPT_EXTENSION);
-//		moogScript.openParentScript(moogOpenName, getProfile().categoryPath,
-//			mainWindowFriend->getRunInfo());
-//		updateConfigurationSavedStatus(false);
-//		moogScript.updateScriptNameText(getProfile().categoryPath);
-//		moogScript.colorEntireScript(auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(),
-//			auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames());
-//	}
-//	catch (Error& err)
-//	{
-//		comm()->sendError(err.what());
-//	}
-//
-//}
-
 void ScriptingWindow::openAWGScript(CWnd* parent)
 {
 	try
@@ -428,20 +396,6 @@ void ScriptingWindow::openAWGScript(CWnd* parent)
 }
 
 
-//void ScriptingWindow::saveMoogScript()
-//{
-//	try
-//	{
-//		moogScript.saveScript(getProfile().categoryPath, mainWindowFriend->getRunInfo());
-//		moogScript.updateScriptNameText(getProfile().categoryPath);
-//	}
-//	catch (Error& err)
-//	{
-//		comm()->sendError(err.what());
-//	}
-//
-//}
-
 void ScriptingWindow::saveAWGScript()
 {
 	try
@@ -456,28 +410,6 @@ void ScriptingWindow::saveAWGScript()
 
 }
 
-
-//void ScriptingWindow::saveMoogScriptAs(CWnd* parent)
-//{
-//	try
-//	{
-//		std::string extensionNoPeriod = moogScript.getExtension();
-//		if (extensionNoPeriod.size() == 0)
-//		{
-//			return;
-//		}
-//		extensionNoPeriod = extensionNoPeriod.substr(1, extensionNoPeriod.size());
-//		std::string newScriptAddress = saveWithExplorer(parent, extensionNoPeriod, getProfileSettings());
-//		moogScript.saveScriptAs(newScriptAddress, mainWindowFriend->getRunInfo());
-//		updateConfigurationSavedStatus(false);
-//		moogScript.updateScriptNameText(getProfile().categoryPath);
-//	}
-//	catch (Error& err)
-//	{
-//		comm()->sendError(err.what());
-//	}
-//
-//}
 
 void ScriptingWindow::saveAWGScriptAs(CWnd* parent)
 {
@@ -577,12 +509,89 @@ void ScriptingWindow::saveGmoogScriptAs(CWnd* parent)
 
 }
 
+void ScriptingWindow::newDdsScript()
+{
+	try
+	{
+		ddsScript.checkSave(getProfile().categoryPath, mainWindowFriend->getRunInfo());
+		ddsScript.newScript();
+		updateConfigurationSavedStatus(false);
+		ddsScript.updateScriptNameText(getProfile().categoryPath);
+		ddsScript.colorEntireScript(auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(),
+			auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames());
+	}
+	catch (Error& err)
+	{
+		comm()->sendError(err.what());
+	}
+
+}
+
+void ScriptingWindow::openDdsScript(CWnd* parent)
+{
+	try
+	{
+		ddsScript.checkSave(getProfile().categoryPath, mainWindowFriend->getRunInfo());
+		std::string ddsOpenName = openWithExplorer(parent, DDS_SCRIPT_EXTENSION);
+		ddsScript.openParentScript(ddsOpenName, getProfile().categoryPath,
+			mainWindowFriend->getRunInfo());
+		updateConfigurationSavedStatus(false);
+		ddsScript.updateScriptNameText(getProfile().categoryPath);
+		ddsScript.colorEntireScript(auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(),
+			auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames());
+	}
+	catch (Error& err)
+	{
+		comm()->sendError(err.what());
+	}
+
+}
+
+
+void ScriptingWindow::saveDdsScript()
+{
+	try
+	{
+		ddsScript.saveScript(getProfile().categoryPath, mainWindowFriend->getRunInfo());
+		ddsScript.updateScriptNameText(getProfile().categoryPath);
+	}
+	catch (Error& err)
+	{
+		comm()->sendError(err.what());
+	}
+
+}
+
+
+void ScriptingWindow::saveDdsScriptAs(CWnd* parent)
+{
+	try
+	{
+		std::string extensionNoPeriod = ddsScript.getExtension();
+		if (extensionNoPeriod.size() == 0)
+		{
+			return;
+		}
+		extensionNoPeriod = extensionNoPeriod.substr(1, extensionNoPeriod.size());
+		std::string newScriptAddress = saveWithExplorer(parent, extensionNoPeriod, getProfileSettings());
+		ddsScript.saveScriptAs(newScriptAddress, mainWindowFriend->getRunInfo());
+		updateConfigurationSavedStatus(false);
+		ddsScript.updateScriptNameText(getProfile().categoryPath);
+	}
+	catch (Error& err)
+	{
+		comm()->sendError(err.what());
+	}
+
+}
+
 
 void ScriptingWindow::updateScriptNamesOnScreen()
 {; 
 	//moogScript.updateScriptNameText(getProfile().categoryPath);
 	awgScript.updateScriptNameText(getProfile().categoryPath);
 	gmoogScript.updateScriptNameText(getProfile().categoryPath);
+	ddsScript.updateScriptNameText(getProfile().categoryPath);
 }
 
 
@@ -594,6 +603,8 @@ void ScriptingWindow::recolorScripts()
 		auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames());
 	gmoogScript.colorEntireScript(auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(),
 		auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames());
+	ddsScript.colorEntireScript(auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(),
+		auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames());
 	masterScript.colorEntireScript(auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(),
 		auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames());
 }
@@ -603,10 +614,11 @@ void ScriptingWindow::handleOpenConfig(std::ifstream& configFile, int versionMaj
 	ProfileSystem::checkDelimiterLine(configFile, "SCRIPTS");
 	// the reading for the scripts is simple enough at the moment that I just read everything here. 
 	configFile.get();
-	std::string /*moogName,*/ awgName, gmoogName, masterName;
+	std::string /*moogName,*/ awgName, gmoogName, ddsName, masterName;
 	//getline(configFile, moogName);
 	getline(configFile, awgName);
 	getline(configFile, gmoogName);
+	getline(configFile, ddsName);
 	getline(configFile, masterName);
 
 	ProfileSystem::checkDelimiterLine(configFile, "END_SCRIPTS");
@@ -643,6 +655,21 @@ void ScriptingWindow::handleOpenConfig(std::ifstream& configFile, int versionMaj
 		{
 			//openVerticalScript( openWithExplorer( NULL, "nScript" ) ); 
 			openGmoogScript(openWithExplorer(NULL, GIGAMOOG_SCRIPT_EXTENSION));
+		}
+	}
+	try
+	{
+		openDdsScript(ddsName);
+	}
+	catch (Error& err)
+	{
+		int answer = promptBox("ERROR: Failed to open DDS script file: " + ddsName + ", with error \r\n"
+			+ err.whatStr() + "\r\nAttempt to find file yourself?", MB_YESNO);
+		if (answer == IDYES)
+		{
+			//openVerticalScript( openWithExplorer( NULL, "nScript" ) );
+			//openMoogScript(openWithExplorer(NULL, "ddsScript"));
+			openAWGScript(openWithExplorer(NULL, "awgScript"));
 		}
 	}
 	try
@@ -801,6 +828,7 @@ void ScriptingWindow::handleSavingConfig(std::ofstream& saveFile)
 	//saveFile << addresses.moog << "\n";
 	saveFile << addresses.awg << "\n";
 	saveFile << addresses.gmoog << "\n";
+	saveFile << addresses.DDS << "\n";
 	saveFile << addresses.master << "\n";
 	saveFile << "END_SCRIPTS\n";
 }
@@ -817,10 +845,10 @@ void ScriptingWindow::openMasterScript(std::string name)
 	masterScript.openParentScript(name, getProfile().categoryPath, mainWindowFriend->getRunInfo());
 }
 
-//void ScriptingWindow::openMoogScript(std::string name)
-//{
-//	moogScript.openParentScript(name, getProfile().categoryPath, mainWindowFriend->getRunInfo());
-//}
+void ScriptingWindow::openDdsScript(std::string name)
+{
+	ddsScript.openParentScript(name, getProfile().categoryPath, mainWindowFriend->getRunInfo());
+}
 
 void ScriptingWindow::openAWGScript(std::string name)
 {
@@ -839,6 +867,7 @@ void ScriptingWindow::considerScriptLocations()
 	//moogScript.considerCurrentLocation(getProfile().categoryPath, mainWindowFriend->getRunInfo());
 	awgScript.considerCurrentLocation(getProfile().categoryPath, mainWindowFriend->getRunInfo());
 	gmoogScript.considerCurrentLocation(getProfile().categoryPath, mainWindowFriend->getRunInfo());
+	ddsScript.considerCurrentLocation(getProfile().categoryPath, mainWindowFriend->getRunInfo());
 }
 
 
