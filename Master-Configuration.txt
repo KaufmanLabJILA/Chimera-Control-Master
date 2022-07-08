@@ -333,4 +333,4 @@ yzero 0.0089
 zzero -0.1969
 blowaway_depth -0.2
 ramsey_depth -0.25
-815 930 1 875 955 1
+150 400 1 150 400 1
