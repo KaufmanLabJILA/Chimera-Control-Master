@@ -855,6 +855,7 @@ void CameraWindow::prepareCamera(ExperimentInput& input)
 	// update at this point.
 	readImageParameters();
 	//
+	CameraSettings.updateRunSettingsFromPicSettings();
 	CameraSettings.updatePassivelySetSettings();
 	pics.setNumberPicturesActive(CameraSettings.getSettings().picsPerRepetition, CameraSettings.getPicsPerRepManual());
 	// this is a bit awkward at the moment.
