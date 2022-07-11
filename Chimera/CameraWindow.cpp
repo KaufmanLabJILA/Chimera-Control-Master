@@ -1000,15 +1000,17 @@ void CameraWindow::prepareAtomCruncher(ExperimentInput& input)
 		input.cruncherInput->subpixelMasks = arrSubpixelMasks.as_vec<int16>();
 		input.cruncherInput->nSubpixel = arrSubpixelMasks.shape[0];
 
-		if ((arrSubpixelMasks.shape[2] != input.cruncherInput->imageDims.width) || (arrSubpixelMasks.shape[1] != input.cruncherInput->imageDims.height))
-		{
-			thrower("Subpixel mask dimensions do not match image dimensions.");
+		if (!ATOMCRUNCHER_SAFEMODE) {
+			if ((arrSubpixelMasks.shape[2] != input.cruncherInput->imageDims.width) || (arrSubpixelMasks.shape[1] != input.cruncherInput->imageDims.height))
+			{
+				thrower("Subpixel mask dimensions do not match image dimensions.");
+			}
+			std::copy(
+				input.cruncherInput->subpixelMasks.begin() + (arrSubpixelMasks.shape[1] * arrSubpixelMasks.shape[2]) * (arrSubpixelMasks.shape[0] / 2),
+				input.cruncherInput->subpixelMasks.begin() + (arrSubpixelMasks.shape[1] * arrSubpixelMasks.shape[2]) * (arrSubpixelMasks.shape[0] / 2 + 1),
+				std::back_inserter(input.cruncherInput->subpixelMaskSingle)
+			); //copy central mask for convenience
 		}
-		std::copy(
-			input.cruncherInput->subpixelMasks.begin() + (arrSubpixelMasks.shape[1] * arrSubpixelMasks.shape[2]) * (arrSubpixelMasks.shape[0] / 2),
-			input.cruncherInput->subpixelMasks.begin() + (arrSubpixelMasks.shape[1] * arrSubpixelMasks.shape[2]) * (arrSubpixelMasks.shape[0] / 2 + 1),
-			std::back_inserter(input.cruncherInput->subpixelMaskSingle)
-		); //copy central mask for convenience
 	}
 	catch (const std::runtime_error& e) {
 		errBox(e.what());

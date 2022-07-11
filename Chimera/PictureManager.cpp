@@ -29,8 +29,8 @@ void PictureManager::setAlwaysShowGrid(bool showOption, CDC* easel)
 }
 
 
-void PictureManager::redrawPictures( CDC* easel, coordinate selectedLocation, std::vector<coordinate> analysisLocs,
-									 atomGrid gridInfo )
+void PictureManager::redrawPictures(CDC* easel, coordinate selectedLocation, std::vector<coordinate> analysisLocs,
+	atomGrid gridInfo)
 {
 	if (!pictures[1].isActive())
 	{
@@ -55,10 +55,10 @@ void PictureManager::redrawPictures( CDC* easel, coordinate selectedLocation, st
 
 
 /*
- *  
+ *
  */
-void PictureManager::drawDongles( CDC* dc, coordinate selectedLocation, std::vector<coordinate> analysisLocs, 
-								  atomGrid gridInfo )
+void PictureManager::drawDongles(CDC* dc, coordinate selectedLocation, std::vector<coordinate> analysisLocs,
+	atomGrid gridInfo)
 {
 	for (auto& pic : pictures)
 	{
@@ -81,11 +81,11 @@ void PictureManager::setNumberPicturesActive(int numberActive, bool picsPerRepMa
 	}
 }
 
-void PictureManager::handleEditChange( UINT id )
+void PictureManager::handleEditChange(UINT id)
 {
 	for (auto& pic : pictures)
 	{
-		pic.handleEditChange( id );
+		pic.handleEditChange(id);
 	}
 }
 
@@ -96,11 +96,11 @@ void PictureManager::setAutoScalePicturesOption(bool autoScaleOption)
 }
 
 
-void PictureManager::handleNewConfig( std::ofstream& newFile )
+void PictureManager::handleNewConfig(std::ofstream& newFile)
 {
 	newFile << "PICTURE_MANAGER\n";
 
-	for ( auto& pic : pictures )
+	for (auto& pic : pictures)
 	{
 		std::pair<UINT, UINT> sliderLoc = { 0, 1000 };
 		newFile << sliderLoc.first << " " << sliderLoc.second << "\n";
@@ -131,7 +131,7 @@ void PictureManager::handleSaveConfig(std::ofstream& saveFile)
 }
 
 
-void PictureManager::handleOpenConfig(std::ifstream& configFile, int versionMajor, int versionMinor )
+void PictureManager::handleOpenConfig(std::ifstream& configFile, int versionMajor, int versionMinor)
 {
 	ProfileSystem::checkDelimiterLine(configFile, "PICTURE_MANAGER");
 	std::array<int, 4> maxes, mins;
@@ -167,12 +167,12 @@ void PictureManager::setSpecialGreaterThanMax(bool option)
 }
 
 
-void PictureManager::drawPicture( CDC* deviceContext, int pictureNumber, std::vector<long> picData, 
-								 std::pair<UINT, UINT> minMaxPair )
+void PictureManager::drawPicture(CDC* deviceContext, int pictureNumber, std::vector<long> picData,
+	std::pair<UINT, UINT> minMaxPair)
 {
 	std::tuple<bool, int, int> autoScaleInfo = std::make_tuple(autoScalePictures, minMaxPair.first, minMaxPair.second);
-	pictures[pictureNumber].drawPicture( deviceContext, picData, autoScaleInfo, specialLessThanMin, 
-										specialGreaterThanMax);
+	pictures[pictureNumber].drawPicture(deviceContext, picData, autoScaleInfo, specialLessThanMin,
+		specialGreaterThanMax);
 	if (alwaysShowGrid)
 	{
 		pictures[pictureNumber].drawGrid(deviceContext, gridBrush);
@@ -191,24 +191,24 @@ void PictureManager::handleScroll(UINT nSBCode, UINT nPos, CScrollBar* scrollbar
 	}
 }
 
-coordinate PictureManager::handleRClick( CPoint clickLocation )
+coordinate PictureManager::handleRClick(CPoint clickLocation)
 {
 	coordinate location;
 	for (auto& pic : pictures)
 	{
 		try
 		{
-			location = pic.checkClickLocation( clickLocation );
+			location = pic.checkClickLocation(clickLocation);
 			return location;
 		}
-		catch(Error&){}
+		catch (Error&) {}
 		// checkClickLocation throws if not found. Continue looking.
 	}
-	thrower( "not found" );
+	thrower("not found");
 }
 
 
-void PictureManager::setSinglePicture( CWnd* parent, imageParameters imageParams)
+void PictureManager::setSinglePicture(CWnd* parent, imageParameters imageParams)
 {
 	for (UINT picNum = 0; picNum < 4; picNum++)
 	{
@@ -221,9 +221,9 @@ void PictureManager::setSinglePicture( CWnd* parent, imageParameters imageParams
 			pictures[picNum].setActive(false);
 		}
 	}
-	pictures.front().setPictureArea( picturesLocation, picturesWidth , picturesHeight);
+	pictures.front().setPictureArea(picturesLocation, picturesWidth, picturesHeight);
 	pictures.front().setSliderLocations(parent);
-	setParameters( imageParams );	
+	setParameters(imageParams);
 }
 
 
@@ -236,7 +236,7 @@ void PictureManager::resetPictureStorage()
 }
 
 
-void PictureManager::setMultiplePictures( CWnd* parent, imageParameters imageParams, UINT numberActivePics )
+void PictureManager::setMultiplePictures(CWnd* parent, imageParameters imageParams, UINT numberActivePics)
 {
 	for (UINT picNum = 0; picNum < 4; picNum++)
 	{
@@ -253,16 +253,16 @@ void PictureManager::setMultiplePictures( CWnd* parent, imageParameters imagePar
 	POINT loc = picturesLocation;
 	int picWidth = 570;
 	int picHeight = 460;
-	pictures[0].setPictureArea( loc, picWidth, picHeight );
+	pictures[0].setPictureArea(loc, picWidth, picHeight);
 	loc.x += 570;
-	pictures[1].setPictureArea( loc, picWidth, picHeight );
+	pictures[1].setPictureArea(loc, picWidth, picHeight);
 	loc.x -= 570;
 	loc.y += 465;
-	pictures[2].setPictureArea( loc, picWidth, picHeight );
+	pictures[2].setPictureArea(loc, picWidth, picHeight);
 	loc.x += 570;
-	pictures[3].setPictureArea( loc, picWidth, picHeight );
-	setParameters( imageParams );
-	setPictureSliders( parent );
+	pictures[3].setPictureArea(loc, picWidth, picHeight);
+	setParameters(imageParams);
+	setPictureSliders(parent);
 }
 
 
@@ -284,28 +284,28 @@ void PictureManager::drawBackgrounds(CDC* easel)
 }
 
 
-void PictureManager::initialize( POINT& loc, CWnd* parent, int& id, cToolTips& tooltips,
-								 CBrush* defaultBrush)
+void PictureManager::initialize(POINT& loc, CWnd* parent, int& id, cToolTips& tooltips,
+	CBrush* defaultBrush)
 {
 	picturesLocation = loc;
 	picturesWidth = 570 * 2;
 	picturesHeight = 460 * 2 + 5;
 	gridBrush = defaultBrush;
 	//
-	pictures[0].initialize( loc, parent, id, 570, 460, { IDC_PICTURE_1_MIN_EDIT, IDC_PICTURE_1_MAX_EDIT } );
+	pictures[0].initialize(loc, parent, id, 570, 460, { IDC_PICTURE_1_MIN_EDIT, IDC_PICTURE_1_MAX_EDIT });
 	loc.x += 570;
-	pictures[1].initialize(loc, parent, id, 570, 460, { IDC_PICTURE_2_MIN_EDIT, IDC_PICTURE_2_MAX_EDIT } );
+	pictures[1].initialize(loc, parent, id, 570, 460, { IDC_PICTURE_2_MIN_EDIT, IDC_PICTURE_2_MAX_EDIT });
 	loc.x -= 570;
 	loc.y += 465;
-	pictures[2].initialize(loc, parent, id, 570, 460, { IDC_PICTURE_3_MIN_EDIT, IDC_PICTURE_3_MAX_EDIT } );
+	pictures[2].initialize(loc, parent, id, 570, 460, { IDC_PICTURE_3_MIN_EDIT, IDC_PICTURE_3_MAX_EDIT });
 	loc.x += 570;
-	pictures[3].initialize(loc, parent, id, 570, 460, { IDC_PICTURE_4_MIN_EDIT, IDC_PICTURE_4_MAX_EDIT } );
+	pictures[3].initialize(loc, parent, id, 570, 460, { IDC_PICTURE_4_MIN_EDIT, IDC_PICTURE_4_MAX_EDIT });
 	loc.y += 460;
 	loc.x -= 570;
-	createPalettes( parent->GetDC() );
+	createPalettes(parent->GetDC());
 	for (auto& pic : pictures)
 	{
-		pic.updatePalette( palettes[2] );
+		pic.updatePalette(palettes[2]);
 	}
 	// initialize to one. this matches the camera settings initialization.
 	setNumberPicturesActive(1, false);
@@ -316,13 +316,13 @@ void PictureManager::refreshBackgrounds(CDC* easel)
 {
 	if (!pictures[1].isActive())
 	{
-		pictures[0].drawBackground( easel );
+		pictures[0].drawBackground(easel);
 	}
 	else
 	{
 		for (auto& picture : pictures)
 		{
-			picture.drawBackground( easel );
+			picture.drawBackground(easel);
 		}
 	}
 }
@@ -332,7 +332,7 @@ void PictureManager::drawGrids(CDC* easel)
 {
 	for (auto& picture : pictures)
 	{
-		picture.drawGrid(easel, gridBrush );
+		picture.drawGrid(easel, gridBrush);
 	}
 }
 
@@ -346,8 +346,8 @@ void PictureManager::setParameters(imageParameters parameters)
 }
 
 
-void PictureManager::rearrange(std::string cameraMode, std::string triggerMode, int width, int height, 
-							   fontMap fonts)
+void PictureManager::rearrange(std::string cameraMode, std::string triggerMode, int width, int height,
+	fontMap fonts)
 {
 	for (auto& control : pictures)
 	{
@@ -356,7 +356,7 @@ void PictureManager::rearrange(std::string cameraMode, std::string triggerMode, 
 }
 
 
-void PictureManager::createPalettes( CDC* dc )
+void PictureManager::createPalettes(CDC* dc)
 {
 	struct
 	{
@@ -365,7 +365,7 @@ void PictureManager::createPalettes( CDC* dc )
 		PALETTEENTRY aEntries[256];
 	} Palette = { 0x300, 256 };
 
-	GetSystemPaletteEntries( *dc, 0, 256, Palette.aEntries );
+	GetSystemPaletteEntries(*dc, 0, 256, Palette.aEntries);
 	// this is the parula colormap from matlab. It looks nice :D
 	double virida[256][3] =
 	{
@@ -635,17 +635,17 @@ void PictureManager::createPalettes( CDC* dc )
 	for (UINT paletteInc = 0; paletteInc < PICTURE_PALETTE_SIZE; paletteInc++)
 	{
 		// scaling it to make it a bit darker near the bottom.
-		r = UCHAR(virida[paletteInc][0] * (255.0-1) * (1.0/4 + 3.0*paletteInc / (4*255.0)));
+		r = UCHAR(virida[paletteInc][0] * (255.0 - 1) * (1.0 / 4 + 3.0*paletteInc / (4 * 255.0)));
 		g = UCHAR(virida[paletteInc][1] * (255.0 - 1) * (1.0 / 4 + 3.0*paletteInc / (4 * 255.0)));
 		b = UCHAR(virida[paletteInc][2] * (255.0 - 1) * (1.0 / 4 + 3.0*paletteInc / (4 * 255.0)));
-		Palette.aEntries[paletteInc].peRed = LOBYTE( r );
-		Palette.aEntries[paletteInc].peGreen = LOBYTE( g );
-		Palette.aEntries[paletteInc].peBlue = LOBYTE( b );
+		Palette.aEntries[paletteInc].peRed = LOBYTE(r);
+		Palette.aEntries[paletteInc].peGreen = LOBYTE(g);
+		Palette.aEntries[paletteInc].peBlue = LOBYTE(b);
 		Palette.aEntries[paletteInc].peFlags = PC_RESERVED;
 	}
-	palettes[0] = CreatePalette((LOGPALETTE *)&Palette );
-	
-	double inferno[256][3] = 
+	palettes[0] = CreatePalette((LOGPALETTE *)&Palette);
+
+	double inferno[256][3] =
 	{
 		// special value
 		{ 0 , 0 , 1 },
@@ -912,16 +912,16 @@ void PictureManager::createPalettes( CDC* dc )
 	for (int paletteValueInc = 0; paletteValueInc < PICTURE_PALETTE_SIZE; paletteValueInc++)
 	{
 		// scaling it to make it a bit darker near the bottom.
-		r = int( inferno[paletteValueInc][0] * 255.0 );
-		g = int( inferno[paletteValueInc][1] * 255.0 );
-		b = int( inferno[paletteValueInc][2] * 255.0 );
-		Palette.aEntries[paletteValueInc].peRed = LOBYTE( r );
-		Palette.aEntries[paletteValueInc].peGreen = LOBYTE( g );
-		Palette.aEntries[paletteValueInc].peBlue = LOBYTE( b );
+		r = int(inferno[paletteValueInc][0] * 255.0);
+		g = int(inferno[paletteValueInc][1] * 255.0);
+		b = int(inferno[paletteValueInc][2] * 255.0);
+		Palette.aEntries[paletteValueInc].peRed = LOBYTE(r);
+		Palette.aEntries[paletteValueInc].peGreen = LOBYTE(g);
+		Palette.aEntries[paletteValueInc].peBlue = LOBYTE(b);
 		Palette.aEntries[paletteValueInc].peFlags = PC_RESERVED;
 	}
 
-	palettes[1] = CreatePalette( (LOGPALETTE *)&Palette );
+	palettes[1] = CreatePalette((LOGPALETTE *)&Palette);
 	///
 	double blackToWhite[256][3];
 	for (int paletteInc = 0; paletteInc < 256; paletteInc++)
@@ -941,15 +941,14 @@ void PictureManager::createPalettes( CDC* dc )
 	for (int paletteValueInc = 0; paletteValueInc < PICTURE_PALETTE_SIZE; paletteValueInc++)
 	{
 		// scaling it to make it a bit darker near the bottom.
-		r = int( blackToWhite[paletteValueInc][0] * 255.0 );
-		g = int( blackToWhite[paletteValueInc][1] * 255.0 );
-		b = int( blackToWhite[paletteValueInc][2] * 255.0 );
-		Palette.aEntries[paletteValueInc].peRed = LOBYTE( r );
-		Palette.aEntries[paletteValueInc].peGreen = LOBYTE( g );
-		Palette.aEntries[paletteValueInc].peBlue = LOBYTE( b );
+		r = int(blackToWhite[paletteValueInc][0] * 255.0);
+		g = int(blackToWhite[paletteValueInc][1] * 255.0);
+		b = int(blackToWhite[paletteValueInc][2] * 255.0);
+		Palette.aEntries[paletteValueInc].peRed = LOBYTE(r);
+		Palette.aEntries[paletteValueInc].peGreen = LOBYTE(g);
+		Palette.aEntries[paletteValueInc].peBlue = LOBYTE(b);
 		Palette.aEntries[paletteValueInc].peFlags = PC_RESERVED;
 	}
 
-	palettes[2] = CreatePalette( (LOGPALETTE *)&Palette );
+	palettes[2] = CreatePalette((LOGPALETTE *)&Palette);
 }
-
