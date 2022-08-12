@@ -60,7 +60,7 @@ reset
 %freqlin 0 clocktime 2*clocktime clockfreq clockfreq+clockdet 0 0
 
 %
-setsingle 0 0 2 clockfreq 0 0
+setsingle 0 0 100 clockfreq 0 0
 %setsingle 0 clocktime 100 clockfreq 1 313.43 
 %setsingle 0 3*clocktime 100 clockfreq 1 104.48 
 %setsingle 0 4*clocktime 100 clockfreq 1 0
@@ -89,14 +89,14 @@ setsteps 2 rb2time/50 0 rb2time
 
 ampgauss 2 0 rb2time rb2time/3 1 0 100 
 
-freqlin 2 0 rb2time rb1freq+rb2det rb1freq+rb2det 1 0
+freqlin 2 0 rb2time 100+rb2det 100+rb2det 1 0
 
 
 setsteps 2 rb2time/50 rb2time 2*rb2time
 
 ampgauss 2 rb2time 2*rb2time rb2time/3 -1 100 0
 
-freqlin 2 rb2time 2*rb2time rb1freq+rb2det rb1freq+rb2det 0 0
+freqlin 2 rb2time 2*rb2time 100+rb2det 100+rb2det 0 0
 
 setsingle 2 2*rb2time 0 100 0 0 
 

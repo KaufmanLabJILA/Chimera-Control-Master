@@ -880,13 +880,17 @@ void CameraWindow::prepareCamera(ExperimentInput& input)
 	float hss;
 	float pgain;
 	int numhspeeds;
+	float fkvss;
+	float fkexp;
 	// compare to the Andor et functions to see which indices you should read
 	Andor.getVSSpeed(ANDOR_VSS_INDEX, &vss);
 	Andor.getHSSpeed(0, 0, ANDOR_HSS_INDEX, &hss);
 	Andor.getPreAmpGain(ANDOR_PREAMP_INDEX, pgain);
 	Andor.getNumberHSSpeeds(0, 0, &numhspeeds);
+	Andor.getFKVShiftSpeedF(ANDOR_VSS_INDEX, &fkvss);
+	Andor.getFKExposureTime(&fkexp);
 	mainWindowFriend->getComm()->sendStatus("Vertical shift speed = " + str(vss) + " us\nHorizontal shift speed = " + str(hss) + " MHz\n"
-		"Pre-amp gain = " + str(pgain) + "\n\r");
+		"Pre-amp gain = " + str(pgain) + "\n Fast Kinetics vertical shift speed = " + str(fkvss) + "us \n Fast Kinetics exposure time = " + str(fkexp) + "s \n\r");
 }
 
 
