@@ -20,6 +20,7 @@ class gigaMoog {
 
 public:
 	gigaMoog(std::string portID, int baudrate);
+	gigaMoog();
 	virtual ~gigaMoog(void);
 
 	//Attempt to parse moog script

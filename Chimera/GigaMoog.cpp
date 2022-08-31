@@ -18,6 +18,12 @@ gigaMoog::gigaMoog(std::string portID, int baudrate) : fpga(portID, baudrate) {
 	}
 }
 
+gigaMoog::gigaMoog() {
+	if (!GIGAMOOG_SAFEMODE) {
+		//writeOff();
+	}
+}
+
 gigaMoog::~gigaMoog(void){
 }
 

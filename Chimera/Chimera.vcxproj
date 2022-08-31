@@ -74,28 +74,28 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Program Files (x86)\IVI Foundation\VISA\WinNt\include;C:\Program Files (x86)\IVI Foundation\IVI\Include;$(ProjectDir)\Packages\32-Bit-Libs\Debug\HDF5-1.10.1-win32-Debug\include;$(ProjectDir)\Packages\boost_1_64_0;C:\ProgramData\Anaconda3\include;C:\Users\KLab\Desktop\Chimera-Control-Master\Chimera\Packages\32-Bit-Libs\Debug\HDF5-1.10.1-win32-Debug\include;C:\Users\KLab\Desktop\Chimera-Control-Master\Chimera\Packages\boost_1_64_0;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Program Files (x86)\IVI Foundation\VISA\WinNt\include;C:\Program Files (x86)\IVI Foundation\IVI\Include;$(ProjectDir)\Packages\32-Bit-Libs\Debug\HDF5-1.10.1-win32-Debug\include;$(ProjectDir)\Packages\boost_1_64_0;C:\ProgramData\Anaconda3\include;C:\Users\alecj\Kaufman_Lab\chimera\Chimera-Control-Master\Chimera\Packages\32-Bit-Libs\Debug\HDF5-1.10.1-win32-Debug\include;C:\Users\alecj\Kaufman_Lab\chimera\Chimera-Control-Master\Chimera\Packages\boost_1_64_0;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
-    <LibraryPath>C:\Program Files\Andor SOLIS\Drivers;C:\Users\Mark\Documents\Quantum Gas Assembly Control\Chimera;$(ProjectDir)\Packages\boost_1_64_0\lib-32bit;C:\Program Files (x86)\National Instruments\NI-DAQ\DAQmx ANSI C Dev\lib\msvc;C:\Program Files (x86)\IVI Foundation\VISA\WinNT\lib\msc;$(ProjectDir)\Packages\32-Bit-Libs\Debug\HDF5-1.10.1-win32-Debug\lib;$(ProjectDir)\Packages\32-Bit-Libs\DIO64;$(ProjectDir)\Packages\32-Bit-Libs\Debug\Python;$(ProjectDir)\Packages\32-Bit-Libs\Debug\Andor;$(LibraryPath)</LibraryPath>
+    <LibraryPath>C:\Program Files\Andor SOLIS\Drivers;C:\Users\alecj\Kaufman_Lab\chimera\Chimera-Control-Master\Quantum Gas Assembly Control\Chimera;$(ProjectDir)\Packages\boost_1_64_0\lib-32bit;C:\Program Files (x86)\National Instruments\NI-DAQ\DAQmx ANSI C Dev\lib\msvc;C:\Program Files (x86)\IVI Foundation\VISA\WinNT\lib\msc;$(ProjectDir)\Packages\32-Bit-Libs\Debug\HDF5-1.10.1-win32-Debug\lib;$(ProjectDir)\Packages\32-Bit-Libs\DIO64;$(ProjectDir)\Packages\32-Bit-Libs\Debug\Python;$(ProjectDir)\Packages\32-Bit-Libs\Debug\Andor;$(LibraryPath)</LibraryPath>
     <ExecutablePath>$(ProjectDir)\Packages\32-Bit-Libs\Debug\Python;$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\ProgramData\Anaconda3\include;$(ProjectDir)\Packages\64-Bit-Libs\boost_1_64_0;$(IncludePath);$(ProjectDir)\Packages\64-Bit-Libs\Debug\HDF5-1.10.1-win64\include</IncludePath>
-    <LibraryPath>$(ProjectDir)\Packages\64-Bit-Libs\boost_1_64_0\lib-64bit;$(ProjectDir)\Packages\64-Bit-Libs\Debug\HDF5-1.10.1-win64\lib;$(ProjectDir)\Packages\64-Bit-Libs\Debug\Python;$(ProjectDir)\Packages\64-Bit-Libs\Release\Python;C:\Program Files\Andor SDK;$(LibraryPath);C:\Program Files (x86)\National Instruments\Shared\ExternalCompilerSupport\C\lib64\msvc</LibraryPath>
+    <IncludePath>C:\Program Files\IVI Foundation\VISA\Win64\include;C:\Program Files\IVI Foundation\IVI\Include;C:\users\alecj\anaconda3\include;C:\users\alecj\anaconda3\Library\include;$(ProjectDir)\Packages\64-Bit-Libs\boost_1_64_0;$(IncludePath);$(ProjectDir)\Packages\64-Bit-Libs\Release\HDF5-1.10.3-win64\include</IncludePath>
+    <LibraryPath>C:\Users\alecj\anaconda3;C:\Program Files\IVI Foundation\VISA\Win64\Lib_x64\msc;$(ProjectDir)\Packages\64-Bit-Libs\boost_1_64_0\lib-64bit;$(ProjectDir)\Packages\64-Bit-Libs\Debug\HDF5-1.10.3-win64\lib;$(ProjectDir)\Packages\64-Bit-Libs\Debug\Python;$(ProjectDir)\Packages\64-Bit-Libs\Release\Python;C:\Program Files\Andor SDK;$(LibraryPath);C:\Program Files (x86)\National Instruments\Shared\ExternalCompilerSupport\C\lib64\msvc</LibraryPath>
     <ExecutablePath>$(VC_ExecutablePath_x64);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(FxCopDir);$(PATH)</ExecutablePath>
     <ExcludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(MSBuild_ExecutablePath);$(VC_LibraryPath_x64);</ExcludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
-    <IncludePath>C:\Program Files (x86)\IVI Foundation\VISA\WinNt\include;C:\Program Files (x86)\IVI Foundation\IVI\Include;$(IncludePath);C:\ProgramData\Anaconda3\include;C:\Program Files\Andor SOLIS\Drivers;$(ProjectDir)\Packages\boost_1_64_0;$(ProjectDir)\Packages\32-Bit-Libs\Release\HDF5-1.10.1-win32-Release\include;C:\Program Files (x86)\Anaconda3\include</IncludePath>
+    <IncludePath>C:\Program Files (x86)\IVI Foundation\VISA\WinNt\include;C:\Program Files (x86)\IVI Foundation\IVI\Include;$(IncludePath);C:\ProgramData\Anaconda3\include;C:\Program Files\Andor SOLIS\Drivers;$(ProjectDir)\Packages\64-Bit-Libs\boost_1_64_0;$(ProjectDir)\Packages\32-Bit-Libs\Release\HDF5-1.10.1-win32-Release\include;C:\Program Files (x86)\Anaconda3\include</IncludePath>
     <LibraryPath>C:\Program Files\Andor SOLIS\Drivers;C:\Users\Mark\Documents\Quantum Gas Assembly Control\Chimera;C:\Program Files (x86)\National Instruments\NI-DAQ\DAQmx ANSI C Dev\lib\msvc;C:\Program Files (x86)\IVI Foundation\VISA\WinNT\lib\msc;C:\Program Files (x86)\IVI Foundation\IVI\Lib\msc;C:\Program Files (x86)\HDF_Group\HDF5\Release\HDF5-1.10.1-win32\lib;$(ProjectDir)\Packages\boost_1_64_0\lib-32bit;$(ProjectDir)\Packages\32-Bit-Libs\Release\HDF5-1.10.1-win32-Release\lib;$(ProjectDir)\Packages\32-Bit-Libs\Release\Python;$(ProjectDir)\Packages\32-Bit-Libs\DIO64;$(ProjectDir)\Packages\32-Bit-Libs\Release\Andor;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\ProgramData\Anaconda3\include;$(ProjectDir)\Packages\64-Bit-Libs\boost_1_64_0;$(IncludePath);$(ProjectDir)\Packages\64-Bit-Libs\Release\HDF5-1.10.1-win64\include</IncludePath>
+    <IncludePath>C:\Program Files\IVI Foundation\IVI\Include;C:\Program Files\IVI Foundation\VISA\Win64\include;C:\users\alecj\anaconda3\Library\include;C:\users\alecj\anaconda3\include;$(ProjectDir)\Packages\64-Bit-Libs\boost_1_64_0;$(IncludePath);$(ProjectDir)\Packages\64-Bit-Libs\Release\HDF5-1.10.3-win64\include</IncludePath>
     <LinkIncremental>false</LinkIncremental>
-    <LibraryPath>C:\Program Files\Andor SDK;$(ProjectDir)\Packages\64-Bit-Libs\boost_1_64_0\lib-64bit;$(ProjectDir)\Packages\64-Bit-Libs\Release\HDF5-1.10.1-win64\lib;$(ProjectDir)\Packages\64-Bit-Libs\Release\Python;C:\Program Files (x86)\National Instruments\Shared\ExternalCompilerSupport\C\lib64\msvc;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(LibraryPath);$(ProjectDir)\Packages\64-Bit-Libs\Release\Python;$(ProjectDir)\Packages\64-Bit-Libs\Release\HDF5-1.10.3-win64\lib;$(ProjectDir)\Packages\64-Bit-Libs\boost_1_64_0\libs;C:\Program Files\IVI Foundation\VISA\Win64\Lib_x64\msc;C:\Program Files\Andor SDK;C:\Program Files (x86)\National Instruments\Shared\ExternalCompilerSupport\C\lib64\msvc</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -133,11 +133,10 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(NIIVIPATH)\Lib_x64\msc;$(PXIPNPPATH)\winnt\Lib_x64\msc;C:\Program Files\IVI Foundation\VISA\Win64\Lib_x64\msc;C:\Users\alecj\Kaufman_Lab\chimera\Chimera-Control-Master\Chimera\Packages\64-Bit-Libs\boost_1_64_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <TreatLinkerWarningAsErrors>
       </TreatLinkerWarningAsErrors>
-      <AdditionalDependencies>atmcd64m.lib;python36_d.lib;libhdf5_cpp_D.lib;libhdf5_D.lib;libzlib_D.lib;libszip_D.lib;NIDAQmx.lib</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies);python37.lib;libhdf5_D.lib;libhdf5_cpp_D.lib;libszip_D.lib;libzlib_D.lib;NIDAQmx.lib;niFgen.lib;visa32.lib;legacy_stdio_definitions.lib;atmcd64m.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -174,7 +173,7 @@
       <PreprocessorDefinitions>WIN32; NO_WARN_MBCS_MFC_DEPRECATION;NDEBUG;_CONSOLE;_LIB;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <AdditionalIncludeDirectories>D:\Program Files\boost_1_60_0</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ShowIncludes>false</ShowIncludes>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
@@ -183,8 +182,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(NIIVIPATH)\Lib_x64\msc;$(PXIPNPPATH)\winnt\Lib_x64\msc;C:\Program Files (x86)\IVI Foundation\VISA\WinNT\agvisa\Lib_x64\msc;D:\Program Files\boost_1_60_0\lib64-msvc-14.0</AdditionalLibraryDirectories>
-      <AdditionalDependencies>atmcd64m.lib;%(AdditionalDependencies);python37.lib;libhdf5_cpp.lib;libhdf5.lib;libzlib.lib;libszip.lib;NIDAQmx.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(NIIVIPATH)\Lib_x64\msc;$(PXIPNPPATH)\winnt\Lib_x64\msc;C:\Users\alecj\Kaufman_Lab\chimera\Chimera-Control-Master\Chimera\Packages\64-Bit-Libs\boost_1_64_0\stage\lib;C:\Program Files (x86)\IVI Foundation\VISA\WinNT\Lib_x64\msc</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies);python37.lib;libhdf5.lib;libhdf5_cpp.lib;libszip.lib;libzlib.lib;NIDAQmx.lib;niFgen.lib;visa32.lib;legacy_stdio_definitions.lib;atmcd64m.lib</AdditionalDependencies>
       <HeapReserveSize>
       </HeapReserveSize>
     </Link>
