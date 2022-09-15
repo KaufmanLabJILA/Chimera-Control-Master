@@ -1042,7 +1042,9 @@ namespace commonFunctions
 	{
 		DataLogger* logger = camWin->getLogger();
 		logger->initializeDataFiles();
-		logger->logAndorSettings(input.camSettings, takeAndorPictures, input.cruncherInput->nMask);
+		if (!ANDOR_SAFEMODE) {
+			logger->logAndorSettings(input.camSettings, takeAndorPictures, input.cruncherInput->nMask);
+		}
 		logger->logMasterParameters( input.masterInput );
 		logger->logAWGParameters(input.masterInput);
 		logger->logMiscellaneous();

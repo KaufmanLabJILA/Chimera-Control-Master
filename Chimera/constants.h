@@ -96,10 +96,10 @@
 #define PYTHON_HOME L"C:\\Users\\klab\\Anaconda3\\"
 #define MOOG_SAFEMODE true
 #define AWG_SAFEMODE true
-#define GIGAMOOG_SAFEMODE true
+#define GIGAMOOG_SAFEMODE false
 #define ATOMCRUNCHER_SAFEMODE true
 #define NIAWG_SAFEMODE true
-#define ANDOR_SAFEMODE false
+#define ANDOR_SAFEMODE true
 #define MAKO_SAFEMODE true
 #define PYTHON_SAFEMODE true
 #define DIO_SAFEMODE true
@@ -124,7 +124,8 @@
 #define DDS_TIME_RESOLUTION 1.6 // in ms
 #define DDS_MAX_AMP 100 // in mW
 #define DDS_FPGA_ADDRESS "FT3OUIF6A" //"FT3OUIF6B"
-#define GIGAMOOG_PORT "COM6"
+#define GIGAMOOG_PORT 804
+#define GIGAMOOG_IPADDRESS "192.168.7.179"
 #define AWG_PORT "COM13"
 #define AWG_BAUD 115200 /*921600*/ 
 #define TOP_BOTTOM_TEK_SAFEMODE true
