@@ -75,7 +75,7 @@ dio5.4
 0
 dio5.5
 0
-dio5.6
+ionization
 0
 uv
 0
@@ -145,10 +145,10 @@ tweezerdepth
 slmdepth
 -10 - 10
 0
-clockpiezohor
+clockpiezover
 -4 - 4
 0
-clockpiezover
+clockpiezohor
 -4 - 4
 0
 imagingpow
@@ -294,11 +294,11 @@ greeny 0.03502
 greenz -0.2979
 blueloadtime 150
 greenbroadloadtime 25
-greennarrowloadtime 20
+greennarrowloadtime 23
 lacfreq 91.3
 lacpower 89.9
-coolfreq 94.7
-coolpower 25
+coolfreq 94.65
+coolpower 30
 lactime 30
 cooltime 2
 greennarrowfreq 82.6
@@ -312,27 +312,27 @@ comploadtime 20
 ddswait 2000
 ttlwait 0.1
 dacwait 10
-greenpower 58
-greentime 3
-greenfreq 71.18
+greenpower 43
+greentime 5
+greenfreq 71.1005
 imgcooltime 10
 loadtime 32
 loadfreq 82.26
 depth -1.98
-axialcoolfreq 70.8
-axialcoolpower 19
+axialcoolfreq 70.7189
+axialcoolpower 23
 slmpowerfactor 1.92
 xmagic 2.5
 ymagic 0.7993
 img_depth -6.72
 overhead_depth -7.5
-filter_depth -0.03
+filter_depth -0.05
 spec_depth -0.96
 xzero 0.0659
 yzero 0.0089
 zzero -0.1969
 blowaway_depth -0.2
 ramsey_depth -0.12
-ramptime 1.5
+ramptime 2
 yclock 4.8
-100 275 1 205 260 1
+80 370 1 225 240 1

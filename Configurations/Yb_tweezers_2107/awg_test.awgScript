@@ -46,36 +46,40 @@ reset
 
 %setsingle 0 0 100 clockfreq 0 0 
 
-%setsteps 0 clocktime/20 0 clocktime
+%setsteps 0 clocktime/35 0 clocktime
 
+%ampgauss 0 0 clocktime clocktime/2.5 1 0 2
 
-%ampgauss 0 0 clocktime clocktime/3 1 0 100
+%freqlin 0 0 clocktime clockfreq  clockfreq  0 0
 
-%freqlin 0 0 clocktime clockfreq-clockdet  clockfreq  0 0
+%setsteps 0 clocktime/35 clocktime clocktime*2
 
-%setsteps 0 clocktime/20 clocktime 2*clocktime
+%ampgauss 0 clocktime 2*clocktime clocktime/2.5 -1 2 0
 
-%ampgauss 0 clocktime 2*clocktime clocktime/3 -1 100 0
-
-%freqlin 0 clocktime 2*clocktime clockfreq clockfreq+clockdet 0 0
+%freqlin 0 clocktime 2*clocktime clockfreq clockfreq 0 0
 
 %
-setsingle 0 0 100 clockfreq 0 0
-%setsingle 0 clocktime 100 clockfreq 1 313.43 
-%setsingle 0 3*clocktime 100 clockfreq 1 104.48 
-%setsingle 0 4*clocktime 100 clockfreq 1 0
-%setsingle 0 5*clocktime 0 clockfreq 0 0
-setsingle 0 clocktime 0 clockfreq 0 0
-%setsingle 0 0 0 clockfreq 0 0 
-
+%setsingle 0 0 100 clockfreq 0 0
+setsingle 0 2*clocktime 0 clockfreq 0 0
 
 
 program 0
 
 
-setsingle 1 0 100 100 1 0 
+setsteps 1 rbtime/15 0 rbtime
 
-setsingle 1 2*rb2time 0 100 0 0 
+ampgauss 1 0 rbtime rbtime/2.5 1 0 80 
+
+freqlin 1 0 rbtime rbfreq rbfreq  1 0
+
+
+setsteps 1 rbtime/15 rbtime 2*rbtime
+
+ampgauss 1 rbtime 2*rbtime rbtime/2.5 -1 80 0
+
+freqlin 1 rbtime 2*rbtime rbfreq rbfreq 0 0
+
+setsingle 1 2*rbtime 0 100 0 0 
 
 program 1
 
@@ -85,38 +89,41 @@ program 1
 
 %setsingle 2 100*1000 100 0 0 0 
 
-setsteps 2 rb2time/50 0 rb2time
+setsteps 2 rb2time/15 0 rb2time
 
-ampgauss 2 0 rb2time rb2time/3 1 0 100 
+ampgauss 2 0 rb2time rb2time/2.5 1 0 80 
 
-freqlin 2 0 rb2time 100+rb2det 100+rb2det 1 0
+freqlin 2 0 rb2time rb2freq rb2freq  1 0
 
 
-setsteps 2 rb2time/50 rb2time 2*rb2time
+setsteps 2 rb2time/15 rb2time 2*rb2time
 
-ampgauss 2 rb2time 2*rb2time rb2time/3 -1 100 0
+ampgauss 2 rb2time 2*rb2time rb2time/2.5 -1 80 0
 
-freqlin 2 rb2time 2*rb2time 100+rb2det 100+rb2det 0 0
+freqlin 2 rb2time 2*rb2time rb2freq rb2freq 0 0
 
 setsingle 2 2*rb2time 0 100 0 0 
 
 program 2
 
+%setsingle 2 0 100 90 0 0 
 
-setsteps 3 2*rb3time/30 0 2*rb3time
+%setsingle 2 100*1000 100 0 0 0 
 
-ampgauss 3 0 2*rb3time 2*rb3time/3 1 0 100 
+setsteps 3 rb3time/15 0 rb3time
 
-freqlin 3 0 2*rb3time rb1freq+rb3det rb1freq+rb3det 1 0
+ampgauss 3 0 rb3time rb3time/2.5 1 0 50 
+
+freqlin 3 0 rb3time rb3freq rb3freq  1 0
 
 
-setsteps 3 2*rb3time/30 2*rb3time 4*rb3time
+setsteps 3 rb3time/15 rb3time 2*rb3time
 
-ampgauss 3 2*rb3time 4*rb3time 2*rb3time/3 -1 100 0
+ampgauss 3 rb3time 2*rb3time rb3time/2.5 -1 50 0
 
-freqlin 3 2*rb3time 4*rb3time rb1freq+rb3det rb1freq+rb3det 0 0
+freqlin 3 rb3time 2*rb3time rb3freq rb3freq 0 0
 
-setsingle 3 4*rb3time 0 100 0 0 
+setsingle 3 2*rb3time 0 100 0 0 
 
 
 program 3

@@ -259,7 +259,7 @@ void CameraSettingsControl::handleSetTemperatureOffPress()
 {
 	andorFriend->changeTemperatureSetting(true);
 }
-
+10ms
 
 void CameraSettingsControl::handleSetTemperaturePress()
 {
