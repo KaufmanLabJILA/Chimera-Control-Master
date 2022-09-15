@@ -61,6 +61,9 @@ public:
 	void setAccumulationNumber(int number);
 	void setAcquisitionMode();
 	void setAcquisitionMode(int mode);
+	void setFastKineticsEx();
+	void setFastKineticsEx(int exposedRows, int seriesLength, float time, int mode, int hbin, int vbin, int offset);
+	void setFKVShiftSpeed(int index);
 	void setADChannel(int channel);
 	void setEmCcdGain(int gain);
 	void SetFastExternalTrigger(int mode);
@@ -75,7 +78,8 @@ public:
 	void getHSSpeed(int channel, int typ, int index, float *speed);
 	void getNumberVSSpeeds(int *speeds);
 	void getNumberHSSpeeds(int channel, int typ, int *speeds);
-
+	void getFKVShiftSpeedF(int index, float *speed);
+	void getFKExposureTime(float* time);
 
 	void setImage(int hBin, int vBin, int lBorder, int rBorder, int tBorder, int bBorder);
 	void setKineticCycleTime();
@@ -86,6 +90,7 @@ public:
 	void setReadMode();
 	void setReadMode(int mode);
 	void setRingExposureTimes(int sizeOfTimesArray, float* arrayOfTimes);
+	void setSingleExposure();
 	void setTemperature(int temp);
 	void setTriggerMode(int mode);
 	void startAcquisition();

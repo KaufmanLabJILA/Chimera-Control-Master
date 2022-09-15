@@ -75,9 +75,9 @@ dio5.4
 0
 dio5.5
 0
-dio5.6
+ionization
 0
-dio5.7
+uv
 0
 blueimage
 0
@@ -113,13 +113,13 @@ dio7.7
 0
 cameratrig
 0
-awgrb3
+rb3awg
 0
-pump
+axialcool
 0
-dio8.3
+rb2awg
 0
-dio8.4
+rb1awg
 0
 dio8.5
 0
@@ -145,11 +145,11 @@ tweezerdepth
 slmdepth
 -10 - 10
 0
-clockpiezohor
+clockpiezover
 -4 - 4
 0
-clockpiezover
--10 - 0
+clockpiezohor
+-4 - 4
 0
 imagingpow
 -10 - 10
@@ -157,13 +157,13 @@ imagingpow
 imagtune
 -10 - 10
 0
-depumpfreq
--10 - 10
+uvpiezohor
+0 - 10
 0
-tweezermod
--10 - 10
+uvpiezover
+0 - 10
 0
-intensity698
+dcoffsetmod
 -10 - 10
 0
 tweezerpow
@@ -283,7 +283,7 @@ dds11
 0
 0 - 100
 100
-41
+51
 bluemotcoil 1.1
 bluex 0.3791
 bluey 0.178
@@ -294,35 +294,45 @@ greeny 0.03502
 greenz -0.2979
 blueloadtime 150
 greenbroadloadtime 25
-greennarrowloadtime 20
+greennarrowloadtime 23
 lacfreq 91.3
-lacpower 50
-coolfreq 91.3224
-coolpower 29.88
+lacpower 89.9
+coolfreq 94.65
+coolpower 30
 lactime 30
-cooltime 10
+cooltime 2
 greennarrowfreq 82.6
-greennarrowpower 2
-greennarrowpowerstart 3.5
+greennarrowpower 2.5
+greennarrowpowerstart 4.338
 bluefreq 110
 bluetime 300
 bluepower 30
 setpoint556 2.65
 comploadtime 20
-rb1freq 99.8
 ddswait 2000
 ttlwait 0.1
 dacwait 10
-greenpower 24
-greentime 30
-greenfreq 75.98
+greenpower 43
+greentime 5
+greenfreq 71.1005
 imgcooltime 10
 loadtime 32
-loadfreq 82.33
+loadfreq 82.26
 depth -1.98
-axialcoolfreq 75.752
-axialcoolpower 17.2885
+axialcoolfreq 70.7189
+axialcoolpower 23
 slmpowerfactor 1.92
-xmagic 1.5
-ymagic 0.436542
-200 300 1 200 300 1
+xmagic 2.5
+ymagic 0.7993
+img_depth -6.72
+overhead_depth -7.5
+filter_depth -0.05
+spec_depth -0.96
+xzero 0.0659
+yzero 0.0089
+zzero -0.1969
+blowaway_depth -0.2
+ramsey_depth -0.12
+ramptime 2
+yclock 4.8
+80 370 1 225 240 1

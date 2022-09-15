@@ -45,6 +45,7 @@ void CameraSettingsControl::initialize(cameraPositions& pos, int& id, CWnd* pare
 	cameraModeCombo.AddString("Kinetic Series Mode");
 	cameraModeCombo.AddString("Accumulation Mode");
 	cameraModeCombo.AddString("Video Mode");
+	cameraModeCombo.AddString("Fast Kinetics Mode");
 	cameraModeCombo.SelectString(0, "Kinetic Series Mode");
 	runSettings.cameraMode = "Kinetic Series Mode";
 	pos.amPos.y += 25;
@@ -229,7 +230,7 @@ void CameraSettingsControl::setRunSettings(AndorRunSettings inputSettings)
 	kineticCycleTimeEdit.SetWindowTextA(cstr(inputSettings.kineticCycleTime));
 	accumulationCycleTimeEdit.SetWindowTextA(cstr(inputSettings.accumulationTime));
 	cameraModeCombo.SelectString(0, cstr(inputSettings.cameraMode));
-	if (inputSettings.cameraMode == "Continuous Single Scans Mode")
+	if (inputSettings.cameraMode == "Video Mode")
 	{
 		inputSettings.acquisitionMode = 5;
 		inputSettings.totalPicsInVariation = INT_MAX;
@@ -237,6 +238,10 @@ void CameraSettingsControl::setRunSettings(AndorRunSettings inputSettings)
 	else if (inputSettings.cameraMode == "Kinetic Series Mode")
 	{
 		inputSettings.acquisitionMode = 3;
+	}
+	else if (inputSettings.cameraMode == "Fast Kinetics Mode")
+	{
+		inputSettings.acquisitionMode = 4;
 	}
 	else if (inputSettings.cameraMode == "Accumulate Mode")
 	{
@@ -254,7 +259,7 @@ void CameraSettingsControl::handleSetTemperatureOffPress()
 {
 	andorFriend->changeTemperatureSetting(true);
 }
-
+10ms
 
 void CameraSettingsControl::handleSetTemperaturePress()
 {
@@ -564,6 +569,10 @@ void CameraSettingsControl::handleOpenConfig(std::ifstream& configFile, int vers
 	{
 		tempSettings.acquisitionMode = 3;
 	}
+	else if (tempSettings.cameraMode == "Fast Kinetics Mode")
+	{
+		tempSettings.acquisitionMode = 4;
+	}
 	else if (tempSettings.cameraMode == "Accumulate Mode")
 	{
 		tempSettings.acquisitionMode = 2;
@@ -647,6 +656,10 @@ void CameraSettingsControl::handleModeChange(CameraWindow* cameraWindow)
 	else if (runSettings.cameraMode == "Kinetic Series Mode")
 	{
 		runSettings.acquisitionMode = 3;
+	}
+	else if (runSettings.cameraMode == "Fast Kinetics Mode")
+	{
+		runSettings.acquisitionMode = 4;
 	}
 	else if (runSettings.cameraMode == "Accumulate Mode")
 	{

@@ -157,6 +157,10 @@ AndorRunSettings CameraConfigurationSystem::openConfiguration(std::string config
 	{
 		settings.acquisitionMode = 3;
 	}
+	else if (settings.cameraMode == "Fast Kinetics Mode")
+	{
+		settings.acquisitionMode = 4;
+	}
 	else if (settings.cameraMode == "Accumulate Mode")
 	{
 		settings.acquisitionMode = 2;

@@ -90,6 +90,7 @@ namespace commonFunctions
 					camWin->preparePlotter(input);
 					camWin->prepareAtomCruncher(input);
 
+
 					logParameters( input, camWin, true );
 
 					if (!ATOMCRUNCHER_SAFEMODE) {
@@ -302,7 +303,7 @@ namespace commonFunctions
 				}
 				try
 				{
-					commonFunctions::logParameters( input, camWin, false );
+					//commonFunctions::logParameters( input, camWin, false );
 				}
 				catch (Error& err)
 				{

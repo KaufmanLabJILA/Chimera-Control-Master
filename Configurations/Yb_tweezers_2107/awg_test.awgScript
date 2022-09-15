@@ -44,98 +44,86 @@ reset
 
 
 
-setsteps 0 rb4time/100 0 rb4time
+%setsingle 0 0 100 clockfreq 0 0 
 
-ampgauss 0 0 rb4time rb4time/3 1 0 30
+%setsteps 0 clocktime/35 0 clocktime
 
-freqlin 0 0 rb4time rbcarrier+rb4freq_pulsed rbcarrier+rb4freq_pulsed 1 0
+%ampgauss 0 0 clocktime clocktime/2.5 1 0 2
 
+%freqlin 0 0 clocktime clockfreq  clockfreq  0 0
 
+%setsteps 0 clocktime/35 clocktime clocktime*2
 
-setsteps 0 rb4time/100 rb4time 2*rb4time
+%ampgauss 0 clocktime 2*clocktime clocktime/2.5 -1 2 0
 
-ampgauss 0 rb4time 2*rb4time rb4time/3 -1 30 0
+%freqlin 0 clocktime 2*clocktime clockfreq clockfreq 0 0
 
-freqlin 0 rb4time 2*rb4time rbcarrier+rb4freq_pulsed rbcarrier+rb4freq_pulsed 0 0
-
-
-
-setsingle 0 2*rb4time 0 0 0 0 
-
+%
+%setsingle 0 0 100 clockfreq 0 0
+setsingle 0 2*clocktime 0 clockfreq 0 0
 
 
 program 0
 
 
+setsteps 1 rbtime/15 0 rbtime
+
+ampgauss 1 0 rbtime rbtime/2.5 1 0 80 
+
+freqlin 1 0 rbtime rbfreq rbfreq  1 0
 
 
+setsteps 1 rbtime/15 rbtime 2*rbtime
 
-setsteps 1 rb2time/100 0 rb2time
+ampgauss 1 rbtime 2*rbtime rbtime/2.5 -1 80 0
 
-ampgauss 1 0 rb2time rb2time/3 1 0 70 
+freqlin 1 rbtime 2*rbtime rbfreq rbfreq 0 0
 
-freqlin 1 0 rb2time rbcarrier+rb2freq_pulsed rbcarrier+rb2freq_pulsed 1 0
-
-
-
-setsteps 1 rb2time/100 rb2time 2*rb2time
-
-ampgauss 1 rb2time 2*rb2time rb2time/3 -1 70 0
-
-freqlin 1 rb2time 2*rb2time rbcarrier+rb2freq_pulsed rbcarrier+rb2freq_pulsed 0 0
-
-
-
-setsingle 1 2*rb2time 0 0 0 0 
-
-
+setsingle 1 2*rbtime 0 100 0 0 
 
 program 1
 
 
 
-setsteps 2 rbtime/100 0 rbtime
+%setsingle 2 0 100 90 0 0 
 
-ampgauss 2 0 rbtime rbtime/3 1 0 30
+%setsingle 2 100*1000 100 0 0 0 
 
-freqlin 2 0 rbtime freq freq  1 0
+setsteps 2 rb2time/15 0 rb2time
 
+ampgauss 2 0 rb2time rb2time/2.5 1 0 80 
 
-
-setsteps 2 rbtime/100 rbtime 2*rbtime
-
-ampgauss 2 rbtime 2*rbtime rbtime/3 -1 30 0
-
-freqlin 2 rbtime 2*rbtime freq  freq  0 0
+freqlin 2 0 rb2time rb2freq rb2freq  1 0
 
 
+setsteps 2 rb2time/15 rb2time 2*rb2time
 
-setsingle 2 2*rbtime 0 0 0 0 
+ampgauss 2 rb2time 2*rb2time rb2time/2.5 -1 80 0
 
+freqlin 2 rb2time 2*rb2time rb2freq rb2freq 0 0
 
+setsingle 2 2*rb2time 0 100 0 0 
 
 program 2
 
+%setsingle 2 0 100 90 0 0 
+
+%setsingle 2 100*1000 100 0 0 0 
+
+setsteps 3 rb3time/15 0 rb3time
+
+ampgauss 3 0 rb3time rb3time/2.5 1 0 50 
+
+freqlin 3 0 rb3time rb3freq rb3freq  1 0
 
 
-setsteps 3 rb3time/100 0 rb3time
+setsteps 3 rb3time/15 rb3time 2*rb3time
 
-ampgauss 3 0 rb3time rb3time/3 1 0 70 
+ampgauss 3 rb3time 2*rb3time rb3time/2.5 -1 50 0
 
-freqlin 3 0 rb3time rbcarrier+rb3freq_pulsed rbcarrier+rb3freq_pulsed 1 0
+freqlin 3 rb3time 2*rb3time rb3freq rb3freq 0 0
 
-
-
-setsteps 3 rb3time/100 rb3time 2*rb3time
-
-ampgauss 3 rb3time 2*rb3time rb3time/3 -1 70 0
-
-freqlin 3 rb3time 2*rb3time rbcarrier+rb3freq_pulsed rbcarrier+rb3freq_pulsed 0 0
-
-
-
-setsingle 3 2*rb3time 0 0 0 0 
-
+setsingle 3 2*rb3time 0 100 0 0 
 
 
 program 3
@@ -147,6 +135,3 @@ program 3
 
 
 %trigger
-
-
-

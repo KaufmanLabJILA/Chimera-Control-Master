@@ -6,49 +6,49 @@
 /*
 * initialize all controls associated with single picture.
 */
-void PictureControl::initialize( POINT& loc, CWnd* parent, int& id, int width, int height, std::array<UINT, 2> minMaxIds )
+void PictureControl::initialize(POINT& loc, CWnd* parent, int& id, int width, int height, std::array<UINT, 2> minMaxIds)
 {
-	if ( width < 100 )
+	if (width < 100)
 	{
-		throw std::invalid_argument( "Pictures must be greater than 100 in width because this is the size of the max/min"
-									 "controls." );
+		throw std::invalid_argument("Pictures must be greater than 100 in width because this is the size of the max/min"
+			"controls.");
 	}
-	if ( height < 100 )
+	if (height < 100)
 	{
-		throw std::invalid_argument( "Pictures must be greater than 100 in height because this is the minimum height "
-									 "of the max/min controls." );
+		throw std::invalid_argument("Pictures must be greater than 100 in height because this is the minimum height "
+			"of the max/min controls.");
 	}
 
-	setPictureArea( loc, width, height );
+	setPictureArea(loc, width, height);
 
 	loc.x += unscaledBackgroundArea.right - unscaledBackgroundArea.left;
 	// "min" text
 	labelMin.sPos = { loc.x, loc.y, loc.x + 50, loc.y + 30 };
-	labelMin.Create( "MIN", NORM_STATIC_OPTIONS, labelMin.sPos, parent, id++ );
+	labelMin.Create("MIN", NORM_STATIC_OPTIONS, labelMin.sPos, parent, id++);
 	// minimum number text
 	editMin.sPos = { loc.x, loc.y + 30, loc.x + 50, loc.y + 60 };
-	editMin.Create( NORM_EDIT_OPTIONS | ES_AUTOHSCROLL, editMin.sPos, parent, minMaxIds[0] );
+	editMin.Create(NORM_EDIT_OPTIONS | ES_AUTOHSCROLL, editMin.sPos, parent, minMaxIds[0]);
 	// minimum slider
 	sliderMin.sPos = { loc.x, loc.y + 60, loc.x + 50, loc.y + unscaledBackgroundArea.bottom - unscaledBackgroundArea.top };
-	sliderMin.Create( NORM_CWND_OPTIONS | TBS_AUTOTICKS | TBS_VERT, sliderMin.sPos, parent, id++ );
-	sliderMin.SetRange( 0, 2000 );
-	sliderMin.SetPageSize( UINT( (minSliderPosition - minSliderPosition) / 10.0 ) );
+	sliderMin.Create(NORM_CWND_OPTIONS | TBS_AUTOTICKS | TBS_VERT, sliderMin.sPos, parent, id++);
+	sliderMin.SetRange(0, 2000);
+	sliderMin.SetPageSize(UINT((minSliderPosition - minSliderPosition) / 10.0));
 	// "max" text
 	labelMax.sPos = { loc.x + 50, loc.y, loc.x + 100, loc.y + 30 };
-	labelMax.Create( "MAX", NORM_STATIC_OPTIONS, labelMax.sPos, parent, id++ );
+	labelMax.Create("MAX", NORM_STATIC_OPTIONS, labelMax.sPos, parent, id++);
 	// maximum number text
 	editMax.sPos = { loc.x + 50, loc.y + 30, loc.x + 100, loc.y + 60 };
-	editMax.Create( NORM_EDIT_OPTIONS | ES_AUTOHSCROLL, editMax.sPos, parent, minMaxIds[1] );
+	editMax.Create(NORM_EDIT_OPTIONS | ES_AUTOHSCROLL, editMax.sPos, parent, minMaxIds[1]);
 	// maximum slider
 	sliderMax.sPos = { loc.x + 50, loc.y + 60, loc.x + 100, loc.y + unscaledBackgroundArea.bottom - unscaledBackgroundArea.top };
-	sliderMax.Create( NORM_CWND_OPTIONS | TBS_AUTOTICKS | TBS_VERT, sliderMax.sPos, parent, id++ );
-	sliderMax.SetRange( 0, 2000 );
-	sliderMax.SetPageSize( int( (minSliderPosition - minSliderPosition) / 10.0 ) );
+	sliderMax.Create(NORM_CWND_OPTIONS | TBS_AUTOTICKS | TBS_VERT, sliderMax.sPos, parent, id++);
+	sliderMax.SetRange(0, 2000);
+	sliderMax.SetPageSize(int((minSliderPosition - minSliderPosition) / 10.0));
 	// reset this.
 	loc.x -= unscaledBackgroundArea.right - unscaledBackgroundArea.left;
 	// manually scroll the objects to initial positions.
-	handleScroll( sliderMin.GetDlgCtrlID( ), 95 );
-	handleScroll( sliderMax.GetDlgCtrlID( ), 395 );
+	handleScroll(sliderMin.GetDlgCtrlID(), 450);
+	handleScroll(sliderMax.GetDlgCtrlID(), 600);
 }
 
 
@@ -69,10 +69,10 @@ void PictureControl::setSliderPositions(UINT min, UINT max)
 
 
 /*
- * Used during initialization & when used when transitioning between 1 and >1 pictures per repetition. 
+ * Used during initialization & when used when transitioning between 1 and >1 pictures per repetition.
  * Sets the unscaled background area and the scaled area.
  */
-void PictureControl::setPictureArea( POINT loc, int width, int height )
+void PictureControl::setPictureArea(POINT loc, int width, int height)
 {
 	// this is important for the control to know where it should draw controls.
 	unscaledBackgroundArea = { loc.x, loc.y, loc.x + width, loc.y + height };
@@ -96,7 +96,7 @@ void PictureControl::setPictureArea( POINT loc, int width, int height )
 		heightPicScale = 1;
 		widthPicScale = double(unofficialImageParameters.width) / unofficialImageParameters.height;
 	}
-	ULONG picWidth = ULONG( (scaledBackgroundArea.right - scaledBackgroundArea.left)*widthPicScale );
+	ULONG picWidth = ULONG((scaledBackgroundArea.right - scaledBackgroundArea.left)*widthPicScale);
 	ULONG picHeight = scaledBackgroundArea.bottom - scaledBackgroundArea.top;
 	POINT mid = { (scaledBackgroundArea.left + scaledBackgroundArea.right) / 2,
 				  (scaledBackgroundArea.top + scaledBackgroundArea.bottom) / 2 };
@@ -107,7 +107,7 @@ void PictureControl::setPictureArea( POINT loc, int width, int height )
 }
 
 
-/* used when transitioning between single and multiple pictures. It sets it based on the background size, so make 
+/* used when transitioning between single and multiple pictures. It sets it based on the background size, so make
  * sure to change the background size before using this.
  * ********/
 void PictureControl::setSliderLocations(CWnd* parent)
@@ -125,17 +125,17 @@ void PictureControl::setSliderLocations(CWnd* parent)
 	long blockHeight = long(30 * heightScale);
 	labelMin.sPos = { loc.x, loc.y, loc.x + collumnWidth , loc.y + blockHeight };
 	// minimum number text
-	editMin.sPos = { loc.x, loc.y + blockHeight, loc.x + collumnWidth , loc.y + 2* blockHeight };
+	editMin.sPos = { loc.x, loc.y + blockHeight, loc.x + collumnWidth , loc.y + 2 * blockHeight };
 	// minimum slider
-	sliderMin.sPos = { loc.x, loc.y + 2* blockHeight, loc.x + collumnWidth ,
+	sliderMin.sPos = { loc.x, loc.y + 2 * blockHeight, loc.x + collumnWidth ,
 					   long(loc.y + (unscaledBackgroundArea.bottom - unscaledBackgroundArea.top) * heightScale) };
 	// "max" text
 	loc.x += collumnWidth;
 	labelMax.sPos = { loc.x, loc.y, loc.x + collumnWidth , loc.y + blockHeight };
 	// maximum number text
-	editMax.sPos = { loc.x, loc.y + blockHeight, loc.x + collumnWidth , loc.y + 2* blockHeight };
+	editMax.sPos = { loc.x, loc.y + blockHeight, loc.x + collumnWidth , loc.y + 2 * blockHeight };
 	// maximum slider
-	sliderMax.sPos = { loc.x, loc.y + 2* blockHeight, loc.x + collumnWidth ,
+	sliderMax.sPos = { loc.x, loc.y + 2 * blockHeight, loc.x + collumnWidth ,
 					   long(loc.y + (unscaledBackgroundArea.bottom - unscaledBackgroundArea.top)*heightScale) };
 }
 
@@ -143,7 +143,7 @@ void PictureControl::setSliderLocations(CWnd* parent)
 /*
  * Called in order to see if a right click is above a camera pixel. Returns coordinates of the camera pixel.
  */
-coordinate PictureControl::checkClickLocation( CPoint clickLocation )
+coordinate PictureControl::checkClickLocation(CPoint clickLocation)
 {
 	CPoint test;
 	for (UINT colInc = 0; colInc < grid.size(); colInc++)
@@ -153,26 +153,26 @@ coordinate PictureControl::checkClickLocation( CPoint clickLocation )
 			RECT relevantRect = grid[colInc][rowInc];
 			// check if inside box
 			if (clickLocation.x <= relevantRect.right && clickLocation.x >= relevantRect.left
-				 && clickLocation.y <= relevantRect.bottom && clickLocation.y >= relevantRect.top)
+				&& clickLocation.y <= relevantRect.bottom && clickLocation.y >= relevantRect.top)
 			{
 				// returns row x column
 				coordinate location;
-				location.row = rowInc+1;
-				location.column = colInc+1;
+				location.row = rowInc + 1;
+				location.column = colInc + 1;
 				return location;
 				// then click was inside a box so this should do something.
 			}
 		}
 	}
 	// null result. only first number is checked.
-	thrower( "Not Found" );
+	thrower("Not Found");
 }
 
 
 /*
  * change the colormap used for a given picture.
  */
-void PictureControl::updatePalette( HPALETTE palette )
+void PictureControl::updatePalette(HPALETTE palette)
 {
 	imagePalette = palette;
 }
@@ -181,7 +181,7 @@ void PictureControl::updatePalette( HPALETTE palette )
 /*
  * called when the user changes either the min or max edit.
  */
-void PictureControl::handleEditChange( int id )
+void PictureControl::handleEditChange(int id)
 {
 	if (!editMax)
 	{
@@ -194,13 +194,13 @@ void PictureControl::handleEditChange( int id )
 		editMax.GetWindowTextA(tempStr);
 		try
 		{
-			max = std::stoi( str(tempStr) );
+			max = std::stoi(str(tempStr));
 		}
 		catch (std::invalid_argument&)
 		{
-			thrower( "Please enter an integer." ); 
+			thrower("Please enter an integer.");
 		}
-		sliderMax.SetPos( max );
+		sliderMax.SetPos(max);
 		maxSliderPosition = max;
 	}
 	if (id == editMin.GetDlgCtrlID())
@@ -210,13 +210,13 @@ void PictureControl::handleEditChange( int id )
 		editMin.GetWindowTextA(tempStr);
 		try
 		{
-			min = std::stoi( str(tempStr) );
+			min = std::stoi(str(tempStr));
 		}
 		catch (std::invalid_argument&)
 		{
-			thrower( "Please enter an integer." );
+			thrower("Please enter an integer.");
 		}
-		sliderMin.SetPos( min );
+		sliderMin.SetPos(min);
 		minSliderPosition = min;
 	}
 }
@@ -249,7 +249,7 @@ void PictureControl::handleScroll(int id, UINT nPos)
 
 
 /*
- * Recalculate the grid of pixels, which needs to be done e.g. when changing number of pictures or re-sizing the 
+ * Recalculate the grid of pixels, which needs to be done e.g. when changing number of pictures or re-sizing the
  * picture. Does not draw the grid.
  */
 void PictureControl::recalculateGrid(imageParameters newParameters)
@@ -288,8 +288,8 @@ void PictureControl::recalculateGrid(imageParameters newParameters)
 		{
 			// for all 4 pictures...
 			grid[colInc][rowInc].left = int(pictureArea.left
-											 + (double)colInc * (pictureArea.right - pictureArea.left) 
-											 / (double)grid.size( ) + 2);
+				+ (double)colInc * (pictureArea.right - pictureArea.left)
+				/ (double)grid.size() + 2);
 			grid[colInc][rowInc].right = int(pictureArea.left
 				+ (double)(colInc + 1) * (pictureArea.right - pictureArea.left) / (double)grid.size() + 2);
 			grid[colInc][rowInc].top = int(pictureArea.top
@@ -300,10 +300,10 @@ void PictureControl::recalculateGrid(imageParameters newParameters)
 	}
 }
 
-/* 
+/*
  * sets the state of the picture and changes visibility of controls depending on that state.
  */
-void PictureControl::setActive( bool activeState )
+void PictureControl::setActive(bool activeState)
 {
 	active = activeState;
 	if (!active)
@@ -331,15 +331,15 @@ void PictureControl::setActive( bool activeState )
 }
 
 /*
- * redraws the background and image. 
+ * redraws the background and image.
  */
-void PictureControl::redrawImage( CDC* easel)
+void PictureControl::redrawImage(CDC* easel)
 {
 	drawBackground(easel);
 	if (active && mostRecentImage.size() != 0)
 	{
 		drawPicture(easel, mostRecentImage, mostRecentAutoscaleInfo, mostRecentSpecialMinSetting,
-					mostRecentSpecialMaxSetting );
+			mostRecentSpecialMaxSetting);
 	}
 
 	// TODO?
@@ -352,12 +352,12 @@ void PictureControl::resetStorage()
 }
 /*
  * draw the picture that the camera took. The camera's data is inputted as a 1D vector of long here. The control needs
- * the camera window context since there's no direct control associated with the picture itself. Could probably change 
+ * the camera window context since there's no direct control associated with the picture itself. Could probably change
  * that.
  */
-void PictureControl::drawPicture( CDC* deviceContext, std::vector<long> picData, 
-								  std::tuple<bool, int/*min*/, int/*max*/> autoScaleInfo, bool specialMin, 
-								  bool specialMax )
+void PictureControl::drawPicture(CDC* deviceContext, std::vector<long> picData,
+	std::tuple<bool, int/*min*/, int/*max*/> autoScaleInfo, bool specialMin,
+	bool specialMax)
 {
 	/// initialize various structures
 	mostRecentImage = picData;
@@ -388,10 +388,10 @@ void PictureControl::drawPicture( CDC* deviceContext, std::vector<long> picData,
 	BYTE *DataArray;
 	// this should probably be rewritten to use the deviceContext directly instead of this win32 style call.
 	// Rotated
-	SelectPalette( deviceContext->GetSafeHdc(), imagePalette, true );
-	RealizePalette( deviceContext->GetSafeHdc() );
+	SelectPalette(deviceContext->GetSafeHdc(), imagePalette, true);
+	RealizePalette(deviceContext->GetSafeHdc());
 	pixelsAreaWidth = pictureArea.right - pictureArea.left + 1;
-	pixelsAreaHeight = pictureArea.bottom - pictureArea.top + 1;	
+	pixelsAreaHeight = pictureArea.bottom - pictureArea.top + 1;
 	dataWidth = grid.size();
 	// assumes non-zero size...
 	dataHeight = grid[0].size();
@@ -408,7 +408,7 @@ void PictureControl::drawPicture( CDC* deviceContext, std::vector<long> picData,
 		argbq[paletteIndex] = (WORD)paletteIndex;
 	}
 
-	bitmapInfoPtr = (PBITMAPINFO)LocalAlloc( LPTR, sizeof( BITMAPINFOHEADER ) + sizeof( RGBQUAD ) * (1 << 8) );
+	bitmapInfoPtr = (PBITMAPINFO)LocalAlloc(LPTR, sizeof(BITMAPINFOHEADER) + sizeof(RGBQUAD) * (1 << 8));
 	bitmapInfoPtr->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
 	bitmapInfoPtr->bmiHeader.biPlanes = 1;
 	bitmapInfoPtr->bmiHeader.biBitCount = 8;
@@ -417,8 +417,8 @@ void PictureControl::drawPicture( CDC* deviceContext, std::vector<long> picData,
 	bitmapInfoPtr->bmiHeader.biSizeImage = 0;
 	bitmapInfoPtr->bmiHeader.biHeight = dataHeight;
 	memcpy(bitmapInfoPtr->bmiColors, argbq, sizeof(WORD) * PICTURE_PALETTE_SIZE);
-	DataArray = (BYTE*)malloc( (dataWidth * dataHeight) * sizeof( BYTE ) );
-	memset( DataArray, 255, (dataWidth * dataHeight) * sizeof( BYTE ) );
+	DataArray = (BYTE*)malloc((dataWidth * dataHeight) * sizeof(BYTE));
+	memset(DataArray, 255, (dataWidth * dataHeight) * sizeof(BYTE));
 	double tempDouble = 1;
 	int tempInteger;
 	/// convert image data to correspond to colors, i.e. convert to being between 0 and 255.
@@ -427,7 +427,7 @@ void PictureControl::drawPicture( CDC* deviceContext, std::vector<long> picData,
 		for (int widthInc = 0; widthInc < dataWidth; widthInc++)
 		{
 			// get temporary value for color of the pixel.
-			if ( widthInc + heightInc * dataWidth >= picData.size())
+			if (widthInc + heightInc * dataWidth >= picData.size())
 			{
 				return;
 			}
@@ -472,7 +472,7 @@ void PictureControl::drawPicture( CDC* deviceContext, std::vector<long> picData,
 		}
 	}
 
-	SetStretchBltMode( deviceContext->GetSafeHdc(), COLORONCOLOR );
+	SetStretchBltMode(deviceContext->GetSafeHdc(), COLORONCOLOR);
 	// I think that this should be possible to do witha  std::vector<BYTE> and getting the pointer to that vector using
 	// .data() member.
 	BYTE *finalDataArray = NULL;
@@ -482,54 +482,54 @@ void PictureControl::drawPicture( CDC* deviceContext, std::vector<long> picData,
 	// very strange ways.
 	switch (dataWidth)
 	{
-		case 0:
+	case 0:
+	{
+		bitmapInfoPtr->bmiHeader.biWidth = dataWidth;
+		bitmapInfoPtr->bmiHeader.biSizeImage = 1;
+		StretchDIBits(deviceContext->GetSafeHdc(), pictureArea.left, pictureArea.top,
+			pixelsAreaWidth, pixelsAreaHeight, 0, 0, dataWidth,
+			dataHeight, DataArray, (BITMAPINFO FAR*)bitmapInfoPtr, DIB_PAL_COLORS, SRCCOPY);
+		break;
+	}
+	case 2:
+	{
+		// make array that is twice as long.
+		finalDataArray = (BYTE*)malloc(dataWidth * dataHeight * 2);
+		memset(finalDataArray, 255, dataWidth * dataHeight * 2);
+		for (int dataInc = 0; dataInc < dataWidth * dataHeight; dataInc++)
 		{
-			bitmapInfoPtr->bmiHeader.biWidth = dataWidth;
-			bitmapInfoPtr->bmiHeader.biSizeImage = 1;
-			StretchDIBits( deviceContext->GetSafeHdc(), pictureArea.left, pictureArea.top,
-						   pixelsAreaWidth, pixelsAreaHeight, 0, 0, dataWidth,
-						   dataHeight, DataArray, (BITMAPINFO FAR*)bitmapInfoPtr, DIB_PAL_COLORS, SRCCOPY );
-			break;
+			finalDataArray[2 * dataInc] = DataArray[dataInc];
+			finalDataArray[2 * dataInc + 1] = DataArray[dataInc];
 		}
-		case 2:
+		bitmapInfoPtr->bmiHeader.biWidth = dataWidth * 2;
+		StretchDIBits(*deviceContext, pictureArea.left, pictureArea.top, pixelsAreaWidth, pixelsAreaHeight, 0, 0,
+			dataWidth * 2, dataHeight, finalDataArray, (BITMAPINFO FAR*)bitmapInfoPtr, DIB_PAL_COLORS,
+			SRCCOPY);
+		free(finalDataArray);
+		break;
+	}
+	default:
+	{
+		// scale by a factor of 4.
+		finalDataArray = (BYTE*)malloc(dataWidth * dataHeight * 4);
+		memset(finalDataArray, 255, dataWidth * dataHeight * 4);
+		for (int dataInc = 0; dataInc < dataWidth * dataHeight; dataInc++)
 		{
-			// make array that is twice as long.
-			finalDataArray = (BYTE*)malloc(dataWidth * dataHeight * 2);
-			memset(finalDataArray, 255, dataWidth * dataHeight * 2);
-			for (int dataInc = 0; dataInc < dataWidth * dataHeight; dataInc++)
-			{
-				finalDataArray[2 * dataInc] = DataArray[dataInc];
-				finalDataArray[2 * dataInc + 1] = DataArray[dataInc];
-			}
-			bitmapInfoPtr->bmiHeader.biWidth = dataWidth * 2;
-			StretchDIBits( *deviceContext, pictureArea.left, pictureArea.top, pixelsAreaWidth, pixelsAreaHeight, 0, 0, 
-						   dataWidth * 2, dataHeight, finalDataArray, (BITMAPINFO FAR*)bitmapInfoPtr, DIB_PAL_COLORS, 
-						   SRCCOPY );
-			free(finalDataArray);
-			break;
+			int data = DataArray[dataInc];
+			finalDataArray[4 * dataInc] = data;
+			finalDataArray[4 * dataInc + 1] = data;
+			finalDataArray[4 * dataInc + 2] = data;
+			finalDataArray[4 * dataInc + 3] = data;
 		}
-		default:
-		{
-			// scale by a factor of 4.
-			finalDataArray = (BYTE*)malloc(dataWidth * dataHeight * 4);
-			memset(finalDataArray, 255, dataWidth * dataHeight * 4);
-			for (int dataInc = 0; dataInc < dataWidth * dataHeight; dataInc++)
-			{
-				int data = DataArray[dataInc];
-				finalDataArray[4 * dataInc] = data;
-				finalDataArray[4 * dataInc + 1] = data;
-				finalDataArray[4 * dataInc + 2] = data;
-				finalDataArray[4 * dataInc + 3] = data;
-			}
-			bitmapInfoPtr->bmiHeader.biWidth = dataWidth * 4;
-			StretchDIBits( *deviceContext, pictureArea.left, pictureArea.top, pixelsAreaWidth, pixelsAreaHeight, 0, 0, dataWidth * 4, dataHeight,
-						   finalDataArray, (BITMAPINFO FAR*)bitmapInfoPtr, DIB_PAL_COLORS, SRCCOPY );
-			free(finalDataArray);
-			break;
-		}
+		bitmapInfoPtr->bmiHeader.biWidth = dataWidth * 4;
+		StretchDIBits(*deviceContext, pictureArea.left, pictureArea.top, pixelsAreaWidth, pixelsAreaHeight, 0, 0, dataWidth * 4, dataHeight,
+			finalDataArray, (BITMAPINFO FAR*)bitmapInfoPtr, DIB_PAL_COLORS, SRCCOPY);
+		free(finalDataArray);
+		break;
+	}
 	}
 	delete[] DataArray;
-	LocalFree( bitmapInfoPtr );
+	LocalFree(bitmapInfoPtr);
 }
 
 
@@ -537,7 +537,7 @@ void PictureControl::drawPicture( CDC* deviceContext, std::vector<long> picData,
  * recolor the background box, clearing last run.
  */
 void PictureControl::drawBackground(CDC* easel)
-{	
+{
 	easel->SelectObject(GetStockObject(DC_BRUSH));
 	easel->SelectObject(GetStockObject(DC_PEN));
 	// dark green brush
@@ -546,15 +546,15 @@ void PictureControl::drawBackground(CDC* easel)
 	easel->SetDCPenColor(RGB(255, 255, 255));
 	// Drawing a rectangle with the current Device Context
 	// (slightly larger than the image zone).
-	RECT rectArea = { scaledBackgroundArea.left, scaledBackgroundArea.top, scaledBackgroundArea.right, 
+	RECT rectArea = { scaledBackgroundArea.left, scaledBackgroundArea.top, scaledBackgroundArea.right,
 					  scaledBackgroundArea.bottom };
 	easel->Rectangle(&rectArea);
 }
 
 
-/* 
+/*
  * draw the grid which outlines where each pixel is.  Especially needs to be done when selecting pixels and no picture
- * is displayed. 
+ * is displayed.
  */
 void PictureControl::drawGrid(CDC* easel, CBrush* brush)
 {
@@ -587,7 +587,7 @@ void PictureControl::drawGrid(CDC* easel, CBrush* brush)
 
 
 /*
- * draws the circle which denotes the selected pixel that the user wants to know the counts for. 
+ * draws the circle which denotes the selected pixel that the user wants to know the counts for.
  */
 void PictureControl::drawCircle(CDC* dc, coordinate selectedLocation)
 {
@@ -603,118 +603,118 @@ void PictureControl::drawCircle(CDC* dc, coordinate selectedLocation)
 		return;
 	}
 
-	if ( selectedLocation.column > grid.size( ) || selectedLocation.row > grid[0].size() 
-		 || selectedLocation.row <=0 || selectedLocation.column <= 0 )
+	if (selectedLocation.column > grid.size() || selectedLocation.row > grid[0].size()
+		|| selectedLocation.row <= 0 || selectedLocation.column <= 0)
 	{
 		// quietly don't try to draw.
 		return;
 	}
 	RECT smallRect;
-	RECT relevantRect = grid[selectedLocation.column-1][selectedLocation.row-1];
+	RECT relevantRect = grid[selectedLocation.column - 1][selectedLocation.row - 1];
 	smallRect.left = relevantRect.left + long(7.0 * (relevantRect.right - relevantRect.left) / 16.0);
-	smallRect.right = relevantRect.left + long( 9.0 * (relevantRect.right - relevantRect.left) / 16.0);
-	smallRect.top = relevantRect.top + long( 7.0 * (relevantRect.bottom - relevantRect.top) / 16.0);
-	smallRect.bottom = relevantRect.top + long( 9.0 * (relevantRect.bottom - relevantRect.top) / 16.0);
+	smallRect.right = relevantRect.left + long(9.0 * (relevantRect.right - relevantRect.left) / 16.0);
+	smallRect.top = relevantRect.top + long(7.0 * (relevantRect.bottom - relevantRect.top) / 16.0);
+	smallRect.bottom = relevantRect.top + long(9.0 * (relevantRect.bottom - relevantRect.top) / 16.0);
 	// get appropriate brush and pen
 	if (dc == NULL)
 	{
 		thrower("dc was null!");
 	}
-	dc->SelectObject( GetStockObject( HOLLOW_BRUSH ) );
-	dc->SelectObject( GetStockObject( DC_PEN ) );
-	
+	dc->SelectObject(GetStockObject(HOLLOW_BRUSH));
+	dc->SelectObject(GetStockObject(DC_PEN));
+
 	if (colorIndicator == 0 || colorIndicator == 2)
 	{
-		dc->SetDCPenColor( RGB( 255, 0, 0 ) );
-		dc->Ellipse( relevantRect.left, relevantRect.top, relevantRect.right, relevantRect.bottom );
-		dc->SelectObject( GetStockObject( DC_BRUSH ) );
-		dc->SetDCBrushColor( RGB( 255, 0, 0 ) );
+		dc->SetDCPenColor(RGB(255, 0, 0));
+		dc->Ellipse(relevantRect.left, relevantRect.top, relevantRect.right, relevantRect.bottom);
+		dc->SelectObject(GetStockObject(DC_BRUSH));
+		dc->SetDCBrushColor(RGB(255, 0, 0));
 	}
 	else
 	{
-		dc->SetDCPenColor( RGB( 0, 255, 0 ) );
-		dc->Ellipse( relevantRect.left, relevantRect.top, relevantRect.right, relevantRect.bottom );
-		dc->SelectObject( GetStockObject( DC_BRUSH ) );
-		dc->SetDCBrushColor( RGB( 0, 255, 0 ) );
+		dc->SetDCPenColor(RGB(0, 255, 0));
+		dc->Ellipse(relevantRect.left, relevantRect.top, relevantRect.right, relevantRect.bottom);
+		dc->SelectObject(GetStockObject(DC_BRUSH));
+		dc->SetDCBrushColor(RGB(0, 255, 0));
 	}
-	dc->Ellipse( smallRect.left, smallRect.top, smallRect.right, smallRect.bottom );
+	dc->Ellipse(smallRect.left, smallRect.top, smallRect.right, smallRect.bottom);
 }
 
 void PictureControl::drawAnalysisMarkers(CDC* dc, std::vector<coordinate> analysisLocs, atomGrid gridInfo)
 {
-	if ( !active )
+	if (!active)
 	{
 		return;
 	}
 	// draw and set.
 	HPEN crossPen;
 	crossPen = CreatePen(0, 1, RGB(255, 0, 0));
-		
+
 	dc->SelectObject(crossPen);
 
-	if ( gridInfo.topLeftCorner == coordinate( 0, 0 ) )
+	if (gridInfo.topLeftCorner == coordinate(0, 0))
 	{
 		// atom grid is empty, not to be used.
 		UINT count = 1;
-		for ( auto loc : analysisLocs )
+		for (auto loc : analysisLocs)
 		{
-			if ( loc.column >= grid.size( ) || loc.row >= grid[0].size( ) )
+			if (loc.column >= grid.size() || loc.row >= grid[0].size())
 			{
 				// just quietly don't try to draw. Could also have this throw, haven't decided exactly how I 
 				// want to deal with this yet.
 				continue;
 			}
-			drawRectangle( dc, grid[loc.column][loc.row] );
+			drawRectangle(dc, grid[loc.column][loc.row]);
 
-			dc->DrawTextEx( const_cast<char *>(cstr( count )), str( count ).size( ), &grid[loc.column][loc.row], 
-							DT_CENTER | DT_SINGLELINE | DT_VCENTER, NULL );
+			dc->DrawTextEx(const_cast<char *>(cstr(count)), str(count).size(), &grid[loc.column][loc.row],
+				DT_CENTER | DT_SINGLELINE | DT_VCENTER, NULL);
 			count++;
 		}
-		DeleteObject( crossPen );
+		DeleteObject(crossPen);
 	}
 	else
 	{
 		// use the atom grid.
 		UINT count = 1;
-		for ( auto columnInc : range( gridInfo.width ) )
+		for (auto columnInc : range(gridInfo.width))
 		{
-			for ( auto rowInc : range( gridInfo.height ) )
+			for (auto rowInc : range(gridInfo.height))
 			{
-				UINT pixelRow = gridInfo.topLeftCorner.row-1 + rowInc * gridInfo.pixelSpacing;
-				UINT pixelColumn = gridInfo.topLeftCorner.column-1 + columnInc * gridInfo.pixelSpacing;
-				if ( pixelColumn >= grid.size( ) || pixelRow >= grid[0].size( ) )
+				UINT pixelRow = gridInfo.topLeftCorner.row - 1 + rowInc * gridInfo.pixelSpacing;
+				UINT pixelColumn = gridInfo.topLeftCorner.column - 1 + columnInc * gridInfo.pixelSpacing;
+				if (pixelColumn >= grid.size() || pixelRow >= grid[0].size())
 				{
 					// just quietly don't try to draw. Could also have this throw, haven't decided exactly how I 
 					// want to deal with this yet.
 					continue;
 				}
-				drawRectangle( dc, grid[pixelColumn][pixelRow] );
-				dc->DrawTextEx( const_cast<char *>(cstr( count )), str( count ).size( ), &grid[pixelColumn][pixelRow],
-								DT_CENTER | DT_SINGLELINE | DT_VCENTER, NULL );
+				drawRectangle(dc, grid[pixelColumn][pixelRow]);
+				dc->DrawTextEx(const_cast<char *>(cstr(count)), str(count).size(), &grid[pixelColumn][pixelRow],
+					DT_CENTER | DT_SINGLELINE | DT_VCENTER, NULL);
 				count++;
 			}
 		}
 	}
-	DeleteObject( crossPen );
+	DeleteObject(crossPen);
 }
 
 
-void PictureControl::drawRectangle( CDC* dc, RECT pixelRect )
+void PictureControl::drawRectangle(CDC* dc, RECT pixelRect)
 {
-	dc->MoveTo( { pixelRect.left, pixelRect.top } );
+	dc->MoveTo({ pixelRect.left, pixelRect.top });
 
-	dc->SetBkMode( TRANSPARENT );
-	dc->SetTextColor( RGB( 200, 200, 200 ) );
+	dc->SetBkMode(TRANSPARENT);
+	dc->SetTextColor(RGB(200, 200, 200));
 
-	dc->LineTo( pixelRect.right, pixelRect.top );
-	dc->LineTo( pixelRect.right, pixelRect.bottom );
-	dc->LineTo( pixelRect.left, pixelRect.bottom );
-	dc->LineTo( pixelRect.left, pixelRect.top );
+	dc->LineTo(pixelRect.right, pixelRect.top);
+	dc->LineTo(pixelRect.right, pixelRect.bottom);
+	dc->LineTo(pixelRect.left, pixelRect.bottom);
+	dc->LineTo(pixelRect.left, pixelRect.top);
 }
 
 
 /*
- * re-arrange the controls associated with this picture. Neccessary e.g. when the window is resized. 
+ * re-arrange the controls associated with this picture. Neccessary e.g. when the window is resized.
  */
 void PictureControl::rearrange(std::string cameraMode, std::string triggerMode, int width, int height, fontMap fonts)
 {
@@ -753,5 +753,5 @@ void PictureControl::rearrange(std::string cameraMode, std::string triggerMode, 
 		pictureArea.top = mid.y - height / 2;
 		pictureArea.bottom = mid.y + height / 2;
 
-	}	
+	}
 }

@@ -236,23 +236,34 @@ void AndorCamera::armCamera(CameraWindow* camWin, double& minKineticCycleTime)
 
 	setAcquisitionMode();
 	setReadMode();
-	setExposures();
 	setImageParametersToCamera();
 	// Set Mode-Specific Parameters
 	if (runSettings.acquisitionMode == 5)
 	{
+		setExposures();
 		setFrameTransferMode();
 	}
 	else if (runSettings.acquisitionMode == 3)
 	{
+		setExposures();
 		setFrameTransferMode(0);
 		setKineticCycleTime();
 		setScanNumber();
 		// set this to 1.
 		setNumberAccumulations(true);
 	}
+	else if (runSettings.acquisitionMode == 4)
+	{
+		setSingleExposure();
+		setFrameTransferMode(0);
+		setScanNumber();
+		setAccumulationCycleTime();
+		setFastKineticsEx();
+		setFKVShiftSpeed(ANDOR_VSS_INDEX);
+	}
 	else if (runSettings.acquisitionMode == 2)
 	{
+		setExposures();
 		setAccumulationCycleTime();
 		setNumberAccumulations(false);
 	}
@@ -522,6 +533,12 @@ void AndorCamera::setScanNumber()
 void AndorCamera::setFrameTransferMode()
 {
 	setFrameTransferMode(runSettings.frameTransferMode);
+}
+
+void AndorCamera::setFastKineticsEx()
+{
+	setFastKineticsEx(runSettings.imageSettings.height, runSettings.picsPerRepetition, runSettings.exposureTimes[0],
+		4, runSettings.imageSettings.horizontalBinning, runSettings.imageSettings.verticalBinning, runSettings.imageSettings.bottom);
 }
 
 
@@ -1293,6 +1310,23 @@ void AndorCamera::getVSSpeed(int index, float *speed)
 	}
 }
 
+void AndorCamera::getFKVShiftSpeedF(int index, float *speed)
+{
+	if (!ANDOR_SAFEMODE)
+	{
+		GetFKVShiftSpeedF(index, speed);
+	}
+}
+
+void AndorCamera::getFKExposureTime(float *time)
+{
+	if (!ANDOR_SAFEMODE)
+	{
+		GetFKExposureTime(time);
+	}
+}
+
+
 void AndorCamera::getHSSpeed(int channel, int typ, int index, float *speed)
 {
 	if (!ANDOR_SAFEMODE)
@@ -1383,6 +1417,14 @@ void AndorCamera::setRingExposureTimes(int sizeOfTimesArray, float* arrayOfTimes
 	}
 }
 
+void AndorCamera::setSingleExposure()
+{
+	if (!ANDOR_SAFEMODE)
+	{
+		andorErrorChecker(SetExposureTime(runSettings.exposureTimes[0]));
+	}
+}
+
 
 void AndorCamera::setImage(int hBin, int vBin, int lBorder, int rBorder, int tBorder, int bBorder)
 {
@@ -1409,6 +1451,23 @@ void AndorCamera::setFrameTransferMode(int mode)
 		andorErrorChecker(SetFrameTransferMode(mode));
 	}
 }
+
+void AndorCamera::setFastKineticsEx(int exposedRows, int seriesLength, float time, int mode, int hbin, int vbin, int offset)
+{
+	if (!ANDOR_SAFEMODE)
+	{
+		andorErrorChecker(SetFastKineticsEx(exposedRows, seriesLength, time, mode, hbin, vbin, offset));
+	}
+}
+
+void AndorCamera::setFKVShiftSpeed(int index)
+{
+	if (!ANDOR_SAFEMODE)
+	{
+		andorErrorChecker(SetFKVShiftSpeed(index));
+	}
+}
+
 
 double AndorCamera::getMinKineticCycleTime()
 {

@@ -855,6 +855,7 @@ void CameraWindow::prepareCamera(ExperimentInput& input)
 	// update at this point.
 	readImageParameters();
 	//
+	CameraSettings.updateRunSettingsFromPicSettings();
 	CameraSettings.updatePassivelySetSettings();
 	pics.setNumberPicturesActive(CameraSettings.getSettings().picsPerRepetition, CameraSettings.getPicsPerRepManual());
 	// this is a bit awkward at the moment.
@@ -879,13 +880,17 @@ void CameraWindow::prepareCamera(ExperimentInput& input)
 	float hss;
 	float pgain;
 	int numhspeeds;
+	float fkvss;
+	float fkexp;
 	// compare to the Andor et functions to see which indices you should read
 	Andor.getVSSpeed(ANDOR_VSS_INDEX, &vss);
 	Andor.getHSSpeed(0, 0, ANDOR_HSS_INDEX, &hss);
 	Andor.getPreAmpGain(ANDOR_PREAMP_INDEX, pgain);
 	Andor.getNumberHSSpeeds(0, 0, &numhspeeds);
+	Andor.getFKVShiftSpeedF(ANDOR_VSS_INDEX, &fkvss);
+	Andor.getFKExposureTime(&fkexp);
 	mainWindowFriend->getComm()->sendStatus("Vertical shift speed = " + str(vss) + " us\nHorizontal shift speed = " + str(hss) + " MHz\n"
-		"Pre-amp gain = " + str(pgain) + "\n\r");
+		"Pre-amp gain = " + str(pgain) + "\n Fast Kinetics vertical shift speed = " + str(fkvss) + "us \n Fast Kinetics exposure time = " + str(fkexp) + "s \n\r");
 }
 
 
@@ -1000,15 +1005,17 @@ void CameraWindow::prepareAtomCruncher(ExperimentInput& input)
 		input.cruncherInput->subpixelMasks = arrSubpixelMasks.as_vec<int16>();
 		input.cruncherInput->nSubpixel = arrSubpixelMasks.shape[0];
 
-		if ((arrSubpixelMasks.shape[2] != input.cruncherInput->imageDims.width) || (arrSubpixelMasks.shape[1] != input.cruncherInput->imageDims.height))
-		{
-			thrower("Subpixel mask dimensions do not match image dimensions.");
+		if (!ATOMCRUNCHER_SAFEMODE) {
+			if ((arrSubpixelMasks.shape[2] != input.cruncherInput->imageDims.width) || (arrSubpixelMasks.shape[1] != input.cruncherInput->imageDims.height))
+			{
+				thrower("Subpixel mask dimensions do not match image dimensions.");
+			}
+			std::copy(
+				input.cruncherInput->subpixelMasks.begin() + (arrSubpixelMasks.shape[1] * arrSubpixelMasks.shape[2]) * (arrSubpixelMasks.shape[0] / 2),
+				input.cruncherInput->subpixelMasks.begin() + (arrSubpixelMasks.shape[1] * arrSubpixelMasks.shape[2]) * (arrSubpixelMasks.shape[0] / 2 + 1),
+				std::back_inserter(input.cruncherInput->subpixelMaskSingle)
+			); //copy central mask for convenience
 		}
-		std::copy(
-			input.cruncherInput->subpixelMasks.begin() + (arrSubpixelMasks.shape[1] * arrSubpixelMasks.shape[2]) * (arrSubpixelMasks.shape[0] / 2),
-			input.cruncherInput->subpixelMasks.begin() + (arrSubpixelMasks.shape[1] * arrSubpixelMasks.shape[2]) * (arrSubpixelMasks.shape[0] / 2 + 1),
-			std::back_inserter(input.cruncherInput->subpixelMaskSingle)
-		); //copy central mask for convenience
 	}
 	catch (const std::runtime_error& e) {
 		errBox(e.what());
