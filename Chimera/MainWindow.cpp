@@ -205,6 +205,40 @@ void MainWindow::passConfigPress( )
 //	}
 //}
 
+void MainWindow::passGmoogIsOnPress()
+{
+	if (gmoog.rearrangerActive)
+	{
+		gmoog.rearrangerActive = false;
+		menu.CheckMenuItem(ID_GIGAMOOG_REARRANGERACTIVE, MF_UNCHECKED);
+	}
+	else
+	{
+		gmoog.rearrangerActive = true;
+		menu.CheckMenuItem(ID_GIGAMOOG_REARRANGERACTIVE, MF_CHECKED);
+	}
+}
+
+void MainWindow::passAutoAlignIsOnPress()
+{
+	if (gmoog.autoTweezerOffsetActive)
+	{
+		gmoog.autoTweezerOffsetActive = false;
+		gmoog.xPixelOffsetAuto = 0;
+		gmoog.yPixelOffsetAuto = 0;
+		gmoog.subpixelIndexOffsetAuto = 12;
+		gmoog.xOffsetAuto = NULL;
+		gmoog.yOffsetAuto = NULL;
+
+		menu.CheckMenuItem(ID_GIGAMOOG_AUTOTWEEZERALIGNACTIVE, MF_UNCHECKED);
+	}
+	else
+	{
+		gmoog.autoTweezerOffsetActive = true;
+		menu.CheckMenuItem(ID_GIGAMOOG_AUTOTWEEZERALIGNACTIVE, MF_CHECKED);
+	}
+}
+
 
 LRESULT MainWindow::onNoAtomsAlertMessage( WPARAM wp, LPARAM lp )
 {
