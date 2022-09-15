@@ -335,4 +335,4 @@ blowaway_depth -0.2
 ramsey_depth -0.12
 ramptime 2
 yclock 4.8
-80 370 1 225 240 1
+115 265 1 215 250 1
