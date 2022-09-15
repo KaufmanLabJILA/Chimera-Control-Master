@@ -93,9 +93,9 @@
     <LibraryPath>C:\Program Files\Andor SOLIS\Drivers;C:\Users\Mark\Documents\Quantum Gas Assembly Control\Chimera;C:\Program Files (x86)\National Instruments\NI-DAQ\DAQmx ANSI C Dev\lib\msvc;C:\Program Files (x86)\IVI Foundation\VISA\WinNT\lib\msc;C:\Program Files (x86)\IVI Foundation\IVI\Lib\msc;C:\Program Files (x86)\HDF_Group\HDF5\Release\HDF5-1.10.1-win32\lib;$(ProjectDir)\Packages\boost_1_64_0\lib-32bit;$(ProjectDir)\Packages\32-Bit-Libs\Release\HDF5-1.10.1-win32-Release\lib;$(ProjectDir)\Packages\32-Bit-Libs\Release\Python;$(ProjectDir)\Packages\32-Bit-Libs\DIO64;$(ProjectDir)\Packages\32-Bit-Libs\Release\Andor;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\Users\klab\anaconda3\include;C:\Users\klab\Documents\Chimera-Control-Master\Chimera\Packages\64-Bit-Libs\boost_1_64_0;$(IncludePath);C:\Users\klab\Documents\Chimera-Control-Master\Chimera\Packages\64-Bit-Libs\Release\HDF5-1.10.1-win64\include;C:\Program Files\Andor SDK</IncludePath>
+    <IncludePath>C:\Users\klab\anaconda3\include;B:\Yb heap\Experiment_code_Yb\Chimera-Control-Master\Chimera\Packages\64-Bit-Libs\boost_1_64_0;$(IncludePath);B:\Yb heap\Experiment_code_Yb\Chimera-Control-Master\Chimera\Packages\64-Bit-Libs\Release\HDF5-1.10.1-win64\include;C:\Program Files\Andor SDK</IncludePath>
     <LinkIncremental>false</LinkIncremental>
-    <LibraryPath>C:\Users\klab\Documents\Chimera-Control-Master\Chimera\Packages\64-Bit-Libs\boost_1_64_0\lib-64bit;C:\Users\klab\Documents\Chimera-Control-Master\Chimera\Packages\64-Bit-Libs\Release\HDF5-1.10.1-win64\lib;$(ProjectDir)\Packages\64-Bit-Libs\Release\Python;C:\Program Files\Andor SDK;$(LibraryPath);C:\Program Files (x86)\National Instruments\Shared\ExternalCompilerSupport\C\lib64\msvc;C:\Users\klab\anaconda3\libs</LibraryPath>
+    <LibraryPath>$(ProjectDir)\Packages\64-Bit-Libs\boost_1_64_0\lib-64bit;$(ProjectDir)\Packages\64-Bit-Libs\Release\HDF5-1.10.1-win64\lib;$(ProjectDir)\Packages\64-Bit-Libs\Release\Python;C:\Program Files\Andor SDK;$(LibraryPath);C:\Program Files (x86)\National Instruments\Shared\ExternalCompilerSupport\C\lib64\msvc;C:\Users\klab\anaconda3\libs</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

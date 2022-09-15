@@ -11,8 +11,8 @@
 // build and debug other aspects of the program.
 
 //#define MASTER_COMPUTER
-#define DEEP_THOUGHT
-//#define SAMANTHA
+//#define DEEP_THOUGHT
+#define SAMANTHA
 //#define ADAMS_LAB
 // #define DESKTOP_COMPUTER
 //#define SALAMIS_TABLET
@@ -51,7 +51,8 @@
 #define DDS_TIME_RESOLUTION 1.6 // in ms
 #define DDS_MAX_AMP 100 // in mW
 #define DDS_FPGA_PORT "COM7" //Mimas A7 DDS
-#define GIGAMOOG_PORT "COM6"
+#define GIGAMOOG_PORT 804
+#define GIGAMOOG_IPADDRESS "192.168.7.179"
 #define AWG_PORT "COM13"
 #define AWG_BAUD 115200 /*921600*/ 
 #define TOP_BOTTOM_TEK_SAFEMODE true
@@ -135,7 +136,7 @@ const std::string DDS_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAUL
 #define DAC_TIME_RESOLUTION 0.02 // in ms, 50 kHz update rate
 #define DDS_TIME_RESOLUTION 1.6 // in ms
 #define DDS_MAX_AMP 100 // in mW
-#define DDS_FPGA_ADDRESS "FT3OUIF6A" //"FT3OUIF6B"
+#define DDS_FPGA_PORT "COM7" //Mimas A7 DDS
 #define GIGAMOOG_PORT 804
 #define GIGAMOOG_IPADDRESS "192.168.7.179"
 #define AWG_PORT "COM13"

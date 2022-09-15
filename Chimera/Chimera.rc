@@ -307,6 +307,11 @@ BEGIN
         MENUITEM "Get NI&AWG Error",            ID_NIAWG_GETNIAWGERROR
         MENUITEM "NIAWG is On",                 ID_NIAWG_NIAWGISON, CHECKED
     END
+	POPUP "&Gigamoog"
+	BEGIN
+	MENUITEM "Rearranger active", ID_GIGAMOOG_REARRANGERACTIVE
+	MENUITEM "Auto tweezer align active", ID_GIGAMOOG_AUTOTWEEZERALIGNACTIVE
+	END
     POPUP "Andor"
     BEGIN
         MENUITEM "Show Pictures in Real Time",  ID_PICTURES_SHOWPICTURESINREALTIME
