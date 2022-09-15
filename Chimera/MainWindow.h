@@ -39,6 +39,8 @@ class MainWindow : public CDialog
 	DECLARE_DYNAMIC(MainWindow);
 	public:
 	    // overrides
+		void passGmoogIsOnPress();
+		void passAutoAlignIsOnPress();
 		MainWindow(UINT id, CDialog*);
 		BOOL OnInitDialog() override;
 		HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);

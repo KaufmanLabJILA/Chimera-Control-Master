@@ -184,71 +184,6 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 		}
 		return rgbs["theme comment"];
 	}
-	// Check NIAWG-specific commands
-	//if ( editType == "Horizontal NIAWG" || editType == "Vertical NIAWG" )
-	//{
-	//	for ( auto num : range( 10 ) )
-	//	{
-	//		if ( word == "gen" + str( num + 1 ) + "const" || word == "gen" + str( num + 1 ) + "ampramp"
-	//			|| word == "gen" + str( num + 1 ) + "freqramp" || word == "gen" + str( num + 1 ) + "freq&ampramp"
-	//			 || word == "flash" || word == "rearrange")
-	//		{
-	//			return rgbs["theme purple"];
-	//		}
-	//	}
-	//	// check logic
-	//	if ( word == "repeattiltrig" || word == "repeatSet#" || word == "repeattilsoftwaretrig" || word == "endrepeat" 
-	//		 || word == "repeatforever" )
-	//	{
-	//		return rgbs["theme blue"];
-	//	}
-	//	// check options
-	//	if (word == "lin" || word == "nr" || word == "tanh")
-	//	{
-	//		return rgbs["theme green"];
-	//	}
-	//	// check variable
-	//	else if (word == "{" || word == "}")
-	//	{
-	//		return rgbs["theme aqua"];
-	//	}
-	//	if (word.size() > 8)
-	//	{
-	//		if (word.substr(word.size() - 8, 8) == ".nScript")
-	//		{
-	//			return rgbs["theme yellow"];
-	//		}
-	//	}
-	//}
-	// Check Moog-specific commands
-	//if (editType == "Moog") {
-	//	if (word == "startfreq"|| word == "stopfreq"|| word == "gain"|| word == "loadphase"|| word == "movephase"|| word == "onoff"|| word == "step")
-	//	{
-	//		return rgbs["theme purple"];
-	//	}
-	//	// check logic
-	//	if (word == "linloop"|| word=="customsequence")
-	//	{
-	//		return rgbs["theme blue"];
-	//	}
-	//	// check software triggers
-	//	if (word == "load" || word == "move")
-	//	{
-	//		return rgbs["theme green"];
-	//	}
-	//	// check variable
-	//	else if (word == "{" || word == "}")
-	//	{
-	//		return rgbs["theme aqua"];
-	//	}
-	//	if (word.size() > 8)
-	//	{
-	//		if (word.substr(word.size() - 8, 8) == ".moogScript")
-	//		{
-	//			return rgbs["theme yellow"];
-	//		}
-	//	}
-	//}
 	if (editType == "AWG") {
 		if (word == "setsteps" || word == "amplin" || word == "ampgauss" || word == "freqlin" || word == "setsingle")
 		{
@@ -278,7 +213,7 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 		}
 	}
 	if (editType == "Gmoog") {
-		if (word == "set")
+		if (word == "set" || word == "setmove" || word == "initx" || word == "inity" || word == "rearrange" || word == "targetstart" || word == "targetend")
 		{
 			return rgbs["theme purple"];
 		}

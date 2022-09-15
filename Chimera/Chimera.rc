@@ -299,14 +299,11 @@ BEGIN
             MENUITEM "Save F&unction",              ID_MASTERSCRIPT_SAVEFUNCTION
         END
     END
-    POPUP "NIA&WG"
-    BEGIN
-        MENUITEM "&Reload Default Waveforms",   ID_NIAWG_RELOADDEFAULTWAVEFORMS
-        MENUITEM "&Send Software Trigger",      ID_NIAWG_SENDSOFTWARETRIGGER
-        MENUITEM "Stream &Waveform",            ID_NIAWG_STREAMWAVEFORM
-        MENUITEM "Get NI&AWG Error",            ID_NIAWG_GETNIAWGERROR
-        MENUITEM "NIAWG is On",                 ID_NIAWG_NIAWGISON, CHECKED
-    END
+	POPUP "&Gigamoog"
+	BEGIN
+	MENUITEM "Rearranger active", ID_GIGAMOOG_REARRANGERACTIVE
+	MENUITEM "Auto tweezer align active", ID_GIGAMOOG_AUTOTWEEZERALIGNACTIVE
+	END
     POPUP "Andor"
     BEGIN
         MENUITEM "Show Pictures in Real Time",  ID_PICTURES_SHOWPICTURESINREALTIME

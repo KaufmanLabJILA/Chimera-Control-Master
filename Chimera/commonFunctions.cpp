@@ -618,6 +618,16 @@ namespace commonFunctions
 			//	mainWin->passNiawgIsOnPress( );
 			//	break;
 			//}
+			case ID_GIGAMOOG_REARRANGERACTIVE:
+			{
+				mainWin->passGmoogIsOnPress();
+				break;
+			}
+			case ID_GIGAMOOG_AUTOTWEEZERALIGNACTIVE:
+			{
+				mainWin->passAutoAlignIsOnPress();
+				break;
+			}
 			case ID_RUNMENU_ABORTCAMERA:
 			{
 				try
@@ -1043,7 +1053,9 @@ namespace commonFunctions
 	{
 		DataLogger* logger = camWin->getLogger();
 		logger->initializeDataFiles();
-		logger->logAndorSettings(input.camSettings, takeAndorPictures, input.cruncherInput->nMask);
+		if (!ANDOR_SAFEMODE) {
+			logger->logAndorSettings(input.camSettings, takeAndorPictures, input.cruncherInput->nMask);
+		}
 		logger->logMasterParameters( input.masterInput );
 		logger->logAWGParameters(input.masterInput);
 		logger->logMiscellaneous();

@@ -11,7 +11,7 @@
 MainWindow::MainWindow(UINT id, CDialog* splash) : CDialog(id), profile(PROFILES_PATH), 
     masterConfig( MASTER_CONFIGURATION_FILE_ADDRESS ), 
 	appSplash( splash ), dds(DDS_FPGA_PORT, 115200),
-	gmoog(GIGAMOOG_PORT, 115200), awg(AWG_PORT, AWG_BAUD), zynq_tcp() //115200
+	gmoog(GIGAMOOG_IPADDRESS, GIGAMOOG_PORT), awg(AWG_PORT, AWG_BAUD), zynq_tcp() //115200
 {
 	// create all the main rgbs and brushes. I want to make sure this happens before other windows are created.
 	mainRGBs["Light Green"]			= RGB( 163,	190, 140);
@@ -204,6 +204,40 @@ void MainWindow::passConfigPress( )
 //		menu.CheckMenuItem( ID_NIAWG_NIAWGISON, MF_CHECKED );
 //	}
 //}
+
+void MainWindow::passGmoogIsOnPress()
+{
+	if (gmoog.rearrangerActive)
+	{
+		gmoog.rearrangerActive = false;
+		menu.CheckMenuItem(ID_GIGAMOOG_REARRANGERACTIVE, MF_UNCHECKED);
+	}
+	else
+	{
+		gmoog.rearrangerActive = true;
+		menu.CheckMenuItem(ID_GIGAMOOG_REARRANGERACTIVE, MF_CHECKED);
+	}
+}
+
+void MainWindow::passAutoAlignIsOnPress()
+{
+	if (gmoog.autoTweezerOffsetActive)
+	{
+		gmoog.autoTweezerOffsetActive = false;
+		gmoog.xPixelOffsetAuto = 0;
+		gmoog.yPixelOffsetAuto = 0;
+		gmoog.subpixelIndexOffsetAuto = 12;
+		gmoog.xOffsetAuto = NULL;
+		gmoog.yOffsetAuto = NULL;
+
+		menu.CheckMenuItem(ID_GIGAMOOG_AUTOTWEEZERALIGNACTIVE, MF_UNCHECKED);
+	}
+	else
+	{
+		gmoog.autoTweezerOffsetActive = true;
+		menu.CheckMenuItem(ID_GIGAMOOG_AUTOTWEEZERALIGNACTIVE, MF_CHECKED);
+	}
+}
 
 
 LRESULT MainWindow::onNoAtomsAlertMessage( WPARAM wp, LPARAM lp )
