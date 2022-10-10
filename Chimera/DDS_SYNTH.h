@@ -38,10 +38,13 @@ public:
 	void lockPLLs();
 	INT getFTW(double freq);
 	UINT getATW(double amp);
+	UINT getPOW(double phase);
+
 	INT get32bitATW(double amp);
 	void channelSelect(UINT8 device, UINT8 channel);
 	void writefreq(UINT8 device, UINT8 channel, double freq);
 	void writeamp(UINT8 device, UINT8 channel, double freq);
+	void writePhaseOffset(UINT8 device, UINT8 channel, double phase);
 
 	void writeArrResetFreq(UINT8 device, UINT8 channel, double freq);
 	void writeArrResetAmp(UINT8 device, UINT8 channel, double amp);

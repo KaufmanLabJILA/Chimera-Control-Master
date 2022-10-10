@@ -304,7 +304,7 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 	}
 	// Check DDS-specific commands
 	if (editType == "DDS") {
-		if (word == "set")
+		if (word == "set" || word == "phaseoffset")
 		{
 			return rgbs["theme purple"];
 		}

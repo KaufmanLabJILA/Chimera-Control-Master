@@ -1,2 +1,3 @@
 % Default DDS Script
-set 0 3 60 100
+set 0 3 6 100 0
+set 0 1 6 100 pscan

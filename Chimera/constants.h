@@ -714,7 +714,7 @@ const char DDS_INFO_TEXT[] =
 "- The associated c++ code has been designed to be flexible when it comes to trailing white spaces at the ends of\n"
 " lines and in between commands, so use whatever such formatting pleases your eyes.\n"
 "Single output commands:\n"
-"set <device #> <channel #> <frequency in MHz> <amplitude from 1-100>\n"
+"set <device #> <channel #> <frequency in MHz> <amplitude from 1-100> <phase from (0,360]>\n"
 "\n"
 "Toggling and sweeping commands:\n"
 "Set sequence of \"snapshot\" commands. Each snapshot must contain, in order:\n"

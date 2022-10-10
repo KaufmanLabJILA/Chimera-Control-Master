@@ -3,6 +3,8 @@
 
 %%%
 
+phaseoffset 0 0 0 pscan 0 0 0 0
+
 % SB COOL LATTICE
 reset
 freqs 80 c_3p0+spec3p0/1000 180 c_3p0+spec3p0/1000 c_3p1_lat+f_rad_3d+.003 c_3p1_lat+f_rad_3d+.003 c_3p1_lat+f_ax_3d+0.005 c_3p1_lat+f_rad_3d-.007

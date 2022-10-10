@@ -181,6 +181,26 @@ void DDS_SYNTH::writeamp(UINT8 device, UINT8 channel, double amp) {
 	write(device, 6, 0, 0, byte1, byte2);
 }
 
+UINT DDS_SYNTH::getPOW(double phase) {
+	if (phase >= 360) {
+		thrower("DDS amplitude out of range, should be <360.");
+	}
+	UINT PTW = (UINT)round(phase * pow(2, 14) / 360.0);
+	return(PTW);
+}
+
+void DDS_SYNTH::writePhaseOffset(UINT8 device, UINT8 channel, double phase) {
+
+	UINT POW = getPOW(phase);
+
+	UINT8 byte2 = POW & 0x000000ffUL;
+	UINT8 byte1 = POW >> 8;
+
+	write(device, 5, 0, 0, 0, 0); //TODO: Fix this. Currently sets phase to zero and then back to force a rewrite, solving issue with inactive channels.
+	write(device, 5, 0, 0, byte1, byte2);
+}
+
+
 void DDS_SYNTH::loadDDSScript(std::string scriptAddress)
 {
 	std::ifstream scriptFile;
@@ -309,6 +329,27 @@ void DDS_SYNTH::programDDS(DDS_SYNTH* dds, std::vector<variableType>& variables,
 			writeArrFreq(WBWRITE_ARRAY, 0x400 + snapshot_num, 0);
 			write(WBWRITE_ARRAY, 0x0 + snapshot_num, 0, 0, 0, 0);*/
 		}
+		else if (word == "phaseoffset")
+		{
+			Expression phase;
+			for (UINT8 device = 0; device < 2; device++)
+			{
+				for (UINT8 channel = 0; channel < 4; channel++)
+				{
+					try
+					{
+						currentDDSScript >> phase;
+						channelSelect(device, channel);
+						writePhaseOffset(device, channel, phase.evaluate(variables, variation));
+					}
+					catch (const std::exception&)
+					{
+						thrower("Invalid phase offset. Need to set values for all channels.");
+					}
+
+				}
+			}
+		}
 		else if (word == "reset") {
 			Expression freq, amp;
 			std::string subWord;
@@ -432,16 +473,17 @@ void DDS_SYNTH::programDDS(DDS_SYNTH* dds, std::vector<variableType>& variables,
 		else if (word == "set") {
 			std::string devicenum;
 			std::string channelnum;
-			Expression freq;
-			Expression amp;
+			Expression freq, amp, phase;
 			currentDDSScript >> devicenum;
 			currentDDSScript >> channelnum;
 			currentDDSScript >> freq;
 			currentDDSScript >> amp;
-			
+			currentDDSScript >> phase;
+
 			channelSelect(stoul(devicenum, nullptr), stoul(channelnum, nullptr));
 			writefreq(stoul(devicenum, nullptr), stoul(channelnum, nullptr), freq.evaluate(variables, variation));
 			writeamp(stoul(devicenum, nullptr), stoul(channelnum, nullptr), amp.evaluate(variables, variation));
+			writePhaseOffset(stoul(devicenum, nullptr), stoul(channelnum, nullptr), phase.evaluate(variables, variation));
 		}
 		else
 		{
