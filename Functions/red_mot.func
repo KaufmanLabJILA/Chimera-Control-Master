@@ -34,9 +34,9 @@ def red_mot(loadTime):
   %dac: y1coil rmby
   %dac: y2coil rmby
   %dac: z1coil rmbz 
-
+  
   on: red3dnarrow
-  t += 100
+  t += 95
 
   %%%%%%%%%%%%%%%%%%%%%%%
 %  on: andorshut

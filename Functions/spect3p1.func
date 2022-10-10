@@ -1,0 +1,25 @@
+% Master-Script See the "?" for info on commands.
+def spect3p1():
+ on: imagshut
+ t += 4
+ %on: axial
+ on: radial
+ %on: radial2
+ t += 0.1
+ off: axial
+ off: radial
+ off: radial2
+
+ on: blowawayttl
+ t += .005
+ off: tweezerao
+ off: axlatTTL
+ off: lat813ao
+ t += .001
+ on: tweezerao
+ on: axlatTTL
+ on: lat813ao
+ t += .001
+ off: blowawayttl
+ off: pi407
+ %off: imagshut

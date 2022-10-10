@@ -2,18 +2,25 @@
 
 def imageshort_temp():
   dac: bluetune bluetune_imag
-  dac: imagingPow .3
-%  on: imag461
-%  t += .02
-%  off: imag461
-%  t += .02
+  dac: imagingPow 0.225
+
+  on: andorshut
+  t += 4
+  on: imagshut
+  t += 5
   on: andortrig
+  %on: imag461
+  on: blowawayttl
+  t += 5
+  off: imag461
+% t += .02
+  
 %  off: tweezerAO
   t += .0005
 %  on: imag461
-  on: blowawayttl
+%  on: blowawayttl
 %  t += .05
-  t += 1.5 % .2  %1, was 5ms 
+  % .2  %1, was 5ms 
   off: blowawayttl
   off: imagshut
   off: slower
@@ -21,7 +28,7 @@ def imageshort_temp():
   off: radial
   off: axial
   off: andortrig
-  %off: andorshut
+  off: andorshut
   off: radial2
   off: imag461
   t += .01

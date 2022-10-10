@@ -11,17 +11,18 @@ t += 5
 
 %pulseon: trigger .1
 
+on: radial
 on: radial2
 %on: axial
 
 repeat: 31
- pulseon: gmmove .0001
+ pulseon: gmmove .00011
  t += .08
 % t += 100.1
- pulseon: gmmove .0001
- t += .8
+ pulseon: gmmove .00011
+ t += 1.11
 % t += 100.1
- pulseon: gmmove .0001
+ pulseon: gmmove .00011
  t += .08
 % t += 100.1
 end
@@ -33,7 +34,10 @@ t += .08
 pulseon: gmmove .0001
 t += .8
 %t += 100.1
+
+off: radial
 off: radial2
+off: axial
 
 %daclinspace: latticepow lattice_pow lattice_zero 3 15
 %t += 4
@@ -46,7 +50,7 @@ off: radial2
 
 pulseon: resetdds .1
 t += .2
-repeat: 5
+repeat: 2
  pulseon: stepdds 0.007
  t += .1
 end
@@ -55,7 +59,7 @@ t += .1
 on: radial2
 daclinspace: axialpow ax_lattice_pow ax_lattice_zero 3 15
 t += 4
-daclinspace: latticepow lattice_pow lattice_zero 3 15
+daclinspace: latticepow lattice_pow lattice_zero 3 30
 t += 10
 off: radial2
 daclinspace: axialpow ax_lattice_zero ax_lattice_pow 3 15
@@ -65,16 +69,19 @@ t += 5
 
 pulseon: resetdds .1
 t += .2
-repeat: 2
+repeat: 1
  pulseon: stepdds 0.007
  t += .1
 end
 t += .1
 
+on: radial
 on: radial2
+
 pulseon: gmmove .0001
 t += .08
 
+off: radial
 off: radial2
 off: axial
 

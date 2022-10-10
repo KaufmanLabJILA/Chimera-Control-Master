@@ -11,21 +11,23 @@ t += 5
 
 %pulseon: trigger .1
 
+on: radial
 on: radial2
 %on: axial
 
-repeat: 32
- pulseon: gmmove .0001
- t += .08
+repeat: 40
+ pulseon: gmmove .00011
+ t += 0.08
 % t += 100.1
- pulseon: gmmove .0001
- t += .8
+ pulseon: gmmove .00011
+ t += 1
 % t += 100.1
- pulseon: gmmove .0001
- t += .08
+ pulseon: gmmove .00011
+ t += 0.08
 % t += 100.1
 end
 
+off: radial
 off: radial2
 off: axial
 

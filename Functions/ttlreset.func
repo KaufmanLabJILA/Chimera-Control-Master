@@ -36,7 +36,6 @@ on: axlatTTL
 on: shut689
 on: slower
 
-off: clkshut
 off: imagshut
 off: shut688
 off: rp688
@@ -44,3 +43,4 @@ on: bigzantihelm
 
 on: metertrig %meter trigger on falling edge
 off: pi407
+off: uvttl

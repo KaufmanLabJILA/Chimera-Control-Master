@@ -57,6 +57,7 @@
 
 	const std::string PROJECT_LOCATION = "C:\\Users\\KLab\\Desktop\\Chimera-Control-Master\\";
 	const std::string DATABASE_LOCATION = "A:\\";
+	//const std::string DATABASE_LOCATION = "D:\\";
 	const std::string PYTHON_CODE_LOCATION = "C:/Users/KLab/Desktop/Chimera-Control-Master/";
 	// same as debug output location but with forward slashes for ease of use in python
 	const std::string PYTHON_INPUT_LOCATION = "C:/Users/KLab/Desktop/Chimera-Control-Master/Debug-Output";

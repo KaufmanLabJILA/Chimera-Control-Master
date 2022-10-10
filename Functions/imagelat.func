@@ -13,7 +13,7 @@ def imageLat(imageTime):
  on: imag461
  on: axial
  on: radial2
- %on: radial %%%%
+ on: radial
  %on: red3dnarrow %%%%
  t += imageTime
 
