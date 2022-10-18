@@ -1,0 +1,29 @@
+set DAC0 0 80.0 144.4472631555316+xoff 30.0
+set DAC0 1 80.0 149.0932153090713+xoff 120.0
+set DAC0 2 80.0 170.0+xoff 270.0
+set DAC0 3 80.0 174.6459521535397+xoff 120.0
+set DAC0 4 80.0 195.5527368444684+xoff 30.0
+set DAC0 5 80.0 200.1986889980081+xoff 0.0
+
+set DAC1 0 80.0 149.4472631555316+yoff 30.0
+set DAC1 1 80.0 144.8013110019919+yoff 120.0
+set DAC1 2 80.0 175.0+yoff 270.0
+set DAC1 3 80.0 170.3540478464603+yoff 120.0
+set DAC1 4 80.0 200.5527368444684+yoff 30.0
+set DAC1 5 80.0 195.9067846909287+yoff 0.0
+
+%setmove 0 DAC0 0 0 0 80.0 -ampRate 144.9804910242904+xoff moveRate 30.0
+%setmove 0 DAC0 1 0 0 80.0 -ampRate 149.52949265623758+xoff moveRate 120.0
+%setmove 0 DAC0 2 0 0 80.0 -ampRate 170.0+xoff -moveRate 270.0
+%setmove 0 DAC0 3 0 0 80.0 -ampRate 174.5490016319472+xoff -moveRate 120.0
+%setmove 0 DAC0 4 0 0 80.0 -ampRate 195.0195089757096+xoff -moveRate 30.0
+%setmove 0 DAC0 5 0 0 80.0 -ampRate 199.5685106076568+xoff -moveRate 0.0
+
+%setmove 0 DAC1 0 0 0 80.0 -ampRate 149.23372021135924+yoff -moveRate 30.0
+%setmove 0 DAC1 1 0 0 80.0 -ampRate 144.54894206797002+yoff -moveRate 120.0
+%setmove 0 DAC1 2 0 0 80.0 -ampRate 175.0+yoff -moveRate 270.0
+%setmove 0 DAC1 3 0 0 80.0 -ampRate 170.31522185661078+yoff -moveRate 120.0
+%setmove 0 DAC1 4 0 0 80.0 -ampRate 200.76627978864076+yoff moveRate 30.0
+%setmove 0 DAC1 5 0 0 80.0 -ampRate 196.08150164525154+yoff moveRate 0.0
+
+%hardreset

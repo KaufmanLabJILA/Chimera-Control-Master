@@ -1,0 +1,20 @@
+rearrange amprate moverate %max is ampstep 134217727(?may be 26 bit), freqstep 511
+
+xoffset xoff
+yoffset yoff
+
+initx 1111111111111111
+inity 1
+
+targetstart
+
+0000000000000000
+
+targetend
+
+%%%
+
+%rearrangeroff
+%test
+
+%hardreset %This takes ~ 20 seconds to run.

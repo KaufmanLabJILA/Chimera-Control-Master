@@ -56,6 +56,10 @@ class gigaMoog {
 public:
 	gigaMoog(std::string IPAddress, int port);
 	virtual ~gigaMoog(void);
+	gigaMoog(const gigaMoog&) = default;
+	gigaMoog(gigaMoog&&) = default;
+	gigaMoog& operator = (const gigaMoog&) = default;
+	gigaMoog& operator = (gigaMoog&&) = default;
 
 	//Attempt to parse moog script
 	void loadMoogScript(std::string scriptAddress);

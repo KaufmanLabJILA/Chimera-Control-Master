@@ -44,6 +44,10 @@ BoostAsyncSerial::BoostAsyncSerial(
 	read();
 }
 
+BoostAsyncSerial::BoostAsyncSerial() {
+
+}
+
 BoostAsyncSerial::~BoostAsyncSerial()
 {
 	io_service_.stop();

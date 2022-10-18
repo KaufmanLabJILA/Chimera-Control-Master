@@ -1,0 +1,61 @@
+%%%FOR MATT: THE SCRIPT SYNTAX HAS CHANGED TO WHAT YOU
+%%%WOULD EXPECT IT TO BE, SPECIFY ENDPOINTS AND STEP
+%%%NUMBER, INSTEAD OF STEP SIZE. OLD START/END QUIRKS 
+%%%HAVE BEEN WRAPPED UP IN THE RESET AND END COMMANDS
+%%%MAY WANT TO CHECK THAT SETTINGS ARE STILL CORRECT.
+
+% Channel order:
+% tweezermod FNC 698 na red3dnarrow radial axial radial2
+
+% Setting initial state, what happens after reset.
+reset
+freqs 2 72.76 75 1 82.5 82.9 80 80 %freqs in MHz
+amps  0 100 100 100 100 100 100 100 %amps in percent
+
+% further cooling
+snapshot 0 reps 2
+freqs 5 72.76 75 1 80.55 80.16 80.25 100
+amps  0 100 100 100 100 100 10 100
+
+% pre-image
+snapshot 1 reps 2
+freqs 0 72.76 75 1 100 83.7 80.125 79.5
+amps  0 100 100 0 100 60 50 100
+
+%  image1
+snapshot 2 reps 2
+%freqs 0 120 2 specao 80.03 80.05 80.05 80
+freqs 0 72.76 75 1 84 83.7 83.5 79.94
+amps  10 100 100 100 25 60 90 100
+
+% post image cooling
+snapshot 3 reps 2
+freqs 0 72.76 75 1 80.06 radial_freq 79.975 radial_freq
+amps  10 100 100 100 100 cool_pow 5 25
+
+% spectroscopy
+snapshot 4 reps 2
+freqs 0 72.76 specscan 1 82.9 80 80 79.5
+amps  10 100 100 100 100 100 100 100
+
+% image2 %was 82.5, 100
+snapshot 5 reps 2
+freqs 0 72.76 75 1 82.9 83.7 83.5 79.94
+amps  10 100 100 100 100 60 90 100
+
+% NA
+snapshot 6 reps 2
+freqs 0 72.76 75 1 80.1 carrier+rsb carrier+asb carrier+rsb
+amps  0 100 100 100 10 50 30 100
+
+% NA
+snapshot 7 reps 2
+freqs 5 72.76 75 1 80.1 100 100 100
+amps  0 100 100 100 10 60 20 100
+
+% NA
+snapshot 8 reps 2
+freqs 0 72.76 75 1 79.95 80.0 80.05 80
+amps  0 100 100 100 100 100 100 100
+
+end

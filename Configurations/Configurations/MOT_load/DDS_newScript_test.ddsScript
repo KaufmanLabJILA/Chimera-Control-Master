@@ -1,0 +1,35 @@
+%%%FOR MATT: THE SCRIPT SYNTAX HAS CHANGED TO WHAT YOU
+%%%WOULD EXPECT IT TO BE, SPECIFY ENDPOINTS AND STEP
+%%%NUMBER, INSTEAD OF STEP SIZE. OLD START/END QUIRKS 
+%%%HAVE BEEN WRAPPED UP IN THE RESET AND END COMMANDS
+%%%MAY WANT TO CHECK THAT SETTINGS ARE STILL CORRECT.
+
+% Channel order:
+% null null null null red3dnarrow radial axial radial2
+
+% Setting initial state, what happens after reset.
+reset
+freqs 2 80 80 80 80.25 80.175 80.08 50 %freqs in MHz
+amps  0 20 20 20 16 10 20 10 %amps in percent
+
+% this is before the blue MOT
+snapshot 0 reps 1
+freqs 0 90 82 83 80.25 80.175 80.08 50
+amps  0 25 20 20 16 10 20 10
+
+% after red MOT, before further cooling
+snapshot 1 reps 1
+freqs 0 100 84 86 fscan 80.175 80.08 50 
+amps  0 20 20 20 31 10 20 10
+
+% after additional cooling step (spect)
+snapshot 2 reps 1
+freqs 0 110 2 3 fscan+0.075 80.175 80.08 50 
+amps  0 20 20 20 31 10 20 10 
+
+% right before imaging
+snapshot 3 reps 1
+freqs 0 120 2 3 80.25 0 0 0
+amps  0 20 20 20 31 37 20 10
+
+end

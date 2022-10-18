@@ -1,0 +1,57 @@
+% Channel order:
+% latticemod 813 698 515tweezerAO(axial) red3dnarrow radial axial radial2
+
+%%%
+
+% SB COOL
+reset
+%freqs 80 80 75 80 79.74 c_3p1+f_rad c_3p1+f_ax c_3p1+f_rad2
+%amps  0 100 100 100 0 3 2 5
+%freqs 80 80 75 80 79.74 c_3p1+.08 c_3p1+.08 c_3p1+.08
+%amps  0 100 100 100 0 5 3 5
+%freqs 80 80 75 80 79.74 c_3p1+.07 c_3p1+.08 c_3p1+.07
+%amps  0 100 100 100 0 16 5 25
+freqs 80 80 75 80 79.74 c_3p1+f_rad c_3p1+f_ax c_3p1+f_rad2
+amps  0 100 100 100 0 9 4 9
+
+% SPECTROSCOPY
+snapshot 0 reps 2
+freqs 80 80 75 80 spec3p1 spec3p1 spec3p1 spec3p1
+amps  0 100 100 100 0 8 2 5
+%freqs 80+modfreq 80 75 80 spec3p1 spec3p1 spec3p1 spec3p1
+%amps  5 100 100 50 0 3 2 5
+%freqs 80 80 75 80 c_3p1-.5 c_3p1-1.15 c_3p1-1.1 c_3p1-1.05
+%amps  0 100 100 100 30 22 25 45
+
+
+% IMAGE
+snapshot 1 reps 2
+%freqs 80 80 75 80 79.74 c_3p1+.07 c_3p1+.08 c_3p1+.07
+%amps  0 100 100 100 0 9 4 9
+freqs 80 80 75 80 79.74 c_3p1+.35 c_3p1+.2 c_3p1+.08
+amps  0 100 100 100 0 10 10 10
+%freqs 80 80 75 80 79.74+0 c_3p1-.45 c_3p1-.5 c_3p1-.35
+%amps  0 100 100 100 10 22 25 45
+%amps  0 100 100 100 0 100 100 100
+
+%%%
+% MOT
+snapshot 2 reps 2
+freqs 80 80 75 80 c_3p1+f_rmot_narrow 80 80 80
+amps  0 100 100 100 20 0 0 0
+
+% LAC
+snapshot 3 reps 2
+%freqs 80 80 75 80 79.74 80.05 80.05 80.05
+%amps  0 100 100 100 0 10 70 18
+freqs 80 80 75 80 79.74 c_3p1-.25 c_3p1+.08 c_3p1+.03
+amps  0 100 100 100 0 10 5 10
+
+% RED HEATING
+snapshot 4 reps 2
+%freqs 80 80 75 80 79.74 c_3p1 c_3p1+.13 c_3p1+.4
+%amps  0 100 100 100 0 6 20 5
+freqs 80 80 75 80 81 c_3p1-0.25 c_3p1+f_ax c_3p1+.075
+amps  0 100 100 100 0 4 20 16
+
+end

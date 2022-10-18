@@ -1,0 +1,41 @@
+%%%FOR MATT: THE SCRIPT SYNTAX HAS CHANGED TO WHAT YOU
+%%%WOULD EXPECT IT TO BE, SPECIFY ENDPOINTS AND STEP
+%%%NUMBER, INSTEAD OF STEP SIZE. OLD START/END QUIRKS 
+%%%HAVE BEEN WRAPPED UP IN THE RESET AND END COMMANDS
+%%%MAY WANT TO CHECK THAT SETTINGS ARE STILL CORRECT.
+
+% Channel order:
+% tweezermod null null null red3dnarrow radial axial radial2
+
+% Setting initial state, what happens after reset.
+reset
+freqs 2 80 80 80 81 82 80.0 80 %freqs in MHz
+amps  0 20 20 20 50 99 99 10 %amps in percent
+
+% further cooling
+snapshot 0 reps 1
+freqs 5 120 2 3 79.13 80.16 80.25 80
+amps  100 20 20 20 20 40 10 10
+
+% spectroscopy
+snapshot 1 reps 1
+freqs 5 120 2 3 80 80 80 80
+amps  1 20 20 20 80 40 5 10
+
+% first image
+snapshot 2 reps 1
+freqs 0 120 2 3 80.15 80.065 80.06 80
+amps  100 20 20 20 50 40 40 10
+
+% second image
+snapshot 3 reps 1
+%freqs 0 120 2 3 80.03 80.05 80.05 80
+freqs 0 120 2 3 80.15 80.05 80.05 80
+amps  0 20 20 20 15 40 40 10
+
+% third image
+snapshot 4 reps 1
+freqs 0 120 2 3 80.15 80.065 80.06 80
+amps  0 20 20 20 15 40 40 10
+
+end
