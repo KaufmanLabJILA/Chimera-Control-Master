@@ -1,0 +1,64 @@
+%%%FOR MATT: THE SCRIPT SYNTAX HAS CHANGED TO WHAT YOU
+%%%WOULD EXPECT IT TO BE, SPECIFY ENDPOINTS AND STEP
+%%%NUMBER, INSTEAD OF STEP SIZE. OLD START/END QUIRKS 
+%%%HAVE BEEN WRAPPED UP IN THE RESET AND END COMMANDS
+%%%MAY WANT TO CHECK THAT SETTINGS ARE STILL CORRECT.
+
+% Channel order:
+% tweezermod 813 698 FNCAO red3dnarrow radial axial radial2
+
+% Setting initial state, what happens after reset.
+reset
+freqs 0 80 75 72.76 82.5 82.9 80 80 %freqs in MHz
+amps  0 100 100 100 100 100 100 100 %amps in percent
+
+% further cooling
+snapshot 0 reps 2
+freqs 0 80 75 72.76 80.55 80.16 80.25 100
+amps  0 100 100 100 100 100 10 100
+
+% pre-image
+snapshot 1 reps 2
+freqs 0 80 75 72.76 100 radcool 79.975 lacfreq
+amps  0 100 100 100 100 radpow 30 lacpow
+%freqs 0 80 75 72.76 100 80.07 79.975 lacfreq
+%amps  0 100 100 100 100 100 30 lacpow
+
+%  image1
+snapshot 2 reps 2
+%freqs 0 120 2 specao 80.03 80.05 80.05 0
+freqs 0 80 75 72.76 84 radcool 83.5 radcool
+amps  10 100 100 100 25 radpow 90 radpow
+
+% post image cooling
+snapshot 3 reps 2
+freqs 0 80 75 72.76 80.06 80.07 79.975 80.07
+%freqs 0 72.76 75 1 80.06 79.823 79.885 79.797
+amps  10 100 100 100 100 100 30 45
+
+% spectroscopy
+snapshot 4 reps 2
+freqs 0 80 clock+specscan 72.76 82.9 spec3p1 spec3p1 spec3p1
+amps  0 100 100 100 100 85 25 15
+
+% image2 %was 82.5, 100
+snapshot 5 reps 2
+freqs 0 80 75 72.76 82.9 radcool 83.5 radcool
+amps  10 100 100 100 100 radpow 90 radpow
+
+% NA
+snapshot 6 reps 2
+freqs 0 80 75 72.76 80.1 carrier_3p1+rsb carrier_3p1+asb carrier_3p1+rsb
+amps  0 100 100 100 10 50 30 100
+
+% NA
+snapshot 7 reps 2
+freqs 5 80 75 72.76 80.1 100 100 100
+amps  0 100 100 100 10 60 20 100
+
+% NA
+snapshot 8 reps 2
+freqs 0 80 75 72.76 79.95 80.0 80.05 80
+amps  0 100 100 100 100 100 100 100
+
+end

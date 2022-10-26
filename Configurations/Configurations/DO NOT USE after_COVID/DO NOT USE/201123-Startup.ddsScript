@@ -1,0 +1,50 @@
+% Channel order:
+% latticemod 698freq UVao null red3dnarrow radial axial radial2
+
+%%%
+
+% SB COOL
+reset
+%freqs 80 c_3p0+.2 80 80 79.74 c_3p1+f_rad c_3p1+faxcool c_3p1+f_rad2
+%amps  0 100 UVaopow 100 0 6 16 1
+freqs 80 c_3p0+.2 80 80 79.74 c_3p1+f_rad c_3p1+faxcool c_3p1+f_rad2
+amps  0 100 UVaopow 100 0 3 6 0
+
+% SPECTROSCOPY
+snapshot 0 reps 2
+freqs 80 c_3p0+.2 80 80 spec3p1 spec3p1 spec3p1 spec3p1
+amps  0 100 UVaopow 100 28 2.5 2.5 .8
+
+% IMAGE
+snapshot 1 reps 2
+freqs 80 c_3p0 80 80 c_3p1+f_3d c_3p1+fcool c_3p1+faxcool c_3p1+fcool+.001
+amps  0 100 UVaopow 1 18 10 10 2
+
+%%%
+% MOT
+snapshot 2 reps 2
+freqs 80 c_3p0+.2 80 80 c_3p1+f_rmot_narrow c_3p1 c_3p1 80
+amps  0 100 0 0 20 0 0 0
+
+% SB COOL LATTICE
+snapshot 3 reps 2
+freqs 80 c_3p0+.2 80 80 79.74 c_3p1+f_rad c_3p1+f_ax_lat c_3p1+f_813rad
+amps  0 100 UVaopow 100 0 6 18 1.5
+%freqs 80 c_3p0+.2 80 80 79.74 c_3p1+f_rad 80.15 80.15
+%amps  0 100 UVaopow 100 0 6 10 100
+
+% spectroscopy2
+snapshot 4 reps 2
+freqs 80 c_3p0+spec3p0/1000 80 80 79.74 c_3p1+f_813rad c_3p1+faxcool_813 c_3p1
+amps  0 100 UVaopow 100 0 6 3 30
+
+%Parametric heating
+snapshot 5 reps 2
+freqs 80+pmodf c_3p0+.2 75 80 spec3p1 spec3p1 spec3p1 spec3p1
+amps 5 100 100 100 0 8 4 5
+
+snapshot 6 reps 15000
+freqs 80+pmodf-.035 c_3p0+.2 75 80 spec3p1 spec3p1 spec3p1 spec3p1
+amps  5 100 100 100 0 8 4 5
+
+end

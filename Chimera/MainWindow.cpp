@@ -11,7 +11,8 @@
 MainWindow::MainWindow(UINT id, CDialog* splash) : CDialog(id), profile(PROFILES_PATH), 
     masterConfig( MASTER_CONFIGURATION_FILE_ADDRESS ), 
 	appSplash( splash ),
-	dds(DDS_FPGA_ADDRESS), gmoog(GIGAMOOG_PORT, 115200), awg(AWG_PORT, AWG_BAUD)
+	dds(DDS_FPGA_ADDRESS), awg(AWG_PORT, AWG_BAUD)
+//gmoog(GIGAMOOG_PORT, 115200)
 {
 	// create all the main rgbs and brushes. I want to make sure this happens before other windows are created.
 	mainRGBs["Light Green"]			= RGB( 163,	190, 140);
@@ -864,7 +865,7 @@ void MainWindow::handleSequenceCombo()
 {
 	try
 	{
-		profile.sequenceChangeHandler();
+		profile.sequenceChangeHandler(this);
 	}
 	catch (Error& err)
 	{

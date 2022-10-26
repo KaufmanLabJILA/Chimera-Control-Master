@@ -1,0 +1,46 @@
+% Channel order:
+% latticemod 813 698 FNCAO red3dnarrow radial axial radial2
+
+%%%
+
+% SB COOL
+reset
+freqs 80 80 75 80 80.06 radial2_coolfreq axial_freq 79.83
+amps  0 100 100 100 100 100 100 10 %SB cool
+
+% SPECTROSCOPY
+snapshot 0 reps 2
+%freqs 80 80 75 80 84 radcool 79.85 radcool
+%amps  0 100 100 100 75 3.5 100 radpow
+%freqs 80 80 75 80 84 79.9 79.77 79.83
+%amps  0 100 100 100 75 2.5 35 4
+freqs 80 80 75 80 84 76.25 79.89 78
+amps  0 100 100 100 75 15 20 5
+
+
+%freqs 80+modfreq 80 clock+specscan 80 82.9 spec3P1 spec3p1 spec3p1
+%amps modamp 100 100 100 100 100 50 10
+
+% IMAGE
+snapshot 1 reps 2
+%freqs 80 80 75 80 84 79.98 79.89 79.98
+%amps  0 100 100 100 75 2 20 2
+%freqs 80 80 75 80 84 79.8 79.77 79.83
+%amps  0 100 100 100 75 2.5 35 4
+freqs 80 80 75 80 84 76.25 79.89 78
+amps  0 100 100 100 75 15 20 5
+
+%%%
+% MOT
+snapshot 2 reps 2
+freqs 80 80 75 80 82.5 80 80 80
+amps  0 100 100 100 100 10 100 10
+
+% LAC
+snapshot 3 reps 2
+%freqs 80 80 75 80 100 lacfreq 79.975 lacfreq
+%amps  0 100 100 100 100 3.5 30 5
+freqs 80 80 75 80 84 76.25 79.89 78
+amps  0 100 100 100 75 15 20 5
+
+end

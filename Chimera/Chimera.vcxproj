@@ -84,7 +84,7 @@
     <IncludePath>C:\Program Files\IVI Foundation\VISA\Win64\include;C:\Program Files\IVI Foundation\IVI\Include;C:\users\alecj\anaconda3\include;C:\users\alecj\anaconda3\Library\include;$(ProjectDir)\Packages\64-Bit-Libs\boost_1_64_0;$(IncludePath);$(ProjectDir)\Packages\64-Bit-Libs\Release\HDF5-1.10.3-win64\include</IncludePath>
     <LibraryPath>C:\Users\alecj\anaconda3;C:\Program Files\IVI Foundation\VISA\Win64\Lib_x64\msc;$(ProjectDir)\Packages\64-Bit-Libs\boost_1_64_0\lib-64bit;$(ProjectDir)\Packages\64-Bit-Libs\Debug\HDF5-1.10.3-win64\lib;$(ProjectDir)\Packages\64-Bit-Libs\Debug\Python;$(ProjectDir)\Packages\64-Bit-Libs\Release\Python;C:\Program Files\Andor SDK;$(LibraryPath);C:\Program Files (x86)\National Instruments\Shared\ExternalCompilerSupport\C\lib64\msvc</LibraryPath>
     <ExecutablePath>$(VC_ExecutablePath_x64);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(FxCopDir);$(PATH)</ExecutablePath>
-    <ExcludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(MSBuild_ExecutablePath);$(VC_LibraryPath_x64);</ExcludePath>
+    <ExcludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(MSBuild_ExecutablePath);$(VC_LibraryPath_x64)</ExcludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>true</LinkIncremental>

@@ -191,6 +191,7 @@ BEGIN
         MENUITEM "&Run Everything \tF5",        ID_FILE_RUN_EVERYTHING
         MENUITEM "Run &Single Shot\tShift+S",   ID_RUNMENU_RUNSINGLESHOT
         MENUITEM "Run &Master\tF4",             ID_RUNMENU_RUNMASTER
+		MENUITEM "Run &Sequence\tF6"            ID_RUNMENU_RUNSEQUENCE
         MENUITEM "Run M&oog",                   ID_RUNMENU_RUNMOOG
         MENUITEM "Run &Camera",                 ID_RUNMENU_RUNCAMERA
         MENUITEM "Run &NIAWG",                  ID_RUNMENU_RUNNIAWG
@@ -221,9 +222,10 @@ BEGIN
             MENUITEM "&Add Selected Configuration to Sequence", ID_SEQUENCE_ADD_TO_SEQUENCE
             MENUITEM "&Reset Sequence",             ID_SEQUENCE_RESET_SEQUENCE
             MENUITEM "N&ew Sequence",               ID_SEQUENCE_NEW_SEQUENCE
+			MENUITEM "&Open Sequence",              ID_SEQUENCE_OPEN_SEQUENCE
             MENUITEM "&Delete Sequence",            ID_SEQUENCE_DELETE_SEQUENCE
             MENUITEM "&Save Sequence",              ID_SEQUENCE_SAVE_SEQUENCE
-            MENUITEM "Save Se&quence As",           ID_SEQUENCE_SAVESEQUENCEAS
+            MENUITEM "Save Se&quence As",           ID_SEQUENCE_SAVE_SEQUENCEAS
             MENUITEM "Rename Sequen&ce",            ID_SEQUENCE_RENAMESEQUENCE
         END
         MENUITEM "&Save Entire Profile",        ID_PROFILE_SAVE_PROFILE

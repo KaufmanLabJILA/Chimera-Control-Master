@@ -33,16 +33,16 @@ namespace commonFunctions
 				camWin->redrawPictures(false);
 				try
 				{
-					prepareCamera( mainWin, camWin, input );
+					//prepareCamera( mainWin, camWin, input );
 					prepareMasterThread( msgID, scriptWin, mainWin, camWin, auxWin, input, false, true, true );
-					camWin->preparePlotter(input);
-					camWin->prepareAtomCruncher(input);
+					//camWin->preparePlotter(input);
+					//camWin->prepareAtomCruncher(input);
 
-					logParameters( input, camWin, true );
+					//logParameters( input, camWin, true );
 
-					camWin->startAtomCruncher(input);
-					camWin->startPlotterThread(input);
-					camWin->startCamera();
+					//camWin->startAtomCruncher(input);
+					//camWin->startPlotterThread(input);
+					//camWin->startCamera();
 					startMaster( mainWin, input );
 				}
 				catch (Error& err)
@@ -55,6 +55,53 @@ namespace commonFunctions
 					}
 					mainWin->getComm()->sendError("EXITED WITH ERROR! " + err.whatStr());
 					mainWin->getComm()->sendColorBox( Camera, 'R' );
+					mainWin->getComm()->sendStatus("EXITED WITH ERROR!\r\nInitialized Default Waveform\r\n");
+					mainWin->getComm()->sendTimer("ERROR!");
+					camWin->assertOff();
+					break;
+				}
+				break;
+			}
+			case ID_RUNMENU_RUNSEQUENCE:
+			{
+				ExperimentInput input;
+				camWin->redrawPictures(false);
+				try
+				{
+					profileSettings currentProfile = mainWin->getProfileSettings();
+					std::vector<std::string> sequenceConfigs = currentProfile.sequenceConfigNames;
+					std::vector<std::string> sequencePaths = currentProfile.sequenceConfigPaths;
+					for (UINT configInc  = 0; configInc < sequenceConfigs.size(); configInc++)
+					{
+						if (sequenceConfigs[configInc] != currentProfile.configuration)
+						{
+							std::string configPath = sequencePaths[configInc] + sequenceConfigs[configInc];
+							mainWin->profile.openConfigFromPath(configPath, scriptWin, mainWin, camWin, auxWin);
+						}
+						//profile.openConfigFromPath(configPath, scriptWin, mainWin, camWin, auxWin);
+						//prepareCamera( mainWin, camWin, input );
+						prepareMasterThread(msgID, scriptWin, mainWin, camWin, auxWin, input, false, true, true);
+						//camWin->preparePlotter(input);
+						//camWin->prepareAtomCruncher(input);
+
+						//logParameters( input, camWin, true );
+
+						//camWin->startAtomCruncher(input);
+						//camWin->startPlotterThread(input);
+						//camWin->startCamera();
+						startMaster(mainWin, input);
+					}
+				}
+				catch (Error& err)
+				{
+					if (err.whatBare() == "CANCEL")
+					{
+						mainWin->getComm()->sendStatus("Canceled camera initialization.\r\n");
+						mainWin->getComm()->sendColorBox(Niawg, 'B');
+						break;
+					}
+					mainWin->getComm()->sendError("EXITED WITH ERROR! " + err.whatStr());
+					mainWin->getComm()->sendColorBox(Camera, 'R');
 					mainWin->getComm()->sendStatus("EXITED WITH ERROR!\r\nInitialized Default Waveform\r\n");
 					mainWin->getComm()->sendTimer("ERROR!");
 					camWin->assertOff();
@@ -292,7 +339,7 @@ namespace commonFunctions
 				}
 				try
 				{
-					commonFunctions::logParameters( input, camWin, false );
+					//commonFunctions::logParameters( input, camWin, false );
 				}
 				catch (Error& err)
 				{
@@ -610,7 +657,7 @@ namespace commonFunctions
 			}
 			case ID_SEQUENCE_SAVE_SEQUENCE:
 			{
-				mainWin->profile.saveSequence();
+				mainWin->profile.saveSequence(mainWin);
 				break;
 			}
 			case ID_SEQUENCE_NEW_SEQUENCE:
@@ -626,6 +673,16 @@ namespace commonFunctions
 			case ID_SEQUENCE_DELETE_SEQUENCE:
 			{
 				mainWin->profile.deleteSequence();
+				break;
+			}
+			case ID_SEQUENCE_SAVE_SEQUENCEAS:
+			{
+				mainWin->profile.saveSequenceAs(mainWin);
+				break;
+			}
+			case ID_SEQUENCE_OPEN_SEQUENCE:
+			{
+				mainWin->profile.openSequenceFile(parent,mainWin);
 				break;
 			}
 			case ID_HELP_GENERALINFORMATION:
@@ -861,7 +918,7 @@ namespace commonFunctions
 
 	void prepareMasterThread( int msgID, ScriptingWindow* scriptWin, MainWindow* mainWin, CameraWindow* camWin, 
 		AuxiliaryWindow* auxWin, ExperimentInput& input,
-		bool single, bool runAWG, bool runTtls )
+		bool single, bool runAWG, bool runTtls)
 	{
 		Communicator* comm = mainWin->getComm();
 		profileSettings profile = mainWin->getProfileSettings();

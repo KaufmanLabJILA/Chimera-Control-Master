@@ -1,0 +1,59 @@
+% Channel order:
+% latticemod 698freq_res. UVao 698_detuned red3dnarrow radial axial radial2
+
+%%%
+
+% SB COOL LATTICE
+reset
+freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+.3 c_3p1+f_rad_3d c_3p1+f_rad_3d c_3p1+f_ax_3d c_3p1+f_rad_3d
+amps  0 0 0 92 0 0 2.5 0.75
+
+% IMAGE LATTICE
+snapshot 0 reps 2
+freqs 80 c_3p0+1 80 80 79.74 c_3p1+f_rad_3d c_3p1+f_ax_3d_imag c_3p1+f_rad_3d 
+amps  0 0 30 92 0 10 9 3
+
+% FILTER
+snapshot 1 reps 2
+freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+.3 c_3p1+f_rad_3d c_3p1+f_rad_3d c_3p1+f_ax_3d c_3p1
+amps  0 0 30 92 0 0 3.5 1.25
+
+% SPECTROSCOPY
+snapshot 2 reps 2
+freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+.5 spec3p1 spec3p1 spec3p1 spec3p1
+amps  0 0 30 92 0 2.5 2.0 0.75
+% for sysiphus imaging
+%freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+.5 spec3p1 spec3p1 spec3p1 spec3p1
+%amps  0 0 30 92 15 15 9 3
+%freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+1 c_3p1+f_3d c_3p1+fcool c_3p1+.14 c_3p1+fcool
+%amps  0 100 30 100 18 7.5 9.5 3
+
+%for imaging optimization
+%freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+1 c_3p1+f_3d c_3p1+fcool c_3p1+fcools c_3p1+fcool+.001
+%amps  0 100 30 100 18 18 15 3
+%freqs 80 c_3p0+1 80 80 79.74 c_3p1+f_rad c_3p1+f_ax_3d_imag c_3p1+f_rad_3d 
+%amps  0 100 30 100 0 6 12 5.5
+% for shelving:
+%amps  0 100 30 100 28 20.5 3 30.8
+% for filtering:
+%amps  0 0 30 92 0 3.0 3.5 2.5
+
+%%%
+% MOT
+snapshot 3 reps 2
+freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+.5 c_3p1+f_rmot_narrow c_3p1+f_lac c_3p1+f_lac 80
+amps  0 0 0 92 13.5 100 100 0
+
+% IMAGE TWEEZERS
+snapshot 4 reps 2
+freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+1 c_3p1+f_3d c_3p1+fcool c_3p1+.14 c_3p1+fcool
+amps  0 0 30 100 18 7.5 9.5 3
+
+% SB COOL TWEEZER
+snapshot 5 reps 2
+%freqs 80 c_3p0+.2 80 80 79.74 c_3p1+f_rad c_3p1+faxcool c_3p1+f_rad2
+%amps  0 100 UVaopow 100 0 6 16 1
+freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+.5 79.74 c_3p1+f_rad c_3p1+0.043 c_3p1+f_rad2
+amps  0 0 30 92 0 7 6 0
+
+end

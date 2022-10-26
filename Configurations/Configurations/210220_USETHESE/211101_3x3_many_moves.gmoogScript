@@ -1,0 +1,55 @@
+set DAC0 0 82.9825 161.37845343929598+xoff+xcommon 60.0
+set DAC0 1 90.01266666666663 183.0+xoff+xcommon 240.0
+set DAC0 2 100.0 204.62154656070402+xoff+xcommon 180.0
+
+set DAC1 0 88.85633333333335 142.37845343929598+yoff+ycommon 60.0
+set DAC1 1 91.93533333333333 164.0+yoff+ycommon 240.0
+set DAC1 2 92.20349999999999 185.62154656070402+yoff+ycommon 180.0
+
+setmove 0 DAC0 0 0 0 84.25949999999997 ampRate 161.82964625132263+xoff+xcommon moveRate 60.0
+setmove 0 DAC0 1 0 0 89.41283333333334 -ampRate 183.0+xoff+xcommon -moveRate 240.0
+setmove 0 DAC0 2 0 0 100.0 -ampRate 204.17035374867737+xoff+xcommon -moveRate 180.0
+
+setmove 0 DAC1 0 0 0 89.14666666666663 ampRate 142.1977632557655+yoff+ycommon -moveRate 60.0
+setmove 0 DAC1 1 0 0 92.41050000000001 ampRate 164.0+yoff+ycommon -moveRate 240.0
+setmove 0 DAC1 2 0 0 92.11516666666664 -ampRate 185.8022367442345+yoff+ycommon moveRate 180.0
+
+setmove 1 DAC0 0 0 0 100 ampRate 180 moveRate 60.0
+setmove 1 DAC0 1 0 0 100 ampRate 200 moveRate 240.0
+setmove 1 DAC0 2 0 0 100 ampRate 215 moveRate 180.0
+
+setmove 1 DAC1 0 0 0 100 ampRate 180 moveRate 60.0
+setmove 1 DAC1 1 0 0 100 ampRate 200 moveRate 240.0
+setmove 1 DAC1 2 0 0 100 ampRate 215 moveRate 180.0
+
+%%reset moves:
+
+%setmove 0 DAC0 3  1 1 0 0 0 0 0.0
+%setmove 0 DAC0 4  1 1 0 0 0 0 0.0
+%setmove 0 DAC0 5  1 1 0 0 0 0 0.0
+%setmove 0 DAC0 6  1 1 0 0 0 0 0.0
+%setmove 0 DAC0 7  1 1 0 0 0 0 0.0
+%setmove 0 DAC0 8  1 1 0 0 0 0 0.0
+%setmove 0 DAC0 9  1 1 0 0 0 0 0.0
+%setmove 0 DAC0 10 1 1 0 0 0 0 0.0
+%setmove 0 DAC0 11 1 1 0 0 0 0 0.0
+%setmove 0 DAC0 12 1 1 0 0 0 0 0.0
+%setmove 0 DAC0 13 1 1 0 0 0 0 0.0
+%setmove 0 DAC0 14 1 1 0 0 0 0 0.0
+%setmove 0 DAC0 15 1 1 0 0 0 0 0.0
+
+%setmove 0 DAC1 3  1 1 0 0 0 0 0.0
+%setmove 0 DAC1 4  1 1 0 0 0 0 0.0
+%setmove 0 DAC1 5  1 1 0 0 0 0 0.0
+%setmove 0 DAC1 6  1 1 0 0 0 0 0.0
+%setmove 0 DAC1 7  1 1 0 0 0 0 0.0
+%setmove 0 DAC1 8  1 1 0 0 0 0 0.0
+%setmove 0 DAC1 9  1 1 0 0 0 0 0.0
+%setmove 0 DAC1 10 1 1 0 0 0 0 0.0
+%setmove 0 DAC1 11 1 1 0 0 0 0 0.0
+%setmove 0 DAC1 12 1 1 0 0 0 0 0.0
+%setmove 0 DAC1 13 1 1 0 0 0 0 0.0
+%setmove 0 DAC1 14 1 1 0 0 0 0 0.0
+%setmove 0 DAC1 15 1 1 0 0 0 0 0.0
+
+%hardreset

@@ -1,0 +1,4 @@
+% Default DDS Script
+%set 0 0 fscan 20
+%set 1 1 fscan 30
+set 1 1 80.65 30

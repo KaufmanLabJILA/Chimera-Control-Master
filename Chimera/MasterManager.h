@@ -56,6 +56,9 @@ class MasterManager
 		static void handleDebugPlots( debugInfo debugOptions, Communicator* comm, DioSystem* ttls, DacSystem* dacs,
 									  bool quiet, EmbeddedPythonHandler* python );
 		static double convertToTime( timeType time, std::vector<variableType> variables, UINT variation );
+
+		CWinThread* runningThread;
+
 	private:
 		timeType loadSkipTime;
 		std::vector<double> loadSkipTimes;
@@ -72,7 +75,8 @@ class MasterManager
 		timeType operationTime;
 		bool experimentIsRunning;
 		/// task handles
-		CWinThread* runningThread;
+		////////////Moved to public for multiexperiment runs//////////
+		//CWinThread* runningThread;
 
 		// Important, these should only be written to by the pause and aborting functions...
 		std::mutex pauseLock;

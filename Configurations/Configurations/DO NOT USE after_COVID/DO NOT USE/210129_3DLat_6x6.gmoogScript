@@ -1,0 +1,89 @@
+% DACs 2, 3 currently disabled.
+% set DAC, channel, amp, freq, phase
+
+% BE VERY CAREFUL CHNGING THIS, DAC 2 could blow up UV AO
+
+set DAC0 0 67.31393750000002 136.10560344827587+xoff 11.2
+set DAC0 1 66.18993750000003 153.6633620689655+xoff 180.0
+set DAC0 2 70.48693750000005 171.22112068965515+xoff 191.2
+set DAC0 3 76.84093750000004 188.7788793103448+xoff 45.0
+set DAC0 4 84.9799375 206.33663793103443+xoff 101.2
+set DAC0 5 99.9919375 223.89439655172407+xoff 0.0
+
+set DAC1 0 82.20793750000001 131.10560344827587+yoff 11.2
+set DAC1 1 78.46493750000002 148.6633620689655+yoff 180.0
+set DAC1 2 77.85093750000001 166.22112068965515+yoff 191.2
+set DAC1 3 76.95793750000003 183.7788793103448+yoff 45.0
+set DAC1 4 83.77493750000001 201.33663793103443+yoff 101.2
+set DAC1 5 97.89193750000003 218.89439655172407+yoff 0.0
+
+set DAC2 0 uvpow ryd_freq 0  
+set DAC2 1 uvpow ryd_freq 0
+set DAC2 2 uvpow ryd_freq 0
+set DAC2 3 uvpow ryd_freq 0
+set DAC2 4 uvpow ryd_freq 0
+set DAC2 5 uvpow ryd_freq 0
+set DAC2 6 uvpow ryd_freq 0
+set DAC2 7 uvpow ryd_freq 0
+set DAC2 8 uvpow ryd_freq 0  
+set DAC2 9 uvpow ryd_freq 0
+set DAC2 10 uvpow ryd_freq 0
+set DAC2 11 uvpow ryd_freq 0
+set DAC2 12 uvpow ryd_freq 0
+set DAC2 13 uvpow ryd_freq 0
+set DAC2 14 uvpow ryd_freq 0
+set DAC2 15 uvpow ryd_freq 0
+set DAC2 16 uvpow ryd_freq 0
+set DAC2 17 uvpow ryd_freq 0
+set DAC2 18 uvpow ryd_freq 0
+set DAC2 19 uvpow ryd_freq 0
+set DAC2 20 uvpow ryd_freq 0
+set DAC2 21 uvpow ryd_freq 0
+set DAC2 22 uvpow ryd_freq 0
+set DAC2 23 uvpow ryd_freq 0
+set DAC2 24 uvpow ryd_freq 0
+set DAC2 25 uvpow ryd_freq 0
+set DAC2 26 uvpow ryd_freq 0
+set DAC2 27 uvpow ryd_freq 0
+set DAC2 28 uvpow ryd_freq 0
+set DAC2 29 uvpow ryd_freq 0
+set DAC2 30 uvpow ryd_freq 0
+set DAC2 31 uvpow ryd_freq 0
+set DAC2 32 uvpow ryd_freq 0
+set DAC2 33 uvpow ryd_freq 0
+set DAC2 34 uvpow ryd_freq 0
+set DAC2 35 uvpow ryd_freq 0
+set DAC2 36 uvpow ryd_freq 0
+set DAC2 37 uvpow ryd_freq 0
+set DAC2 38 uvpow ryd_freq 0
+set DAC2 39 uvpow ryd_freq 0
+set DAC2 40 uvpow ryd_freq 0
+set DAC2 41 uvpow ryd_freq 0
+set DAC2 42 uvpow ryd_freq 0
+set DAC2 43 uvpow ryd_freq 0
+set DAC2 44 uvpow ryd_freq 0
+set DAC2 45 uvpow ryd_freq 0
+
+
+set DAC3 0 64.58505513901319 165.9674+yoff 9.0
+set DAC3 1 62.92906480688801 168.5182+yoff 36.0
+set DAC3 2 60.777610031148946 171.06900000000002+yoff 81.0
+set DAC3 3 61.81657113570031 173.61980000000003+yoff 144.0
+set DAC3 4 64.36587644230126 176.17060000000004+yoff 225.0
+set DAC3 5 66.2209518741253 178.72140000000005+yoff 324.0
+set DAC3 6 68.24304830024133 181.27220000000005+yoff 81.0
+set DAC3 7 68.24876105393513 183.82300000000006+yoff 216.0
+set DAC3 8 71.69224099309572 186.37380000000007+yoff 9.0
+set DAC3 9 74.2881598834126 188.92460000000008+yoff 180.0
+set DAC3 10 69.92568771682784 191.4754000000001+yoff 9.0
+set DAC3 11 66.24963320073334 194.0262000000001+yoff 216.0
+set DAC3 12 67.88244192024301 196.5770000000001+yoff 81.0
+set DAC3 13 72.5501209544849 199.12780000000012+yoff 324.0
+set DAC3 14 74.87440721251293 201.67860000000013+yoff 225.0
+set DAC3 15 77.12418381914243 204.22940000000014+yoff 144.0
+set DAC3 16 76.09042128261106 206.78020000000015+yoff 81.0
+set DAC3 17 77.49065121650952 209.33100000000016+yoff 36.0
+set DAC3 18 78.8100399514459 211.88180000000017+yoff 9.0
+set DAC3 19 75.83507306562707 214.43260000000018+yoff 0.0
+
+test

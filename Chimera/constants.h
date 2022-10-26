@@ -122,7 +122,7 @@
 	#define UWAVE_AGILENT_USB_ADDRESS ""
 
 	const std::string PROJECT_LOCATION = "C:\\Users\\alecj\\Kaufman_Lab\\chimera\\Chimera-Control-Master\\";
-	const std::string DATABASE_LOCATION = "A:\\";
+	const std::string DATABASE_LOCATION = "C:\\Users\\alecj\\Kaufman_Lab\\dummy_data\\";
 	const std::string PYTHON_CODE_LOCATION = "C:/Users/alecj/Kaufman_Lab/chimera/Chimera-Control-Master/";
 	// same as debug output location but with forward slashes for ease of use in python
 	const std::string PYTHON_INPUT_LOCATION = "C:/Users/alecj/Kaufman_Lab/chimera/Chimera-Control-Master/Debug-Output";

@@ -110,6 +110,8 @@ class MainWindow : public CDialog
 		void notifyConfigUpdate( );
 		void passConfigPress( );
 
+		MasterManager masterThreadManager;
+
 	private:		
 		DECLARE_MESSAGE_MAP();
 		ScriptingWindow* TheScriptingWindow;
@@ -141,7 +143,8 @@ class MainWindow : public CDialog
 		brushMap mainBrushes;
 		rgbMap mainRGBs;
 		fontMap mainFonts;
-		MasterManager masterThreadManager;
+		/////////Moved to public for multiexperiment runs////////////////
+		//MasterManager masterThreadManager;
 		CMenu menu;
 		RunInfo systemRunningInfo;
 		cToolTips tooltips;

@@ -1,0 +1,26 @@
+% start by resetting synthesizer
+reset
+%%% for ramps:
+setsteps 0 .006 0 ramptime %clock runs at 153 MHz = (6.5 ns)^-1 
+amplin 0 0 ramptime 0 65 %DO NOT EXCEED 45% amp. 
+freqlin 0 0 ramptime cuv+11+gate_detuning cuv+gate_detuning 1 0  
+
+setsteps 0 .006 ramptime+uvtime ramptime+uvtime+ramptime  
+amplin 0 ramptime+uvtime ramptime+uvtime+ramptime 65 0 %0  
+freqlin 0 ramptime+uvtime ramptime+uvtime+ramptime cuv+gate_detuning cuv+11+gate_detuning 0 0 
+
+
+program 0
+
+setsteps 1 .006 0 ramptime
+amplin 1 0 ramptime 0 43
+freqlin 1 0 ramptime (cuv-20)/10 cuv/10 1 0 
+
+setsteps 1 .006 ramptime+uvtime ramptime+uvtime+ramptime  
+amplin 1 ramptime+uvtime ramptime+uvtime+ramptime 43 0 %0  
+freqlin 1 ramptime+uvtime ramptime+uvtime+ramptime cuv/10 (cuv-20)/10 0 0 
+
+program 1
+
+% Software trigger for testing
+%trigger
