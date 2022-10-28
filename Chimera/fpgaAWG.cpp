@@ -203,6 +203,42 @@ void fpgaAWG::ampGaussianRamp(unsigned long channel, float tStart, float tEnd, f
 	}
 }
 
+void fpgaAWG::freqGaussianRamp(unsigned long channel, float tStart, float tEnd, float tSigma, int direction, float fStart, float fStop, bool phase_update, float phaseStart) {
+	int iStart = nPreviousStepSetting + ceil((tStart - startTimeStepSetting) / (stepSize * AWGMINSTEP));
+	int numSteps = ceil((tEnd - tStart) / (stepSize * AWGMINSTEP));
+
+	std::vector<awgCommand> & awgCommandList = selectCommandList(channel);
+
+	if (tEnd > awgCommandList.back().timeStampMicro + stepSize * AWGMINSTEP) {
+		thrower("Ramp too long for assigned steps.");
+	};
+
+	float t, fVal;
+
+	if (direction == 1) {
+		for (int i = 0; i < numSteps; i++) {
+			t = stepSize * AWGMINSTEP * i + tStart;
+			fVal = (fStop - fStart) * exp(-1 * (t - tEnd) * (t - tEnd) / (2 * tSigma * tSigma)) + fStart;
+			awgCommandList[iStart + i].freqMHz = fVal;
+			awgCommandList[iStart + i].phaseDegrees = phaseStart;
+			awgCommandList[iStart + i].phase_update = false;
+		};
+	}
+	else if (direction == -1) {
+		for (int i = 0; i < numSteps; i++) {
+			t = stepSize * AWGMINSTEP * i + tStart;
+			fVal = (fStart - fStop) * exp(-1 * (t - tStart) * (t - tStart) / (2 * tSigma * tSigma)) + fStop;
+			awgCommandList[iStart + i].freqMHz = fVal;
+			awgCommandList[iStart + i].phaseDegrees = phaseStart;
+			awgCommandList[iStart + i].phase_update = false;
+		};
+	}
+	else {
+		thrower("Direction must be +1 or -1.");
+	};
+	awgCommandList[iStart].phase_update = phase_update;
+}
+
 void fpgaAWG::writeCommandList(unsigned long channel) {
 	std::vector<awgCommand> & awgCommandList = selectCommandList(channel);
 	int numSteps = awgCommandList.size();
@@ -334,6 +370,21 @@ void fpgaAWG::analyzeAWGScript(fpgaAWG* fpgaawg, std::vector<variableType>& vari
 			currentAWGScript >> phaseDegrees;
 
 			freqLinearRamp(stoul(channel, nullptr, 0), tstart.evaluate(variables, variation), tstop.evaluate(variables, variation), fstart.evaluate(variables, variation), fstop.evaluate(variables, variation), phase_update.evaluate(variables, variation), phaseDegrees.evaluate(variables, variation));
+		}
+		else if (word == "freqgauss") {
+			std::string channel;
+			Expression tstart, tstop, tSigma, direction,fstart, fstop, phase_update, phaseDegrees;
+			currentAWGScript >> channel;
+			currentAWGScript >> tstart;
+			currentAWGScript >> tstop;
+			currentAWGScript >> tSigma;
+			currentAWGScript >> direction;
+			currentAWGScript >> fstart;
+			currentAWGScript >> fstop;
+			currentAWGScript >> phase_update;
+			currentAWGScript >> phaseDegrees;
+
+			freqGaussianRamp(stoul(channel, nullptr, 0), tstart.evaluate(variables, variation), tstop.evaluate(variables, variation), tSigma.evaluate(variables, variation), direction.evaluate(variables, variation), fstart.evaluate(variables, variation), fstop.evaluate(variables, variation), phase_update.evaluate(variables, variation), phaseDegrees.evaluate(variables, variation));
 		}
 		else if (word == "setsingle") {
 			std::string channel;
