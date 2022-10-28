@@ -119,14 +119,21 @@ void DataLogger::initializeDataFiles()
 		// list of commands
 		H5::Group tektronicsGroup( file.createGroup( "/Tektronics" ) );
 		// mode, freq, power
-		H5::Group miscellaneousGroup( file.createGroup( "/Miscellaneous" ) );
+		//H5::Group miscellaneousGroup( file.createGroup( "/Miscellaneous" ) );
+		miscellaneousGroup = H5::Group(file.createGroup("/Miscellaneous"));
+
 		time_t t = time( 0 );   // get time now
 		struct tm now;
 		localtime_s( &now, &t );
+		// Keep this for backwards compatibility
 		std::string dateString = str( now.tm_year + 1900 ) + "-" + str( now.tm_mon + 1 ) + "-" + str( now.tm_mday );
 		writeDataSet( dateString, "Run-Date", miscellaneousGroup );
 		std::string timeString = str( now.tm_hour) + ":" + str( now.tm_min) + ":" + str( now.tm_sec) + ":";
 		writeDataSet( timeString, "Time-Of-Logging", miscellaneousGroup );
+		// Save start date and time of the experiment
+		std::string dateTimeString = str(now.tm_year + 1900) + "-" + str(now.tm_mon + 1) + "-" + str(now.tm_mday) + " " + str(now.tm_hour) + ":" + str(now.tm_min) + ":" + str(now.tm_sec);
+		writeDataSet(dateTimeString, "Experiment-Start", miscellaneousGroup);
+
 		fileIsOpen = true;
 	}
 	catch (H5::Exception err)
@@ -533,6 +540,15 @@ void DataLogger::closeFile()
 		// wasn't open.
 		return;
 	}
+
+	time_t t = time(0);  // get time now
+	struct tm now;
+	localtime_s(&now, &t);
+	// Save stop date and time of the experiment
+	std::string dateTimeString = str(now.tm_year + 1900) + "-" + str(now.tm_mon + 1) + "-" + str(now.tm_mday) + " " + str(now.tm_hour) + ":" + str(now.tm_min) + ":" + str(now.tm_sec);
+	writeDataSet(dateTimeString, "Experiment-Stop", miscellaneousGroup);
+
+	miscellaneousGroup.close();
 	picureSetDataSpace.close();
 	pictureDataset.close();	
 	atomArraySetDataSpace.close();
