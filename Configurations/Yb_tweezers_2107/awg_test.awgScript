@@ -1,56 +1,171 @@
-% start by resetting synthesizer
-
-
-
-reset
-
-program 0
-
-
-program 1
-
-
-
-setsteps 2 rb2time/15 0 rb2time
-
-ampgauss 2 0 rb2time rb2time/2.5 1 0 30 
-
-freqlin 2 0 rb2time rb2freq rb2freq  1 0
-
-
-setsteps 2 rb2time/15 rb2time 2*rb2time
-
-ampgauss 2 rb2time 2*rb2time rb2time/2.5 -1 30 0
-
-freqlin 2 rb2time 2*rb2time rb2freq rb2freq 0 0
-
-setsingle 2 2*rb2time 0 100 0 0 
-
-program 2
-
-
-setsteps 3 rb3time/15 0 rb3time
-
-ampgauss 3 0 rb3time rb3time/2.5 1 0 25
-
-freqlin 3 0 rb3time rb3freq rb3freq  1 0
-
-
-setsteps 3 rb3time/15 rb3time 2*rb3time
-
-ampgauss 3 rb3time 2*rb3time rb3time/2.5 -1 25 0
-
-freqlin 3 rb3time 2*rb3time rb3freq rb3freq 0 0
-
-setsingle 3 2*rb3time 0 100 0 0 
-
-
-program 3
-
-
-
-% Software trigger for testing
-
-
-
-%trigger
+% start by resetting synthesizer
+
+
+
+
+
+
+
+
+
+
+
+reset
+
+
+
+
+
+program 0
+
+
+
+
+
+
+
+
+program 1
+
+
+
+
+
+
+
+
+
+
+
+setsteps 2 rb2time/15 0 rb2time
+
+
+
+
+
+ampgauss 2 0 rb2time rb2time/2.5 1 0 30 
+
+
+
+
+
+freqlin 2 0 uvtime uvfreqStart uvfreqStart 1 0
+
+
+
+
+
+
+
+
+setsteps 2 uvtime/15 uvtime 2*uvtime 
+
+
+
+
+
+ampgauss 2 rb2time 2*rb2time rb2time/2.5 -1 30 0
+
+
+
+
+
+freqlin 2 uvtime 2*uvtime uvfreqStart uvfreqStart 0 0
+
+
+
+
+
+%setsingle 2 2*rb2time 0 100 0 0 
+
+
+%setsingle 2 0 100 5 0 0 
+
+
+
+
+
+program 2
+
+
+
+
+
+
+
+
+setsteps 3 rb3time/15 0 rb3time
+
+
+
+
+
+ampgauss 3 0 rb3time rb3time/2.5 1 0 25
+
+
+
+
+
+freqlin 3 0 rb3time rb3freq rb3freq  1 0
+
+
+
+
+
+
+
+
+setsteps 3 rb3time/15 rb3time 2*rb3time
+
+
+
+
+
+ampgauss 3 rb3time 2*rb3time rb3time/2.5 -1 25 0
+
+
+
+
+
+freqlin 3 rb3time 2*rb3time rb3freq rb3freq 0 0
+
+
+
+
+
+setsingle 3 2*rb3time 0 100 0 0 
+
+
+
+
+
+
+
+
+program 3
+
+
+
+
+
+
+
+
+
+
+
+% Software trigger for testing
+
+
+
+
+
+
+
+
+
+
+
+%trigger
+
+
