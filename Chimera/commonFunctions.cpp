@@ -496,63 +496,6 @@ namespace commonFunctions
 			{
 				break;
 			}
-			//case ID_NIAWG_RELOADDEFAULTWAVEFORMS:
-			//{
-			//	commonFunctions::reloadNIAWGDefaults(mainWin);
-			//	break;
-			//}
-			/*
-			case ID_EXPERIMENT_NEW_EXPERIMENT_TYPE:
-			{
-				mainWin->profile.newExperiment();
-				break;
-			}
-			case ID_EXPERIMENT_SAVEEXPERIMENTSETTINGS:
-			{
-				mainWin->profile.saveExperimentOnly(mainWin);
-				break;
-			}
-			case ID_EXPERIMENT_SAVEEXPERIMENTSETTINGSAS:
-			{
-				mainWin->profile.saveExperimentAs(mainWin);
-				break;
-			}
-
-			case ID_EXPERIMENT_RENAME_CURRENT_EXPERIMENT:
-			{
-				mainWin->profile.renameExperiment(mainWin);
-				break;
-			}
-			case ID_EXPERIMENT_DELETE_CURRENT_EXPERIMENT:
-			{
-				mainWin->profile.deleteExperiment();
-				break;
-			}
-			case ID_CATEGORY_NEW_CATEGORY:
-			{
-				mainWin->profile.newCategory();
-				break;
-			}
-			case ID_CATEGORY_RENAME_CURRENT_CATEGORY:
-			{
-				mainWin->profile.renameCategory();
-				break;
-			}
-			case ID_CATEGORY_DELETE_CURRENT_CATEGORY:
-			{
-				mainWin->profile.deleteCategory();
-				break;
-			}
-			case ID_CATEGORY_SAVECATEGORYSETTINGS:
-			{
-				mainWin->profile.saveCategoryOnly(mainWin);
-				break;
-			}
-			case ID_CATEGORY_SAVECATEGORYSETTINGSAS:
-			{
-				mainWin->profile.saveCategoryAs(mainWin);
-				break;
-			}*/
 			case ID_CONFIGURATION_NEW_CONFIGURATION:
 			{
 				mainWin->profile.newConfiguration(mainWin, auxWin, camWin, scriptWin);
@@ -578,21 +521,6 @@ namespace commonFunctions
 				mainWin->profile.saveConfigurationOnly(scriptWin, mainWin, auxWin, camWin);
 				break;
 			}
-			//case ID_NIAWG_SENDSOFTWARETRIGGER:
-			//{
-			//	mainWin->niawg.fgenConduit.sendSoftwareTrigger();
-			//	break;
-			//}
-			//case ID_NIAWG_STREAMWAVEFORM:
-			//{
-			//	mainWin->niawg.streamWaveform();
-			//	break;
-			//}
-			//case ID_NIAWG_GETNIAWGERROR:
-			//{
-			//	errBox(mainWin->niawg.fgenConduit.getErrorMsg());
-			//	break;
-			//}
 			case ID_PICTURES_AUTOSCALEPICTURES:
 			{
 				camWin->handleAutoscaleSelection();
@@ -613,11 +541,6 @@ namespace commonFunctions
 				camWin->passAlwaysShowGrid();
 				break;
 			}
-			//case ID_NIAWG_NIAWGISON:
-			//{
-			//	mainWin->passNiawgIsOnPress( );
-			//	break;
-			//}
 			case ID_GIGAMOOG_REARRANGERACTIVE:
 			{
 				mainWin->passGmoogIsOnPress();
@@ -652,30 +575,6 @@ namespace commonFunctions
 				}
 				break;
 			}
-			//case ID_RUNMENU_ABORTNIAWG:
-			//{
-			//	try
-			//	{
-			//		if (mainWin->niawg.niawgIsRunning())
-			//		{
-			//			abortRearrangement( mainWin, camWin );
-			//			commonFunctions::abortNiawg(scriptWin, mainWin);
-			//		}
-			//		else
-			//		{
-			//			mainWin->getComm()->sendError("NIAWG was not running. Can't Abort.\r\n");
-			//		}
-			//		mainWin->getComm()->sendColorBox( Niawg, 'B' );
-			//	}
-			//	catch (Error& except)
-			//	{
-			//		mainWin->getComm()->sendError("EXITED WITH ERROR! " + except.whatStr());
-			//		mainWin->getComm()->sendColorBox( Niawg, 'R' );
-			//		mainWin->getComm()->sendStatus("EXITED WITH ERROR!\r\nInitialized Default Waveform\r\n");
-			//		mainWin->getComm()->sendTimer("ERROR!");
-			//	}
-			//	break;
-			//}
 			case ID_MASTERCONFIG_SAVEMASTERCONFIGURATION:
 			{
 

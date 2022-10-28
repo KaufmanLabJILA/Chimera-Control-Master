@@ -31,7 +31,7 @@ void PictureControl::initialize(POINT& loc, CWnd* parent, int& id, int width, in
 	// minimum slider
 	sliderMin.sPos = { loc.x, loc.y + 60, loc.x + 50, loc.y + unscaledBackgroundArea.bottom - unscaledBackgroundArea.top };
 	sliderMin.Create(NORM_CWND_OPTIONS | TBS_AUTOTICKS | TBS_VERT, sliderMin.sPos, parent, id++);
-	sliderMin.SetRange(0, 2000);
+	sliderMin.SetRange(0, 5000);
 	sliderMin.SetPageSize(UINT((minSliderPosition - minSliderPosition) / 10.0));
 	// "max" text
 	labelMax.sPos = { loc.x + 50, loc.y, loc.x + 100, loc.y + 30 };
@@ -42,7 +42,7 @@ void PictureControl::initialize(POINT& loc, CWnd* parent, int& id, int width, in
 	// maximum slider
 	sliderMax.sPos = { loc.x + 50, loc.y + 60, loc.x + 100, loc.y + unscaledBackgroundArea.bottom - unscaledBackgroundArea.top };
 	sliderMax.Create(NORM_CWND_OPTIONS | TBS_AUTOTICKS | TBS_VERT, sliderMax.sPos, parent, id++);
-	sliderMax.SetRange(0, 2000);
+	sliderMax.SetRange(0, 5000);
 	sliderMax.SetPageSize(int((minSliderPosition - minSliderPosition) / 10.0));
 	// reset this.
 	loc.x -= unscaledBackgroundArea.right - unscaledBackgroundArea.left;

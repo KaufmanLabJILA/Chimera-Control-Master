@@ -41,28 +41,28 @@ class zynq_tcp_server:
 		sock.listen(1)
 
 		while True:
-			# Wait for a connection
-			print('waiting for a connection')
-			connection, client_address = sock.accept()
+		    # Wait for a connection
+		    print('waiting for a connection')
+		    connection, client_address = sock.accept()
 
-			try:
-				print('connection from', client_address)
+		    try:
+			    print('connection from', client_address)
 
-				# Receive the data in small chunks
-				while True:
-					data = connection.recv(64).decode('utf-8')
-					# data = data.split('\0')[0]
-					print('received "%s"' % data)
-					# print(len(data)))
-					if data:
-						self.writeDevice(connection, data)
-						# connection.sendall(data)
-					else:
-						# print('no more data from', client_address)
-						break
-			except socket.error as error:
-				print(error)
-				break
+			    # Receive the data in small chunks
+			    while True:
+			        data = connection.recv(64).decode('utf-8')
+			        # data = data.split('\0')[0]
+			        print('received "%s"' % data)
+			        # print(len(data)))
+			        if data:
+			            self.writeDevice(connection, data)
+			            # connection.sendall(data)
+			        else:
+			            # print('no more data from', client_address)
+			            break
+		    except socket.error as error:
+		    	print(error)
+		    	break
 
 		connection.close()
 
@@ -130,13 +130,13 @@ class zynq_tcp_server:
 		self.seq.dds_seq_write_points(self.ddsByteLen, byte_buf, num_snapshots)
 
 	def socket_read(self, conn, expected):
-		"""Read expected number of bytes from sock
-		Will repeatedly call recv until all expected data is received
-		"""
-		buffer = b''
-		while len(buffer) < expected:
-			buffer += conn.recv(expected - len(buffer))
-		return buffer
+	    """Read expected number of bytes from sock
+	    Will repeatedly call recv until all expected data is received
+	    """
+	    buffer = b''
+	    while len(buffer) < expected:
+	        buffer += conn.recv(expected - len(buffer))
+	    return buffer
 
 if __name__ == "__main__":
 	server = zynq_tcp_server()

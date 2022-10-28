@@ -193,18 +193,19 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 		{
 			variations = 1;
 			input->repetitionNumber = 1;
+
 		}
 
 		// added by WFM 220106. Due 10 "fake" runs at the beginning of the sequence, to allow things to thermalize.
-		for (int warmupinc=1; warmupinc<11; warmupinc++)
-		{
-			expUpdate("Warmup #" + str(warmupinc) + " out of 10" + "\r\n", input->comm,input->quiet);
-			input->dacs->setTweezerServo();
-			//input->ttls->forceTtl(1, 0, 1);
-			Sleep(1);
-			//input->ttls->forceTtl(1, 0, 0);
+		//for (int warmupinc=1; warmupinc<11; warmupinc++)
+		//{
+		//	expUpdate("Warmup #" + str(warmupinc) + " out of 10" + "\r\n", input->comm,input->quiet);
+		//	input->dacs->setTweezerServo();
+		//	//input->ttls->forceTtl(1, 0, 1);
+		//	Sleep(1);
+		//	//input->ttls->forceTtl(1, 0, 0);
 
-		}
+		//}
 		// end of WFM's addition
 
 		for (const UINT& variationInc : range(variations))

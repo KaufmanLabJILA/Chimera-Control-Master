@@ -1,0 +1,15 @@
+% Master-Script See the "?" for info on commands.
+def test_func():
+  t += 1
+  on: dio5.0
+  t += 1
+  off: dio5.0
+  t += 1
+  on: dio5.0
+  t += 1
+  off: dio5.0
+  t += 1
+  on: dio5.0
+  t += 1
+  off: dio5.0
+  t += 1

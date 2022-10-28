@@ -112,6 +112,16 @@ class sequencer:
         reset()
         dds_lock_pll.dds_lock_pll()
 
+        # byte_buf_dio = b't00000064_b0000100000000001\0t05F5E100_b0000100000000000'
+        # byte_buf_dac = b't00000164_c0005_s-9.900_e00.000_d00000000\0'
+        #
+        # self.dac_seq_write_points(42, byte_buf_dac, 1)
+        # self.dio_seq_write_points(28, byte_buf_dio, 2)
+        # sleep(0.1)
+        # self.mod_enable()
+        # sleep(0.1)
+        # trigger()
+
     def getWord(self, bytes):
         return bytes[3] + bytes[2] + bytes[1] + bytes[0]
 
@@ -180,49 +190,49 @@ class sequencer:
 
 
     def reset_DAC(self):
-    	self.dac = DAC81416(device) # initialize DAC
+        self.dac = DAC81416(device) # initialize DAC
 
     def set_DAC(self, channel, value):
-    	valueInt = int((value-self.dacRange[0])*self.dacRes/(self.dacRange[1]-self.dacRange[0]) + 0.5)
-    	assert channel>=0 and channel<=31, 'Invalid channel for DAC81416 in set_DAC'
-    	assert valueInt>=0 and valueInt<=65536, 'Invalid value for DAC81416 in set_DAC'
-    	if valueInt == 65536:
-    		valueInt -= 1
-    	if (channel > 15):
-    		channel = channel-16
-    		self.dac1.set_DAC(channel, valueInt)
-    	else:
-    		self.dac0.set_DAC(channel, valueInt)
+        valueInt = int((value-self.dacRange[0])*self.dacRes/(self.dacRange[1]-self.dacRange[0]) + 0.5)
+        assert channel>=0 and channel<=31, 'Invalid channel for DAC81416 in set_DAC'
+        assert valueInt>=0 and valueInt<=65536, 'Invalid value for DAC81416 in set_DAC'
+        if valueInt == 65536:
+            valueInt -= 1
+        if (channel > 15):
+            channel = channel-16
+            self.dac1.set_DAC(channel, valueInt)
+        else:
+            self.dac0.set_DAC(channel, valueInt)
 
     def set_DDS(self, channel, freq, amp=None):
-    	assert channel>=0 and channel<=11, 'Invalid channel for AD9959 in set_DDS'
-    	dds_lock_pll.dds_lock_pll()
-    	if (channel > 7):
-    		channel = channel-8
-    		self.dds2.set_DDS(channel, freq, amp)
-    	elif (3 < channel < 8):
-    		channel = channel-4
-    		self.dds1.set_DDS(channel, freq, amp)
-    	else:
-    		self.dds0.set_DDS(channel, freq, amp)
+        assert channel>=0 and channel<=11, 'Invalid channel for AD9959 in set_DDS'
+        dds_lock_pll.dds_lock_pll()
+        if (channel > 7):
+            channel = channel-8
+            self.dds2.set_DDS(channel, freq, amp)
+        elif (3 < channel < 8):
+            channel = channel-4
+            self.dds1.set_DDS(channel, freq, amp)
+        else:
+            self.dds0.set_DDS(channel, freq, amp)
 
     def lock_PLL(self):
         dds_lock_pll.dds_lock_pll()
 
     def mod_enable(self):
-    	self.gpio2.set_bit(0, channel=1)
+        self.gpio2.set_bit(0, channel=1)
 
     def mod_disable(self):
-    	self.gpio2.clear_bit(0, channel=1)
+        self.gpio2.clear_bit(0, channel=1)
 
     def reset_disable_mod(self):
-    	print('disabling mod and resetting sequencers')
-    	self.gpio2.write_axi_gpio(0xffff0000,channel=2)
-    	self.gpio2.write_axi_gpio(0x0000ffff,channel=2)
-    	self.mod_disable()
+        print('disabling mod and resetting sequencers')
+        self.gpio2.write_axi_gpio(0xffff0000,channel=2)
+        self.gpio2.write_axi_gpio(0x0000ffff,channel=2)
+        self.mod_disable()
 
     def mod_report(self):
-    	print(self.gpio2.read_axi_gpio(channel=1))
+        print(self.gpio2.read_axi_gpio(channel=1))
 
     def initialize_DAC(self, dac):
         points = []
@@ -248,14 +258,14 @@ class sequencer:
             num_steps = int(duration/self.dacRampTimeRes + 0.5)
             # num_steps = int(duration * self.accUpdateFreq) # duration is in us and accUpdateFreq is in MHz
             if (num_steps < 1):
-            	ramp_inc = 0
-            	clr_incr = 1
+                ramp_inc = 0
+                clr_incr = 1
             else:
-            	ramp_inc = int(abs((end<<16)-(s<<16))/num_steps+0.5)
-            	clr_incr = 0
-            	# print(s, end, num_steps, ramp_inc)
+                ramp_inc = int(abs((end<<16)-(s<<16))/num_steps+0.5)
+                clr_incr = 0
+                # print(s, end, num_steps, ramp_inc)
             if (end<s and ramp_inc != 0):
-            	ramp_inc = int(self.dacIncrMax  + 1 - ramp_inc)
+                ramp_inc = int(self.dacIncrMax  + 1 - ramp_inc)
             # print('time',t,'channel', chan,'start', s,'end', end,'duration', duration, 'num_step',num_steps, 'ramp_inc: ', ramp_inc)
             t = int(int(t/self.dacRampTimeRes + 0.5) * self.dacRampTimeRes + (chan%16))
             if (chan < 16):
@@ -304,84 +314,84 @@ class sequencer:
 
 
     def dds_seq_write_points(self, byte_len, byte_buf, num_snapshots):
-    	ftw_points0=[]
-    	ftw_points1=[]
-    	ftw_points2=[]
-    	atw_points0=[]
-    	atw_points1=[]
-    	atw_points2=[]
-    	for ii in range(num_snapshots):
-    		[t, channel, aorf, s, end, duration] = self.dds_read_point(byte_buf[ii*byte_len: ii*byte_len + byte_len])
+        ftw_points0=[]
+        ftw_points1=[]
+        ftw_points2=[]
+        atw_points0=[]
+        atw_points1=[]
+        atw_points2=[]
+        for ii in range(num_snapshots):
+            [t, channel, aorf, s, end, duration] = self.dds_read_point(byte_buf[ii*byte_len: ii*byte_len + byte_len])
 
-    		# num_steps = (duration/self.ddsTimeRes)
-    		num_steps = int(duration * self.accUpdateFreq) # duration is in us and accUpdateFreq is in MHz
-    		if (num_steps == 0):
-    			ramp_inc = 0
-    		else:
-    			# ramp_inc = int((end-s)/num_steps) * 4 #somehow setting ddsTimeRes to 1.0e3 and add *4 works for freq ramp final value
-    			ramp_inc = int((end - s)*1.0 / num_steps * 4096)
-    			# * 1.0 just to avoid zero if end-s < num_steps(this is not true in python3, but in python2 int(2)/int(3)=0),
-    			# 4096=0xfff+1 comes from the 12bit accumulator
-    			print('time',t,'channel', channel, aorf,'start', s,'end', end,'duration', duration, 'num_step',num_steps, 'ramp_inc: ', ramp_inc)
-    		if (aorf == b'f'):
-    			if (ramp_inc < 0):
-    				# ramp_inc = int(self.ddsFreqRangeConv + ramp_inc)
-    				ramp_inc = int(self.ddsFreqIncMax + ramp_inc)
-    			if (channel < 4):
-    				ftw_points0.append(DDS_ftw_seq_point(address=len(ftw_points0), time=t, start=s, steps=num_steps, incr=ramp_inc, chan=channel))
-    			elif (4 <= channel < 8):
-    				channel = channel-4
-    				ftw_points1.append(DDS_ftw_seq_point(address=len(ftw_points1), time=t, start=s, steps=num_steps, incr=ramp_inc, chan=channel))
-    			else:
-    				channel = channel-8
-    				ftw_points2.append(DDS_ftw_seq_point(address=len(ftw_points2), time=t, start=s, steps=num_steps, incr=ramp_inc, chan=channel))
-    		elif (aorf == b'a'):
-    			if (ramp_inc < 0):
-    				ramp_inc = int(self.ddsAmpIncMax + ramp_inc)
-    			if (channel < 4):
-    				atw_points0.append(DDS_atw_seq_point(address=len(atw_points0), time=t, start=s, steps=num_steps, incr=ramp_inc, chan=channel))
-    			elif (4 <= channel < 8):
-    				channel = channel-4
-    				atw_points1.append(DDS_atw_seq_point(address=len(atw_points1), time=t, start=s, steps=num_steps, incr=ramp_inc, chan=channel))
-    			else:
-    				channel = channel-8
-    				atw_points2.append(DDS_atw_seq_point(address=len(atw_points2), time=t, start=s, steps=num_steps, incr=ramp_inc, chan=channel))
-    		else:
-    			print("invalid dds type. set to 'f' for freq or 'a' for amp")
-    	if (len(atw_points0) != 0):
-    		atw_points0.append(DDS_atw_seq_point(address=len(atw_points0), time=0, start=0, steps=0, incr=0, chan=0))
-    	if (len(atw_points1) != 0):
-    		atw_points1.append(DDS_atw_seq_point(address=len(atw_points1), time=0, start=0, steps=0, incr=0, chan=0))
-    	if (len(atw_points2) != 0):
-    		atw_points2.append(DDS_atw_seq_point(address=len(atw_points2), time=0, start=0, steps=0, incr=0, chan=0))
-    	if (len(ftw_points0) != 0):
-    		ftw_points0.append(DDS_ftw_seq_point(address=len(ftw_points0), time=0, start=0, steps=0, incr=0, chan=0))
-    	if (len(ftw_points1) != 0):
-    		ftw_points1.append(DDS_ftw_seq_point(address=len(ftw_points1), time=0, start=0, steps=0, incr=0, chan=0))
-    	if (len(ftw_points2) != 0):
-    		ftw_points2.append(DDS_ftw_seq_point(address=len(ftw_points2), time=0, start=0, steps=0, incr=0, chan=0))
+            # num_steps = (duration/self.ddsTimeRes)
+            num_steps = int(duration * self.accUpdateFreq) # duration is in us and accUpdateFreq is in MHz
+            if (num_steps == 0):
+                ramp_inc = 0
+            else:
+                # ramp_inc = int((end-s)/num_steps) * 4 #somehow setting ddsTimeRes to 1.0e3 and add *4 works for freq ramp final value
+                ramp_inc = int((end - s)*1.0 / num_steps * 4096)
+                # * 1.0 just to avoid zero if end-s < num_steps(this is not true in python3, but in python2 int(2)/int(3)=0),
+                # 4096=0xfff+1 comes from the 12bit accumulator
+                print('time',t,'channel', channel, aorf,'start', s,'end', end,'duration', duration, 'num_step',num_steps, 'ramp_inc: ', ramp_inc)
+            if (aorf == b'f'):
+                if (ramp_inc < 0):
+                    # ramp_inc = int(self.ddsFreqRangeConv + ramp_inc)
+                    ramp_inc = int(self.ddsFreqIncMax + ramp_inc)
+                if (channel < 4):
+                    ftw_points0.append(DDS_ftw_seq_point(address=len(ftw_points0), time=t, start=s, steps=num_steps, incr=ramp_inc, chan=channel))
+                elif (4 <= channel < 8):
+                    channel = channel-4
+                    ftw_points1.append(DDS_ftw_seq_point(address=len(ftw_points1), time=t, start=s, steps=num_steps, incr=ramp_inc, chan=channel))
+                else:
+                    channel = channel-8
+                    ftw_points2.append(DDS_ftw_seq_point(address=len(ftw_points2), time=t, start=s, steps=num_steps, incr=ramp_inc, chan=channel))
+            elif (aorf == b'a'):
+                if (ramp_inc < 0):
+                    ramp_inc = int(self.ddsAmpIncMax + ramp_inc)
+                if (channel < 4):
+                    atw_points0.append(DDS_atw_seq_point(address=len(atw_points0), time=t, start=s, steps=num_steps, incr=ramp_inc, chan=channel))
+                elif (4 <= channel < 8):
+                    channel = channel-4
+                    atw_points1.append(DDS_atw_seq_point(address=len(atw_points1), time=t, start=s, steps=num_steps, incr=ramp_inc, chan=channel))
+                else:
+                    channel = channel-8
+                    atw_points2.append(DDS_atw_seq_point(address=len(atw_points2), time=t, start=s, steps=num_steps, incr=ramp_inc, chan=channel))
+            else:
+                print("invalid dds type. set to 'f' for freq or 'a' for amp")
+        if (len(atw_points0) != 0):
+            atw_points0.append(DDS_atw_seq_point(address=len(atw_points0), time=0, start=0, steps=0, incr=0, chan=0))
+        if (len(atw_points1) != 0):
+            atw_points1.append(DDS_atw_seq_point(address=len(atw_points1), time=0, start=0, steps=0, incr=0, chan=0))
+        if (len(atw_points2) != 0):
+            atw_points2.append(DDS_atw_seq_point(address=len(atw_points2), time=0, start=0, steps=0, incr=0, chan=0))
+        if (len(ftw_points0) != 0):
+            ftw_points0.append(DDS_ftw_seq_point(address=len(ftw_points0), time=0, start=0, steps=0, incr=0, chan=0))
+        if (len(ftw_points1) != 0):
+            ftw_points1.append(DDS_ftw_seq_point(address=len(ftw_points1), time=0, start=0, steps=0, incr=0, chan=0))
+        if (len(ftw_points2) != 0):
+            ftw_points2.append(DDS_ftw_seq_point(address=len(ftw_points2), time=0, start=0, steps=0, incr=0, chan=0))
 
-    	for point in ftw_points0:
+        for point in ftw_points0:
             print("ftw dds0")
             print('DDS_ftw_seq_point(address=',point.address,',time=',point.time,',start=',point.start,',steps=',point.steps,',incr=',point.incr,',chan=',point.chan,'))')
             self.write_ftw_point(self.fifo_dds0_ftw_seq, point)
-    	for point in ftw_points1:
-    		print("ftw dds1")
-    		self.write_ftw_point(self.fifo_dds1_ftw_seq, point)
-    	for point in ftw_points2:
-    		print("ftw dds2")
-    		print(point.address, point.time, point.chan)
-    		self.write_ftw_point(self.fifo_dds2_ftw_seq, point)
+        for point in ftw_points1:
+            print("ftw dds1")
+            self.write_ftw_point(self.fifo_dds1_ftw_seq, point)
+        for point in ftw_points2:
+            print("ftw dds2")
+            print(point.address, point.time, point.chan)
+            self.write_ftw_point(self.fifo_dds2_ftw_seq, point)
 
-    	for point in atw_points0:
-    		print("atw dds0")
-    		self.write_atw_point(self.fifo_dds0_atw_seq, point)
-    	for point in atw_points1:
-    		print("atw dds1")
-    		self.write_atw_point(self.fifo_dds1_atw_seq, point)
-    	for point in atw_points2:
-    		print("atw dds2")
-    		self.write_atw_point(self.fifo_dds2_atw_seq, point)
+        for point in atw_points0:
+            print("atw dds0")
+            self.write_atw_point(self.fifo_dds0_atw_seq, point)
+        for point in atw_points1:
+            print("atw dds1")
+            self.write_atw_point(self.fifo_dds1_atw_seq, point)
+        for point in atw_points2:
+            print("atw dds2")
+            self.write_atw_point(self.fifo_dds2_atw_seq, point)
 
     def dds_seq_write_atw_points(self):
         points=[]
@@ -406,59 +416,59 @@ class sequencer:
             self.write_ftw_point(self.fifo_dds0_ftw_seq, point)
 
     def dio_seq_write_points(self, byte_len, byte_buf, num_snapshots):
-    	# print('DIO points')
-    	points=[]
-    	for ii in range(num_snapshots):
-    		[t, outA, outB] = self.dio_read_point(byte_buf[ii*byte_len: ii*byte_len + byte_len])
-    		points.append(GPIO_seq_point(address=ii,time=t,outputA=outA,outputB=outB))
-    	# points.append(GPIO_seq_point(address=num_snapshots,time=6400000,outputA=0x00000000,outputB=0x00000000))
-    	points.append(GPIO_seq_point(address=num_snapshots,time=0,outputA=0x00000000,outputB=0x00000000))
+        # print('DIO points')
+        points=[]
+        for ii in range(num_snapshots):
+            [t, outA, outB] = self.dio_read_point(byte_buf[ii*byte_len: ii*byte_len + byte_len])
+            points.append(GPIO_seq_point(address=ii,time=t,outputA=outA,outputB=outB))
+        # points.append(GPIO_seq_point(address=num_snapshots,time=6400000,outputA=0x00000000,outputB=0x00000000))
+        points.append(GPIO_seq_point(address=num_snapshots,time=0,outputA=0x00000000,outputB=0x00000000))
 
-    	# with open("/dev/axis_fifo_0x0000000080004000", "wb") as character:
-    	for point in points:
-    			# writeToSeqGPIO(character, point)
-    		seqWords = getSeqGPIOWords(point)
-    		for word in  seqWords:
-    			# print(word)
-    			self.fifo_dio_seq.write_axis_fifo(word[0], MSB_first=False)
+        # with open("/dev/axis_fifo_0x0000000080004000", "wb") as character:
+        for point in points:
+                # writeToSeqGPIO(character, point)
+            seqWords = getSeqGPIOWords(point)
+            for word in  seqWords:
+                # print(word)
+                self.fifo_dio_seq.write_axis_fifo(word[0], MSB_first=False)
 
     def dio_read_point(self, snapshot):
-    	# print(snapshot)
-    	snapshot_split = snapshot.split(b'_')
-    	t = int(snapshot_split[0].strip(b't'), 16)
-    	out = snapshot_split[1].strip(b'b').strip(b'\0')
-    	outB = int(out[:8], 16)
-    	outA = int(out[8:], 16)
-    	return [t, outA, outB]
+        # print(snapshot)
+        snapshot_split = snapshot.split(b'_')
+        t = int(snapshot_split[0].strip(b't'), 16)
+        out = snapshot_split[1].strip(b'b').strip(b'\0')
+        outB = int(out[:8], 16)
+        outA = int(out[8:], 16)
+        return [t, outA, outB]
 
     def dac_read_point(self, snapshot):
-    	# print(snapshot)
-    	snapshot_split = snapshot.split(b'_')
-    	t = int(snapshot_split[0].strip(b't'), 16)
-    	chan = int(snapshot_split[1].strip(b'c'), 16)
-    	start = int(self.dacRes*(float(snapshot_split[2].strip(b's')) - self.dacRange[0])
-    		/(self.dacRange[1]-self.dacRange[0]))
-    	end = int(self.dacRes*(float(snapshot_split[3].strip(b'e')) - self.dacRange[0])
-    		/(self.dacRange[1]-self.dacRange[0]))
-    	duration = int(snapshot_split[4].strip(b'd').strip(b'\0'), 16)
-    	return [t, chan, start, end, duration]
+        # print(snapshot)
+        snapshot_split = snapshot.split(b'_')
+        t = int(snapshot_split[0].strip(b't'), 16)
+        chan = int(snapshot_split[1].strip(b'c'), 16)
+        start = int(self.dacRes*(float(snapshot_split[2].strip(b's')) - self.dacRange[0])
+            /(self.dacRange[1]-self.dacRange[0]))
+        end = int(self.dacRes*(float(snapshot_split[3].strip(b'e')) - self.dacRange[0])
+            /(self.dacRange[1]-self.dacRange[0]))
+        duration = int(snapshot_split[4].strip(b'd').strip(b'\0'), 16)
+        return [t, chan, start, end, duration]
 
     def dds_read_point(self, snapshot):
-    	print(snapshot)
-    	snapshot_split = snapshot.split(b'_')
-    	t = int(snapshot_split[0].strip(b't'), 16)
-    	chan = int(snapshot_split[1].strip(b'c'), 16)
-    	aorf = snapshot_split[2]
-    	if (aorf == b'f'):
-    		ddsConv = self.ddsFreqRangeConv
-    	else:
-    		ddsConv = self.ddsAmpRangeConv
+        print(snapshot)
+        snapshot_split = snapshot.split(b'_')
+        t = int(snapshot_split[0].strip(b't'), 16)
+        chan = int(snapshot_split[1].strip(b'c'), 16)
+        aorf = snapshot_split[2]
+        if (aorf == b'f'):
+            ddsConv = self.ddsFreqRangeConv
+        else:
+            ddsConv = self.ddsAmpRangeConv
         # print(float(snapshot_split[3].strip(b's')))
 
-    	start = int(float(snapshot_split[3].strip(b's'))*ddsConv)
-    	end = int(float(snapshot_split[4].strip(b'e'))*ddsConv)
-    	duration = int(snapshot_split[5].strip(b'd').strip(b'\0'), 16)
-    	return [t, chan, aorf,  start, end, duration]
+        start = int(float(snapshot_split[3].strip(b's'))*ddsConv)
+        end = int(float(snapshot_split[4].strip(b'e'))*ddsConv)
+        duration = int(snapshot_split[5].strip(b'd').strip(b'\0'), 16)
+        return [t, chan, aorf,  start, end, duration]
 
 if __name__ == "__main__":
     from soft_trigger import trigger

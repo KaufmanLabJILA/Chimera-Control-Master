@@ -37,7 +37,7 @@ blue2dmotshutter
 0
 greenshutter
 0
-eitshutter
+slmshutter
 0
 gm1
 0
@@ -65,15 +65,15 @@ dio4.7
 0
 dio5.0
 0
-dio5.1
+uvled
 0
-dio5.2
+rb4shutter
 0
-dio5.3
+bluealign
 0
-dio5.4
+jhonathantest
 0
-dio5.5
+autoionization
 0
 ionization
 0
@@ -283,7 +283,7 @@ dds11
 0
 0 - 100
 100
-51
+43
 bluemotcoil 1.1
 bluex 0.3791
 bluey 0.178
@@ -292,47 +292,39 @@ greenmotcoil 0.2
 greenx 0.09626
 greeny 0.03502
 greenz -0.2979
-blueloadtime 150
+blueloadtime 175
 greenbroadloadtime 25
 greennarrowloadtime 23
-lacfreq 91.3
-lacpower 89.9
-coolfreq 94.65
-coolpower 30
-lactime 30
+coolfreq 95.75
+coolpower 45.7798
 cooltime 2
 greennarrowfreq 82.6
 greennarrowpower 2.5
 greennarrowpowerstart 4.338
 bluefreq 110
-bluetime 300
 bluepower 30
-setpoint556 2.65
 comploadtime 20
-ddswait 2000
-ttlwait 0.1
-dacwait 10
-greenpower 43
-greentime 5
-greenfreq 71.1005
-imgcooltime 10
+greenpower 47
+greentime 3.3
+greenfreq 71.049
 loadtime 32
 loadfreq 82.26
 depth -1.98
-axialcoolfreq 70.7189
-axialcoolpower 23
+axialcoolfreq 70.6145
+axialcoolpower 30
 slmpowerfactor 1.92
 xmagic 2.5
-ymagic 0.7993
-img_depth -6.72
-overhead_depth -7.5
+ymagic 0.75993
+img_depth -7.475
+overhead_depth -9.9
 filter_depth -0.05
-spec_depth -0.96
+spec_depth -1.068
 xzero 0.0659
 yzero 0.0089
 zzero -0.1969
 blowaway_depth -0.2
 ramsey_depth -0.12
-ramptime 2
+ramptime 2.1
 yclock 4.8
-115 265 1 215 250 1
+axisrottime 10
+115 270 1 210 255 1
