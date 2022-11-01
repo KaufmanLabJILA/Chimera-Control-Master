@@ -164,6 +164,7 @@ BEGIN_MESSAGE_MAP( MainWindow, CDialog )
 	ON_REGISTERED_MESSAGE( eDebugMessageID, &MainWindow::onDebugMessage )
 	ON_REGISTERED_MESSAGE( eNoAtomsAlertMessageID, &MainWindow::onNoAtomsAlertMessage )
 	ON_COMMAND_RANGE( ID_ACCELERATOR_ESC, ID_ACCELERATOR_ESC, &MainWindow::passCommonCommand )
+	ON_COMMAND_RANGE( ID_ACCELERATOR_F6, ID_ACCELERATOR_F6, &MainWindow::passCommonCommand )
 	ON_COMMAND_RANGE( ID_ACCELERATOR_F5, ID_ACCELERATOR_F5, &MainWindow::passCommonCommand )
 	ON_COMMAND_RANGE( ID_ACCELERATOR_F4, ID_ACCELERATOR_F4, &MainWindow::passCommonCommand )
 	ON_COMMAND_RANGE( ID_ACCELERATOR_F2, ID_ACCELERATOR_F2, &MainWindow::passCommonCommand )
@@ -658,9 +659,9 @@ void MainWindow::passCommonCommand(UINT id)
 }
 
 
-void MainWindow::startMaster( MasterThreadInput* input, bool isTurnOnMot )
+void MainWindow::startMaster( MasterThreadInput* input, bool isTurnOnMot , bool waitTillFinished)
 {
-	masterThreadManager.startExperimentThread(input);
+	masterThreadManager.startExperimentThread(input, waitTillFinished);
 }
 
 
@@ -1086,4 +1087,9 @@ brushMap MainWindow::getBrushes()
 rgbMap MainWindow::getRgbs()
 {
 	return mainRGBs;
+}
+
+void MainWindow::changeConfig(std::string pathToConfig)
+{
+	profile.openConfigFromPath(pathToConfig, TheScriptingWindow, this, TheCameraWindow, TheAuxiliaryWindow);
 }

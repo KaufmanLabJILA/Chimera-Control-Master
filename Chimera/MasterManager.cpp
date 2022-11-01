@@ -528,7 +528,7 @@ void MasterManager::loadMotSettings(MasterThreadInput* input)
 }
 
 
-void MasterManager::startExperimentThread(MasterThreadInput* input)
+void MasterManager::startExperimentThread(MasterThreadInput* input, bool waitTillFinished)
 {
 	if ( !input )
 	{
@@ -556,7 +556,21 @@ void MasterManager::startExperimentThread(MasterThreadInput* input)
 		input->dds->loadDDSScript(input->ddsScriptAddress);
 	}
 	// start thread.
-	runningThread = AfxBeginThread(experimentThreadProcedure, input, THREAD_PRIORITY_HIGHEST);
+	if (!waitTillFinished)
+	{
+		runningThread = AfxBeginThread(experimentThreadProcedure, input, THREAD_PRIORITY_HIGHEST);
+	}
+	else
+	{
+		runningThread = AfxBeginThread(experimentThreadProcedure, input, THREAD_PRIORITY_HIGHEST, 0, CREATE_SUSPENDED);
+		if (runningThread)
+		{
+			runningThread->m_bAutoDelete = FALSE;
+			runningThread->ResumeThread();
+		}
+		WaitForSingleObject(runningThread->m_hThread,INFINITE);
+		delete runningThread;
+	}
 }
 
 

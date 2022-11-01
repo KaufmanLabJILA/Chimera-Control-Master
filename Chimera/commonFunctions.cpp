@@ -63,50 +63,17 @@ namespace commonFunctions
 				break;
 			}
 			case ID_RUNMENU_RUNSEQUENCE:
+			case ID_ACCELERATOR_F6:
 			{
-				ExperimentInput input;
-				camWin->redrawPictures(false);
-				try
-				{
-					profileSettings currentProfile = mainWin->getProfileSettings();
-					std::vector<std::string> sequenceConfigs = currentProfile.sequenceConfigNames;
-					std::vector<std::string> sequencePaths = currentProfile.sequenceConfigPaths;
-					for (UINT configInc  = 0; configInc < sequenceConfigs.size(); configInc++)
-					{
-						if (sequenceConfigs[configInc] != currentProfile.configuration)
-						{
-							std::string configPath = sequencePaths[configInc] + sequenceConfigs[configInc];
-							mainWin->profile.openConfigFromPath(configPath, scriptWin, mainWin, camWin, auxWin);
-						}
-						//profile.openConfigFromPath(configPath, scriptWin, mainWin, camWin, auxWin);
-						//prepareCamera( mainWin, camWin, input );
-						prepareMasterThread(msgID, scriptWin, mainWin, camWin, auxWin, input, false, true, true);
-						//camWin->preparePlotter(input);
-						//camWin->prepareAtomCruncher(input);
-
-						//logParameters( input, camWin, true );
-
-						//camWin->startAtomCruncher(input);
-						//camWin->startPlotterThread(input);
-						//camWin->startCamera();
-						startMaster(mainWin, input);
-					}
-				}
-				catch (Error& err)
-				{
-					if (err.whatBare() == "CANCEL")
-					{
-						mainWin->getComm()->sendStatus("Canceled camera initialization.\r\n");
-						mainWin->getComm()->sendColorBox(Niawg, 'B');
-						break;
-					}
-					mainWin->getComm()->sendError("EXITED WITH ERROR! " + err.whatStr());
-					mainWin->getComm()->sendColorBox(Camera, 'R');
-					mainWin->getComm()->sendStatus("EXITED WITH ERROR!\r\nInitialized Default Waveform\r\n");
-					mainWin->getComm()->sendTimer("ERROR!");
-					camWin->assertOff();
-					break;
-				}
+				CWinThread* multiExperimentThread;
+				MultiExperimentInput* input = new MultiExperimentInput;
+				input->auxWin = auxWin;
+				input->camWin = camWin;
+				input->mainWin = mainWin;
+				input->scriptWin = scriptWin;
+				input->parent = parent;
+				input->msgID = msgID;
+				multiExperimentThread = AfxBeginThread(multipleExperimentThreadProcedure, input, THREAD_PRIORITY_HIGHEST);
 				break;
 			}
 			case WM_CLOSE:
@@ -916,6 +883,74 @@ namespace commonFunctions
 	}
 
 
+	// Sequentially runs configurations in a sequence. At each iteration, the mainWindow opens the given configuration
+	// of the sequence and a new thread is started to execute. The multiExperimentThread will wait for this thread to
+	// terminate before loading and starting the next configuration
+	UINT __cdecl multipleExperimentThreadProcedure(void* voidInput) {
+
+		MultiExperimentInput* multiExpInput = (MultiExperimentInput*)voidInput;
+		ExperimentInput input;
+		profileSettings profileSeq = multiExpInput->mainWin->getProfileSettings();
+		std::vector<std::string> configSequence = profileSeq.sequenceConfigNames;
+		std::vector<std::string> pathSequence = profileSeq.sequenceConfigPaths;
+
+		// Confirm sequence running with user once at the start
+		UINT_PTR areYouSure = 0;
+		if (!areYouSure)
+		{
+			areYouSure = DialogBoxParam(NULL, MAKEINTRESOURCE(IDD_BEGINNING_SETTINGS), 0,
+				beginningSettingsDialogProc, (LPARAM)cstr("\r\n\r\nBegin Sequence Execution?"));
+		}
+
+		if (areYouSure == 0) // Run sequence if user responds ok
+		{
+			for (UINT configInc = 0; configInc < configSequence.size(); configInc++)
+			{
+				// Update the configuration
+				std::string configPath = pathSequence[configInc] + configSequence[configInc];
+				multiExpInput->mainWin->changeConfig(configPath);
+				multiExpInput->camWin->redrawPictures(false);
+				
+				try // execute the experiment
+				{
+					//prepareCamera(multiExpInput->mainWin, multiExpInput->camWin, input);
+					prepareMasterThread(multiExpInput->msgID, multiExpInput->scriptWin, multiExpInput->mainWin, multiExpInput->camWin, multiExpInput->auxWin, input, false, true, true);
+					//multiExpInput->camWin->preparePlotter(input);
+					//multiExpInput->camWin->prepareAtomCruncher(input);
+
+					//logParameters(input, multiExpInput->camWin, true);
+
+					//multiExpInput->camWin->startAtomCruncher(input);
+					//multiExpInput->camWin->startPlotterThread(input);
+					//multiExpInput->camWin->startCamera();
+					startMaster(multiExpInput->mainWin, input, true); // true argument sets wait for experimentThread to finish
+					multiExpInput->mainWin->getComm()->sendStatus("Completed running sequence configuration " + str(configInc + 1) + ".\r\n");
+				}
+				catch (Error& err)
+				{
+					if (err.whatBare() == "CANCEL")
+					{
+						multiExpInput->mainWin->getComm()->sendStatus("Canceled camera initialization.\r\n");
+						multiExpInput->mainWin->getComm()->sendColorBox(Niawg, 'B');
+						break;
+					}
+					multiExpInput->mainWin->getComm()->sendError("EXITED WITH ERROR! " + err.whatStr());
+					multiExpInput->mainWin->getComm()->sendColorBox(Camera, 'R');
+					multiExpInput->mainWin->getComm()->sendStatus("EXITED WITH ERROR!\r\nInitialized Default Waveform\r\n");
+					multiExpInput->mainWin->getComm()->sendTimer("ERROR!");
+					multiExpInput->camWin->assertOff();
+					break;
+				}
+			}
+		}
+		else
+		{
+			thrower("Canceled!");
+		}
+		return 0;
+	}
+
+
 	void prepareMasterThread( int msgID, ScriptingWindow* scriptWin, MainWindow* mainWin, CameraWindow* camWin, 
 		AuxiliaryWindow* auxWin, ExperimentInput& input,
 		bool single, bool runAWG, bool runTtls)
@@ -1023,7 +1058,8 @@ namespace commonFunctions
 		std::string beginQuestion = "\r\n\r\nBegin Waveform Generation with these Settings?";
 
 		INT_PTR areYouSure = 0;
-		if (!single)
+		bool isSequence = ((msgID == ID_RUNMENU_RUNSEQUENCE) || (msgID == ID_ACCELERATOR_F6));
+		if (!single && !isSequence)
 		{
 			areYouSure = DialogBoxParam(NULL, MAKEINTRESOURCE(IDD_BEGINNING_SETTINGS), 0,
 				beginningSettingsDialogProc, (LPARAM)cstr(beginInfo + beginQuestion));
@@ -1072,12 +1108,12 @@ namespace commonFunctions
 		}
 	}
 
-	void startMaster(MainWindow* mainWin, ExperimentInput& input)
+	void startMaster(MainWindow* mainWin, ExperimentInput& input, bool waitTillFinished)
 	{
 		mainWin->addTimebar( "main" );
 		mainWin->addTimebar( "error" );
 		mainWin->addTimebar( "debug" );
-		mainWin->startMaster( input.masterInput, false );
+		mainWin->startMaster( input.masterInput, false , waitTillFinished);
 	}
 
 	void abortCamera( CameraWindow* camWin, MainWindow* mainWin )

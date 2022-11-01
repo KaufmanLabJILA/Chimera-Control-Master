@@ -42,7 +42,7 @@ class MasterManager
 		void analyzeMasterScript( DioSystem* ttls, DacSystem* dacs, 
 								  std::vector<std::pair<UINT, UINT>>& ttlShades, std::vector<UINT>& dacShades, std::vector<variableType>& vars);
 		// this function needs the master window in order to gather the relevant parameters for the experiment.
-		void startExperimentThread(MasterThreadInput* input);
+		void startExperimentThread(MasterThreadInput* input, bool waitTillFinished = false);
 		void loadMotSettings(MasterThreadInput* input);
 		bool runningStatus();
 		bool isValidWord(std::string word);
@@ -56,8 +56,6 @@ class MasterManager
 		static void handleDebugPlots( debugInfo debugOptions, Communicator* comm, DioSystem* ttls, DacSystem* dacs,
 									  bool quiet, EmbeddedPythonHandler* python );
 		static double convertToTime( timeType time, std::vector<variableType> variables, UINT variation );
-
-		CWinThread* runningThread;
 
 	private:
 		timeType loadSkipTime;
@@ -75,8 +73,7 @@ class MasterManager
 		timeType operationTime;
 		bool experimentIsRunning;
 		/// task handles
-		////////////Moved to public for multiexperiment runs//////////
-		//CWinThread* runningThread;
+		CWinThread* runningThread;
 
 		// Important, these should only be written to by the pause and aborting functions...
 		std::mutex pauseLock;

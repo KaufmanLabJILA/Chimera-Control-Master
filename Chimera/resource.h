@@ -163,6 +163,7 @@
 #define ID_FILE_MY_AWG_SAVE             40149
 #define ID_FILE_MY_AWG_SAVEAS           40150
 #define ID_FILE_MY_AWG_NEW              40151
+#define ID_ACCELERATOR_F6				40152
 
 #define MENU_ID_RANGE_END               40151
 
