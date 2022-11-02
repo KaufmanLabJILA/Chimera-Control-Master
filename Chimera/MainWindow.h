@@ -109,6 +109,8 @@ class MainWindow : public CDialog
 		bool experimentIsPaused( );
 		void notifyConfigUpdate( );
 		void passConfigPress( );
+		void passOpenSeqPress();
+		void passAddConfigsToSeqPress();
 		void changeConfig(std::string pathToConfig);
 
 	private:		

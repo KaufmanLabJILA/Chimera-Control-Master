@@ -46,6 +46,7 @@ class ProfileSystem
 		std::string getSequenceNamesString();
 		void loadNullSequence();
 		void addToSequence(CWnd* parent);
+		void addToSequenceFromFile(CWnd* parent);
 		std::vector<std::string> getSequenceNames();
 		void reloadSequence(std::string sequenceToReload);
 
@@ -98,4 +99,6 @@ class ProfileSystem
 		Control<CButton> configurationSavedIndicator;
 		Control<CButton> selectConfigButton;
 		Control<CStatic> configDisplay;
+		Control<CButton> selectSeqButton;
+		Control<CButton> addConfigsToSeqButton;
 };

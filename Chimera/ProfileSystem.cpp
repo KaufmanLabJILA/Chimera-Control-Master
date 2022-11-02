@@ -48,7 +48,15 @@ void ProfileSystem::initialize( POINT& pos, CWnd* parent, int& id, cToolTips& to
 	sequenceCombo.AddString( "NULL SEQUENCE" );
 	sequenceCombo.SetCurSel( 0 );
 	sequenceCombo.SetItemHeight( 0, 50 );
+	selectSeqButton.sPos = { pos.x + 960, pos.y + 750, pos.x + 1920, pos.y + 800 };
+	selectSeqButton.Create("Open Sequence", NORM_PUSH_OPTIONS, selectSeqButton.sPos, parent, IDC_SELECT_SEQ_COMBO);
+	addConfigsToSeqButton.sPos = { pos.x + 960, pos.y + 810, pos.x + 1920, pos.y + 860 };
+	addConfigsToSeqButton.Create("Add Configurations to Sequence", NORM_PUSH_OPTIONS, addConfigsToSeqButton.sPos, parent,
+		IDC_ADD_CONFIGSTOSEQ_COMBO);
+	
 	pos.y += 25;
+
+	
 	// display
 	sequenceInfoDisplay.sPos = { pos.x, pos.y, pos.x + 480, pos.y + 100 };
 	sequenceInfoDisplay.Create( NORM_STATIC_OPTIONS | ES_CENTER | ES_MULTILINE | WS_VSCROLL | ES_AUTOVSCROLL,
@@ -529,6 +537,26 @@ void ProfileSystem::addToSequence(CWnd* parent)
 	currentProfile.sequenceConfigPaths.push_back(currentProfile.categoryPath);
 	appendText( str( currentProfile.sequenceConfigNames.size() ) + ". "
 				+ currentProfile.sequenceConfigNames.back() + "\r\n", sequenceInfoDisplay );
+	updateSequenceSavedStatus(false);
+}
+
+void ProfileSystem::addToSequenceFromFile(CWnd* parent)
+{
+	CFileDialog CFDialog(TRUE, NULL, NULL, OFN_ALLOWMULTISELECT | OFN_FILEMUSTEXIST | OFN_EXPLORER, NULL, parent);
+
+	if (CFDialog.DoModal() == IDOK)
+	{
+		POSITION pos = CFDialog.GetStartPosition();
+		while (pos)
+		{
+			std::basic_string<TCHAR> configPath = CFDialog.GetNextPathName(pos);
+			int slashPos = configPath.find_last_of('\\');
+			currentProfile.sequenceConfigNames.push_back(configPath.substr(slashPos+1));
+			currentProfile.sequenceConfigPaths.push_back(configPath.substr(0,slashPos));
+			appendText(str(currentProfile.sequenceConfigNames.size()) + ". "
+				+ currentProfile.sequenceConfigNames.back() + "\r\n", sequenceInfoDisplay);
+		}
+	}
 	updateSequenceSavedStatus(false);
 }
 

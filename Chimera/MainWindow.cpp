@@ -176,6 +176,8 @@ BEGIN_MESSAGE_MAP( MainWindow, CDialog )
 	ON_COMMAND_RANGE( IDC_ERROR_STATUS_BUTTON, IDC_ERROR_STATUS_BUTTON, &MainWindow::passClear )
 	ON_COMMAND_RANGE( IDC_DEBUG_STATUS_BUTTON, IDC_DEBUG_STATUS_BUTTON, &MainWindow::passClear )
 	ON_COMMAND( IDC_SELECT_CONFIG_COMBO, &MainWindow::passConfigPress )
+	ON_COMMAND( IDC_SELECT_SEQ_COMBO, &MainWindow::passOpenSeqPress)
+	ON_COMMAND( IDC_ADD_CONFIGSTOSEQ_COMBO, &MainWindow::passAddConfigsToSeqPress)
 	ON_COMMAND( IDOK,  &MainWindow::catchEnter)
 END_MESSAGE_MAP()
 
@@ -189,6 +191,30 @@ void MainWindow::passConfigPress( )
 	catch ( Error& err )
 	{
 		comm.sendError( err.what( ) );
+	}
+}
+
+void MainWindow::passOpenSeqPress( )
+{
+	try
+	{
+		profile.openSequenceFile(this, this);
+	}
+	catch (Error& err)
+	{
+		comm.sendError(err.what());
+	}
+}
+
+void MainWindow::passAddConfigsToSeqPress( )
+{
+	try
+	{
+		profile.addToSequenceFromFile(this);
+	}
+	catch (Error& err)
+	{
+		comm.sendError(err.what());
 	}
 }
 
