@@ -292,7 +292,7 @@
 #endif
 
 #ifdef ALEC_LAPTOP
-#define PYTHON_HOME L"C:\\ProgramData\\Anaconda3\\"
+#define PYTHON_HOME L"C:\\Users\\alecj\\anaconda3\\"
 #define MOOG_SAFEMODE true
 #define AWG_SAFEMODE true
 #define GIGAMOOG_SAFEMODE true
