@@ -104,9 +104,10 @@
 	#define DAQMX_SAFEMODE true
 	#define RSG_SAFEMODE true
 	#define DDS_FPGA_ADDRESS "FT1I6IBSB" //Device Serial: FT1I6IBS, Use FT1I6IBSB in C++ to select Channel B
-	#define GIGAMOOG_PORT "COM7"
+	#define GIGAMOOG_PORT 804
+	#define GIGAMOOG_IPADDRESS "192.168.7.179"
 	#define AWG_PORT "COM13"
-	#define AWG_BAUD 115200 /*921600*/
+	#define AWG_BAUD 115200 /*921600*/ 
 	#define TOP_BOTTOM_TEK_SAFEMODE true
 	#define TOP_BOTTOM_TEK_USB_ADDRESS "USB0::0x0699::0x0343::C021681::0::INSTR"
 	#define EO_AXIAL_TEK_SAFEMODE true
@@ -130,7 +131,14 @@
 	const std::string PYTHON_CODE_LOCATION = "C:/Users/alecj/Kaufman_Lab/chimera/Chimera-Control-Master/";
 	// same as debug output location but with forward slashes for ease of use in python
 	const std::string PYTHON_INPUT_LOCATION = "C:/Users/alecj/Kaufman_Lab/chimera/Chimera-Control-Master/Debug-Output";
-	const std::string PLOT_FILES_SAVE_LOCATION = PROJECT_LOCATION + "Plotting";
+	const std::string MASKS_FILE_LOCATION = PROJECT_LOCATION + "\\Image Processing\\" + "masks.npy";
+	const std::string MASKS_CROP_FILE_LOCATION = PROJECT_LOCATION + "\\Image Processing\\" + "maskPtsCrop.npy";
+	const std::string BG_IMAGE_FILE_LOCATION = PROJECT_LOCATION + "\\Image Processing\\" + "bgImg.npy";
+	const std::string SUBPIXELMASKS_FILE_LOCATION = PROJECT_LOCATION + "\\Image Processing\\" + "subpixelMasks.npy";
+	const std::string SUBPIXELLUT_FILE_LOCATION = PROJECT_LOCATION + "\\Tweezer LUT\\" + "subpixelLUT.npy";
+	const std::string TWEEZER_AMPLITUDE_LUT_FILE_LOCATION = PROJECT_LOCATION + "\\Tweezer LUT\\" + "ampLUT.npy";
+	const std::string TWEEZER_FREQUENCY_LUT_FILE_LOCATION = PROJECT_LOCATION + "\\Tweezer LUT\\" + "freqLUT.npy";
+	const std::string PLOT_FILES_SAVE_LOCATION = PROJECT_LOCATION + "\\Plotting\\";
 	const std::string LIB_PATH = PROJECT_LOCATION + "Waveforms-Library\\dummyLib\\";
 	const std::string DEFAULT_SCRIPT_FOLDER_PATH = PROJECT_LOCATION + "Default Scripts\\";
 	const std::string PROFILES_PATH = PROJECT_LOCATION + "Profiles\\";
@@ -143,14 +151,9 @@
 	const std::string TIMING_OUTPUT_LOCATION = PROJECT_LOCATION + "Data\\";
 	const std::string NIAWG_WAVEFORM_OUTPUT_LOCATION = TIMING_OUTPUT_LOCATION;
 
-	const std::string MASKS_FILE_LOCATION = PROJECT_LOCATION + "\\Image Processing\\" + "masks.npy";
-	const std::string MASKS_CROP_FILE_LOCATION = PROJECT_LOCATION + "\\Image Processing\\" + "maskPtsCrop.npy";
-	const std::string BG_IMAGE_FILE_LOCATION = PROJECT_LOCATION + "\\Image Processing\\" + "bgImg.npy";
-	const std::string TWEEZER_AMPLITUDE_LUT_FILE_LOCATION = PROJECT_LOCATION + "\\Tweezer LUT\\" + "ampLUT.npy";
-	const std::string TWEEZER_FREQUENCY_LUT_FILE_LOCATION = PROJECT_LOCATION + "\\Tweezer LUT\\" + "freqLUT.npy";
-
 	//Test file for moog
 	const std::string MOOG_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_MOOG_SCRIPT.moogScript";
+	const std::string AWG_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_AWG_SCRIPT.awgScript";
 	const std::string GMOOG_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_GMOOG_SCRIPT.moogScript";
 	const std::string DDS_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_DDS_SCRIPT.ddsScript";
 #endif
@@ -356,77 +359,6 @@
 	// location where wave data can be outputted for analyzing with another computer.
 	const std::string NIAWG_WAVEFORM_OUTPUT_LOCATION = DATA_SAVE_LOCATION + "2017\\September\\September 7\\Raw Data\\";
 #endif
-
-#ifdef ALEC_LAPTOP
-#define PYTHON_HOME L"C:\\Users\\alecj\\anaconda3\\"
-#define MOOG_SAFEMODE true
-#define AWG_SAFEMODE true
-#define GIGAMOOG_SAFEMODE true
-#define NIAWG_SAFEMODE true
-#define ANDOR_SAFEMODE true
-#define PYTHON_SAFEMODE true
-#define DIO_SAFEMODE true
-#define DIO_FPGA_SAFEMODE true
-#define DIO_ARM_MODE true
-#define DDS_SAFEMODE true
-#define DAQMX_SAFEMODE true
-#define RSG_SAFEMODE true
-#define DDS_FPGA_ADDRESS "FT1I6IBSB" //Device Serial: FT1I6IBS, Use FT1I6IBSB in C++ to select Channel B
-#define GIGAMOOG_PORT 804
-#define GIGAMOOG_IPADDRESS "192.168.7.179"
-#define AWG_PORT "COM13"
-#define AWG_BAUD 115200 /*921600*/ 
-#define TOP_BOTTOM_TEK_SAFEMODE true
-#define TOP_BOTTOM_TEK_USB_ADDRESS "USB0::0x0699::0x0343::C021681::0::INSTR"
-#define EO_AXIAL_TEK_SAFEMODE true
-#define EO_AXIAL_TEK_USB_ADDRESS "USB0::0x0699::0x034C::C010386::0::INSTR"
-#define TOP_BOTTOM_AGILENT_SAFEMODE true
-#define TOP_BOTTOM_AGILENT_USB_ADDRESS "USB0::0x0957::0x2307::MY50002574::0::INSTR"
-#define UWAVE_AXIAL_AGILENT_SAFEMODE true
-#define UWAVE_AXIAL_AGILENT_USB_ADDRESS "USB0::0x0957::0x2C07::MY52810615::0::INSTR"
-#define INTENSITY_SAFEMODE true
-#define INTENSITY_AGILENT_USB_ADDRESS "USB0::0x0957::0x2307::MY50004500::0::INSTR"
-#define FLASHING_SAFEMODE true
-#define FLASHING_AGILENT_USB_ADDRESS "USB0::0x0957::0x2307::MY50003003::0::INSTR"
-#define TESTING_AGILENT_USB_ADDRESS "USB0::0x0957::0x2C07::MY52801397::0::INSTR"
-#define AXIAL_AGILENT_SAFEMODE true
-#define AXIAL_AGILENT_USB_ADDRESS ""
-#define UWAVE_SAFEMODE true
-#define UWAVE_AGILENT_USB_ADDRESS ""
-
-	const std::string PROJECT_LOCATION = "C:\\Users\\alecj\\Kaufman_Lab\\chimera\\Chimera-Control-Master\\";
-	const std::string DATABASE_LOCATION = "A:\\";
-	//const std::string DATABASE_LOCATION = "D:\\";
-	const std::string PYTHON_CODE_LOCATION = "C:/Users/alecj/anaconda3/include";
-	// same as debug output location but with forward slashes for ease of use in python
-	const std::string PYTHON_INPUT_LOCATION = "C:/Users/alecj/anaconda3/include";
-	const std::string MASKS_FILE_LOCATION = PROJECT_LOCATION + "\\Image Processing\\" + "masks.npy";
-	const std::string MASKS_CROP_FILE_LOCATION = PROJECT_LOCATION + "\\Image Processing\\" + "maskPtsCrop.npy";
-	const std::string BG_IMAGE_FILE_LOCATION = PROJECT_LOCATION + "\\Image Processing\\" + "bgImg.npy";
-	const std::string SUBPIXELMASKS_FILE_LOCATION = PROJECT_LOCATION + "\\Image Processing\\" + "subpixelMasks.npy";
-	const std::string SUBPIXELLUT_FILE_LOCATION = PROJECT_LOCATION + "\\Tweezer LUT\\" + "subpixelLUT.npy";
-	const std::string TWEEZER_AMPLITUDE_LUT_FILE_LOCATION = PROJECT_LOCATION + "\\Tweezer LUT\\" + "ampLUT.npy";
-	const std::string TWEEZER_FREQUENCY_LUT_FILE_LOCATION = PROJECT_LOCATION + "\\Tweezer LUT\\" + "freqLUT.npy";
-	const std::string PLOT_FILES_SAVE_LOCATION = PROJECT_LOCATION + "\\Plotting\\";
-	const std::string LIB_PATH = PROJECT_LOCATION + "Waveforms-Library\\dummyLib\\";
-	const std::string DEFAULT_SCRIPT_FOLDER_PATH = PROJECT_LOCATION + "Default Scripts\\";
-	const std::string PROFILES_PATH = PROJECT_LOCATION + "Profiles\\";
-	const std::string DATA_SAVE_LOCATION = DATABASE_LOCATION;
-	const std::string MUSIC_LOCATION = PROJECT_LOCATION + "Camerawg\\Final Fantasy VII - Victory Fanfare [HQ].mp3";
-	const std::string FUNCTIONS_FOLDER_LOCATION = PROJECT_LOCATION + "Functions\\";
-	const std::string MASTER_CONFIGURATION_FILE_ADDRESS = PROJECT_LOCATION + "Master-Configuration.txt";
-	const std::string MOT_ROUTINE_ADDRESS = PROJECT_LOCATION + "Master Profiles\\Hotkey Experiments\\MOT\\turnOnMot.mScript";
-	const std::string DEBUG_OUTPUT_LOCATION = PROJECT_LOCATION + "Debug-Output\\";
-	const std::string TIMING_OUTPUT_LOCATION = PROJECT_LOCATION + "Data\\";
-	const std::string NIAWG_WAVEFORM_OUTPUT_LOCATION = TIMING_OUTPUT_LOCATION;
-
-	//Test file for moog
-	const std::string MOOG_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_MOOG_SCRIPT.moogScript";
-	const std::string AWG_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_AWG_SCRIPT.awgScript";
-	const std::string GMOOG_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_GMOOG_SCRIPT.moogScript";
-	const std::string DDS_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_DDS_SCRIPT.ddsScript";
-#endif
-
 
 //Moog constants
 #define MOOG_COM_PORT "COM3"
