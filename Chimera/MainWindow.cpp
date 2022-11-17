@@ -10,8 +10,7 @@
 
 MainWindow::MainWindow(UINT id, CDialog* splash) : CDialog(id), profile(PROFILES_PATH), 
     masterConfig( MASTER_CONFIGURATION_FILE_ADDRESS ), 
-	appSplash( splash ),
-	dds(DDS_FPGA_ADDRESS), gmoog(GIGAMOOG_IPADDRESS, GIGAMOOG_PORT), awg(AWG_PORT, AWG_BAUD)
+	appSplash( splash ), dds(DDS_FPGA_ADDRESS), gmoog(GIGAMOOG_IPADDRESS, GIGAMOOG_PORT), awg(AWG_PORT, AWG_BAUD)
 {
 	// create all the main rgbs and brushes. I want to make sure this happens before other windows are created.
 	mainRGBs["Light Green"]			= RGB( 163,	190, 140);
@@ -163,6 +162,7 @@ BEGIN_MESSAGE_MAP( MainWindow, CDialog )
 	ON_REGISTERED_MESSAGE( eDebugMessageID, &MainWindow::onDebugMessage )
 	ON_REGISTERED_MESSAGE( eNoAtomsAlertMessageID, &MainWindow::onNoAtomsAlertMessage )
 	ON_COMMAND_RANGE( ID_ACCELERATOR_ESC, ID_ACCELERATOR_ESC, &MainWindow::passCommonCommand )
+	ON_COMMAND_RANGE( ID_ACCELERATOR_F6, ID_ACCELERATOR_F6, &MainWindow::passCommonCommand )
 	ON_COMMAND_RANGE( ID_ACCELERATOR_F5, ID_ACCELERATOR_F5, &MainWindow::passCommonCommand )
 	ON_COMMAND_RANGE( ID_ACCELERATOR_F4, ID_ACCELERATOR_F4, &MainWindow::passCommonCommand )
 	ON_COMMAND_RANGE( ID_ACCELERATOR_F2, ID_ACCELERATOR_F2, &MainWindow::passCommonCommand )
@@ -174,6 +174,8 @@ BEGIN_MESSAGE_MAP( MainWindow, CDialog )
 	ON_COMMAND_RANGE( IDC_ERROR_STATUS_BUTTON, IDC_ERROR_STATUS_BUTTON, &MainWindow::passClear )
 	ON_COMMAND_RANGE( IDC_DEBUG_STATUS_BUTTON, IDC_DEBUG_STATUS_BUTTON, &MainWindow::passClear )
 	ON_COMMAND( IDC_SELECT_CONFIG_COMBO, &MainWindow::passConfigPress )
+	ON_COMMAND( IDC_SELECT_SEQ_COMBO, &MainWindow::passOpenSeqPress)
+	ON_COMMAND( IDC_ADD_CONFIGSTOSEQ_COMBO, &MainWindow::passAddConfigsToSeqPress)
 	ON_COMMAND( IDOK,  &MainWindow::catchEnter)
 END_MESSAGE_MAP()
 
@@ -187,6 +189,30 @@ void MainWindow::passConfigPress( )
 	catch ( Error& err )
 	{
 		comm.sendError( err.what( ) );
+	}
+}
+
+void MainWindow::passOpenSeqPress( )
+{
+	try
+	{
+		profile.openSequenceFile(this, this);
+	}
+	catch (Error& err)
+	{
+		comm.sendError(err.what());
+	}
+}
+
+void MainWindow::passAddConfigsToSeqPress( )
+{
+	try
+	{
+		profile.addToSequenceFromFile(this);
+	}
+	catch (Error& err)
+	{
+		comm.sendError(err.what());
 	}
 }
 
@@ -690,9 +716,9 @@ void MainWindow::passCommonCommand(UINT id)
 }
 
 
-void MainWindow::startMaster( MasterThreadInput* input, bool isTurnOnMot )
+void MainWindow::startMaster( MasterThreadInput* input, bool isTurnOnMot , bool waitTillFinished)
 {
-	masterThreadManager.startExperimentThread(input);
+	masterThreadManager.startExperimentThread(input, waitTillFinished);
 }
 
 
@@ -897,7 +923,7 @@ void MainWindow::handleSequenceCombo()
 {
 	try
 	{
-		profile.sequenceChangeHandler();
+		profile.sequenceChangeHandler(this);
 	}
 	catch (Error& err)
 	{
@@ -1118,4 +1144,9 @@ brushMap MainWindow::getBrushes()
 rgbMap MainWindow::getRgbs()
 {
 	return mainRGBs;
+}
+
+void MainWindow::changeConfig(std::string pathToConfig)
+{
+	profile.openConfigFromPath(pathToConfig, TheScriptingWindow, this, TheCameraWindow, TheAuxiliaryWindow);
 }

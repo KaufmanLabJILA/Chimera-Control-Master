@@ -13,9 +13,10 @@ namespace commonFunctions
 	/// Run Menu
 	void prepareCamera( MainWindow* mainWin, CameraWindow* camWin, ExperimentInput& input );
 	void prepareMasterThread( int msgID, ScriptingWindow* scriptWin, MainWindow* mainWin, CameraWindow* camWin,
-							  AuxiliaryWindow* auxWin, ExperimentInput& input, bool single, bool runAWG, bool runTtls );
+							  AuxiliaryWindow* auxWin, ExperimentInput& input, bool single, bool runAWG, bool runTtls);
 	void abortRearrangement( MainWindow* mainWin, CameraWindow* camWin );
-	void startMaster(MainWindow* mainWin, ExperimentInput& input);
+	void startMaster(MainWindow* mainWin, ExperimentInput& input, bool waitTillFinished = false);
+	UINT __cdecl multipleExperimentThreadProcedure(void* voidInput);
 
 	void logParameters( ExperimentInput& input, CameraWindow* camWin, bool takeAndorPictures );
 	//void startFullMasterThread( MainWindow* mainWin, AuxiliaryWindow* auxWin, ScriptingWindow* scriptWin, 
@@ -28,6 +29,16 @@ namespace commonFunctions
 	/// Scripting Menu
 	int saveProfile( ScriptingWindow* scriptWindow, MainWindow* mainWin );
 	//void reloadNIAWGDefaults( MainWindow* mainWin );
+
+	struct MultiExperimentInput
+	{
+		int msgID;
+		CWnd* parent;
+		MainWindow* mainWin;
+		ScriptingWindow* scriptWin;
+		CameraWindow* camWin;
+		AuxiliaryWindow* auxWin;
+	};
 }
 
 

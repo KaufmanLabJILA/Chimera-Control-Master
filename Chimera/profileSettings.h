@@ -15,7 +15,9 @@ struct profileSettings
 	//std::string experimentPath;
 	// Note: The experiment (category) path include the expriment (category) name in the string.
 	std::string categoryPath;
+	std::string sequencePath;
 	// needs some work.
 	std::vector<std::string> sequenceConfigNames;
+	std::vector<std::string> sequenceConfigPaths;
 };
 

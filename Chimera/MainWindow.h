@@ -73,7 +73,7 @@ class MainWindow : public CDialog
 		void setNiawgDefaults();
 		void fillMasterThreadInput( MasterThreadInput* input );
 		void fillMotInput( MasterThreadInput* input);
-		void startMaster( MasterThreadInput* input, bool isTurnOnMot );
+		void startMaster( MasterThreadInput* input, bool isTurnOnMot , bool waitTillFinished = false);
 		std::string getNotes( );
 		brushMap getBrushes();
 		rgbMap getRgbs();
@@ -111,6 +111,9 @@ class MainWindow : public CDialog
 		bool experimentIsPaused( );
 		void notifyConfigUpdate( );
 		void passConfigPress( );
+		void passOpenSeqPress();
+		void passAddConfigsToSeqPress();
+		void changeConfig(std::string pathToConfig);
 
 	private:		
 		DECLARE_MESSAGE_MAP();

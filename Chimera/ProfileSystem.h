@@ -32,19 +32,21 @@ class ProfileSystem
 		std::string getAWGAddressFromConfig();
 		std::string getGmoogAddressFromConfig();
 		std::string getDdsAddressFromConfig();
-		void saveSequence();
-		void saveSequenceAs();
+		void saveSequence(MainWindow* mainWin);
+		void saveSequenceAs(MainWindow* mainWin);
 		void renameSequence();
 		void deleteSequence();
 		void newSequence(CWnd* parent);
-		void openSequence(std::string sequenceName);
+		void openSequence(std::string sequenceName, MainWindow* mainWin);
+		void openSequenceFile(CWnd* parent, MainWindow* mainWin);
 		void updateSequenceSavedStatus(bool isSaved);
-		bool sequenceSettingsReadyCheck();
-		bool checkSequenceSave(std::string prompt);
-		void sequenceChangeHandler();
+		bool sequenceSettingsReadyCheck(MainWindow* mainWin);
+		bool checkSequenceSave(std::string prompt, MainWindow* mainWin);
+		void sequenceChangeHandler(MainWindow* mainWin);
 		std::string getSequenceNamesString();
 		void loadNullSequence();
 		void addToSequence(CWnd* parent);
+		void addToSequenceFromFile(CWnd* parent);
 		std::vector<std::string> getSequenceNames();
 		void reloadSequence(std::string sequenceToReload);
 
@@ -97,4 +99,6 @@ class ProfileSystem
 		Control<CButton> configurationSavedIndicator;
 		Control<CButton> selectConfigButton;
 		Control<CStatic> configDisplay;
+		Control<CButton> selectSeqButton;
+		Control<CButton> addConfigsToSeqButton;
 };

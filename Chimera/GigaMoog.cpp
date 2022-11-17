@@ -50,6 +50,12 @@ gigaMoog::gigaMoog(std::string IPAddress, int port) : fpga(IPAddress, port) {
 	}
 }
 
+gigaMoog::gigaMoog() {
+	if (!GIGAMOOG_SAFEMODE) {
+		//writeOff();
+	}
+}
+
 gigaMoog::~gigaMoog(void){
 }
 
