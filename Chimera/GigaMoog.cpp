@@ -724,7 +724,9 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vari
 			initialPositionsX.clear();
 			nTweezerX = 0;
 			for (auto &ch : initAOX) { //convert string to boolean vector
-				if (ch == '0') { initialPositionsX.push_back(0); }
+				if (ch == '0') {
+					initialPositionsX.push_back(0); 
+				}
 				else if (ch == '1') {
 					initialPositionsX.push_back(1);
 					nTweezerX++;

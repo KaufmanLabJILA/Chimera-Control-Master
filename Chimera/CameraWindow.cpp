@@ -1005,7 +1005,7 @@ void CameraWindow::prepareAtomCruncher(ExperimentInput& input)
 		input.cruncherInput->subpixelMasks = arrSubpixelMasks.as_vec<int16>();
 		input.cruncherInput->nSubpixel = arrSubpixelMasks.shape[0];
 
-		if (!ATOMCRUNCHER_SAFEMODE) {
+		if (!AUTOALIGN_SAFEMODE) {
 			if ((arrSubpixelMasks.shape[2] != input.cruncherInput->imageDims.width) || (arrSubpixelMasks.shape[1] != input.cruncherInput->imageDims.height))
 			{
 				thrower("Subpixel mask dimensions do not match image dimensions.");
@@ -1215,7 +1215,8 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 					for (size_t ix = 0; ix < input->maskWidX; ix++)
 					{
 						//select appropriate pixel in image and mask and take product. Also subtracting background in this step - doing it all at once to avoid saving image twice, but also want to keep raw image for plotting.
-						size_t indPixImg = (ix + input->masksCrop[imask + 2 * input->nMask]) + (input->imageDims.width)*(iy + input->masksCrop[imask]); //column major indexing
+						size_t indPixImg = (ix + input->masksCrop[4*imask + 2]) + (input->imageDims.width)*(iy + input->masksCrop[4*imask]);
+						//size_t indPixImg = (ix + input->masksCrop[imask + 2 * input->nMask]) + (input->imageDims.width)*(iy + input->masksCrop[imask]); //column major indexing
 						size_t indPixMask = (input->maskWidX)*(input->maskWidY)*imask + ix + iy * (input->maskWidX);
 						try {
 							tempImageROIs[imask] += ((*input->imageQueue)[0][indPixImg] - input->bgImg[indPixImg]) * (input->masks[indPixMask]);
@@ -1243,7 +1244,19 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 				}
 				iroi++;
 			}
+			//size_t iroi = 0;
+			//input->nAtom = 16; //Keep track of how many atoms are loaded.
+			//for (auto& roi : tempImageROIs)
+			//{
+			//	if (iroi % 2 == 0) //factor of 100 due to normalization of masks.
+			//	{
+			//		tempAtomArray[iroi] = true;
+			//	}
+			//	iroi++;
+			//}
 		}
+
+
 
 		(*input->atomArrayQueue).push_back(tempAtomArray); //save processed image
 
@@ -1288,7 +1301,7 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 		if (imageCount % input->picsPerRep == 0) //Just always run this and store the measured values on first image. Control whether this gets applied in gmoog. input->autoTweezerOffsetActive
 		{
 			//if (input->nAtom >= 100) //enforce enough atoms for decent single shot signal.
-			if (true) //always check, due to jumps by 1 lattice spacing.
+			if (!AUTOALIGN_SAFEMODE) //always check, due to jumps by 1 lattice spacing.
 			{
 				std::lock_guard<std::mutex> locker(*input->imageLock);
 				input->getTweezerOffset(&(input->gmoog->xPixelOffsetAuto), &(input->gmoog->yPixelOffsetAuto), &(input->gmoog->subpixelIndexOffsetAuto));

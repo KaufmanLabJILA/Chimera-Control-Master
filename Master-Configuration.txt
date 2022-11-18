@@ -63,11 +63,11 @@ dio4.6
 0
 dio4.7
 0
-dio5.0
+clocksamphold
 0
 uvled
 0
-rb4shutter
+clockawg
 0
 bluealign
 0
@@ -169,7 +169,7 @@ dcoffsetmod
 tweezerpow
 -10 - 0
 0
-bluetune
+clockpow
 -0.1 - 0.1
 0
 blue3dpow
@@ -283,39 +283,39 @@ dds11
 0
 0 - 100
 100
-43
+44
 bluemotcoil 1.1
-bluex 0.3791
-bluey 0.178
+bluex 0.3316
+bluey 0.2977
 bluez 0.15
 greenmotcoil 0.2
 greenx 0.09626
 greeny 0.03502
 greenz -0.2979
-blueloadtime 175
-greenbroadloadtime 25
-greennarrowloadtime 23
-coolfreq 95.75
-coolpower 45.7798
+blueloadtime 200
+greenbroadloadtime 23
+greennarrowloadtime 20
+coolfreq 95.6629
+coolpower 45.0585
 cooltime 2
 greennarrowfreq 82.6
-greennarrowpower 2.5
-greennarrowpowerstart 4.338
+greennarrowpower 2.433
+greennarrowpowerstart 7
 bluefreq 110
 bluepower 30
 comploadtime 20
-greenpower 47
-greentime 3.3
-greenfreq 71.049
-loadtime 32
-loadfreq 82.26
+greenpower 52
+greentime 4
+greenfreq 71.0617
+loadtime 300
+loadfreq 98.07
 depth -1.98
-axialcoolfreq 70.6145
-axialcoolpower 30
+axialcoolfreq 70.67
+axialcoolpower 40
 slmpowerfactor 1.92
 xmagic 2.5
 ymagic 0.75993
-img_depth -7.475
+img_depth -7.62
 overhead_depth -9.9
 filter_depth -0.05
 spec_depth -1.068
@@ -327,4 +327,5 @@ ramsey_depth -0.12
 ramptime 2.1
 yclock 4.8
 axisrottime 10
+loadpower 55.06
 115 270 1 210 255 1

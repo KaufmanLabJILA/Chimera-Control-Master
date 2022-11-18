@@ -6,6 +6,7 @@
 #include <array>
 #include <sstream>
 #include <unordered_map>
+#include "traceoutput.h"
 
 //Below are for the FPGA
 //#include "stdafx.h"
@@ -98,7 +99,7 @@ class DioSystem
 		bool getDefaultTtl(UINT row, UINT column);
 		void findLoadSkipSnapshots( double time, std::vector<variableType>& variables, UINT variation );
 		std::pair<USHORT, USHORT> calcDoubleShortTime( double time );
-
+		/*void DioSystem::trace(const char* format, ...);*/
 		
 	private:		
 		// one control for each TTL

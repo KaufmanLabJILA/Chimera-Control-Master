@@ -2,6 +2,7 @@
 #include "Expression.h"
 #include <vector>
 #include <boost/tokenizer.hpp>
+#include <chrono>
 
 Expression::Expression( )
 {
@@ -392,27 +393,28 @@ math functions, and evaluates it to a double.
 */
 double Expression::evaluate( std::vector<variableType>& variables, UINT variation )
 {
+	//auto start = std::chrono::high_resolution_clock::now();
 	// make a constant copy of the original string to use during the evaluation.
 	const std::string originalExpression( expressionStr );
 	double resultOfReduction = 0;
 
-	try
-	{
-		// try the simple thing.
-		size_t num;
-		resultOfReduction = std::stod( originalExpression, &num );
-		if ( num != originalExpression.size( ) )
-		{
-			// ???
-			thrower( "started with number" );
-		}
-		return resultOfReduction;
-	}
-	catch ( std::invalid_argument& ) {	/* that's fine, just means it needs actual reducing.*/ }
-	catch ( Error& ) { /* Same. */ }
+	//try
+	//{
+	//	// try the simple thing.
+	//	size_t num;
+	//	resultOfReduction = std::stod( originalExpression, &num );
+	//	if ( num != originalExpression.size( ) )
+	//	{
+	//		// ???
+	//		thrower( "started with number" );
+	//	}
+	//	return resultOfReduction;
+	//}
+	//catch ( std::invalid_argument& ) {	/* that's fine, just means it needs actual reducing.*/ }
+	//catch ( Error& ) { /* Same. */ }
+
 
 	std::vector<std::string> terms = splitString( "(" + originalExpression + ")" );
-
 	// if not the default value (see header)
 	if ( variation != -1 )
 	{
@@ -435,7 +437,14 @@ double Expression::evaluate( std::vector<variableType>& variables, UINT variatio
 			}
 		}
 	}
+	
 	evaluateFunctions( terms );
+
+	/*auto stop = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double, std::milli> fp_ms = stop - start;
+	char byte_buf[1000];
+	sprintf_s(byte_buf, 1000, "evaluate loop time = %f\n", fp_ms);
+	trace(byte_buf);*/
 	/// do math.
 	return reduce( terms );
 }

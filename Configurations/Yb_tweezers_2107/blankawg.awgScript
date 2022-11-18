@@ -1,16 +1,31 @@
 reset
-setsingle 0 0 clockamp clockfreq 1 0
-setsingle 0 clockPov2 0 clockfreq+10 0 0
-setsingle 0 clockPov2+uvtime+uvtime+0.25 clockamp clockfreq 1 clockphasePov4
-setsingle 0 clockPov2+clockPov4+uvtime+uvtime+0.25 0 clockfreq 0 0
-setsingle 0 clockPov2+clockPov4+0.1+uvtime+uvtime+0.25 clockamp clockfreq 1 clockphase
-setsingle 0 2*clockPov2+clockPov4+0.1+uvtime+uvtime+0.25 0 clockfreq+10 0 0
+
+
+
+
+setsingle 0 0 clockamp 76 0 0
+
+setsingle 0 clocktime 100 76 0 0
+%setsingle 0 clocktime+time 0 clockfreq+2 0 0
+
 program 0
-setsingle 1 0 0 uvfreq 0 0
-setsingle 1 clockPov2+0.5 100 uvfreq 1 0
-setsingle 1 clockPov2+uvtime+0.5 0 uvfreq 0 0
-setsingle 1 clockPov2+uvtime+0.55 100 uvfreq 1 uvphase
-setsingle 1 clockPov2+uvtime+uvtime+0.55 0 uvfreq 0 0
+
+setsteps 1 rbtime/15 0 rbtime
+
+ampgauss 1 0 rbtime rbtime/2.5 1 0 100
+
+freqlin 1 0 rbtime rbfreq rbfreq  1 0
+
+
+setsteps 1 rbtime/15 rbtime 2*rbtime
+
+ampgauss 1 rbtime 2*rbtime rbtime/2.5 -1 100 0
+
+freqlin 1 rbtime 2*rbtime rbfreq rbfreq 0 0
+
+setsingle 1 2*rbtime 0 100 0 0 
+
+
 program 1
 
 

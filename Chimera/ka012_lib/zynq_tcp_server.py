@@ -11,7 +11,6 @@ from axis_fifo import AXIS_FIFO
 from devices import fifo_devices
 from devices import gpio_devices
 from axi_gpio import AXI_GPIO
-import dds_lock_pll
 from reset_all import reset
 from soft_trigger import trigger
 import dds_lock_pll

@@ -65,6 +65,10 @@ class DDS_ftw_seq_point:
 
 class sequencer:
     def __init__(self):
+        self.dioByteLen = 28
+        self.dacByteLen = 44
+        self.ddsByteLen = 46
+
         self.dacRes = 65536 #0xffff
         self.dacRange = [-10, 10]
         self.dacRangeConv = float(167772)/self.dacRes
@@ -112,15 +116,18 @@ class sequencer:
         reset()
         dds_lock_pll.dds_lock_pll()
 
-        # byte_buf_dio = b't00000064_b0000100000000001\0t05F5E100_b0000100000000000'
-        # byte_buf_dac = b't00000164_c0005_s-9.900_e00.000_d00000000\0'
-        #
-        # self.dac_seq_write_points(42, byte_buf_dac, 1)
-        # self.dio_seq_write_points(28, byte_buf_dio, 2)
+        # byte_buf_dio = b't00000064_b0000100000000001\0t05F5E100_b0000100000000000\0'
+        # byte_buf_dac = b't0000AC40_c0005_s-9.9000_e00.0000_d00000000\0'
+        
+        # self.dac_seq_write_points(self.dacByteLen, byte_buf_dac, 1)
+        # self.dio_seq_write_points(self.dioByteLen, byte_buf_dio, 2)
         # sleep(0.1)
         # self.mod_enable()
         # sleep(0.1)
-        # trigger()
+        # self.soft_trigger()
+        # sleep(0.1)
+        # self.mod_disable()
+
 
     def getWord(self, bytes):
         return bytes[3] + bytes[2] + bytes[1] + bytes[0]
@@ -477,20 +484,27 @@ if __name__ == "__main__":
 
     import time
 
-    byte_buf_dio = b't00000010_b0000000000000001\0' \
-    			   b't00000A00_b0000000000000000\0' \
-    			   b't00030d40_b0000000000000001\0' \
-    			   b't00F61a80_b0000000000000000\0'
+    dioByteLen = 28
+    dacByteLen = 44
+    ddsByteLen = 46
+
+    # byte_buf_dio = b't00000010_b0000000000000001\0' \
+    # 			   b't00000A00_b0000000000000000\0' \
+    # 			   b't00030d40_b0000000000000001\0' \
+    # 			   b't00F61a80_b0000000000000000\0'
     #byte_buf_dds = 't00000064_c0001_f_s100.000_e050.000_000009ff0\0' \
     #			   't00010064_c0002_f_s080.000_e050.000_000009ff0\0'
-    byte_buf_dds = b't00000064_c0000_f_s055.000_e000.000_d00000000\0'
+    # byte_buf_dds = b't00000064_c0000_f_s055.000_e000.000_d00000000\0'
                     # b't00010064_c0000_a_s100.000_e000.000_d00000000\0'
 
     # byte_buf_dac = 't00000000_c0000_s05.000_e00.000_d0000c350\0' \
     # 			   't005b8d80_c0000_s05.000_e00.000_d0000c350\0'
-    byte_buf_dac = b't00008100_c0000_s00.000_e00.000_d00000000\0' \
-    			   b't000b8d80_c0000_s00.000_e05.000_d0011c350\0' \
-                   b't001c8d80_c0001_s00.000_e02.000_d0011c350\0'
+    # byte_buf_dac = b't00008100_c0000_s00.000_e00.000_d00000000\0' \
+    # 			   b't000b8d80_c0000_s00.000_e05.000_d0011c350\0' \
+    #                b't001c8d80_c0001_s00.000_e02.000_d0011c350\0'
+
+    byte_buf_dio = b't00000064_b0000100000000001\0t05F5E100_b0000100000000000\0'
+    byte_buf_dac = b't0000AC40_c0005_s-9.9000_e00.0000_d00000000\0'
 
     # print(byte_buf_dac)
     seq = sequencer()
@@ -498,21 +512,12 @@ if __name__ == "__main__":
     reset()
     dds_lock_pll.dds_lock_pll()
     #seq.set_DDS(1, 100, 10)
-    sleep(0.5)
-    seq.dds_seq_write_points(46, byte_buf_dds, 1)
-    # seq.dds_seq_write_ftw_points()
-    #time.sleep(0.005)
-    #seq.set_DDS(1, 100, 0)
-    # seq.dds_seq_write_atw_points()
-    #seq.dds_seq_write_ftw_points()
-    # seq.set_DAC(0, 1)
-    sleep(0.5)
-    seq.dac_seq_write_points(42, byte_buf_dac, 3)
-    sleep(0.5)
-    seq.dio_seq_write_points(28, byte_buf_dio, 4)
-    sleep(0.5)
+    
+    seq.dac_seq_write_points(dacByteLen, byte_buf_dac, 1)
+    seq.dio_seq_write_points(dioByteLen, byte_buf_dio, 2)
+    sleep(0.02)
     seq.mod_enable()
-    sleep(0.5)
-    trigger()
-    sleep(0.5)
+    sleep(0.02)
+    seq.soft_trigger()
+    sleep(0.02)
     seq.mod_disable()

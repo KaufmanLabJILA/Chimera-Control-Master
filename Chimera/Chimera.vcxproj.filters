@@ -210,6 +210,9 @@
     <ClCompile Include="atomCruncher.cpp">
       <Filter>Camera Window</Filter>
     </ClCompile>
+    <ClCompile Include="traceoutput.cpp">
+      <Filter>Constants, Externals, Etc.</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -491,6 +494,9 @@
     </ClInclude>
     <ClInclude Include="atomCruncher.h">
       <Filter>Camera Window</Filter>
+    </ClInclude>
+    <ClInclude Include="traceoutput.h">
+      <Filter>Constants, Externals, Etc.</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

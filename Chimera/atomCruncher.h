@@ -24,6 +24,7 @@ public:
 	void scrunchYTarget(moveSequence& moveseq, bool constantMoves);
 	void scrunchYFixedLength(moveSequence& moveseq, int nPerColumn, bool centered);
 	int equalizeY(moveSequence& moveseq);
+	void enoughX(moveSequence& moveseq, bool constantMoves);
 	void enoughY(moveSequence& moveseq, bool constantMoves);
 	void filterAtomQueue(void);
 

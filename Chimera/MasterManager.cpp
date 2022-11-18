@@ -253,15 +253,15 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 			// it's important to grab the skipoption from input->skipNext only once because in principle 
 			// if the cruncher thread was running behind, it could change between writing and configuring the  
 			// dacs and configuring the TTLs; 
-			bool skipOption;
-			if (input->skipNext == NULL)
+			bool skipOption = false;
+			/*if (input->skipNext == NULL)
 			{
 				skipOption = false;
 			}
 			else
 			{
 				skipOption = input->skipNext->load();
-			}
+			}*/
 			input->dacs->stopDacs();
 			input->dacs->configureClocks(variationInc, skipOption);
 			input->dacs->writeDacs(variationInc, skipOption);
@@ -339,6 +339,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 		}
 
 		//disable device mod
+		//input->thisObj->sendZynqCommand(zynq_tcp, "initExp");
 		input->thisObj->sendZynqCommand(zynq_tcp, "disableSeq");
 		input->thisObj->sendZynqCommand(zynq_tcp, "lockPLL");
 		input->ddss->setDDSsAmpFreq();
@@ -374,6 +375,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 			input->comm->sendError(exception.what());
 			input->comm->sendFatalError("Exited main experiment thread abnormally.");
 		}
+		//input->thisObj->sendZynqCommand(zynq_tcp, "initExp");
 		input->thisObj->sendZynqCommand(zynq_tcp, "disableSeq");
 		input->thisObj->sendZynqCommand(zynq_tcp, "lockPLL");
 		input->ddss->setDDSsAmpFreq();

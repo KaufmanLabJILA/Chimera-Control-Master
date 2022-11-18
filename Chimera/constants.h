@@ -26,7 +26,8 @@
 #define GIGAMOOG_SAFEMODE false
 #define NIAWG_SAFEMODE true
 #define ANDOR_SAFEMODE false
-#define ATOMCRUNCHER_SAFEMODE true
+#define ATOMCRUNCHER_SAFEMODE false
+#define AUTOALIGN_SAFEMODE true
 #define MAKO_SAFEMODE true
 #define PYTHON_SAFEMODE true
 #define DIO_SAFEMODE true

@@ -8,11 +8,13 @@
 #include "DioSystem.h"
 #include "constants.h"
 #include "AuxiliaryWindow.h"
+#include "traceoutput.h"
 
 //for DioFPGA connect:
 //#include "ftd2xx.h"
 #include <windows.h>
 #include <sstream>
+#include <chrono>
 
 // I don't use this because I manually import dll functions.
 // #include "Dio64.h"
@@ -991,6 +993,7 @@ void DioSystem::interpretKey(std::vector<variableType>& variables)
 	finalFormatTtlData = std::vector<std::vector<WORD>>(variations);
 	loadSkipFinalFormatTtlData = std::vector<std::vector<WORD>>(variations);
 
+	auto start = std::chrono::high_resolution_clock::now();
 	// and interpret the command list for each variation.
 	for (UINT variationNum = 0; variationNum < variations; variationNum++)
 	{
@@ -1001,6 +1004,7 @@ void DioSystem::interpretKey(std::vector<variableType>& variables)
 			tempCommand.line = ttlCommandFormList[commandInc].line;
 			tempCommand.value = ttlCommandFormList[commandInc].value;
 			double variableTime = 0;
+			auto start = std::chrono::high_resolution_clock::now();
 			// add together current values for all variable times.
 			if (ttlCommandFormList[commandInc].time.first.size() != 0)
 			{
@@ -1011,8 +1015,16 @@ void DioSystem::interpretKey(std::vector<variableType>& variables)
 			}
 			tempCommand.time = variableTime + ttlCommandFormList[commandInc].time.second;
 			ttlCommandList[variationNum].push_back(tempCommand);
+
 		}
 	}
+	auto stop = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double, std::milli> fp_ms = stop - start;
+	//meanvartime = meanvartime / ((double)ttlCommandFormList.size());
+	char byte_buf[1000];
+	sprintf_s(byte_buf, 1000, "ttl interpret key time = %f\n", fp_ms.count());
+	trace(byte_buf);
+	
 }
 
 
@@ -1649,4 +1661,16 @@ void DioSystem::dioOpenResource(char* resourceName, WORD board, WORD baseio)
 		}
 	}
 }
+
+//void DioSystem::trace(const char* format, ...)
+//{
+//	char buffer[1000];
+//
+//	va_list argptr;
+//	va_start(argptr, format);
+//	wvsprintf(buffer, format, argptr);
+//	va_end(argptr);
+//
+//	OutputDebugString(buffer);
+//}
 
