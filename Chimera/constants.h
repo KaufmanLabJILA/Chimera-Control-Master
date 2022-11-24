@@ -370,6 +370,9 @@
 
 #define MAX_NIAWG_SIGNALS 32
 
+//Sequence Flags
+const std::string AXIAL_PHASE_FLAG = "Axial Lattice Phase Flag";
+
 // This is the minimum time (in seconds) that a correction waveform will be allowed to have. Without this, the algorithm might decide that the 1/2 of a period 
 // of a waveform might be enough, even though this would probably be far below the amount of time an individual waveform is allowed to have according to the 
 // NIAWG (the NIAWG has a minimum waveform size).

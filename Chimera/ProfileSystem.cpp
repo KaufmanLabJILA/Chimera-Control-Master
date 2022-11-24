@@ -512,6 +512,7 @@ void ProfileSystem::loadNullSequence()
 	{
 		currentProfile.sequenceConfigNames.push_back(currentProfile.configuration + "." + CONFIG_EXTENSION );
 		currentProfile.sequenceConfigPaths.push_back(currentProfile.categoryPath);
+		currentProfile.axLatPhaseFlags.push_back(currentProfile.configuration == axLatPhaseConfigName);
 		// change edit
 		sequenceInfoDisplay.SetWindowTextA("Sequence of Configurations to Run:\r\n");
 		appendText(("1. " + this->currentProfile.sequenceConfigNames[0] + "\r\n"), sequenceInfoDisplay);
@@ -535,6 +536,7 @@ void ProfileSystem::addToSequence(CWnd* parent)
 	}
 	currentProfile.sequenceConfigNames.push_back(currentProfile.configuration + "." + CONFIG_EXTENSION );
 	currentProfile.sequenceConfigPaths.push_back(currentProfile.categoryPath);
+	currentProfile.axLatPhaseFlags.push_back(currentProfile.configuration + "." + CONFIG_EXTENSION == axLatPhaseConfigName);
 	appendText( str( currentProfile.sequenceConfigNames.size() ) + ". "
 				+ currentProfile.sequenceConfigNames.back() + "\r\n", sequenceInfoDisplay );
 	updateSequenceSavedStatus(false);
@@ -552,7 +554,8 @@ void ProfileSystem::addToSequenceFromFile(CWnd* parent)
 			std::basic_string<TCHAR> configPath = CFDialog.GetNextPathName(pos);
 			int slashPos = configPath.find_last_of('\\');
 			currentProfile.sequenceConfigNames.push_back(configPath.substr(slashPos+1));
-			currentProfile.sequenceConfigPaths.push_back(configPath.substr(0,slashPos));
+			currentProfile.sequenceConfigPaths.push_back(configPath.substr(0,slashPos) + "\\");
+			currentProfile.axLatPhaseFlags.push_back(configPath.substr(slashPos + 1) == axLatPhaseConfigName);
 			appendText(str(currentProfile.sequenceConfigNames.size()) + ". "
 				+ currentProfile.sequenceConfigNames.back() + "\r\n", sequenceInfoDisplay);
 		}
@@ -648,6 +651,14 @@ void ProfileSystem::saveSequence(MainWindow* mainWin)
 	{
 		sequenceSaveFile << this->currentProfile.sequenceConfigNames[sequenceInc] + "\n";
 		sequenceSaveFile << this->currentProfile.sequenceConfigPaths[sequenceInc] + "\n";
+		if (this->currentProfile.axLatPhaseFlags[sequenceInc] == true)
+		{
+			sequenceSaveFile << AXIAL_PHASE_FLAG + "\n";
+		}
+		else
+		{
+			sequenceSaveFile << "NONE\n";
+		}
 	}
 	sequenceSaveFile.close();
 	reloadSequence(currentProfile.sequence);
@@ -706,6 +717,14 @@ void ProfileSystem::saveSequenceAs(MainWindow* mainWin)
 	{
 		sequenceSaveFile << currentProfile.sequenceConfigNames[sequenceInc] + "\n";
 		sequenceSaveFile << currentProfile.sequenceConfigPaths[sequenceInc] + "\n";
+		if (this->currentProfile.axLatPhaseFlags[sequenceInc] == true)
+		{
+			sequenceSaveFile << AXIAL_PHASE_FLAG + "\n";
+		}
+		else
+		{
+			sequenceSaveFile << "NONE\n";
+		}
 	}
 	sequenceSaveFile.close();
 	updateSequenceSavedStatus(true);
@@ -796,6 +815,7 @@ void ProfileSystem::newSequence(CWnd* parent)
 	currentProfile.sequencePath = currentProfile.categoryPath;
 	currentProfile.sequenceConfigNames.clear();
 	currentProfile.sequenceConfigPaths.clear();
+	currentProfile.axLatPhaseFlags.clear();
 	updateSequenceSavedStatus(true);
 	reloadSequence(currentProfile.sequence);
 }
@@ -826,6 +846,7 @@ void ProfileSystem::openSequence(std::string sequenceName, MainWindow* mainWin)
 	std::getline(sequenceFile, version);
 	currentProfile.sequenceConfigNames.clear();
 	currentProfile.sequenceConfigPaths.clear();
+	currentProfile.axLatPhaseFlags.clear();
 	std::string tempName;
 	getline(sequenceFile, tempName);
 	while (sequenceFile)
@@ -833,6 +854,8 @@ void ProfileSystem::openSequence(std::string sequenceName, MainWindow* mainWin)
 		currentProfile.sequenceConfigNames.push_back(tempName);
 		getline(sequenceFile, tempName);
 		currentProfile.sequenceConfigPaths.push_back(tempName);
+		getline(sequenceFile, tempName);
+		currentProfile.axLatPhaseFlags.push_back(tempName == AXIAL_PHASE_FLAG);
 		getline(sequenceFile, tempName);
 	}
 	// update the edit
@@ -874,6 +897,7 @@ void ProfileSystem::openSequenceFile(CWnd* parent, MainWindow* mainWin)
 	std::getline(sequenceFile, seqName);
 	currentProfile.sequenceConfigNames.clear();
 	currentProfile.sequenceConfigPaths.clear();
+	currentProfile.axLatPhaseFlags.clear();
 	std::string tempName;
 	getline(sequenceFile, tempName);
 	while (sequenceFile)
@@ -881,6 +905,8 @@ void ProfileSystem::openSequenceFile(CWnd* parent, MainWindow* mainWin)
 		currentProfile.sequenceConfigNames.push_back(tempName);
 		getline(sequenceFile, tempName);
 		currentProfile.sequenceConfigPaths.push_back(tempName);
+		getline(sequenceFile, tempName);
+		currentProfile.axLatPhaseFlags.push_back(tempName == AXIAL_PHASE_FLAG);
 		getline(sequenceFile, tempName);
 	}
 	// update the edit

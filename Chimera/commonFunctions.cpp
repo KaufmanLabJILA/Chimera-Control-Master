@@ -903,13 +903,35 @@ namespace commonFunctions
 		profileSettings profileSeq = multiExpInput->mainWin->getProfileSettings();
 		std::vector<std::string> configSequence = profileSeq.sequenceConfigNames;
 		std::vector<std::string> pathSequence = profileSeq.sequenceConfigPaths;
+		std::vector<bool> axPhaseFlags = profileSeq.axLatPhaseFlags;
+		bool defaultAutoAlign = multiExpInput->mainWin->checkAutoAlignIsOn();
+		bool defaultGmoog = multiExpInput->mainWin->checkGmoogIsOn();
+		std::string defaultAutoAlignStr, defaultGmoogStr;
+
+		if (defaultAutoAlign)
+		{
+			defaultAutoAlignStr = "ON";
+		}
+		else
+		{
+			defaultAutoAlignStr = "OFF";
+		}
+		if (defaultGmoog)
+		{
+			defaultGmoogStr = "ON";
+		}
+		else
+		{
+			defaultGmoogStr = "OFF";
+		}
 
 		// Confirm sequence running with user once at the start
 		UINT_PTR areYouSure = 0;
 		if (!areYouSure)
 		{
 			areYouSure = DialogBoxParam(NULL, MAKEINTRESOURCE(IDD_BEGINNING_SETTINGS), 0,
-				beginningSettingsDialogProc, (LPARAM)cstr("\r\n\r\nBegin Sequence Execution?"));
+				beginningSettingsDialogProc, (LPARAM)cstr("\r\n\r\nBegin Sequence Execution?\n\r\n\rDefault Auto-align State: " + defaultAutoAlignStr +	
+					"\n\rDefault Rearranger State: " + defaultGmoogStr));
 		}
 
 		if (areYouSure == 0) // Run sequence if user responds ok
@@ -919,6 +941,18 @@ namespace commonFunctions
 				// Update the configuration
 				std::string configPath = pathSequence[configInc] + configSequence[configInc];
 				multiExpInput->mainWin->changeConfig(configPath);
+				if (axPhaseFlags[configInc])
+				{
+					if (multiExpInput->mainWin->checkAutoAlignIsOn())
+					{
+						multiExpInput->mainWin->passAutoAlignIsOnPress();
+					}
+					if (multiExpInput->mainWin->checkGmoogIsOn())
+					{
+						multiExpInput->mainWin->passGmoogIsOnPress();
+					}
+
+				}
 				multiExpInput->camWin->redrawPictures(false);
 				
 				try // execute the experiment
@@ -950,6 +984,18 @@ namespace commonFunctions
 					multiExpInput->mainWin->getComm()->sendTimer("ERROR!");
 					multiExpInput->camWin->assertOff();
 					break;
+				}
+				if (axPhaseFlags[configInc])
+				{
+					if (defaultAutoAlign)
+					{
+						multiExpInput->mainWin->passAutoAlignIsOnPress();
+					}
+					if (defaultGmoog)
+					{
+						multiExpInput->mainWin->passGmoogIsOnPress();
+					}
+					multiExpInput->auxWin->globalVariables.changeVariableValue("axial_phase_set",configInc*1.27);
 				}
 			}
 		}

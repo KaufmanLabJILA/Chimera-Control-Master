@@ -85,6 +85,7 @@ class ProfileSystem
 	private:
 		profileSettings currentProfile;
 		std::string FILE_SYSTEM_PATH;
+		std::string axLatPhaseConfigName = "220305_tweezer_checks.Config";
 		bool configurationIsSaved;
 		bool categoryIsSaved;
 		bool experimentIsSaved;

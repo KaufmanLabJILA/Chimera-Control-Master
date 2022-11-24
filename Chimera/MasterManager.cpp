@@ -345,10 +345,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 					//input->dacs->writeDacs(variationInc, skipOption);
 					input->dacs->startDacs();
 					input->ttls->startDioFPGA(variationInc);
-
-					////////////////!!!!!!!!!!!!!!!TEMPORARILY REMOVED!!!!!!!!!!!!!!!!!!!////////////////////////
-					//input->ttls->waitTillFinished( variationInc, skipOption );
-					input->ttls->wait(100);
+					input->ttls->waitTillFinished( variationInc, skipOption );
 					
 					input->dacs->stopDacs();
 				}

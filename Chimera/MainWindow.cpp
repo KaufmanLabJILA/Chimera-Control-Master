@@ -266,6 +266,16 @@ void MainWindow::passAutoAlignIsOnPress()
 	}
 }
 
+bool MainWindow::checkGmoogIsOn()
+{
+	return gmoog.rearrangerActive;
+}
+
+bool MainWindow::checkAutoAlignIsOn()
+{
+	return gmoog.autoTweezerOffsetActive;
+}
+
 LRESULT MainWindow::onNoAtomsAlertMessage( WPARAM wp, LPARAM lp )
 {
 	try

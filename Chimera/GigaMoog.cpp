@@ -639,11 +639,15 @@ void gigaMoog::writeLoad(MessageSender& ms)
 
 void gigaMoog::send(MessageSender& ms)
 {
-	ms.getQueueElementCount();
-	//MessagePrinter rec;
-	//fpga.setReadCallback(boost::bind(&MessagePrinter::callback, rec, _1));
-	//fpga.writeVector(ms.getMessageVectorBytes());
-	fpga.write(ms.getMessageBytes());
+	if (!GIGAMOOG_SAFEMODE)
+	{
+		ms.getQueueElementCount();
+		//MessagePrinter rec;
+		//fpga.setReadCallback(boost::bind(&MessagePrinter::callback, rec, _1));
+		//fpga.writeVector(ms.getMessageVectorBytes());
+		fpga.write(ms.getMessageBytes());
+
+	}
 }
 
 void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& variables, UINT variation)
