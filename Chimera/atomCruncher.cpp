@@ -1,5 +1,10 @@
 #include "stdafx.h"
 #include "atomCruncher.h"
+#include "constants.h"
+#include <fstream>
+#include <experimental/filesystem>
+namespace fs = std::experimental::filesystem;
+
 
 void atomCruncher::getTweezerOffset(int* xOffPixels, int* yOffPixels, int* indexSubpixelMask) {
 	///modifies input pointers to pass newly computed offset values in units of pixels and subpixel mask offset. Also updates masksCrop appropriately.
@@ -135,6 +140,36 @@ void atomCruncher::filterAtomQueue(void) {
 	{
 		(*rearrangerAtomQueue)[0][i] = (*rearrangerAtomQueue)[0][i] * (positions)[i];
 	}
+}
+
+void atomCruncher::writeAtomArrayFile(int picsPerRep) {
+	int totalCount = atomArrayQueue->size();
+	std::string output;
+
+	for (int i = picsPerRep; i > 0; i--)
+	{
+		for (auto & el : atomArrayQueue->at(totalCount - i))
+		{
+			if (el == true)
+			{
+				output += '1';
+			}
+			else
+			{
+				output += '0';
+			}
+		}
+
+		output += '\n';
+	}
+
+	// create temporary file
+	std::ofstream tmpFile(ATOM_ARRAY_TMP_FILE_LOCATION);
+	tmpFile << output;
+	tmpFile.close();
+
+	// move file (atomic operation)
+	fs::rename(ATOM_ARRAY_TMP_FILE_LOCATION, ATOM_ARRAY_FILE_LOCATION);
 }
 
 void atomCruncher::scrunchX(moveSequence& moveseq, bool centered = false) {

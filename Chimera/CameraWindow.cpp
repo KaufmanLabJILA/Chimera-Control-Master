@@ -1228,6 +1228,13 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 
 		(*input->atomArrayQueue).push_back(tempAtomArray); //save processed image
 
+
+		// export the atom array
+		if (imageCount % input->picsPerRep == (input->picsPerRep - 1))
+		{
+			input->writeAtomArrayFile(input->picsPerRep);
+		}
+
 		if (input->rearrangerActive)
 		{
 			// copies the array if first pic of rep. Only looks at first picture because its rearranging. Could change

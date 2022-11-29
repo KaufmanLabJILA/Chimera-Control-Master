@@ -80,6 +80,8 @@
 	const std::string DEBUG_OUTPUT_LOCATION = PROJECT_LOCATION + "Debug-Output\\";
 	const std::string TIMING_OUTPUT_LOCATION = PROJECT_LOCATION + "Data\\";
 	const std::string NIAWG_WAVEFORM_OUTPUT_LOCATION = TIMING_OUTPUT_LOCATION;
+	const std::string ATOM_ARRAY_FILE_LOCATION = PROJECT_LOCATION + "\\Image Processing\\" + "atomArray.txt";
+	const std::string ATOM_ARRAY_TMP_FILE_LOCATION = PROJECT_LOCATION + "\\Image Processing\\" + "atomArray.txt.tmp";
 
 	//Test file for moog
 	const std::string MOOG_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_MOOG_SCRIPT.moogScript";
