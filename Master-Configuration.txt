@@ -87,7 +87,7 @@ t515hold
 0
 latticehold
 0
-c12
+toggleclockdds2
 0
 uv2ttl
 0
@@ -200,9 +200,9 @@ uvpm_v
 0 - 10
 0
 36
-rmbx 0.004
-rmby 0.014
-rmbz 0.0238
+rmbx 0.005
+rmby 0.015
+rmbz 0.025
 tune461 -0.2
 bluetuneval 0.25
 bluetune_imag 0.025
@@ -211,7 +211,7 @@ lattice_pow -5.5
 lattice_zero -0.015
 ax_lattice_pow -4
 ax_lattice_zero -0.01
-axial_phase_set 7.6
+axial_phase_set 2.3
 xoff 0
 yoff 0
 xoff813 -2.12
@@ -222,18 +222,18 @@ f_rmot_narrow 0.5
 swapmottime 55
 mirrorscanx 1.85
 mirrorscany 2.955
-f_rad_3d 0.142
+f_rad_3d 0.134
 f_ax_3d 0.042
 f_ax_3d_imag 0.126
-imagpowlat 0.15
+imagpowlat 0.16
 moverate 511
 amprate 6000
-imagpow 0.12
-dmbz 0.4005
+imagpow 0.14
+dmbz 0.399
 by_lacs 0.025
 f_lac -1.64
 c_3p0 80
 fcool 0.071
-c_3p1_lat 79.9939
+c_3p1_lat 79.9986
 bluemottime 50
 75 375 1 100 400 1
