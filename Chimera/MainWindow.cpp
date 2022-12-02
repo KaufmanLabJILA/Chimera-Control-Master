@@ -266,12 +266,12 @@ void MainWindow::passAutoAlignIsOnPress()
 	}
 }
 
-bool MainWindow::checkGmoogIsOn()
+bool MainWindow::checkGmoogState()
 {
 	return gmoog.rearrangerActive;
 }
 
-bool MainWindow::checkAutoAlignIsOn()
+bool MainWindow::checkAutoAlignState()
 {
 	return gmoog.autoTweezerOffsetActive;
 }

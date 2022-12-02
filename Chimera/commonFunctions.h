@@ -29,6 +29,10 @@ namespace commonFunctions
 	/// Scripting Menu
 	int saveProfile( ScriptingWindow* scriptWindow, MainWindow* mainWin );
 	//void reloadNIAWGDefaults( MainWindow* mainWin );
+	int sendPythonInitializationFile(std::string runType);
+	bool watchPythonUpdate2(MainWindow* mainWin);
+	bool watchPythonUpdate(MainWindow* mainWin);
+	void updateGlobalVars(MainWindow* mainWin, AuxiliaryWindow* auxWin);
 
 	struct MultiExperimentInput
 	{

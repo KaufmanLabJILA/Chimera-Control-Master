@@ -1087,6 +1087,26 @@ void VariableSystem::changeVariableValue(std::string varName, double newValue)
 	}
 }
 
+bool VariableSystem::checkVariableExists(std::string varName)
+{
+	std::vector<variableType>::iterator it = std::find_if(currentVariables.begin(), currentVariables.end(), boost::bind(&variableType::name, _1) == varName);
+	return it != currentVariables.end();
+}
+
+double VariableSystem::getGlobalVariableValue(std::string varName)
+{
+	std::vector<variableType>::iterator it = std::find_if(currentVariables.begin(), currentVariables.end(), boost::bind(&variableType::name, _1) == varName);
+	int idx = it - currentVariables.begin();
+	if (isGlobal)
+	{
+		return (*it).ranges.front().initialValue;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
 void VariableSystem::setActive(bool active)
 {
 	if (active)

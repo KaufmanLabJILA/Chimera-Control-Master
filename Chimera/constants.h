@@ -81,6 +81,9 @@
 	const std::string DEBUG_OUTPUT_LOCATION = PROJECT_LOCATION + "Debug-Output\\";
 	const std::string TIMING_OUTPUT_LOCATION = PROJECT_LOCATION + "Data\\";
 	const std::string NIAWG_WAVEFORM_OUTPUT_LOCATION = TIMING_OUTPUT_LOCATION;
+	const std::string PYTHON_ANALYSIS_LOCATION = PROJECT_LOCATION + "\\Python Chimera Communication\\";
+	const std::string PYTHON_ANALYSIS_START_FILE_LOCATION = PYTHON_ANALYSIS_LOCATION + "pyStart.txt";
+	const std::string PYTHON_ANALYSIS_FINISH_FILE_LOCATION = PYTHON_ANALYSIS_LOCATION + "pyFinish.txt";
 
 	//Test file for moog
 	const std::string MOOG_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_MOOG_SCRIPT.moogScript";
@@ -150,6 +153,9 @@
 	const std::string DEBUG_OUTPUT_LOCATION = PROJECT_LOCATION + "Debug-Output\\";
 	const std::string TIMING_OUTPUT_LOCATION = PROJECT_LOCATION + "Data\\";
 	const std::string NIAWG_WAVEFORM_OUTPUT_LOCATION = TIMING_OUTPUT_LOCATION;
+	const std::string PYTHON_ANALYSIS_LOCATION = PROJECT_LOCATION + "\\Python Chimera Communication\\";
+	const std::string PYTHON_ANALYSIS_START_FILE_LOCATION = PYTHON_ANALYSIS_LOCATION + "pyStart.txt";
+	const std::string PYTHON_ANALYSIS_FINISH_FILE_LOCATION = PYTHON_ANALYSIS_LOCATION + "pyFinish.txt";
 
 	//Test file for moog
 	const std::string MOOG_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_MOOG_SCRIPT.moogScript";

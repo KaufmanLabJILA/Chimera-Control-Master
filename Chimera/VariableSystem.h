@@ -26,6 +26,8 @@ class VariableSystem
 		void updateVariableInfo( std::vector<Script*> scripts, MainWindow* mainWin, AuxiliaryWindow* auxWin,
 								 DioSystem* ttls, DacSystem* dacs );
 		void changeVariableValue( std::string varName, double newValue);
+		bool checkVariableExists(std::string varName);
+		double getGlobalVariableValue(std::string varName);
 		void deleteVariable();
 		void initialize( POINT& pos, cToolTips& toolTips, AuxiliaryWindow* master, int& id, std::string title,
 						 rgbMap rgbs, UINT listviewId );
