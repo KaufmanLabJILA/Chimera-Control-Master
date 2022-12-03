@@ -239,6 +239,34 @@ void MainWindow::passAutoAlignIsOnPress()
 	}
 }
 
+void MainWindow::passPainterIsOnPress()
+{
+	if (gmoog.painterActive)
+	{
+		gmoog.painterActive = false;
+		menu.CheckMenuItem(ID_GIGAMOOG_PAINTERACTIVE, MF_UNCHECKED);
+	}
+	else
+	{
+		gmoog.painterActive = true;
+		menu.CheckMenuItem(ID_GIGAMOOG_PAINTERACTIVE, MF_CHECKED);
+	}
+}
+
+void MainWindow::passExportArrayIsOnPress()
+{
+	if (gmoog.exportArray)
+	{
+		gmoog.exportArray = false;
+		menu.CheckMenuItem(ID_GIGAMOOG_EXPORTARRAY, MF_UNCHECKED);
+	}
+	else
+	{
+		gmoog.exportArray = true;
+		menu.CheckMenuItem(ID_GIGAMOOG_EXPORTARRAY, MF_CHECKED);
+	}
+}
+
 LRESULT MainWindow::onNoAtomsAlertMessage( WPARAM wp, LPARAM lp )
 {
 	try

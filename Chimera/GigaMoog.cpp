@@ -439,6 +439,76 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 	}
 }
 
+void gigaMoog::writePaintMoves(MessageSender& ms)
+{
+	memoryController memoryDAC0;
+	memoryController memoryDAC1;
+
+	writeMoveOff(ms);
+
+	//step 0: turn off all load tones.
+	for (int channel = 0; channel < nTweezerX; channel++) {//TODO: 16 could be changed to 48 if using more tones for rearrangement
+		size_t hardwareChannel = (channel * 8) % 48 + (channel * 8) / 48;
+		memoryDAC0.moveChannel(hardwareChannel / 8);
+		Message m = Message::make().destination(MessageDestination::KA007)
+			.DAC(MessageDAC::DAC0).channel(hardwareChannel)
+			.setting(MessageSetting::MOVEFREQUENCY)
+			.frequencyMHz(0).amplitudePercent(0.01).phaseDegrees(0).instantFTW(1).ATWIncr(-ampStepMag).stepSequenceID(0).FTWIncr(0).phaseJump(1);;
+		ms.enqueue(m);
+	}
+
+	for (int channel = 0; channel < nTweezerY; channel++) {
+		size_t hardwareChannel = (channel * 8) % 48 + (channel * 8) / 48;
+		memoryDAC1.moveChannel(hardwareChannel / 8);
+		Message m = Message::make().destination(MessageDestination::KA007)
+			.DAC(MessageDAC::DAC1).channel(hardwareChannel)
+			.setting(MessageSetting::MOVEFREQUENCY)
+			.frequencyMHz(0).amplitudePercent(0.01).phaseDegrees(0).instantFTW(1).ATWIncr(-ampStepMag).stepSequenceID(0).FTWIncr(0).phaseJump(1);;
+		ms.enqueue(m);
+	}
+
+	// turn on single tone along x at (0, 0)
+	double minFreqX = getFreqX(0, 0);
+	double maxFreqX = getFreqX(48 - 1, 0);
+	double stepCountX = 2 * 48;
+	double freqStepX = (maxFreqX - minFreqX) / (stepCountX);
+	size_t hardwareChannel = (0 * 8) % 48 + (0 * 8) / 48;
+	memoryDAC0.moveChannel(hardwareChannel / 8);
+	Message m = Message::make().destination(MessageDestination::KA007)
+		.DAC(MessageDAC::DAC0).channel(hardwareChannel)
+		.setting(MessageSetting::MOVEFREQUENCY)
+		.frequencyMHz(minFreqX).amplitudePercent(50).phaseDegrees(0).instantFTW(1).ATWIncr(ampStepMag).stepSequenceID(1).FTWIncr(0).phaseJump(1);;
+	ms.enqueue(m);
+
+	// turn on all tones equally spaced along y over a given range of rows
+	double phase;
+	double minFreqY = getFreqY(0, 9);
+	double maxFreqY = getFreqY(0, 19);
+	double freqStepY = (maxFreqY - minFreqY) / nTweezerY;
+	for (int channel = 0; channel < nTweezerY; channel++) {
+		size_t hardwareChannel = (channel * 8) % 48 + (channel * 8) / 48;
+		memoryDAC1.moveChannel(hardwareChannel / 8);
+		phase = fmod(180 * pow(channel + 1, 2) / nTweezerY, 360); //this assumes comb of even tones, imperfect, but also short duration so not super critical, and fast.
+		Message m = Message::make().destination(MessageDestination::KA007)
+			.DAC(MessageDAC::DAC1).channel(hardwareChannel)
+			.setting(MessageSetting::MOVEFREQUENCY)
+			.frequencyMHz(minFreqY + (freqStepY * channel)).amplitudePercent(50).phaseDegrees(phase).instantFTW(1).ATWIncr(ampStepMag).stepSequenceID(1).FTWIncr(0).phaseJump(1);;
+		ms.enqueue(m);
+	}
+
+	// sweep along x
+	for (int step = 1; step <= stepCountX; step++) {
+		size_t hardwareChannel = (0 * 8) % 48 + (0 * 8) / 48;
+		memoryDAC0.moveChannel(hardwareChannel / 8);
+		Message m = Message::make().destination(MessageDestination::KA007)
+			.DAC(MessageDAC::DAC0).channel(hardwareChannel)
+			.setting(MessageSetting::MOVEFREQUENCY)
+			.frequencyMHz(minFreqX + (freqStepX * step)).amplitudePercent(50).phaseDegrees(0).instantFTW(0).ATWIncr(ampStepMag).stepSequenceID(1 + step).FTWIncr(freqStepMag).phaseJump(1);;
+		ms.enqueue(m);
+	}
+}
+
+
 void gigaMoog::writeTerminator(MessageSender& ms)
 {
 	Message m = Message::make().destination(MessageDestination::KA007)

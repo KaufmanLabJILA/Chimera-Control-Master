@@ -71,9 +71,12 @@ public:
 	void updateXYOffsetAuto();
 
 	void writeRearrangeMoves(moveSequence input, MessageSender& ms);
+	void writePaintMoves(MessageSender& ms);
 
 	bool rearrangerActive = false;
 	bool autoTweezerOffsetActive = false;
+	bool painterActive = false;
+	bool exportArray = false;
 	std::vector<bool> initialPositionsX; //initial and target positions saved in gigamoog object mostly because it already handles the script, but these only get used by the rearrangement thread.
 	std::vector<bool> initialPositionsY;
 	std::vector<bool> initialPositions;
