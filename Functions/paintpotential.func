@@ -1,19 +1,46 @@
 % Master-Script See the "?" for info on commands.
 def paintpotential():
+  % reset
   pulseon: gmload .0001
   t += .1
+
+  %pulseon: d12 0.001
+
   pulseon: gmmove .0001
   t += .1
 
-  t += 10
+  %on: makotweezer
+  %t += 10
+  %t += 0.08
 
-   pulseon: gmmove .00011
-   %t += .08
-   t += 500.1
+  on: tweezerao
 
-  repeat: 96
+  %pulseon: gmmove .00011
+  %t += 1000
+  
+  %pulseon: d13 0.001
+
+
+  %pulseon: gmmove 10
+  %t += 10
+
+  % move along x and turn off
+  repeat: 98
    pulseon: gmmove .00011
-   %t += .08
-   t += 10.1
+   t += .002
   end
+
+  %t += 1000 
+  %pulseon: gmmove .00011
+
+  off: tweezerao
+
+  %off: makotweezer
+  %t += 0.1
+
+  %t += 10
+
+  % reset to load for next cycle
+  %pulseon: gmload .0001
+  %t += .1
 

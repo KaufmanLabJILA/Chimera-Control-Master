@@ -1,5 +1,8 @@
 rearrange filterarbscrunchycompressx 2 amprate moverate %max is ampstep 134217727(?may be 26 bit), freqstep 511
-%filterarbscrunchycompressx 
+%filterarbscrunchycompressx
+
+painter 8 20 amprate moverate
+ 
 xoffset xoff
 yoffset yoff
 
