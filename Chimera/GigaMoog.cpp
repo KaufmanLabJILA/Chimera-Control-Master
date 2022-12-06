@@ -517,7 +517,7 @@ void gigaMoog::writePaintMoves(MessageSender& ms)
 	// turn on single tone along x at (0, 0)
 	double minFreqX = getFreqX(0, 0);
 	double maxFreqX = getFreqX(48 - 1, 0);
-	unsigned int stepCountX = xDimPaint;
+	unsigned int stepCountX = xDimPaint - 1;
 	double freqStepX = (maxFreqX - minFreqX) / (stepCountX);
 	size_t hardwareChannel = (0 * 8) % 48 + (0 * 8) / 48;
 	memoryDAC0.moveChannel(hardwareChannel / 8);
@@ -541,27 +541,53 @@ void gigaMoog::writePaintMoves(MessageSender& ms)
 			Message m = Message::make().destination(MessageDestination::KA007)
 				.DAC(MessageDAC::DAC1).channel(hardwareChannel)
 				.setting(MessageSetting::MOVEFREQUENCY)
-				.frequencyMHz(minFreqY + (freqStepY * channel)).amplitudePercent(getPaintAmpY(0, channel)).phaseDegrees(phase).instantFTW(1).ATWIncr(ampStepPaintMag).stepSequenceID(1).FTWIncr(0).phaseJump(1);;
+				.frequencyMHz(minFreqY + (freqStepY * channel)).amplitudePercent(getPaintAmpY(0, channel)).phaseDegrees(phase).instantFTW(1).ATWIncr(ampStepPaintMag).stepSequenceID(1).FTWIncr(511).phaseJump(1);;
 			ms.enqueue(m);
 		}
 	}
 
-	double paintAmp = 0.0;
+	double paintAmpX = 0.0;
 	double ATWSign = 1;
-	double lastPaintAmp = 0.0;
+	double lastPaintAmpX = getPaintAmpX(0, 0);
+
+	std::vector<double> paintAmpY;
+	std::vector<double> lastPaintAmpY;
+
+	for (unsigned int channel = 0; channel < nTweezerY; channel++) {
+		paintAmpY.push_back(0);
+		lastPaintAmpY.push_back(getPaintAmpY(0, channel));
+	}
+
 	// sweep along x
 	for (unsigned int step = 1; step <= stepCountX; step++) {
-		paintAmp = getPaintAmpX(step - 1, 0);
-		ATWSign = lastPaintAmp > paintAmp ? -1.0 : 1.0;
-		lastPaintAmp = paintAmp;
+		paintAmpX = getPaintAmpX(step, 0);
+		ATWSign = lastPaintAmpX > paintAmpX ? -1.0 : 1.0;
+		lastPaintAmpX = paintAmpX;
 			
 		size_t hardwareChannel = (0 * 8) % 48 + (0 * 8) / 48;
 		memoryDAC0.moveChannel(hardwareChannel / 8);
 		Message m = Message::make().destination(MessageDestination::KA007)
 			.DAC(MessageDAC::DAC0).channel(hardwareChannel)
 			.setting(MessageSetting::MOVEFREQUENCY)
-			.frequencyMHz(minFreqX + (freqStepX * step)).amplitudePercent(paintAmp).phaseDegrees(0).instantFTW(1).ATWIncr(ATWSign * ampStepPaintMag).stepSequenceID(1 + step).FTWIncr(0*freqStepPaintMag).phaseJump(1);;
+			.frequencyMHz(minFreqX + (freqStepX * step)).amplitudePercent(paintAmpX).phaseDegrees(0).instantFTW(1).ATWIncr(ATWSign * ampStepPaintMag).stepSequenceID(1 + step).FTWIncr(511).phaseJump(0);;
 		ms.enqueue(m);
+
+		for (unsigned int channel = 0; channel < nTweezerY; channel++) {
+			if (channel < yDimPaint)
+			{
+				paintAmpY[channel] = getPaintAmpY(step, channel);
+				ATWSign = lastPaintAmpY[channel] > paintAmpY[channel] ? -1.0 : 1.0;
+				lastPaintAmpY[channel] = paintAmpY[channel];
+
+				size_t hardwareChannel = (channel * 8) % 48 + (channel * 8) / 48;
+				memoryDAC1.moveChannel(hardwareChannel / 8);
+				Message m = Message::make().destination(MessageDestination::KA007)
+					.DAC(MessageDAC::DAC1).channel(hardwareChannel)
+					.setting(MessageSetting::MOVEFREQUENCY)
+					.frequencyMHz(minFreqY + (freqStepY * channel)).amplitudePercent(paintAmpY[channel]).phaseDegrees(0).instantFTW(1).ATWIncr(ATWSign * ampStepPaintMag).stepSequenceID(1 + step).FTWIncr(511).phaseJump(0);;
+				ms.enqueue(m);
+			}
+		}
 	}
 
 	// turn tweezers back to off
@@ -571,7 +597,7 @@ void gigaMoog::writePaintMoves(MessageSender& ms)
 		Message m = Message::make().destination(MessageDestination::KA007)
 			.DAC(MessageDAC::DAC1).channel(hardwareChannel)
 			.setting(MessageSetting::MOVEFREQUENCY)
-			.frequencyMHz(0).amplitudePercent(0.01).phaseDegrees(0).instantFTW(1).ATWIncr(-ampStepPaintMag).stepSequenceID(2+stepCountX).FTWIncr(0).phaseJump(1);;
+			.frequencyMHz(0).amplitudePercent(0.01).phaseDegrees(0).instantFTW(1).ATWIncr(-ampStepPaintMag).stepSequenceID(2+stepCountX).FTWIncr(511).phaseJump(0);;
 		ms.enqueue(m);
 	}
 	for (unsigned int channel = 0; channel < nTweezerX; channel++) {
@@ -580,7 +606,7 @@ void gigaMoog::writePaintMoves(MessageSender& ms)
 		Message m = Message::make().destination(MessageDestination::KA007)
 			.DAC(MessageDAC::DAC0).channel(hardwareChannel)
 			.setting(MessageSetting::MOVEFREQUENCY)
-			.frequencyMHz(0).amplitudePercent(0.01).phaseDegrees(0).instantFTW(1).ATWIncr(-ampStepPaintMag).stepSequenceID(2 + stepCountX).FTWIncr(0).phaseJump(1);;
+			.frequencyMHz(0).amplitudePercent(0.01).phaseDegrees(0).instantFTW(1).ATWIncr(-ampStepPaintMag).stepSequenceID(2 + stepCountX).FTWIncr(511).phaseJump(0);;
 		ms.enqueue(m);
 	}
 }

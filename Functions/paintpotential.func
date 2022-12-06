@@ -28,12 +28,11 @@ def paintpotential():
 
   %on: tweezerao
   %t += 1
-
   % move along x and turn off
   repeat: 49 % 98
    %on: tweezerao
    pulseon: gmmove .00011
-   t += 0.1
+   t += 0.05
    on: tweezerao
    t += 0.004
    off: tweezerao
