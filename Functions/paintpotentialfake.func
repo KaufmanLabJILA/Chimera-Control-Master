@@ -33,7 +33,7 @@ def paintpotentialfake():
   repeat: 49 % 98
    %on: tweezerao
    pulseon: gmmove .00011
-   t += 0.05
+   t += 0.05 % optimized on 221206
    off: tweezerao
    t += 0.004
    off: tweezerao

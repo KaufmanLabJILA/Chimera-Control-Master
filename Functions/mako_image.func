@@ -15,8 +15,8 @@ def mako_image():
   %t += .25
   on: blue3d
   %on: blowawayttl
-  %t += .25
-  t += 2
+  t += .25
+  %t += 2
   off: blowawayttl
   off: imag461
   off: mako1

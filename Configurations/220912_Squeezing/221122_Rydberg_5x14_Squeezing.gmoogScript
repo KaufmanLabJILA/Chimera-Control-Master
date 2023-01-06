@@ -3,7 +3,7 @@ rearrange filterarbscrunchy 2 amprate moverate %max is ampstep 134217727(?may be
 %filterarbscrunchy compressx
 %centerscrunchyx
 
-painter 0 47 ampratepaint moveratepaint
+painter 0 47 6000 511
 
 xoffset xoff
 yoffset yoff

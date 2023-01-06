@@ -28,7 +28,7 @@ snapshot 0 reps 2
 freqs 80 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 79.74 c_3p1_lat+f_rad_3d+.003 c_3p1_lat+f_ax_3d_imag c_3p1_lat+f_rad_3d-0.007
 %freqs 80 c_3p0+1 180 80 79.74 c_3p1_lat+f_rad_3d+.003 c_3p1_lat+f_ax_3d_imag c_3p1_lat+f_rad_3d-0.007
 %amps  0 0 30 92 0 10 9 50
-amps  0 75 90 90 0 11.5 13 1.0
+amps  0 75 90 90 0 11.5 12 1.0
 %amps  0 0 30 92 0 20 20 20
 
 
@@ -44,7 +44,8 @@ freqs 80 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 spec3p1 spec3p
 amps  0 75 90 90 0 3.5 3.5 7*.75
 
 % use for dummy image
-%freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000 79.74 c_3p1_lat+f_rad_dummy c_3p1_lat+f_ax_dummy c_3p1_lat+f_rad_dummy
+%freqs 80 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 79.74 c_3p1_lat+f_rad_dummy+.003 c_3p1_lat+f_ax_3d_imag c_3p1_lat+f_rad_dummy-.007
+%amps  0 75 90 90 0 pow_rad_dummy pow_ax_dummy pow_rad2_dummy
 %amps  0 0 30 92 0 pow_rad_dummy pow_ax_dummy pow_rad2_dummy
 
 %freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+.5 spec3p1 spec3p1 spec3p1 spec3p1
