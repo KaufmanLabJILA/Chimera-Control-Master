@@ -32,21 +32,27 @@ class ProfileSystem
 		std::string getAWGAddressFromConfig();
 		std::string getGmoogAddressFromConfig();
 		std::string getDdsAddressFromConfig();
-		void saveSequence();
-		void saveSequenceAs();
+		void saveSequence(MainWindow* mainWin);
+		void saveSequenceAs(MainWindow* mainWin);
 		void renameSequence();
 		void deleteSequence();
 		void newSequence(CWnd* parent);
-		void openSequence(std::string sequenceName);
+		void openSequence(std::string sequenceName, MainWindow* mainWin);
+		void openSequenceFile(CWnd* parent, MainWindow* mainWin);
+		void readSequence(profileSettings profile, std::fstream& seqFile);
 		void updateSequenceSavedStatus(bool isSaved);
-		bool sequenceSettingsReadyCheck();
-		bool checkSequenceSave(std::string prompt);
-		void sequenceChangeHandler();
+		bool sequenceSettingsReadyCheck(MainWindow* mainWin);
+		bool checkSequenceSave(std::string prompt, MainWindow* mainWin);
+		void sequenceChangeHandler(MainWindow* mainWin);
 		std::string getSequenceNamesString();
 		void loadNullSequence();
 		void addToSequence(CWnd* parent);
+		void addToSequenceFromFile(CWnd* parent);
+		void addToSequenceVector(int index, std::string config, std::string path);
 		std::vector<std::string> getSequenceNames();
 		void reloadSequence(std::string sequenceToReload);
+		void removeConfigFromSequence();
+		void removeFromSequenceVector(int index);
 
 		void saveConfigurationOnly( ScriptingWindow* scriptWindow, MainWindow* mainWin, AuxiliaryWindow* auxWin, 
 								    CameraWindow* camWin );
@@ -80,9 +86,13 @@ class ProfileSystem
 									   AuxiliaryWindow* auxWin, CameraWindow* camWin );
 		static void checkDelimiterLine(std::ifstream& openFile, std::string keyword);
 		static bool checkDelimiterLine( std::ifstream& openFile, std::string delimiter, std::string breakCondition );
+
+		std::vector<int> parseIndexListString(std::string listStr);
+
 	private:
 		profileSettings currentProfile;
 		std::string FILE_SYSTEM_PATH;
+		std::string axLatPhaseConfigName = "220305_tweezer_checks.Config";
 		bool configurationIsSaved;
 		bool categoryIsSaved;
 		bool experimentIsSaved;
@@ -97,4 +107,6 @@ class ProfileSystem
 		Control<CButton> configurationSavedIndicator;
 		Control<CButton> selectConfigButton;
 		Control<CStatic> configDisplay;
+		Control<CButton> selectSeqButton;
+		Control<CButton> addConfigsToSeqButton;
 };

@@ -5,14 +5,13 @@
 
 % SB COOL LATTICE
 reset
-freqs 80 0 80 0+.3 0+0+.003 0+.003 0 0
+freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+.3 c_3p1_lat+f_rad_3d+.003 c_3p1_lat+f_rad_3d+.003 c_3p1_lat+f_ax_3d c_3p1_lat+f_rad_3d-.003
 %amps  0 0 30 92 0 7 3 1.5
 amps  0 0 30 92 0 3.5 3.5 1.5
 
 % IMAGE LATTICE
 snapshot 0 reps 2
-freqs 0 0 0 0 0 0 0 0
-%freqs 80 c_3p0+1 80 80 79.74 c_3p1_lat+f_rad_3d+.003 c_3p1_lat+f_ax_3d_imag c_3p1_lat+f_rad_3d-0.001
+freqs 80 c_3p0+1 80 80 79.74 c_3p1_lat+f_rad_3d+.003 c_3p1_lat+f_ax_3d_imag c_3p1_lat+f_rad_3d-0.001
 %amps  0 0 30 92 0 10 9 50
 %amps  0 0 30 92 0 3 6 9.5
 amps  0 0 30 92 0 5 6 9.5
@@ -20,15 +19,13 @@ amps  0 0 30 92 0 5 6 9.5
 
 % FILTER
 snapshot 1 reps 2
-freqs 0 0 0 0 0 0 0 0
-%freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+.3 c_3p1+f_rad_3d c_3p1+f_rad_3d c_3p1+f_ax_3d c_3p1
+freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+.3 c_3p1+f_rad_3d c_3p1+f_rad_3d c_3p1+f_ax_3d c_3p1
 amps  0 0 30 92 0 0 3.5 1.25
 
 % SPECTROSCOPY
 snapshot 2 reps 2
 % use for spectroscopy
-freqs 0 0 0 0 0 0 0 0
-%freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+.5 spec3p1 spec3p1 spec3p1 spec3p1
+freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+.5 spec3p1 spec3p1 spec3p1 spec3p1
 amps  0 100 30 92 0 3.5 3.5 5*.75
 
 % use for dummy image
@@ -57,20 +54,17 @@ amps  0 100 30 92 0 3.5 3.5 5*.75
 %%%
 % MOT
 snapshot 3 reps 2
-freqs 0 0 0 0 0 0 0 0
-%freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+.5 c_3p1+f_rmot_narrow c_3p1+f_lac c_3p1+f_lac 80
+freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+.5 c_3p1+f_rmot_narrow c_3p1+f_lac c_3p1+f_lac 80
 amps  0 0 0 92 13.5 20 0 20
 
 % IMAGE TWEEZERS
 snapshot 4 reps 2
-freqs 0 0 0 0 0 0 0 0
-%freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+1 c_3p1+fcool c_3p1+fcool c_3p1+.14 c_3p1+fcool
+freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+1 c_3p1+fcool c_3p1+fcool c_3p1+.14 c_3p1+fcool
 amps  0 0 30 100 16 14 9 4
 
 % SB COOL TWEEZER
 snapshot 5 reps 2
-freqs 0 0 0 0 0 0 0 0
-%freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+.5 79.74 c_3p1+f_rad c_3p1+0.03 c_3p1+f_rad2
+freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+.5 79.74 c_3p1+f_rad c_3p1+0.03 c_3p1+f_rad2
 amps  0 0 30 100 0 14 6 0
 
 end
