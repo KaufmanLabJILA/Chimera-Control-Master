@@ -93,9 +93,9 @@
     <LibraryPath>C:\Program Files\Andor SOLIS\Drivers;C:\Users\Mark\Documents\Quantum Gas Assembly Control\Chimera;C:\Program Files (x86)\National Instruments\NI-DAQ\DAQmx ANSI C Dev\lib\msvc;C:\Program Files (x86)\IVI Foundation\VISA\WinNT\lib\msc;C:\Program Files (x86)\IVI Foundation\IVI\Lib\msc;C:\Program Files (x86)\HDF_Group\HDF5\Release\HDF5-1.10.1-win32\lib;$(ProjectDir)\Packages\boost_1_64_0\lib-32bit;$(ProjectDir)\Packages\32-Bit-Libs\Release\HDF5-1.10.1-win32-Release\lib;$(ProjectDir)\Packages\32-Bit-Libs\Release\Python;$(ProjectDir)\Packages\32-Bit-Libs\DIO64;$(ProjectDir)\Packages\32-Bit-Libs\Release\Andor;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\ProgramData\Anaconda3\include;$(ProjectDir)\Packages\64-Bit-Libs\boost_1_64_0;$(IncludePath);$(ProjectDir)\Packages\64-Bit-Libs\Release\HDF5-1.10.1-win64\include</IncludePath>
+    <IncludePath>$(ProjectDir)\Packages\64-Bit-Libs\boost_1_64_0;$(IncludePath);$(ProjectDir)\Packages\64-Bit-Libs\Debug\HDF5-1.10.3-win64\include;C:\users\alecj\anaconda3\include</IncludePath>
     <LinkIncremental>false</LinkIncremental>
-    <LibraryPath>C:\Program Files\Andor SDK;$(ProjectDir)\Packages\64-Bit-Libs\boost_1_64_0\lib-64bit;$(ProjectDir)\Packages\64-Bit-Libs\Release\HDF5-1.10.1-win64\lib;$(ProjectDir)\Packages\64-Bit-Libs\Release\Python;C:\Program Files (x86)\National Instruments\Shared\ExternalCompilerSupport\C\lib64\msvc;$(LibraryPath)</LibraryPath>
+    <LibraryPath>C:\Program Files\Andor SDK;$(ProjectDir)\Packages\64-Bit-Libs\Debug\HDF5-1.10.3-win64\lib;$(ProjectDir)\Packages\64-Bit-Libs\Release\Python;C:\Program Files (x86)\National Instruments\Shared\ExternalCompilerSupport\C\lib64\msvc;$(ProjectDir)\Packages\64-Bit-Libs\boost_1_64_0\stage\lib;$(ProjectDir)\Packages\64-Bit-Libs\Debug\Python;C:\Program Files\IVI Foundation\VISA\Win64\Lib_x64\msc;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

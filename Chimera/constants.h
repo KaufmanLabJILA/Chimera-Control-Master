@@ -378,6 +378,7 @@
 
 //Sequence Flags
 const std::string AXIAL_PHASE_FLAG = "Axial Lattice Phase Flag";
+const std::string AXIAL_PHASE_CONFIG_NAME = "220305_tweezer_checks.Config";
 
 // This is the minimum time (in seconds) that a correction waveform will be allowed to have. Without this, the algorithm might decide that the 1/2 of a period 
 // of a waveform might be enough, even though this would probably be far below the amount of time an individual waveform is allowed to have according to the 

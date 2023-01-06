@@ -41,7 +41,7 @@ namespace commonFunctions
 				try
 				{
 					//prepareCamera( mainWin, camWin, input );
-					prepareMasterThread( msgID, scriptWin, mainWin, camWin, auxWin, input, false, true, true );
+					prepareMasterThread( msgID, scriptWin, mainWin, camWin, auxWin, input, false, true, true, false );
 					//camWin->preparePlotter(input);
 					//camWin->prepareAtomCruncher(input);
 
@@ -72,6 +72,7 @@ namespace commonFunctions
 			case ID_RUNMENU_RUNSEQUENCE:
 			case ID_ACCELERATOR_F6:
 			{
+				mainWin->sequenceIsRunning = true;
 				CWinThread* multiExperimentThread;
 				MultiExperimentInput* input = new MultiExperimentInput;
 				input->auxWin = auxWin;
@@ -137,6 +138,8 @@ namespace commonFunctions
 				}
 				//
 				mainWin->waitForRearranger( );
+
+				mainWin -> sequenceIsRunning = false;
 
 				//try
 				//{
@@ -244,7 +247,7 @@ namespace commonFunctions
 				try
 				{
 					commonFunctions::prepareMasterThread(ID_RUNMENU_RUNMASTER, scriptWin, mainWin, camWin, auxWin,
-						input, false, true, false);
+						input, false, true, false, false);
 					//
 					//commonFunctions::logParameters(input, camWin, false);
 					//
@@ -267,7 +270,7 @@ namespace commonFunctions
 				try
 				{
 					commonFunctions::prepareMasterThread(ID_RUNMENU_RUNMASTER, scriptWin, mainWin, camWin, auxWin,
-						input, true, true, true);
+						input, true, true, true, false);
 					commonFunctions::startMaster(mainWin, input);
 				}
 				catch (Error& err)
@@ -298,7 +301,7 @@ namespace commonFunctions
 				try
 				{
 					commonFunctions::prepareMasterThread( ID_RUNMENU_RUNMASTER, scriptWin, mainWin, camWin, auxWin, 
-														  input, false, true, true );
+														  input, false, true, true, false );
 					commonFunctions::startMaster( mainWin, input );
 				}
 				catch (Error& err)
@@ -659,6 +662,11 @@ namespace commonFunctions
 				mainWin->profile.openSequenceFile(parent,mainWin);
 				break;
 			}
+			case ID_SEQUENCE_REMOVE_CONFIGS:
+			{
+				mainWin->profile.removeConfigFromSequence();
+				break;
+			}
 			case ID_HELP_GENERALINFORMATION:
 			{
 				break;
@@ -911,6 +919,7 @@ namespace commonFunctions
 		std::vector<std::string> configSequence = profileSeq.sequenceConfigNames;
 		std::vector<std::string> pathSequence = profileSeq.sequenceConfigPaths;
 		std::vector<bool> axPhaseFlags = profileSeq.axLatPhaseFlags;
+		bool abortSequence = false;
 		
 		//Set default behavior of rearrangement and auto-align for non-calibration runs
 		bool defaultAutoAlign = multiExpInput->mainWin->checkAutoAlignState();
@@ -941,14 +950,23 @@ namespace commonFunctions
 				beginningSettingsDialogProc, (LPARAM)cstr("\r\n\r\nBegin Sequence Execution?\n\r\n\rDefault Auto-align State: " + defaultAutoAlignStr +	
 					"\n\rDefault Rearranger State: " + defaultGmoogStr));
 		}
-
+		
 		if (areYouSure == 0) // Run sequence if user responds ok
 		{
+			multiExpInput->mainWin->sequenceIsRunning = true;
 			for (UINT configInc = 0; configInc < configSequence.size(); configInc++)
 			{
 				// Update the configuration
 				std::string configPath = pathSequence[configInc] + configSequence[configInc];
 				multiExpInput->mainWin->changeConfig(configPath);
+
+				// if experiment aborted, then abort sequence
+				if (!multiExpInput->mainWin->sequenceIsRunning)
+				{
+					multiExpInput->mainWin->getComm()->sendStatus("EXITED SEQUENCE!\r\n");
+					break;
+				}
+
 				if (axPhaseFlags[configInc])
 				{
 					// turn auto-align and rearrangement off for axial phase calibration
@@ -967,7 +985,7 @@ namespace commonFunctions
 				try // execute the experiment
 				{
 					//prepareCamera(multiExpInput->mainWin, multiExpInput->camWin, input);
-					prepareMasterThread(multiExpInput->msgID, multiExpInput->scriptWin, multiExpInput->mainWin, multiExpInput->camWin, multiExpInput->auxWin, input, false, true, true);
+					prepareMasterThread(multiExpInput->msgID, multiExpInput->scriptWin, multiExpInput->mainWin, multiExpInput->camWin, multiExpInput->auxWin, input, false, true, true, true);
 					//multiExpInput->camWin->preparePlotter(input);
 					//multiExpInput->camWin->prepareAtomCruncher(input);
 
@@ -977,7 +995,10 @@ namespace commonFunctions
 					//multiExpInput->camWin->startPlotterThread(input);
 					//multiExpInput->camWin->startCamera();
 					startMaster(multiExpInput->mainWin, input, true); // true argument sets wait for experimentThread to finish
-					multiExpInput->mainWin->getComm()->sendStatus("Completed running sequence configuration " + str(configInc + 1) + ":\r\n" + configSequence[configInc] + "\r\n\r\n");
+					if (multiExpInput->mainWin->sequenceIsRunning)
+					{
+						multiExpInput->mainWin->getComm()->sendStatus("Completed running sequence configuration " + str(configInc + 1) + ":\r\n" + configSequence[configInc] + "\r\n\r\n");
+					}
 				}
 				catch (Error& err)
 				{
@@ -992,6 +1013,7 @@ namespace commonFunctions
 					multiExpInput->mainWin->getComm()->sendStatus("EXITED WITH ERROR!\r\nInitialized Default Waveform\r\n");
 					multiExpInput->mainWin->getComm()->sendTimer("ERROR!");
 					multiExpInput->camWin->assertOff();
+					abortSequence = true;
 					break;
 				}
 
@@ -1003,6 +1025,13 @@ namespace commonFunctions
 				if (multiExpInput->mainWin->checkGmoogState() !=  defaultGmoog)
 				{
 					multiExpInput->mainWin->passGmoogIsOnPress();
+				}
+
+				// if experiment aborted, then abort sequence
+				if (!multiExpInput->mainWin->sequenceIsRunning)
+				{
+					multiExpInput->mainWin->getComm()->sendStatus("EXITED SEQUENCE!\r\n");
+					break;
 				}
 
 				// handling for certain configurations
@@ -1024,19 +1053,27 @@ namespace commonFunctions
 						multiExpInput->mainWin->getComm()->sendStatus("FAILED to create Python start file.\r\n");
 					}
 				}
+
+				// if experiment aborted, then abort sequence
+				if (!multiExpInput->mainWin->sequenceIsRunning)
+				{
+					multiExpInput->mainWin->getComm()->sendStatus("EXITED SEQUENCE!\r\n");
+					break;
+				}
 			}
 		}
 		else
 		{
-			thrower("Canceled!");
+			multiExpInput->mainWin->getComm()->sendStatus("Sequence Canceled!");
 		}
+		multiExpInput->mainWin->sequenceIsRunning = false;
 		return 0;
 	}
 
 
 	void prepareMasterThread( int msgID, ScriptingWindow* scriptWin, MainWindow* mainWin, CameraWindow* camWin, 
 		AuxiliaryWindow* auxWin, ExperimentInput& input,
-		bool single, bool runAWG, bool runTtls)
+		bool single, bool runAWG, bool runTtls, bool isSequence)
 	{
 		Communicator* comm = mainWin->getComm();
 		profileSettings profile = mainWin->getProfileSettings();
@@ -1141,7 +1178,6 @@ namespace commonFunctions
 		std::string beginQuestion = "\r\n\r\nBegin Waveform Generation with these Settings?";
 
 		INT_PTR areYouSure = 0;
-		bool isSequence = ((msgID == ID_RUNMENU_RUNSEQUENCE) || (msgID == ID_ACCELERATOR_F6));
 		if (!single && !isSequence)
 		{
 			areYouSure = DialogBoxParam(NULL, MAKEINTRESOURCE(IDD_BEGINNING_SETTINGS), 0,

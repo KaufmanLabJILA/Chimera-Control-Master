@@ -227,6 +227,7 @@ BEGIN
             MENUITEM "&Save Sequence",              ID_SEQUENCE_SAVE_SEQUENCE
             MENUITEM "Save Se&quence As",           ID_SEQUENCE_SAVE_SEQUENCEAS
             MENUITEM "Rename Sequen&ce",            ID_SEQUENCE_RENAMESEQUENCE
+			MENUITEM "Remove Configuration from Sequence", ID_SEQUENCE_REMOVE_CONFIGS
         END
         MENUITEM "&Save Entire Profile",        ID_PROFILE_SAVE_PROFILE
     END

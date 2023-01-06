@@ -39,6 +39,7 @@ class ProfileSystem
 		void newSequence(CWnd* parent);
 		void openSequence(std::string sequenceName, MainWindow* mainWin);
 		void openSequenceFile(CWnd* parent, MainWindow* mainWin);
+		void readSequence(profileSettings profile, std::fstream& seqFile);
 		void updateSequenceSavedStatus(bool isSaved);
 		bool sequenceSettingsReadyCheck(MainWindow* mainWin);
 		bool checkSequenceSave(std::string prompt, MainWindow* mainWin);
@@ -47,8 +48,11 @@ class ProfileSystem
 		void loadNullSequence();
 		void addToSequence(CWnd* parent);
 		void addToSequenceFromFile(CWnd* parent);
+		void addToSequenceVector(int index, std::string config, std::string path);
 		std::vector<std::string> getSequenceNames();
 		void reloadSequence(std::string sequenceToReload);
+		void removeConfigFromSequence();
+		void removeFromSequenceVector(int index);
 
 		void saveConfigurationOnly( ScriptingWindow* scriptWindow, MainWindow* mainWin, AuxiliaryWindow* auxWin, 
 								    CameraWindow* camWin );
@@ -82,6 +86,9 @@ class ProfileSystem
 									   AuxiliaryWindow* auxWin, CameraWindow* camWin );
 		static void checkDelimiterLine(std::ifstream& openFile, std::string keyword);
 		static bool checkDelimiterLine( std::ifstream& openFile, std::string delimiter, std::string breakCondition );
+
+		std::vector<int> parseIndexListString(std::string listStr);
+
 	private:
 		profileSettings currentProfile;
 		std::string FILE_SYSTEM_PATH;

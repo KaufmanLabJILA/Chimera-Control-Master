@@ -13,7 +13,7 @@ namespace commonFunctions
 	/// Run Menu
 	void prepareCamera( MainWindow* mainWin, CameraWindow* camWin, ExperimentInput& input );
 	void prepareMasterThread( int msgID, ScriptingWindow* scriptWin, MainWindow* mainWin, CameraWindow* camWin,
-							  AuxiliaryWindow* auxWin, ExperimentInput& input, bool single, bool runAWG, bool runTtls);
+							  AuxiliaryWindow* auxWin, ExperimentInput& input, bool single, bool runAWG, bool runTtls, bool isSequence);
 	void abortRearrangement( MainWindow* mainWin, CameraWindow* camWin );
 	void startMaster(MainWindow* mainWin, ExperimentInput& input, bool waitTillFinished = false);
 	UINT __cdecl multipleExperimentThreadProcedure(void* voidInput);

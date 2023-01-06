@@ -11,6 +11,8 @@
 #include <fstream>
 #include "Commctrl.h"
 #include <boost/filesystem.hpp>
+#include <boost/algorithm/string/classification.hpp>
+#include <boost/algorithm/string/split.hpp>
 
 
 ProfileSystem::ProfileSystem(std::string fileSystemPath)
@@ -534,11 +536,51 @@ void ProfileSystem::addToSequence(CWnd* parent)
 		// nothing to add.
 		return;
 	}
-	currentProfile.sequenceConfigNames.push_back(currentProfile.configuration + "." + CONFIG_EXTENSION );
-	currentProfile.sequenceConfigPaths.push_back(currentProfile.categoryPath);
-	currentProfile.axLatPhaseFlags.push_back(currentProfile.configuration + "." + CONFIG_EXTENSION == axLatPhaseConfigName);
-	appendText( str( currentProfile.sequenceConfigNames.size() ) + ". "
-				+ currentProfile.sequenceConfigNames.back() + "\r\n", sequenceInfoDisplay );
+
+	// prompt for position in the sequence
+	std::string index;
+	int ind;
+	TextPromptDialog dialog(&index, "Please enter position in the sequence to add the configuration. Enter -1 to add to the end.");
+	dialog.DoModal();
+
+	if (index == "")
+	{
+		// user canceled or entered nothing
+		return;
+	}
+
+	try
+	{
+		ind = std::stoi(index);
+		if (ind == 0 || ind < -1)
+		{
+			throw ind;
+		}
+	}
+	catch (const std::out_of_range& e)
+	{
+		thrower("ERROR: Invalid value entered.");
+	}
+	catch (int badInd)
+	{
+		thrower("ERROR: Invalid value entered.");
+	}
+
+	addToSequenceVector(ind, currentProfile.configuration, currentProfile.categoryPath);
+	if (ind == -1 || ind > currentProfile.sequenceConfigNames.size())
+	{
+		appendText(str(currentProfile.sequenceConfigNames.size()) + ". "
+			+ currentProfile.sequenceConfigNames.back() + "\r\n", sequenceInfoDisplay);
+	}
+	else
+	{
+		sequenceInfoDisplay.SetWindowTextA("Sequence of Configurations to Run:\r\n");
+		for (size_t i = 0; i < currentProfile.sequenceConfigNames.size(); i++)
+		{
+			appendText(str(i+1) + ". "
+				+ currentProfile.sequenceConfigNames[i] + "\r\n", sequenceInfoDisplay);
+		}
+	}
 	updateSequenceSavedStatus(false);
 }
 
@@ -548,17 +590,89 @@ void ProfileSystem::addToSequenceFromFile(CWnd* parent)
 
 	if (CFDialog.DoModal() == IDOK)
 	{
+		//std::string reps;
+		//TextPromptDialog dialog(&reps, "Enter the number of reps for each file");
+		//dialog.DoModal();
+
 		POSITION pos = CFDialog.GetStartPosition();
 		while (pos)
 		{
 			std::basic_string<TCHAR> configPath = CFDialog.GetNextPathName(pos);
 			int slashPos = configPath.find_last_of('\\');
-			currentProfile.sequenceConfigNames.push_back(configPath.substr(slashPos+1));
-			currentProfile.sequenceConfigPaths.push_back(configPath.substr(0,slashPos) + "\\");
-			currentProfile.axLatPhaseFlags.push_back(configPath.substr(slashPos + 1) == axLatPhaseConfigName);
+			int dotPos = configPath.find_last_of('.');
+			std::string configToAdd = configPath.substr(slashPos + 1,dotPos-slashPos-1);
+			std::string pathToAdd = configPath.substr(0, slashPos+1);
+			addToSequenceVector(-1, configToAdd, pathToAdd);
 			appendText(str(currentProfile.sequenceConfigNames.size()) + ". "
 				+ currentProfile.sequenceConfigNames.back() + "\r\n", sequenceInfoDisplay);
 		}
+	}
+	updateSequenceSavedStatus(false);
+}
+
+void ProfileSystem::addToSequenceVector(int index, std::string config, std::string path)
+{	
+	if (index == -1 || index > currentProfile.sequenceConfigNames.size())
+	{
+		currentProfile.sequenceConfigNames.push_back(config + "." + CONFIG_EXTENSION);
+		currentProfile.sequenceConfigPaths.push_back(path);
+		currentProfile.axLatPhaseFlags.push_back(config + "." + CONFIG_EXTENSION == AXIAL_PHASE_CONFIG_NAME);
+	}
+	else if (index > 0)
+	{
+		currentProfile.sequenceConfigNames.insert(currentProfile.sequenceConfigNames.begin() + index - 1, config + "." + CONFIG_EXTENSION);
+		currentProfile.sequenceConfigPaths.insert(currentProfile.sequenceConfigPaths.begin() + index - 1, path);
+		currentProfile.axLatPhaseFlags.insert(currentProfile.axLatPhaseFlags.begin() + index - 1, config + "." + CONFIG_EXTENSION == AXIAL_PHASE_CONFIG_NAME);
+	}
+}
+
+void ProfileSystem::removeFromSequenceVector(int index)
+{
+	if (index == -1 || index > currentProfile.sequenceConfigNames.size())
+	{
+		currentProfile.sequenceConfigNames.erase(currentProfile.sequenceConfigNames.end());
+		currentProfile.sequenceConfigPaths.erase(currentProfile.sequenceConfigPaths.end());
+		currentProfile.axLatPhaseFlags.erase(currentProfile.axLatPhaseFlags.end());
+	}
+	else if (index > 0)
+	{
+		currentProfile.sequenceConfigNames.erase(currentProfile.sequenceConfigNames.begin() + index - 1);
+		currentProfile.sequenceConfigPaths.erase(currentProfile.sequenceConfigPaths.begin() + index - 1);
+		currentProfile.axLatPhaseFlags.erase(currentProfile.axLatPhaseFlags.begin() + index - 1);
+	}
+}
+
+void ProfileSystem::removeConfigFromSequence() 
+{
+	// prompt for position in the sequence
+	std::string listStr;
+	std::vector<int> indexList;
+	TextPromptDialog dialog(&listStr, "Please enter list of indices of configurations to be removed (e.g. 1, 3-5, 7, 9-15)");
+	dialog.DoModal();
+
+	if (listStr == "")
+	{
+		// user canceled or entered nothing
+		return;
+	}
+	try
+	{
+		indexList = parseIndexListString(listStr);
+	}
+	catch (const std::out_of_range& e)
+	{
+		thrower("ERROR: Invalid value entered.");
+	}
+	std::sort(indexList.rbegin(), indexList.rend());
+	for (auto & ind : indexList)
+	{
+		removeFromSequenceVector(ind);
+	}
+	sequenceInfoDisplay.SetWindowTextA("Sequence of Configurations to Run:\r\n");
+	for (size_t i = 0; i < currentProfile.sequenceConfigNames.size(); i++)
+	{
+		appendText(str(i + 1) + ". "
+			+ currentProfile.sequenceConfigNames[i] + "\r\n", sequenceInfoDisplay);
 	}
 	updateSequenceSavedStatus(false);
 }
@@ -820,6 +934,29 @@ void ProfileSystem::newSequence(CWnd* parent)
 	reloadSequence(currentProfile.sequence);
 }
 
+void ProfileSystem::readSequence(profileSettings profile, std::fstream& seqFile)
+{
+	// read the file
+	std::string version;
+	std::string seqName;
+	std::getline(seqFile, seqName);
+	std::getline(seqFile, version);
+	currentProfile.sequenceConfigNames.clear();
+	currentProfile.sequenceConfigPaths.clear();
+	currentProfile.axLatPhaseFlags.clear();
+	std::string tempName;
+	getline(seqFile, tempName);
+	while (seqFile)
+	{
+		currentProfile.sequenceConfigNames.push_back(tempName);
+		getline(seqFile, tempName);
+		currentProfile.sequenceConfigPaths.push_back(tempName);
+		getline(seqFile, tempName);
+		currentProfile.axLatPhaseFlags.push_back(tempName == AXIAL_PHASE_FLAG);
+		getline(seqFile, tempName);
+	}
+}
+
 
 void ProfileSystem::openSequence(std::string sequenceName, MainWindow* mainWin)
 {
@@ -839,25 +976,10 @@ void ProfileSystem::openSequence(std::string sequenceName, MainWindow* mainWin)
 				 + currentProfile.sequencePath + sequenceName + "." + SEQUENCE_EXTENSION + " exists.");
 	}
 	currentProfile.sequence = str(sequenceName);
-	// read the file
-	std::string version;
-	std::string seqName;
-	std::getline(sequenceFile, seqName);
-	std::getline(sequenceFile, version);
-	currentProfile.sequenceConfigNames.clear();
-	currentProfile.sequenceConfigPaths.clear();
-	currentProfile.axLatPhaseFlags.clear();
-	std::string tempName;
-	getline(sequenceFile, tempName);
-	while (sequenceFile)
-	{
-		currentProfile.sequenceConfigNames.push_back(tempName);
-		getline(sequenceFile, tempName);
-		currentProfile.sequenceConfigPaths.push_back(tempName);
-		getline(sequenceFile, tempName);
-		currentProfile.axLatPhaseFlags.push_back(tempName == AXIAL_PHASE_FLAG);
-		getline(sequenceFile, tempName);
-	}
+
+	// read in the sequence to the current profile
+	readSequence(currentProfile, sequenceFile);
+
 	// update the edit
 	sequenceInfoDisplay.SetWindowTextA("Configuration Sequence:\r\n");
 	for (UINT sequenceInc = 0; sequenceInc < currentProfile.sequenceConfigNames.size(); sequenceInc++)
@@ -890,25 +1012,8 @@ void ProfileSystem::openSequenceFile(CWnd* parent, MainWindow* mainWin)
 	currentProfile.sequence = fileaddress.substr(slashPos + 1, extensionPos - slashPos - 1);
 	currentProfile.sequencePath = fileaddress.substr(0, slashPos) + "\\";
 
-	// read the file
-	std::string version;
-	std::string seqName;
-	std::getline(sequenceFile, version);
-	std::getline(sequenceFile, seqName);
-	currentProfile.sequenceConfigNames.clear();
-	currentProfile.sequenceConfigPaths.clear();
-	currentProfile.axLatPhaseFlags.clear();
-	std::string tempName;
-	getline(sequenceFile, tempName);
-	while (sequenceFile)
-	{
-		currentProfile.sequenceConfigNames.push_back(tempName);
-		getline(sequenceFile, tempName);
-		currentProfile.sequenceConfigPaths.push_back(tempName);
-		getline(sequenceFile, tempName);
-		currentProfile.axLatPhaseFlags.push_back(tempName == AXIAL_PHASE_FLAG);
-		getline(sequenceFile, tempName);
-	}
+	readSequence(currentProfile, sequenceFile);
+
 	// update the edit
 	sequenceInfoDisplay.SetWindowTextA("Configuration Sequence:\r\n");
 	for (UINT sequenceInc = 0; sequenceInc < currentProfile.sequenceConfigNames.size(); sequenceInc++)
@@ -1203,3 +1308,30 @@ profileSettings ProfileSystem::getProfileSettings()
 	return currentProfile;
 }
 
+
+std::vector<int> ProfileSystem::parseIndexListString(std::string listStr)
+{
+	std::vector<int> indexList;
+	std::vector<std::string> indexStr;
+	boost::split(indexStr, listStr, boost::is_any_of(", "), boost::token_compress_on);
+
+	for (auto & element : indexStr)
+	{
+		size_t hyphen_index;
+		// stoi will store the index of the first non-digit in hyphen_index.
+		int first = std::stoi(element, &hyphen_index);
+		indexList.push_back(first);
+
+		// If the hyphen_index is the equal to the length of the string,
+		// there is no other number.
+		// Otherwise, we parse the second number here:
+		if (hyphen_index != element.size()) {
+			int second = std::stoi(element.substr(hyphen_index + 1), &hyphen_index);
+			for (int i = first + 1; i <= second; ++i) {
+				indexList.push_back(i);
+			}
+		}
+	}
+
+	return indexList;
+}

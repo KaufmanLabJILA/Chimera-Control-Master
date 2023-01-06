@@ -159,6 +159,7 @@
 #define ID_RUNMENU_RUNSINGLESHOT        40134
 #define ID_RUNMENU_RUNSEQUENCE          40135
 #define ID_SCRIPTS_FUNCTIONS            40142
+#define ID_SEQUENCE_REMOVE_CONFIGS      40143
 #define ID_FILE_MY_AWG_OPEN             40148
 #define ID_FILE_MY_AWG_SAVE             40149
 #define ID_FILE_MY_AWG_SAVEAS           40150
