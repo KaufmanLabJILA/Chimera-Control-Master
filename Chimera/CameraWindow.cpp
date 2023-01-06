@@ -1228,6 +1228,47 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 
 		(*input->atomArrayQueue).push_back(tempAtomArray); //save processed image
 
+
+		// export the atom array
+		if (input->gmoog->exportArray)
+		{
+			if (imageCount % input->picsPerRep == (input->picsPerRep - 1))
+			{
+				input->writeAtomArrayFile(input->picsPerRep);
+			}
+		}
+
+		if (input->gmoog->painterActive)
+		{	
+			try
+			{
+				if (imageCount % input->picsPerRep == 1)
+				{
+					MessageSender ms;
+					input->gmoog->writeOff(ms); //Important to start with load tones off, so that every tone has explicit settings.
+					input->gmoog->writeLoad(ms); //Write load settings so that tweezers can be reset immediately after moves.
+					input->gmoog->writePaintMoves(ms);
+					input->gmoog->writeTerminator(ms);
+					input->gmoog->send(ms);
+				}
+
+
+				// unclear why needed
+				if (imageCount % input->picsPerRep == 2)
+				{
+					MessageSender ms;
+					input->gmoog->writeOff(ms); //Important to start with load tones off, so that every tone has explicit settings.
+					input->gmoog->writeLoad(ms); //Write load settings so that tweezers can be reset immediately after moves.
+					input->gmoog->writeTerminator(ms);
+					input->gmoog->send(ms);
+				}
+			}
+			catch (Error& exception)
+			{
+				//
+			}
+		}
+
 		if (input->rearrangerActive)
 		{
 			// copies the array if first pic of rep. Only looks at first picture because its rearranging. Could change

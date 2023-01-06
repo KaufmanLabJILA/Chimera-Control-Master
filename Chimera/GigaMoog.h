@@ -75,9 +75,12 @@ public:
 	void updateXYOffsetAuto();
 
 	void writeRearrangeMoves(moveSequence input, MessageSender& ms);
+	void writePaintMoves(MessageSender& ms);
 
 	bool rearrangerActive = false;
 	bool autoTweezerOffsetActive = false;
+	bool painterActive = false;
+	bool exportArray = false;
 	std::vector<bool> initialPositionsX; //initial and target positions saved in gigamoog object mostly because it already handles the script, but these only get used by the rearrangement thread.
 	std::vector<bool> initialPositionsY;
 	std::vector<bool> initialPositions;
@@ -95,6 +98,7 @@ public:
 	int nTweezerX, nTweezerY;
 	int nFilterTweezerX, nFilterTweezerY;
 	int scrunchSpacing;
+	int yPaintStart, yPaintEnd;
 	std::string rearrangeMode;
 
 private:
@@ -108,18 +112,24 @@ private:
 	std::vector<double> ATW_LUT;
 	std::vector<double> FTW_LUT;
 	std::vector<double> subpixelLUT; //This must be synchronized with atomCruncher subpixel masks.
+	std::vector<double> PAINT_ATW_LUT;
 	double xOffset, yOffset;
 	double xOffsetManual, yOffsetManual;
 	std::vector<double> xPix2MHz, yPix2MHz;
 	int nSubpixel;
 	UINT xDim, yDim; //x and y dimensions of atom positions from LUT. Must be coordinated with number of masks in image processing.
+	UINT xDimPaint, yDimPaint;
 	int ampStepMag = 134217727;
 	int freqStepMag = 511;
+	int ampStepPaintMag = 134217727;
+	int freqStepPaintMag = 511;
 
 	double getFreqX(int xIndex, int yIndex);
 	double getAmpX(int xIndex, int yIndex);
 	double getFreqY(int xIndex, int yIndex);
 	double getAmpY(int xIndex, int yIndex);
+	double getPaintAmpX(unsigned int xIndex, unsigned int yIndex);
+	double getPaintAmpY(unsigned int xIndex, unsigned int yIndex);
 
 	static unsigned long long int getFTW(double frequency) {
 		//36-bit DDS

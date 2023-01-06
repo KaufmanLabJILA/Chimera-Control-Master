@@ -310,6 +310,8 @@ BEGIN
     BEGIN
         MENUITEM "Rearranger active",           ID_GIGAMOOG_REARRANGERACTIVE
         MENUITEM "Auto tweezer align active",   ID_GIGAMOOG_AUTOTWEEZERALIGNACTIVE
+		MENUITEM "Painter active",              ID_GIGAMOOG_PAINTERACTIVE
+		MENUITEM "Export array",				ID_GIGAMOOG_EXPORTARRAY
     END
     POPUP "Andor"
     BEGIN

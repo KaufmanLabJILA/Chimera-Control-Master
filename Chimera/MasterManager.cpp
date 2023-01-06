@@ -275,8 +275,30 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 			//	//}
 			//}
 			if (!DDS_SAFEMODE) {
+				// determine seconds since the epoch
+				time_t ts = time(0);
+				double ts_double = double(ts);
+
+				// create "magic" timestamp variable
+				variableType timestampVar;
+				timestampVar.name = "__ts__";
+				timestampVar.constant = true;
+				//timestampVar.ranges.push_back({ ts_double, 0, 1, false, true });
+				for (const UINT& i : range(variations)) {
+					timestampVar.keyValues.push_back(ts_double);
+				}
+
+				// inject timestamp variable
+				input->variables.push_back(timestampVar);
+				
+				expUpdate("Timestamp __ts__: " + str(ts_double) + "\r\n", input->comm, input->quiet);
+
+				// parse dds script and program dds
 				input->dds->loadDDSScript(input->ddsScriptAddress);
 				input->dds->programDDS(input->dds, input->variables, variationInc);
+
+				// remove injected timestamp variable
+				input->variables.pop_back();
 			}
 			if (!MOOG_SAFEMODE) {
 				input->gmoog->loadMoogScript(input->gmoogScriptAddress);

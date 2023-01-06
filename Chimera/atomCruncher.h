@@ -25,6 +25,7 @@ public:
 	int equalizeY(moveSequence& moveseq);
 	void enoughY(moveSequence& moveseq, bool constantMoves);
 	void filterAtomQueue(void);
+	void writeAtomArrayFile(int picsPerRep);
 
 	chronoTimes* catchPicTime;
 	chronoTimes* finTime;

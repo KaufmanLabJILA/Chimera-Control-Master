@@ -764,6 +764,16 @@ namespace commonFunctions
 				mainWin->passAutoAlignIsOnPress();
 				break;
 			}
+			case ID_GIGAMOOG_PAINTERACTIVE:
+			{
+				mainWin->passPainterIsOnPress();
+				break;
+			}
+			case ID_GIGAMOOG_EXPORTARRAY:
+			{
+				mainWin->passExportArrayIsOnPress();
+				break;
+			}
 			case ID_RUNMENU_ABORTCAMERA:
 			{
 				try

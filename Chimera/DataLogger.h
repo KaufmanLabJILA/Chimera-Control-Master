@@ -60,6 +60,9 @@ class DataLogger
 		// just one pic
 		H5::DataSpace atomArrayDataSpace;
 
+		// miscellaneous info
+		H5::Group miscellaneousGroup;
+
 	    bool fileIsOpen;
 		std::string mostRecentInitializationDate;
 		std::string dataFilesBaseLocation;

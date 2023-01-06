@@ -164,7 +164,9 @@
 #define ID_FILE_MY_AWG_NEW              40151
 #define ID_NIAWG_NIAWGISON              40152
 #define ID_GIGAMOOG_AUTOTWEEZERALIGNACTIVE 40153
-#define MENU_ID_RANGE_END               40153
+#define ID_GIGAMOOG_PAINTERACTIVE       40155
+#define ID_GIGAMOOG_EXPORTARRAY         40156
+#define MENU_ID_RANGE_END               40156
 
 // Next default values for new objects
 // 

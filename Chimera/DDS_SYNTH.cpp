@@ -182,8 +182,11 @@ void DDS_SYNTH::writeamp(UINT8 device, UINT8 channel, double amp) {
 }
 
 UINT DDS_SYNTH::getPOW(double phase) {
-	if (phase >= 360) {
-		thrower("DDS amplitude out of range, should be <360.");
+	if (phase < 0) {
+		thrower("DDS phase out of range, should be >= 0.");
+	}
+	while (phase > 360) {
+		phase -= 360;
 	}
 	UINT PTW = (UINT)round(phase * pow(2, 14) / 360.0);
 	return(PTW);
