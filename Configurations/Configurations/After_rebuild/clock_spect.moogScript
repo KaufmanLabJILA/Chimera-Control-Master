@@ -1,0 +1,58 @@
+%Mixing down 260MHz signal, AOs 135-225MHz,
+%corresponds to 125-40MHz
+%onoff 0b1
+onoff 0b1111111111
+
+%linloop 0 7 gain 50 0
+%linloop 0 7 startfreq 65 3
+%linloop 0 0 loadphase 0 0
+
+%loadphase 1.046 0
+%loadphase 4.19 1 
+%loadphase 3.14 2
+
+
+gain 0 430
+startfreq 0 100
+loadphase 0 .314
+
+gain 1 380
+startfreq 1 95
+loadphase 1 1.256 
+
+gain 2 430
+startfreq 2 90
+loadphase 2 2.827 
+
+gain 3 480
+startfreq 3 85
+loadphase 3 5.0265
+
+gain 4 395
+startfreq 4 80
+loadphase 4 7.854 
+
+gain 5 340
+startfreq 5 75
+loadphase 5 11.3097 
+
+gain 6 365 
+startfreq 6 70
+loadphase 6 15.3938
+
+gain 7 350
+startfreq 7 65
+loadphase 7 20.1062
+
+gain 8 315
+startfreq 8 60
+loadphase 8 25.4469
+
+gain 9 380
+startfreq 9 55
+loadphase 9 31.4159
+
+
+
+
+load

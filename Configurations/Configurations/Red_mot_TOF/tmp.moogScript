@@ -1,0 +1,7 @@
+% Test Moog Script
+onoff 0xFFFFFFFF
+linloop gain 32 0.01 0.03
+linloop startfreq 32 1.0 2.0
+linloop stopfreq 32 1.0 exp(1)
+load
+move

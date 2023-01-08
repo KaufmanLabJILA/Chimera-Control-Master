@@ -1,0 +1,20 @@
+%Mixing down 260MHz signal, AOs 135-225MHz,
+%corresponds to 125-40MHz
+%onoff 0b1111111111
+%step: 1 LSB is ~8MHz per sec(800 / 96 MHz per sec), register is 10 bits
+
+onoff 0b1
+
+step 0xFF
+
+gain 0 600.0
+startfreq 0 moogfreq0
+stopfreq 0 moogfreq1
+loadphase 0 0
+movephase 0 0
+
+
+
+load
+
+move

@@ -1055,6 +1055,57 @@ void VariableSystem::updateVariableInfo( std::vector<Script*> scripts, MainWindo
 	updateVariationNumber( );
 }
 
+void VariableSystem::changeVariableValue(std::string varName, double newValue)
+{
+	LVITEM listViewItem;
+	memset(&listViewItem, 0, sizeof(listViewItem));
+	listViewItem.mask = LVIF_TEXT;   // Text Style
+	listViewItem.cchTextMax = 256; // Max size of test
+
+	std::vector<variableType>::iterator it = std::find_if(currentVariables.begin(), currentVariables.end(), boost::bind(&variableType::name, _1) == varName);
+	int idx = it - currentVariables.begin();
+	if (isGlobal)
+	{
+		(*it).ranges.front().initialValue = (*it).ranges.front().finalValue = newValue;
+		listViewItem.iItem = idx;
+		listViewItem.iSubItem = 1;
+		std::string temp(str(currentVariables[idx].ranges.front().initialValue, 13, true));
+		listViewItem.pszText = &temp[0];
+		variablesListview.SetItem(&listViewItem);
+	}
+	else
+	{
+		if ((*it).constant)
+		{
+			(*it).ranges[0].initialValue = newValue;
+			listViewItem.iItem = idx;
+			listViewItem.iSubItem = 3;
+			std::string temp(str(currentVariables[idx].ranges[0].initialValue, 13, true));
+			listViewItem.pszText = &temp[0];
+			variablesListview.SetItem(&listViewItem);
+		}
+	}
+}
+
+bool VariableSystem::checkVariableExists(std::string varName)
+{
+	std::vector<variableType>::iterator it = std::find_if(currentVariables.begin(), currentVariables.end(), boost::bind(&variableType::name, _1) == varName);
+	return it != currentVariables.end();
+}
+
+double VariableSystem::getGlobalVariableValue(std::string varName)
+{
+	std::vector<variableType>::iterator it = std::find_if(currentVariables.begin(), currentVariables.end(), boost::bind(&variableType::name, _1) == varName);
+	int idx = it - currentVariables.begin();
+	if (isGlobal)
+	{
+		return (*it).ranges.front().initialValue;
+	}
+	else
+	{
+		return 0;
+	}
+}
 
 void VariableSystem::setActive(bool active)
 {

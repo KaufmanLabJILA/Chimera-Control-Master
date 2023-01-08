@@ -1,0 +1,39 @@
+% Setting initial state, what happens after reset.
+reset
+% null null null null red3dnarrow radial axial radial2
+freqs 2 80 80 80 80.25 80.175 80.08 50 %freqs in MHz
+amps  0 20 20 20 16 10 20 10 %amps in percent
+
+% this is before the blue MOT
+snapshot 0 reps 1
+freqs 0 10 2 3 0 0 0 0 %Freq step in MHz
+amps  0 0 0 0 0 0 0 0 %amp step in percent
+
+% after red MOT, before further cooling
+snapshot 1 reps 1
+freqs 0 10 2 3 fscan 0 0 0 %Freq step in MHz
+amps  0 0 0 0 15 0 0 0 %amp step in percent
+
+% after additional cooling step (spect)
+snapshot 2 reps 1
+freqs 0 10 2 3 0.075 0 0 0 %Freq step in MHz
+amps  0 0 0 0 0 0 0 0 %amp step in percent
+
+% right before imaging
+snapshot 3 reps 1
+freqs 0 10 2 3 -fscan 0 0 0 %Freq step in MHz
+amps  0 0 0 0 0 27 0 0 %amp step in percent
+
+
+%Example sweep: 10000*8us = 80ms sweep time,
+%Step sweeps frequencies
+%and amplitudes down by 10000*0.001 = 10
+%snapshot 0 reps 10000
+%freqs -0.001 -0.001 -0.001 -0.001 -0.001 -0.001 -0.001 -0.001
+%amps -0.001 -0.001 -0.001 -0.001 -0.001 -0.001 -0.001 -0.001
+
+%Marking end of sequence.
+%Additional TTLs don't change output.
+snapshot 4 reps 0
+freqs 0 0 0 0 0 0 0 0
+amps 0 0 0 0 0 0 0 0 

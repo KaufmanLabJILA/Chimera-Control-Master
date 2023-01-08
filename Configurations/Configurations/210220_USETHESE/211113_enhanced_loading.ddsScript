@@ -1,0 +1,83 @@
+% Channel order:
+% latticemod 698freq_res. UVao 698_detuned red3dnarrow radial axial radial2
+
+%%%
+
+% SB COOL
+reset
+%freqs 80 c_3p0+.2 80 80 79.74 c_3p1+f_rad c_3p1+faxcool c_3p1+f_rad2
+%amps  0 100 UVaopow 100 0 6 16 1
+freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+.5 c_3p1 c_3p1+f_rad c_3p1+0.03 c_3p1+f_rad2
+amps  0 0 30 100 0 7 6 0
+
+% SPECTROSCOPY
+snapshot 0 reps 2
+freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+.5 spec3p1 spec3p1 spec3p1 spec3p1
+amps  0 0 30 100 28 3 2 1.5
+%for imaging optimization
+%freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+1 c_3p1+f_3d c_3p1+fcool c_3p1+fcools c_3p1+fcool+.001
+%amps  0 100 30 100 18 18 15 3
+%freqs 80 c_3p0+.2 80 80 79.74 c_3p1+f_rad c_3p1+f_ax_3d_imag c_3p1+f_rad_3d
+%amps  0 100 30 100 0 6 12 4
+% for shelving:
+%amps  0 100 30 100 28 2.5 3 .8
+
+
+% IMAGE TWEEZERS
+snapshot 1 reps 2
+freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+1 c_3p1+f_3d c_3p1+fcool c_3p1+.14 c_3p1+fcool+.001
+amps  0 100 30 100 18 15 15 3
+%amps  0 100 30 100 18 100 100 100
+
+% IMAGE LATTICE
+%snapshot 1 reps 2
+%freqs 80 c_3p0+1 80 80 79.74 c_3p1+f_rad c_3p1+f_ax_3d_imag c_3p1+f_rad_3d
+%amps  0 100 30 100 0 6 12 4
+
+%%%
+% MOT
+snapshot 2 reps 2
+freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+.5 c_3p1+f_rmot_narrow c_3p1 c_3p1 80
+amps  0 0 0 100 13.5 0 0 0
+
+% SB COOL LATTICE
+snapshot 3 reps 2
+%freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+.3 79.74 c_3p1+f_rad_3d c_3p1+f_ax_3d c_3p1+f_rad_3d
+%amps  0 0 30 92 0 0 3 2.5
+%% temporary to test lacs:
+freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+1 c_3p1+f_lac c_3p1+f_lac c_3p1+f_lac c_3p1+f_lac
+amps  0 100 30 100 68 68 68 68
+
+% spectroscopy2
+snapshot 4 reps 2
+freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+.3 79.74 c_3p1+f_rad_3d c_3p1+f_ax_3d c_3p1+1
+%freqs 80 c_3p0+.5 80 80 79.74 c_3p1+f_rad_3d c_3p1+f_ax_3d c_3p1+f_rad_3d
+amps  0 100 30 92 0 6 2. 2.5
+
+% phase jump
+snapshot 5 reps 2
+freqs 80 c_3p0+spec3p0/1000+1 80 c_3p0+spec3p0/1000+.3 79.74 c_3p1+f_rad_3d c_3p1+f_ax_3d c_3p1+1
+%freqs 80 c_3p0+.5 80 80 79.74 c_3p1+f_rad_3d c_3p1+f_ax_3d c_3p1+f_rad_3d
+amps  0 100 30 92 0 6 3 2
+
+% spectroscopy2
+snapshot 6 reps 2
+freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+.3 79.74 c_3p1+f_rad_3d c_3p1+f_ax_3d c_3p1+1
+%freqs 80 c_3p0+.5 80 80 79.74 c_3p1+f_rad_3d c_3p1+f_ax_3d c_3p1+f_rad_3d
+amps  0 100 30 92 0 6 3 2
+
+% dummy snapshot
+snapshot 7 reps 2
+freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+.3 79.74 c_3p1+f_rad c_3p1+faxcool c_3p1+f_rad2
+amps  0 0 30 100 0 6 6 0
+
+%Parametric heating
+snapshot 8 reps 2
+freqs 80+pmodf c_3p0+spec3p0/1000 75 c_3p0+spec3p0/1000+.5 spec3p1 spec3p1 spec3p1 spec3p1
+amps 5 0 30 100 0 8 4 5
+
+snapshot 9 reps 15000
+freqs 80+pmodf-.03 c_3p0+spec3p0/1000 75 80 spec3p1 spec3p1 spec3p1 spec3p1
+amps 15 0 30 100 0 8 4 5
+
+end

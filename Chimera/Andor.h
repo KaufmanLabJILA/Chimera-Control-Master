@@ -39,7 +39,7 @@ class AndorCamera
 		/// Andor Wrappers, in alphabetical order. Versions that take no parameters just insert current settings into 
 		// the versions that take parameters. Note that my wrapper names don't always match the andor SDK names. If 
 		// looking for specific sdk functions, search in the cpp file.
-		void abortAcquisition();
+	    void abortAcquisition();
 		void checkForNewImages();
 		void getAcquisitionProgress( long& seriesNumber );
 		void getAcquisitionProgress( long& accumulationNumber, long& seriesNumber );

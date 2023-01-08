@@ -1,0 +1,71 @@
+% Channel order:
+% latticemod null null null red3dnarrow radial axial radial2
+
+%%%
+
+% SB COOL
+reset
+%freqs 80 80 75 80 79.74 c_3p1+f_rad c_3p1+f_ax c_3p1+f_rad2
+%amps  0 100 100 100 0 3 2 5
+%freqs 80 80 75 80 79.74 c_3p1+.08 c_3p1+.08 c_3p1+.08
+%amps  0 100 100 100 0 5 3 5
+%freqs 80 80 75 80 79.74 c_3p1+.07 c_3p1+.08 c_3p1+.07
+%amps  0 100 100 100 0 16 5 25
+freqs 80 80 75 80 79.74 c_3p1+f_rad c_3p1+f_ax_lat c_3p1+f_rad2
+amps  0 100 100 100 0 9 8 7
+
+% SPECTROSCOPY
+snapshot 0 reps 2
+freqs 80 80 75 80 spec3p1 spec3p1 spec3p1 spec3p1
+amps  0 100 100 100 0 2 3.5 4
+%freqs 80 80 75 80 79.74 c_3p1+fcool c_3p1+faxcool c_3p1+fcool+.001
+%amps  0 100 100 100 0 radpow axpow rad2pow
+
+% IMAGE
+snapshot 1 reps 2
+%freqs 80 80 75 80 79.74 c_3p1+.08 c_3p1+.08 c_3p1+.08
+%amps  0 100 100 100 0 15 3 5
+freqs 80 80 75 80 79.74 c_3p1+fcool c_3p1+faxcool c_3p1+fcool+.001
+amps  0 100 100 100 0 7 9 7
+%radpow axpow rad2pow
+
+%%%
+% MOT
+snapshot 2 reps 2
+freqs 80 80 75 80 c_3p1+f_rmot_narrow 80 80 80
+amps  0 100 100 100 20 0 0 0
+
+% LAC
+snapshot 3 reps 2
+%freqs 80 80 75 80 79.74 80.05 80.05 80.05
+%amps  0 100 100 100 0 10 70 18
+freqs 80 80 75 80 79.74 c_3p1-.25 c_3p1+.08 c_3p1+.03
+amps  0 100 100 100 0 10 5 10
+
+% RED HEATING
+snapshot 4 reps 2
+%freqs 80 80 75 80 79.74 c_3p1 c_3p1+.13 c_3p1+.4
+%amps  0 100 100 100 0 6 20 5
+freqs 80 80 75 80 81 c_3p1-0.25 c_3p1+f_ax_lat c_3p1+.075
+amps  0 100 100 100 0 4 20 16
+
+% Swept freq sb cooling
+%snapshot 5 reps 2
+%freqs 80 80 75 80 79.74 c_3p1+f_rad c_3p1+f_ax_lat-.02 c_3p1+f_rad2
+%amps  0 100 100 100 0 10 7 9
+
+%snapshot 6 reps 3000
+%freqs 80 80 75 80 79.74 c_3p1+f_rad c_3p1+f_ax_lat+.02 c_3p1+f_rad2
+%amps  0 100 100 100 0 10 7 9
+
+
+%Parametric heating
+snapshot 5 reps 2
+freqs 80+.12 80 75 80 spec3p1 spec3p1 spec3p1 spec3p1
+amps 8 100 100 100 0 8 4 5
+
+snapshot 6 reps 5000
+freqs 80+.05 80 75 80 spec3p1 spec3p1 spec3p1 spec3p1
+amps  10 100 100 100 0 8 4 5
+
+end

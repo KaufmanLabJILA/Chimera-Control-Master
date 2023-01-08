@@ -14,6 +14,13 @@
 #include "MainWindow.h"
 #include "CameraWindow.h"
 #include "AuxiliaryWindow.h"
+#include "constants.h"
+#include <fstream>
+#include <cstdio>
+#include <experimental/filesystem>
+#include <windows.h>
+#include <string>
+namespace fs = std::experimental::filesystem;
 
 // Functions called by all windows to do the same thing, mostly things that happen on menu presses.
 namespace commonFunctions
@@ -33,16 +40,16 @@ namespace commonFunctions
 				camWin->redrawPictures(false);
 				try
 				{
-					prepareCamera( mainWin, camWin, input );
-					prepareMasterThread( msgID, scriptWin, mainWin, camWin, auxWin, input, false, true, true );
-					camWin->preparePlotter(input);
-					camWin->prepareAtomCruncher(input);
+					//prepareCamera( mainWin, camWin, input );
+					prepareMasterThread( msgID, scriptWin, mainWin, camWin, auxWin, input, false, true, true, false );
+					//camWin->preparePlotter(input);
+					//camWin->prepareAtomCruncher(input);
 
-					logParameters( input, camWin, true );
+					//logParameters( input, camWin, true );
 
-					camWin->startAtomCruncher(input);
-					camWin->startPlotterThread(input);
-					camWin->startCamera();
+					//camWin->startAtomCruncher(input);
+					//camWin->startPlotterThread(input);
+					//camWin->startCamera();
 					startMaster( mainWin, input );
 				}
 				catch (Error& err)
@@ -60,6 +67,21 @@ namespace commonFunctions
 					camWin->assertOff();
 					break;
 				}
+				break;
+			}
+			case ID_RUNMENU_RUNSEQUENCE:
+			case ID_ACCELERATOR_F6:
+			{
+				mainWin->sequenceIsRunning = true;
+				CWinThread* multiExperimentThread;
+				MultiExperimentInput* input = new MultiExperimentInput;
+				input->auxWin = auxWin;
+				input->camWin = camWin;
+				input->mainWin = mainWin;
+				input->scriptWin = scriptWin;
+				input->parent = parent;
+				input->msgID = msgID;
+				multiExperimentThread = AfxBeginThread(multipleExperimentThreadProcedure, input, THREAD_PRIORITY_HIGHEST);
 				break;
 			}
 			case WM_CLOSE:
@@ -116,6 +138,8 @@ namespace commonFunctions
 				}
 				//
 				mainWin->waitForRearranger( );
+
+				mainWin -> sequenceIsRunning = false;
 
 				//try
 				//{
@@ -223,7 +247,7 @@ namespace commonFunctions
 				try
 				{
 					commonFunctions::prepareMasterThread(ID_RUNMENU_RUNMASTER, scriptWin, mainWin, camWin, auxWin,
-						input, false, true, false);
+						input, false, true, false, false);
 					//
 					//commonFunctions::logParameters(input, camWin, false);
 					//
@@ -246,7 +270,7 @@ namespace commonFunctions
 				try
 				{
 					commonFunctions::prepareMasterThread(ID_RUNMENU_RUNMASTER, scriptWin, mainWin, camWin, auxWin,
-						input, true, true, true);
+						input, true, true, true, false);
 					commonFunctions::startMaster(mainWin, input);
 				}
 				catch (Error& err)
@@ -277,7 +301,7 @@ namespace commonFunctions
 				try
 				{
 					commonFunctions::prepareMasterThread( ID_RUNMENU_RUNMASTER, scriptWin, mainWin, camWin, auxWin, 
-														  input, false, true, true );
+														  input, false, true, true, false );
 					commonFunctions::startMaster( mainWin, input );
 				}
 				catch (Error& err)
@@ -610,7 +634,7 @@ namespace commonFunctions
 			}
 			case ID_SEQUENCE_SAVE_SEQUENCE:
 			{
-				mainWin->profile.saveSequence();
+				mainWin->profile.saveSequence(mainWin);
 				break;
 			}
 			case ID_SEQUENCE_NEW_SEQUENCE:
@@ -626,6 +650,21 @@ namespace commonFunctions
 			case ID_SEQUENCE_DELETE_SEQUENCE:
 			{
 				mainWin->profile.deleteSequence();
+				break;
+			}
+			case ID_SEQUENCE_SAVE_SEQUENCEAS:
+			{
+				mainWin->profile.saveSequenceAs(mainWin);
+				break;
+			}
+			case ID_SEQUENCE_OPEN_SEQUENCE:
+			{
+				mainWin->profile.openSequenceFile(parent,mainWin);
+				break;
+			}
+			case ID_SEQUENCE_REMOVE_CONFIGS:
+			{
+				mainWin->profile.removeConfigFromSequence();
 				break;
 			}
 			case ID_HELP_GENERALINFORMATION:
@@ -879,9 +918,172 @@ namespace commonFunctions
 	}
 
 
+	// Sequentially runs configurations in a sequence. At each iteration, the mainWindow opens the given configuration
+	// of the sequence and a new thread is started to execute. The multiExperimentThread will wait for this thread to
+	// terminate before loading and starting the next configuration
+	UINT __cdecl multipleExperimentThreadProcedure(void* voidInput) {
+
+		MultiExperimentInput* multiExpInput = (MultiExperimentInput*)voidInput;
+		ExperimentInput input;
+		profileSettings profileSeq = multiExpInput->mainWin->getProfileSettings();
+		std::vector<std::string> configSequence = profileSeq.sequenceConfigNames;
+		std::vector<std::string> pathSequence = profileSeq.sequenceConfigPaths;
+		std::vector<bool> axPhaseFlags = profileSeq.axLatPhaseFlags;
+		bool abortSequence = false;
+		
+		//Set default behavior of rearrangement and auto-align for non-calibration runs
+		bool defaultAutoAlign = multiExpInput->mainWin->checkAutoAlignState();
+		bool defaultGmoog = multiExpInput->mainWin->checkGmoogState();
+		std::string defaultAutoAlignStr, defaultGmoogStr;
+		if (defaultAutoAlign)
+		{
+			defaultAutoAlignStr = "ON";
+		}
+		else
+		{
+			defaultAutoAlignStr = "OFF";
+		}
+		if (defaultGmoog)
+		{
+			defaultGmoogStr = "ON";
+		}
+		else
+		{
+			defaultGmoogStr = "OFF";
+		}
+
+		// Confirm sequence running with user once at the start
+		UINT_PTR areYouSure = 0;
+		if (!areYouSure)
+		{
+			areYouSure = DialogBoxParam(NULL, MAKEINTRESOURCE(IDD_BEGINNING_SETTINGS), 0,
+				beginningSettingsDialogProc, (LPARAM)cstr("\r\n\r\nBegin Sequence Execution?\n\r\n\rDefault Auto-align State: " + defaultAutoAlignStr +	
+					"\n\rDefault Rearranger State: " + defaultGmoogStr));
+		}
+		
+		if (areYouSure == 0) // Run sequence if user responds ok
+		{
+			multiExpInput->mainWin->sequenceIsRunning = true;
+			for (UINT configInc = 0; configInc < configSequence.size(); configInc++)
+			{
+				// Update the configuration
+				std::string configPath = pathSequence[configInc] + configSequence[configInc];
+				multiExpInput->mainWin->changeConfig(configPath);
+
+				// if experiment aborted, then abort sequence
+				if (!multiExpInput->mainWin->sequenceIsRunning)
+				{
+					multiExpInput->mainWin->getComm()->sendStatus("EXITED SEQUENCE!\r\n");
+					break;
+				}
+
+				if (axPhaseFlags[configInc])
+				{
+					// turn auto-align and rearrangement off for axial phase calibration
+					if (multiExpInput->mainWin->checkAutoAlignState())
+					{
+						multiExpInput->mainWin->passAutoAlignIsOnPress();
+					}
+					if (multiExpInput->mainWin->checkGmoogState())
+					{
+						multiExpInput->mainWin->passGmoogIsOnPress();
+					}
+
+				}
+				multiExpInput->camWin->redrawPictures(false);
+				
+				try // execute the experiment
+				{
+					//prepareCamera(multiExpInput->mainWin, multiExpInput->camWin, input);
+					prepareMasterThread(multiExpInput->msgID, multiExpInput->scriptWin, multiExpInput->mainWin, multiExpInput->camWin, multiExpInput->auxWin, input, false, true, true, true);
+					//multiExpInput->camWin->preparePlotter(input);
+					//multiExpInput->camWin->prepareAtomCruncher(input);
+
+					//logParameters(input, multiExpInput->camWin, true);
+
+					//multiExpInput->camWin->startAtomCruncher(input);
+					//multiExpInput->camWin->startPlotterThread(input);
+					//multiExpInput->camWin->startCamera();
+					startMaster(multiExpInput->mainWin, input, true); // true argument sets wait for experimentThread to finish
+					if (multiExpInput->mainWin->sequenceIsRunning)
+					{
+						multiExpInput->mainWin->getComm()->sendStatus("Completed running sequence configuration " + str(configInc + 1) + ":\r\n" + configSequence[configInc] + "\r\n\r\n");
+					}
+				}
+				catch (Error& err)
+				{
+					if (err.whatBare() == "CANCEL")
+					{
+						multiExpInput->mainWin->getComm()->sendStatus("Canceled camera initialization.\r\n");
+						multiExpInput->mainWin->getComm()->sendColorBox(Niawg, 'B');
+						break;
+					}
+					multiExpInput->mainWin->getComm()->sendError("EXITED WITH ERROR! " + err.whatStr());
+					multiExpInput->mainWin->getComm()->sendColorBox(Camera, 'R');
+					multiExpInput->mainWin->getComm()->sendStatus("EXITED WITH ERROR!\r\nInitialized Default Waveform\r\n");
+					multiExpInput->mainWin->getComm()->sendTimer("ERROR!");
+					multiExpInput->camWin->assertOff();
+					abortSequence = true;
+					break;
+				}
+
+				// turn auto-align and rearrangement to default state
+				if (multiExpInput->mainWin->checkAutoAlignState() != defaultAutoAlign)
+				{
+					multiExpInput->mainWin->passAutoAlignIsOnPress();
+				}
+				if (multiExpInput->mainWin->checkGmoogState() !=  defaultGmoog)
+				{
+					multiExpInput->mainWin->passGmoogIsOnPress();
+				}
+
+				// if experiment aborted, then abort sequence
+				if (!multiExpInput->mainWin->sequenceIsRunning)
+				{
+					multiExpInput->mainWin->getComm()->sendStatus("EXITED SEQUENCE!\r\n");
+					break;
+				}
+
+				// handling for certain configurations
+				if (axPhaseFlags[configInc])
+				{	
+					std::string runType = "axial_phase";
+					int pyStarted = sendPythonInitializationFile(runType);
+					if (pyStarted == 0)
+					{
+						multiExpInput->mainWin->getComm()->sendStatus("Python start file created. Waiting for response...\r\n");
+						bool foundPythonUpdate = watchPythonUpdate(multiExpInput->mainWin);
+						if (foundPythonUpdate) 
+						{
+							updateGlobalVars(multiExpInput->mainWin,multiExpInput->auxWin);
+						}
+					}
+					else
+					{
+						multiExpInput->mainWin->getComm()->sendStatus("FAILED to create Python start file.\r\n");
+					}
+				}
+
+				// if experiment aborted, then abort sequence
+				if (!multiExpInput->mainWin->sequenceIsRunning)
+				{
+					multiExpInput->mainWin->getComm()->sendStatus("EXITED SEQUENCE!\r\n");
+					break;
+				}
+			}
+		}
+		else
+		{
+			multiExpInput->mainWin->getComm()->sendStatus("Sequence Canceled!");
+		}
+		multiExpInput->mainWin->sequenceIsRunning = false;
+		return 0;
+	}
+
+
 	void prepareMasterThread( int msgID, ScriptingWindow* scriptWin, MainWindow* mainWin, CameraWindow* camWin, 
 		AuxiliaryWindow* auxWin, ExperimentInput& input,
-		bool single, bool runAWG, bool runTtls )
+		bool single, bool runAWG, bool runTtls, bool isSequence)
 	{
 		Communicator* comm = mainWin->getComm();
 		profileSettings profile = mainWin->getProfileSettings();
@@ -986,7 +1188,7 @@ namespace commonFunctions
 		std::string beginQuestion = "\r\n\r\nBegin Waveform Generation with these Settings?";
 
 		INT_PTR areYouSure = 0;
-		if (!single)
+		if (!single && !isSequence)
 		{
 			areYouSure = DialogBoxParam(NULL, MAKEINTRESOURCE(IDD_BEGINNING_SETTINGS), 0,
 				beginningSettingsDialogProc, (LPARAM)cstr(beginInfo + beginQuestion));
@@ -1035,12 +1237,12 @@ namespace commonFunctions
 		}
 	}
 
-	void startMaster(MainWindow* mainWin, ExperimentInput& input)
+	void startMaster(MainWindow* mainWin, ExperimentInput& input, bool waitTillFinished)
 	{
 		mainWin->addTimebar( "main" );
 		mainWin->addTimebar( "error" );
 		mainWin->addTimebar( "debug" );
-		mainWin->startMaster( input.masterInput, false );
+		mainWin->startMaster( input.masterInput, false , waitTillFinished);
 	}
 
 	void abortCamera( CameraWindow* camWin, MainWindow* mainWin )
@@ -1177,4 +1379,190 @@ namespace commonFunctions
 	{
 
 	}
+
+	int sendPythonInitializationFile(std::string runType)
+	{
+		std::string tmpFile = PYTHON_ANALYSIS_START_FILE_LOCATION + ".tmp";
+		//std::string finalFile = "C:\\Users\\alecj\\Kaufman_Lab\\dummy_data\\pyStart.txt";
+		int pyStarted = 1;
+		std::fstream pyStartFile(tmpFile, std::fstream::out);
+		if (pyStartFile.is_open())
+		{
+			pyStartFile << runType + "\r\n";
+			pyStartFile.close();
+			fs::rename(tmpFile, PYTHON_ANALYSIS_START_FILE_LOCATION);
+			pyStarted = 0;
+		}
+		return pyStarted;
+	}
+
+	bool watchPythonUpdate2(MainWindow* mainWin)
+	{
+		DWORD dwWaitStatus;
+		HANDLE dwChangeHandles[1];
+
+		dwChangeHandles[0] = FindFirstChangeNotification(PYTHON_ANALYSIS_LOCATION.c_str(),FALSE,FILE_NOTIFY_CHANGE_LAST_WRITE);
+
+		if ((dwChangeHandles[0] == INVALID_HANDLE_VALUE)|| (dwChangeHandles[0] == INVALID_HANDLE_VALUE))
+		{
+			mainWin->getComm()->sendStatus("\r\nERROR watching for Python analysis update.\r\n");
+			FindCloseChangeNotification(dwChangeHandles);
+			//ExitProcess(GetLastError());
+			return false;
+		}
+		else
+		{
+			while (TRUE)
+			{
+				dwWaitStatus = WaitForMultipleObjects(1,dwChangeHandles,FALSE,300000);
+				FindCloseChangeNotification(dwChangeHandles);
+
+				switch (dwWaitStatus)
+				{
+					case WAIT_OBJECT_0:
+					{
+						Sleep(100);
+						mainWin->getComm()->sendStatus("\r\nFound update from Python.\r\n");
+						return true;
+					}
+					case WAIT_TIMEOUT:
+					{
+						mainWin->getComm()->sendStatus("\r\nTIMEOUT. No Python analysis found after 5 minutes.\r\n");
+						return false;
+					}
+				}
+			}
+		}
+	}
+
+	bool watchPythonUpdate(MainWindow* mainWin)
+	{
+		HANDLE file = CreateFile( PYTHON_ANALYSIS_LOCATION.c_str(), 
+			FILE_LIST_DIRECTORY, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, 
+			NULL, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED, NULL);
+
+		OVERLAPPED ovl { 0 };
+		ovl.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+		//uint8_t change_buf[1024];
+		//char change_buf[16384];
+		std::vector<BYTE> buffer(1024 * 64);
+
+		bool pyAnalysisFound = false;
+		while (!pyAnalysisFound)
+		{
+			bool watchDir = ReadDirectoryChangesW(file, &buffer[0], buffer.size(), TRUE,
+				FILE_NOTIFY_CHANGE_FILE_NAME, NULL, &ovl, NULL);
+
+			DWORD result = WaitForSingleObject(ovl.hEvent, 15000);
+
+			if (result == WAIT_OBJECT_0)
+			{
+				DWORD bytes_transferred;
+				GetOverlappedResult(file, &ovl, &bytes_transferred, TRUE);
+
+				FILE_NOTIFY_INFORMATION *fni = reinterpret_cast<FILE_NOTIFY_INFORMATION*>(&buffer[0]);
+				while (true)
+				{
+					switch (fni->Action)
+					{
+					case FILE_ACTION_ADDED:
+					{
+						//mainWin->getComm()->sendStatus("\r\nFile add change detected!\r\n");
+					}
+					break;
+
+					case FILE_ACTION_REMOVED:
+					{
+						//mainWin->getComm()->sendStatus("\r\nFile remove change detected!\r\n");
+					}
+					break;
+
+					case FILE_ACTION_MODIFIED:
+					{
+						//mainWin->getComm()->sendStatus("\r\nFile modify change detected!\r\n");
+					}
+					break;
+
+					case FILE_ACTION_RENAMED_OLD_NAME:
+					{
+						//mainWin->getComm()->sendStatus("\r\nRename old detected!\r\n");
+					}
+					break;
+
+					case FILE_ACTION_RENAMED_NEW_NAME:
+					{
+						//mainWin->getComm()->sendStatus("\r\nRename new detected!\r\n");
+						CString fileName(fni->FileName);
+						if (fileName == "pyFinish.txt")
+						{
+							pyAnalysisFound = true;
+							mainWin->getComm()->sendStatus("Python update detected!\r\n");
+							Sleep(100);
+						}
+					}
+					break;
+
+					default:
+					{
+						//mainWin->getComm()->sendStatus("Unknown action detected!");
+					}
+					break;
+					}
+
+					if (fni->NextEntryOffset == 0)
+					{
+						break;
+					}
+					fni = reinterpret_cast<FILE_NOTIFY_INFORMATION*>(reinterpret_cast<BYTE*>(fni) + fni->NextEntryOffset);
+
+					//if (event->NextEntryOffset) {
+					//	*((uint8_t**)&event) += event->NextEntryOffset;
+					//}
+					//else
+					//{
+					//	break;
+					//}
+
+				}
+
+			}
+			else if (result == WAIT_TIMEOUT)
+			{
+				mainWin->getComm()->sendStatus("Did not find Python analysis.\r\n");
+				break;
+			}
+		}
+		return pyAnalysisFound;
+	}
+
+	void updateGlobalVars(MainWindow* mainWin, AuxiliaryWindow* auxWin)
+	{
+		std::fstream pyFinishFile(PYTHON_ANALYSIS_FINISH_FILE_LOCATION);
+		if (pyFinishFile.is_open())
+		{
+			std::string variableToChange;
+			std::string changeValueStr;
+			std::getline(pyFinishFile, variableToChange);
+			std::getline(pyFinishFile, changeValueStr);
+			double changeValue = ::atof(changeValueStr.c_str());
+			try
+			{
+				if (auxWin->globalVariables.checkVariableExists(variableToChange))
+				{
+					double currentValue = auxWin->globalVariables.getGlobalVariableValue(variableToChange);
+					auxWin->globalVariables.changeVariableValue(variableToChange, changeValue);
+					mainWin->getComm()->sendStatus("Updated " + variableToChange + " from " + std::to_string(currentValue) + " to " + changeValueStr +".\r\n");
+				}
+				else
+				{
+					throw (variableToChange);
+				}
+			}
+			catch (std::string variableToChange)
+			{
+				mainWin->getComm()->sendStatus("Did not find " + variableToChange + " as a global variable.\r\n");
+			}
+		}
+	}
+
 };

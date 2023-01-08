@@ -1,0 +1,10 @@
+% DACs 2, 3 currently disabled.
+% set DAC, channel, amp, freq, phase
+
+set DAC0 0 95.0 162.5 60.0
+set DAC0 1 95.0 177.5 240.0
+set DAC0 2 95.0 192.5 180.0
+
+set DAC1 0 95.0 162.5 60.0
+set DAC1 1 95.0 177.5 240.0
+set DAC1 2 95.0 192.5 180.0
