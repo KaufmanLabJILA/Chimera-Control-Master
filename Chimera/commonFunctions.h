@@ -11,14 +11,14 @@ namespace commonFunctions
 	void handleCommonMessage( int msgID, CWnd* parent, MainWindow* comm, ScriptingWindow* scriptWin, 
 							 CameraWindow* camWin, AuxiliaryWindow* auxWin );
 	/// Run Menu
-	void prepareCamera( MainWindow* mainWin, CameraWindow* camWin, ExperimentInput& input );
+	void prepareCamera( MainWindow* mainWin, CameraWindow* camWin, ExperimentInput& input, bool isSequence );
 	void prepareMasterThread( int msgID, ScriptingWindow* scriptWin, MainWindow* mainWin, CameraWindow* camWin,
 							  AuxiliaryWindow* auxWin, ExperimentInput& input, bool single, bool runAWG, bool runTtls, bool isSequence);
 	void abortRearrangement( MainWindow* mainWin, CameraWindow* camWin );
 	void startMaster(MainWindow* mainWin, ExperimentInput& input, bool waitTillFinished = false);
 	UINT __cdecl multipleExperimentThreadProcedure(void* voidInput);
 
-	void logParameters( ExperimentInput& input, CameraWindow* camWin, bool takeAndorPictures );
+	std::string logParameters( ExperimentInput& input, CameraWindow* camWin, bool takeAndorPictures );
 	//void startFullMasterThread( MainWindow* mainWin, AuxiliaryWindow* auxWin, ScriptingWindow* scriptWin, 
 	//							ExperimentInput& input, CameraWindow* camWin );
 	void setMot(MainWindow* mainWin);
@@ -29,7 +29,7 @@ namespace commonFunctions
 	/// Scripting Menu
 	int saveProfile( ScriptingWindow* scriptWindow, MainWindow* mainWin );
 	//void reloadNIAWGDefaults( MainWindow* mainWin );
-	int sendPythonInitializationFile(std::string runType);
+	int sendPythonInitializationFile(std::string runType, std::string dateStr);
 	bool watchPythonUpdate2(MainWindow* mainWin);
 	bool watchPythonUpdate(MainWindow* mainWin);
 	void updateGlobalVars(MainWindow* mainWin, AuxiliaryWindow* auxWin);

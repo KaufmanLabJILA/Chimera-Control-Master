@@ -20,6 +20,7 @@
 #include <experimental/filesystem>
 #include <windows.h>
 #include <string>
+using namespace boost::posix_time;
 namespace fs = std::experimental::filesystem;
 
 // Functions called by all windows to do the same thing, mostly things that happen on menu presses.
@@ -40,16 +41,16 @@ namespace commonFunctions
 				camWin->redrawPictures(false);
 				try
 				{
-					//prepareCamera( mainWin, camWin, input );
+					prepareCamera( mainWin, camWin, input, false );
 					prepareMasterThread( msgID, scriptWin, mainWin, camWin, auxWin, input, false, true, true, false );
-					//camWin->preparePlotter(input);
-					//camWin->prepareAtomCruncher(input);
+					camWin->preparePlotter(input);
+					camWin->prepareAtomCruncher(input);
 
-					//logParameters( input, camWin, true );
+					logParameters( input, camWin, true );
 
-					//camWin->startAtomCruncher(input);
-					//camWin->startPlotterThread(input);
-					//camWin->startCamera();
+					camWin->startAtomCruncher(input);
+					camWin->startPlotterThread(input);
+					camWin->startCamera();
 					startMaster( mainWin, input );
 				}
 				catch (Error& err)
@@ -174,7 +175,7 @@ namespace commonFunctions
 				mainWin->getComm()->sendStatus("Starting Camera...\r\n");
 				try
 				{
-					commonFunctions::prepareCamera( mainWin, camWin, input );
+					commonFunctions::prepareCamera( mainWin, camWin, input, false );
 					camWin->preparePlotter( input );
 					camWin->prepareAtomCruncher( input );
 					//
@@ -902,17 +903,20 @@ namespace commonFunctions
 	}
 
 
-	void prepareCamera( MainWindow* mainWin, CameraWindow* camWin, ExperimentInput& input )
+	void prepareCamera( MainWindow* mainWin, CameraWindow* camWin, ExperimentInput& input, bool isSequence )
 	{
 		camWin->redrawPictures( false );
 		mainWin->getComm()->sendTimer( "Starting..." );
 		camWin->prepareCamera( input );
 		std::string msg = camWin->getStartMessage();
-		int answer = promptBox( msg, MB_OKCANCEL );
-		if (answer == IDCANCEL)
+		if (!isSequence)
 		{
-			// user doesn't want to start the camera.
-			thrower( "CANCEL" );
+			int answer = promptBox(msg, MB_OKCANCEL);
+			if (answer == IDCANCEL)
+			{
+				// user doesn't want to start the camera.
+				thrower("CANCEL");
+			}
 		}
 		input.includesCameraRun = true;
 	}
@@ -934,23 +938,25 @@ namespace commonFunctions
 		//Set default behavior of rearrangement and auto-align for non-calibration runs
 		bool defaultAutoAlign = multiExpInput->mainWin->checkAutoAlignState();
 		bool defaultGmoog = multiExpInput->mainWin->checkGmoogState();
-		std::string defaultAutoAlignStr, defaultGmoogStr;
+		bool defaultPainter = multiExpInput->mainWin->checkPainterState();
+		bool defaultExportArray = multiExpInput->mainWin->checkExportArrayState();
+		std::string defaultAutoAlignStr, defaultGmoogStr, defaultPainterStr, defaultExportArrayStr;
 		if (defaultAutoAlign)
-		{
-			defaultAutoAlignStr = "ON";
-		}
+		{defaultAutoAlignStr = "ON";}
 		else
-		{
-			defaultAutoAlignStr = "OFF";
-		}
+		{defaultAutoAlignStr = "OFF";}
 		if (defaultGmoog)
-		{
-			defaultGmoogStr = "ON";
-		}
+		{defaultGmoogStr = "ON";}
 		else
-		{
-			defaultGmoogStr = "OFF";
-		}
+		{defaultGmoogStr = "OFF";}
+		if (defaultPainter)
+		{defaultPainterStr = "ON";}
+		else
+		{defaultPainterStr = "OFF";}
+		if (defaultExportArray)
+		{defaultExportArrayStr = "ON";}
+		else
+		{defaultExportArrayStr = "OFF";}
 
 		// Confirm sequence running with user once at the start
 		UINT_PTR areYouSure = 0;
@@ -967,6 +973,7 @@ namespace commonFunctions
 			for (UINT configInc = 0; configInc < configSequence.size(); configInc++)
 			{
 				// Update the configuration
+				std::string dateStr;
 				std::string configPath = pathSequence[configInc] + configSequence[configInc];
 				multiExpInput->mainWin->changeConfig(configPath);
 
@@ -979,7 +986,7 @@ namespace commonFunctions
 
 				if (axPhaseFlags[configInc])
 				{
-					// turn auto-align and rearrangement off for axial phase calibration
+					// turn gigamoog totally off for axial phase
 					if (multiExpInput->mainWin->checkAutoAlignState())
 					{
 						multiExpInput->mainWin->passAutoAlignIsOnPress();
@@ -988,22 +995,31 @@ namespace commonFunctions
 					{
 						multiExpInput->mainWin->passGmoogIsOnPress();
 					}
+					if (multiExpInput->mainWin->checkPainterState())
+					{
+						multiExpInput->mainWin->passPainterIsOnPress();
+					}
+					if (multiExpInput->mainWin->checkExportArrayState())
+					{
+						multiExpInput->mainWin->passExportArrayIsOnPress();
+					}
 
 				}
+
 				multiExpInput->camWin->redrawPictures(false);
 				
 				try // execute the experiment
 				{
-					//prepareCamera(multiExpInput->mainWin, multiExpInput->camWin, input);
+					prepareCamera(multiExpInput->mainWin, multiExpInput->camWin, input, true);
 					prepareMasterThread(multiExpInput->msgID, multiExpInput->scriptWin, multiExpInput->mainWin, multiExpInput->camWin, multiExpInput->auxWin, input, false, true, true, true);
-					//multiExpInput->camWin->preparePlotter(input);
-					//multiExpInput->camWin->prepareAtomCruncher(input);
+					multiExpInput->camWin->preparePlotter(input);
+					multiExpInput->camWin->prepareAtomCruncher(input);
 
-					//logParameters(input, multiExpInput->camWin, true);
+					dateStr = logParameters(input, multiExpInput->camWin, true);
 
-					//multiExpInput->camWin->startAtomCruncher(input);
-					//multiExpInput->camWin->startPlotterThread(input);
-					//multiExpInput->camWin->startCamera();
+					multiExpInput->camWin->startAtomCruncher(input);
+					multiExpInput->camWin->startPlotterThread(input);
+					multiExpInput->camWin->startCamera();
 					startMaster(multiExpInput->mainWin, input, true); // true argument sets wait for experimentThread to finish
 					if (multiExpInput->mainWin->sequenceIsRunning)
 					{
@@ -1027,7 +1043,7 @@ namespace commonFunctions
 					break;
 				}
 
-				// turn auto-align and rearrangement to default state
+				// turn gigamoog to default state
 				if (multiExpInput->mainWin->checkAutoAlignState() != defaultAutoAlign)
 				{
 					multiExpInput->mainWin->passAutoAlignIsOnPress();
@@ -1035,6 +1051,14 @@ namespace commonFunctions
 				if (multiExpInput->mainWin->checkGmoogState() !=  defaultGmoog)
 				{
 					multiExpInput->mainWin->passGmoogIsOnPress();
+				}
+				if (multiExpInput->mainWin->checkPainterState() != defaultPainter)
+				{
+					multiExpInput->mainWin->passPainterIsOnPress();
+				}
+				if (multiExpInput->mainWin->checkExportArrayState() != defaultExportArray)
+				{
+					multiExpInput->mainWin->passExportArrayIsOnPress();
 				}
 
 				// if experiment aborted, then abort sequence
@@ -1048,7 +1072,7 @@ namespace commonFunctions
 				if (axPhaseFlags[configInc])
 				{	
 					std::string runType = "axial_phase";
-					int pyStarted = sendPythonInitializationFile(runType);
+					int pyStarted = sendPythonInitializationFile(runType, dateStr);
 					if (pyStarted == 0)
 					{
 						multiExpInput->mainWin->getComm()->sendStatus("Python start file created. Waiting for response...\r\n");
@@ -1361,10 +1385,10 @@ namespace commonFunctions
 		
 	}
 
-	void logParameters( ExperimentInput& input, CameraWindow* camWin, bool takeAndorPictures )
+	std::string logParameters( ExperimentInput& input, CameraWindow* camWin, bool takeAndorPictures )
 	{
 		DataLogger* logger = camWin->getLogger();
-		logger->initializeDataFiles();
+		std::string dateStr = logger->initializeDataFiles();
 
 		logger->logAndorSettings( input.camSettings, takeAndorPictures, input.cruncherInput->nMask);
 		logger->logMasterParameters( input.masterInput );
@@ -1373,6 +1397,8 @@ namespace commonFunctions
 		logger->logAWGParameters(input.masterInput);
 		logger->logMiscellaneous();
 		//logger->closeFile(); //TODO: May have to remove this once andor is integrated.
+
+		return dateStr;
 	}
 
 	void abortRearrangement( MainWindow* mainWin, CameraWindow* camWin )
@@ -1380,7 +1406,7 @@ namespace commonFunctions
 
 	}
 
-	int sendPythonInitializationFile(std::string runType)
+	int sendPythonInitializationFile(std::string runType, std::string dateStr)
 	{
 		std::string tmpFile = PYTHON_ANALYSIS_START_FILE_LOCATION + ".tmp";
 		//std::string finalFile = "C:\\Users\\alecj\\Kaufman_Lab\\dummy_data\\pyStart.txt";
@@ -1389,6 +1415,7 @@ namespace commonFunctions
 		if (pyStartFile.is_open())
 		{
 			pyStartFile << runType + "\r\n";
+			pyStartFile << dateStr + "\r\n";
 			pyStartFile.close();
 			fs::rename(tmpFile, PYTHON_ANALYSIS_START_FILE_LOCATION);
 			pyStarted = 0;

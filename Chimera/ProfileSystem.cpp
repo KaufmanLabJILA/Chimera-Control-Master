@@ -35,6 +35,13 @@ void ProfileSystem::initialize( POINT& pos, CWnd* parent, int& id, cToolTips& to
 	selectConfigButton.sPos = { pos.x + 480, pos.y, pos.x + 960, pos.y + 25 };
 	selectConfigButton.Create( "Open Configuration", NORM_PUSH_OPTIONS, selectConfigButton.sPos, parent, 
 							   IDC_SELECT_CONFIG_COMBO );
+	selectSeqButton.sPos = { pos.x, pos.y, pos.x + 480, pos.y + 25 };
+	selectSeqButton.Create("Open Sequence", NORM_PUSH_OPTIONS, selectSeqButton.sPos, parent, IDC_SELECT_SEQ_COMBO);
+	addConfigsToSeqButton.sPos = { pos.x, pos.y + 25, pos.x + 480, pos.y + 50 };
+	addConfigsToSeqButton.Create("Add Configurations to Sequence", NORM_PUSH_OPTIONS, addConfigsToSeqButton.sPos, parent,
+		IDC_ADD_CONFIGSTOSEQ_COMBO);
+	pos.y += 50;
+
 	/// SEQUENCE
 	sequenceLabel.sPos = { pos.x, pos.y, pos.x + 380, pos.y + 25 };
 	sequenceLabel.Create( "SEQUENCE", NORM_STATIC_OPTIONS, sequenceLabel.sPos, parent, id++ );
@@ -50,11 +57,11 @@ void ProfileSystem::initialize( POINT& pos, CWnd* parent, int& id, cToolTips& to
 	sequenceCombo.AddString( "NULL SEQUENCE" );
 	sequenceCombo.SetCurSel( 0 );
 	sequenceCombo.SetItemHeight( 0, 50 );
-	selectSeqButton.sPos = { pos.x + 960, pos.y + 750, pos.x + 1920, pos.y + 800 };
-	selectSeqButton.Create("Open Sequence", NORM_PUSH_OPTIONS, selectSeqButton.sPos, parent, IDC_SELECT_SEQ_COMBO);
-	addConfigsToSeqButton.sPos = { pos.x + 960, pos.y + 810, pos.x + 1920, pos.y + 860 };
-	addConfigsToSeqButton.Create("Add Configurations to Sequence", NORM_PUSH_OPTIONS, addConfigsToSeqButton.sPos, parent,
-		IDC_ADD_CONFIGSTOSEQ_COMBO);
+	//selectSeqButton.sPos = { pos.x, pos.y + 600, pos.x + 380, pos.y + 625 };
+	//selectSeqButton.Create("Open Sequence", NORM_PUSH_OPTIONS, selectSeqButton.sPos, parent, IDC_SELECT_SEQ_COMBO);
+	//addConfigsToSeqButton.sPos = { pos.x, pos.y + 630, pos.x + 380, pos.y + 655 };
+	//addConfigsToSeqButton.Create("Add Configurations to Sequence", NORM_PUSH_OPTIONS, addConfigsToSeqButton.sPos, parent,
+	//	IDC_ADD_CONFIGSTOSEQ_COMBO);
 	
 	pos.y += 25;
 
@@ -540,7 +547,7 @@ void ProfileSystem::addToSequence(CWnd* parent)
 	// prompt for position in the sequence
 	std::string index;
 	int ind;
-	TextPromptDialog dialog(&index, "Please enter position in the sequence to add the configuration. Enter -1 to add to the end.");
+	TextPromptDialog dialog(&index, "Please enter position in the sequence to add the configuration. \r\nEnter -1 to add to the end.");
 	dialog.DoModal();
 
 	if (index == "")
@@ -647,7 +654,7 @@ void ProfileSystem::removeConfigFromSequence()
 	// prompt for position in the sequence
 	std::string listStr;
 	std::vector<int> indexList;
-	TextPromptDialog dialog(&listStr, "Please enter list of indices of configurations to be removed (e.g. 1, 3-5, 7, 9-15)");
+	TextPromptDialog dialog(&listStr, "Please enter list of indices of configurations to be removed. \r\n For example: 1, 3-5, 7, 9-15");
 	dialog.DoModal();
 
 	if (listStr == "")
@@ -664,6 +671,7 @@ void ProfileSystem::removeConfigFromSequence()
 		thrower("ERROR: Invalid value entered.");
 	}
 	std::sort(indexList.rbegin(), indexList.rend());
+	indexList.erase(std::unique(indexList.begin(), indexList.end()), indexList.end());
 	for (auto & ind : indexList)
 	{
 		removeFromSequenceVector(ind);
@@ -962,7 +970,7 @@ void ProfileSystem::openSequence(std::string sequenceName, MainWindow* mainWin)
 {
 	if (!sequenceIsSaved)
 	{
-		if (!checkSequenceSave("The current configuration is unsaved. Save current configuration before changing?", mainWin))
+		if (!checkSequenceSave("The current sequence is unsaved. Save current sequence before changing?", mainWin))
 		{
 			// TODO
 			return;
@@ -994,7 +1002,7 @@ void ProfileSystem::openSequenceFile(CWnd* parent, MainWindow* mainWin)
 {	
 	if (!sequenceIsSaved)
 	{
-		if (!checkSequenceSave("The current configuration is unsaved. Save current configuration before changing?", mainWin))
+		if (!checkSequenceSave("The current sequence is unsaved. Save current sequence before changing?", mainWin))
 		{
 			// TODO
 			return;
@@ -1190,6 +1198,8 @@ void ProfileSystem::rearrange(int width, int height, fontMap fonts)
 	configurationSavedIndicator.rearrange( width, height, fonts);
 	configDisplay.rearrange( width, height, fonts );
 	selectConfigButton.rearrange( width, height, fonts );
+	selectSeqButton.rearrange( width, height, fonts );
+	addConfigsToSeqButton.rearrange( width, height, fonts );
 }
 
 

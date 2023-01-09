@@ -36,7 +36,7 @@ void DataLogger::deleteFile(Communicator* comm)
 }
 
 
-void DataLogger::initializeDataFiles()
+std::string DataLogger::initializeDataFiles()
 {
 	// if the function fails, the h5 file will not be open. If it succeeds, this will get set to true.
 	fileIsOpen = false;
@@ -60,7 +60,9 @@ void DataLogger::initializeDataFiles()
 
 	// Create the string of the date.
 	std::string finalSaveFolder;
+	std::string dateStr;
 	finalSaveFolder = yearStr + monthStr + dayStr + "\\";
+	dateStr = yearStr + monthStr + dayStr;
 
 	// right now the save folder IS the date...
 	currentSaveFolder = finalSaveFolder;
@@ -140,6 +142,8 @@ void DataLogger::initializeDataFiles()
 	{
 		thrower( "ERROR: Failed to initialize HDF5 data file: " + err.getDetailMsg() );
 	}
+
+	return dateStr;
 }
 
 

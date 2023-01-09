@@ -10,8 +10,7 @@
 
 MainWindow::MainWindow(UINT id, CDialog* splash) : CDialog(id), profile(PROFILES_PATH), 
     masterConfig( MASTER_CONFIGURATION_FILE_ADDRESS ), 
-	appSplash( splash ), dds(DDS_FPGA_ADDRESS), gmoog(), awg(AWG_PORT, AWG_BAUD)
-	//gmoog(GIGAMOOG_IPADDRESS, GIGAMOOG_PORT)
+	appSplash( splash ), dds(DDS_FPGA_ADDRESS), gmoog(GIGAMOOG_IPADDRESS, GIGAMOOG_PORT), awg(AWG_PORT, AWG_BAUD)
 {
 	// create all the main rgbs and brushes. I want to make sure this happens before other windows are created.
 	mainRGBs["Light Green"]			= RGB( 163,	190, 140);
@@ -302,6 +301,16 @@ bool MainWindow::checkGmoogState()
 bool MainWindow::checkAutoAlignState()
 {
 	return gmoog.autoTweezerOffsetActive;
+}
+
+bool MainWindow::checkPainterState()
+{
+	return gmoog.painterActive;
+}
+
+bool MainWindow::checkExportArrayState()
+{
+	return gmoog.exportArray;
 }
 
 LRESULT MainWindow::onNoAtomsAlertMessage( WPARAM wp, LPARAM lp )

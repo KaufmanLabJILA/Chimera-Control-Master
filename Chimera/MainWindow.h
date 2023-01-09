@@ -43,6 +43,8 @@ class MainWindow : public CDialog
 		void passExportArrayIsOnPress();
 		bool checkGmoogState();
 		bool checkAutoAlignState();
+		bool checkPainterState();
+		bool checkExportArrayState();
 		MainWindow(UINT id, CDialog*);
 		BOOL OnInitDialog() override;
 		HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);

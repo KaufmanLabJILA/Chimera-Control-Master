@@ -16,7 +16,7 @@ class DataLogger
 {
 	public:
 		DataLogger(std::string systemLocation);
-		void initializeDataFiles();
+		std::string initializeDataFiles();
 		void writePic( UINT currentPictureNumber, std::vector<long> image, imageParameters dims );
 		void writeAtomArray(UINT currentPictureNumber, std::vector<UINT8> atomArray);
 		void logMasterParameters( MasterThreadInput* input);
