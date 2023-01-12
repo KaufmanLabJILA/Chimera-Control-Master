@@ -41,6 +41,7 @@ class MainWindow : public CDialog
 		void passAutoAlignIsOnPress();
 		void passPainterIsOnPress();
 		void passExportArrayIsOnPress();
+		void passExportVariableIsOnPress();
 		bool checkGmoogState();
 		bool checkAutoAlignState();
 		bool checkPainterState();
@@ -143,6 +144,7 @@ class MainWindow : public CDialog
 		StatusControl errorStatus;
 		SmsTextingControl texter;
 		StatusIndicator shortStatus;
+		bool exportVariables = false;
 		
 		//rerngControl rearrangeControl;
 		//NiawgController niawg;

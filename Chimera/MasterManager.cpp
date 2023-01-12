@@ -7,6 +7,8 @@
 #include "AuxiliaryWindow.h"
 //#include "NiawgWaiter.h"
 #include "Expression.h"
+#include <experimental/filesystem>
+namespace fs = std::experimental::filesystem;
 
 
 MasterManager::MasterManager()
@@ -211,6 +213,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 		{
 			expUpdate( "Variation #" + str( variationInc + 1 ) + "\r\n", input->comm, input->quiet );
 			Sleep( input->debugOptions.sleepTime );
+			std::string varOutput;
 			for (auto tempVariable : input->variables)
 			{
 				// if varies...
@@ -223,7 +226,31 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 					expUpdate( tempVariable.name + ": " + str( tempVariable.keyValues[variationInc], 12) + "\r\n", 
 							   input->comm, input->quiet );
 				}
+
+				if (input->exportVariables)
+				{
+					if (tempVariable.valuesVary)
+					{
+						varOutput += "VARIABLE\n";
+					}
+					else
+					{
+						varOutput += "CONSTANT\n";
+					}
+					varOutput += tempVariable.name + "\n";
+					varOutput += str(tempVariable.keyValues[variationInc], 12) + "\n";
+				}
+
 			}
+			if (input->exportVariables)
+			{
+				// export variables to text file
+				std::ofstream tmpFile(EXPORT_VARIABLE_TMP_FILE_LOCATION);
+				tmpFile << varOutput;
+				tmpFile.close();
+				fs::rename(EXPORT_VARIABLE_TMP_FILE_LOCATION, EXPORT_VARIABLE_FILE_LOCATION);
+			}
+
 			expUpdate( "Programming RSG, Agilents, NIAWG, & Teltronics...\r\n", input->comm, input->quiet );
 			//input->rsg->programRsg( variationInc );
 			//input->rsg->setInfoDisp( variationInc );

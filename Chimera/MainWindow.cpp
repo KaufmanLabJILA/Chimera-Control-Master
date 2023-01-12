@@ -306,6 +306,20 @@ void MainWindow::passExportArrayIsOnPress()
 	}
 }
 
+void MainWindow::passExportVariableIsOnPress()
+{
+	if (exportVariables)
+	{
+		exportVariables = false;
+		menu.CheckMenuItem(ID_EXPORTVARIABLES, MF_UNCHECKED);
+	}
+	else
+	{
+		exportVariables = true;
+		menu.CheckMenuItem(ID_EXPORTVARIABLES, MF_CHECKED);
+	}
+}
+
 bool MainWindow::checkGmoogState()
 {
 	return gmoog.rearrangerActive;
@@ -821,6 +835,7 @@ void MainWindow::fillMasterThreadInput(MasterThreadInput* input)
 	input->awg = &awg;
 	input->gmoog = &gmoog;
 	input->dds = &dds;
+	input->exportVariables = exportVariables;
 
 	VariableSystem::generateKey( input->variables, input->settings.randomizeVariations, input->settings.interleaveVariations );
 	// it's important to do this after the key is generated so that the constants have their values.

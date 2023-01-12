@@ -87,6 +87,8 @@
 	const std::string PYTHON_ANALYSIS_LOCATION = PROJECT_LOCATION + "\\Python Chimera Communication\\";
 	const std::string PYTHON_ANALYSIS_START_FILE_LOCATION = PYTHON_ANALYSIS_LOCATION + "pyStart.txt";
 	const std::string PYTHON_ANALYSIS_FINISH_FILE_LOCATION = PYTHON_ANALYSIS_LOCATION + "pyFinish.txt";
+	const std::string EXPORT_VARIABLE_TMP_FILE_LOCATION = PYTHON_ANALYSIS_LOCATION + "currentVariables.txt.tmp";
+	const std::string EXPORT_VARIABLE_FILE_LOCATION = PYTHON_ANALYSIS_LOCATION + "currentVariables.txt";
 
 	//Test file for moog
 	const std::string MOOG_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_MOOG_SCRIPT.moogScript";

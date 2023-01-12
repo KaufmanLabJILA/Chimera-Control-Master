@@ -62,6 +62,7 @@ struct MasterThreadInput
 	bool runNiawg;
 	bool runMaster;
 	bool runAWG;
+	bool exportVariables;
 	// only for rearrangement.
 	std::mutex* rearrangerLock;
 	std::vector<std::vector<bool>>* atomQueueForRearrangement;

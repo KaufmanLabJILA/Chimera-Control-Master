@@ -816,6 +816,11 @@ namespace commonFunctions
 				mainWin->passExportArrayIsOnPress();
 				break;
 			}
+			case ID_EXPORTVARIABLES:
+			{
+				mainWin->passExportVariableIsOnPress();
+				break;
+			}
 			case ID_RUNMENU_ABORTCAMERA:
 			{
 				try

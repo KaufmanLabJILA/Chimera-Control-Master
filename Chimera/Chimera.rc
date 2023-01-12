@@ -201,6 +201,7 @@ BEGIN
         MENUITEM "Ab&ort NIAWG",                ID_RUNMENU_ABORTNIAWG
         MENUITEM "Abort Mas&ter",               ID_RUNMENU_ABORTMASTER
         MENUITEM "&Pause\tF2",                  ID_RUNMENU_PAUSE
+		MENUITEM "Export Variables",            ID_EXPORTVARIABLES
     END
     POPUP "Profil&e"
     BEGIN
