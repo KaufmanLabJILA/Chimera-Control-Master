@@ -26,8 +26,9 @@ class VariableSystem
 		void updateVariableInfo( std::vector<Script*> scripts, MainWindow* mainWin, AuxiliaryWindow* auxWin,
 								 DioSystem* ttls, DacSystem* dacs );
 		void changeVariableValue( std::string varName, double newValue);
+		void changeVariableValue(std::string varName, double newInitValue, double newFinalValue, unsigned int newVariations);
 		bool checkVariableExists(std::string varName);
-		double getGlobalVariableValue(std::string varName);
+		double getVariableValue(std::string varName);
 		void deleteVariable();
 		void initialize( POINT& pos, cToolTips& toolTips, AuxiliaryWindow* master, int& id, std::string title,
 						 rgbMap rgbs, UINT listviewId );
@@ -50,7 +51,7 @@ class VariableSystem
 		void updateVariationNumber( );
 		void setRangeInclusivity( UINT rangeNum, bool leftBorder, bool inclusive, UINT column );
 		/// used to be in KeyHandler
-		static void generateKey( std::vector<variableType>& variables, bool randomizeVariablesOption );
+		static void generateKey( std::vector<variableType>& variables, bool randomizeVariablesOption, bool interleaveVariablesOption );
 		static std::vector<double> getKeyValues( std::vector<variableType> variables );
 		void reorderVariableDimensions( );
 

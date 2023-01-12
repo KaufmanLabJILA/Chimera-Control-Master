@@ -1073,17 +1073,48 @@ void VariableSystem::changeVariableValue(std::string varName, double newValue)
 		listViewItem.pszText = &temp[0];
 		variablesListview.SetItem(&listViewItem);
 	}
-	else
+	else if ((*it).constant)
 	{
-		if ((*it).constant)
-		{
-			(*it).ranges[0].initialValue = newValue;
-			listViewItem.iItem = idx;
-			listViewItem.iSubItem = 3;
-			std::string temp(str(currentVariables[idx].ranges[0].initialValue, 13, true));
-			listViewItem.pszText = &temp[0];
-			variablesListview.SetItem(&listViewItem);
-		}
+		(*it).ranges[0].initialValue = newValue;
+		listViewItem.iItem = idx;
+		listViewItem.iSubItem = 3;
+		std::string temp(str(currentVariables[idx].ranges[0].initialValue, 13));
+		listViewItem.pszText = &temp[0];
+		variablesListview.SetItem(&listViewItem);
+	}
+}
+
+void VariableSystem::changeVariableValue(std::string varName, double newInitValue, double newFinalValue, unsigned int newVariations)
+{
+	LVITEM listViewItem;
+	memset(&listViewItem, 0, sizeof(listViewItem));
+	listViewItem.mask = LVIF_TEXT;   // Text Style
+	listViewItem.cchTextMax = 256; // Max size of test
+
+	std::vector<variableType>::iterator it = std::find_if(currentVariables.begin(), currentVariables.end(), boost::bind(&variableType::name, _1) == varName);
+	int idx = it - currentVariables.begin();
+	
+	if ((!isGlobal) && (!((*it).constant)))
+	{
+		listViewItem.iItem = idx;
+
+		(*it).ranges[0].initialValue = newInitValue;
+		listViewItem.iSubItem = 3;
+		std::string tempInit(str(currentVariables[idx].ranges[0].initialValue, 13));
+		listViewItem.pszText = &tempInit[0];
+		variablesListview.SetItem(&listViewItem);
+
+		(*it).ranges[0].finalValue = newFinalValue;
+		listViewItem.iSubItem = 4;
+		std::string tempFinal(str(currentVariables[idx].ranges[0].finalValue, 13));
+		listViewItem.pszText = &tempFinal[0];
+		variablesListview.SetItem(&listViewItem);
+
+		(*it).ranges[0].variations = newVariations;
+		listViewItem.iSubItem = 5;
+		std::string tempVariations(str(currentVariables[idx].ranges[0].variations, 13));
+		listViewItem.pszText = &tempVariations[0];
+		variablesListview.SetItem(&listViewItem);
 	}
 }
 
@@ -1093,11 +1124,11 @@ bool VariableSystem::checkVariableExists(std::string varName)
 	return it != currentVariables.end();
 }
 
-double VariableSystem::getGlobalVariableValue(std::string varName)
+double VariableSystem::getVariableValue(std::string varName)
 {
 	std::vector<variableType>::iterator it = std::find_if(currentVariables.begin(), currentVariables.end(), boost::bind(&variableType::name, _1) == varName);
 	int idx = it - currentVariables.begin();
-	if (isGlobal)
+	if (isGlobal || (*it).constant)
 	{
 		return (*it).ranges.front().initialValue;
 	}
@@ -1576,7 +1607,7 @@ std::vector<double> VariableSystem::getKeyValues( std::vector<variableType> vari
 }
 
 
-void VariableSystem::generateKey( std::vector<variableType>& variables, bool randomizeVariablesOption )
+void VariableSystem::generateKey( std::vector<variableType>& variables, bool randomizeVariablesOption, bool interleaveVariablesOption )
 {
 	// get information from variables.
 	for ( auto& variable : variables )
@@ -1653,22 +1684,57 @@ void VariableSystem::generateKey( std::vector<variableType>& variables, bool ran
 		}
 	}
 
+	int interleaveVariations = 1;
+	for (int i = 0; i < variations.size() - 1; i++)
+	{
+		interleaveVariations *= totalVariations[i];
+	}
+
 	// create a key which will be randomized and then used to randomize other things the same way.
 	multiDimensionalKey<int> randomizerMultiKey( maxDim );
-	randomizerMultiKey.resize( totalVariations );
-
-	UINT count = 0;
-	for ( auto& keyElem : randomizerMultiKey.values )
+	randomizerMultiKey.resize(totalVariations);
+	std::vector<int> randomizerInterleaveKey(interleaveVariations);
+	
+	if (!interleaveVariablesOption)
 	{
-		keyElem = count++;
+		UINT count = 0;
+		for (auto& keyElem : randomizerMultiKey.values)
+		{
+			keyElem = count++;
+		}
 	}
+	else
+	{
+		UINT count = 0;
+		for (auto& keyElem : randomizerInterleaveKey)
+		{
+			keyElem = count++;
+		}
+	}
+
 	if ( randomizeVariablesOption )
 	{
 		// initialize rng
 		std::random_device rng;
 		std::mt19937 urng( rng( ) );
 		// and shuffle.
-		std::shuffle( randomizerMultiKey.values.begin( ), randomizerMultiKey.values.end( ), urng );
+		if (!interleaveVariablesOption)
+		{
+			std::shuffle(randomizerMultiKey.values.begin(), randomizerMultiKey.values.end(), urng);
+		}
+		else
+		{
+			std::shuffle(randomizerInterleaveKey.begin(), randomizerInterleaveKey.end(), urng);
+			for (int j = 0; j < randomizerInterleaveKey.size(); j++)
+			{
+				for (int i = 0; i < totalVariations.back(); i++)
+				{
+					int ind = totalVariations.back()*j + i;
+					randomizerMultiKey.values[ind] = totalVariations.back()*randomizerInterleaveKey[j]+i;
+				}
+			}
+
+		}
 		// we now have a random key for the shuffling which every variable will follow
 		// initialize this to one so that constants always get at least one value.
 	}

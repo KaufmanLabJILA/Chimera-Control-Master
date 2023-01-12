@@ -386,6 +386,18 @@
 const std::string AXIAL_PHASE_FLAG = "Axial Lattice Phase Flag";
 const std::string AXIAL_PHASE_CONFIG_NAME = "220305_tweezer_checks.Config";
 
+const std::string PYTHON_UPDATE_NONE = "UPDATE NONE";
+const std::string PYTHON_UPDATE_FAIL = "UPDATE FAIL";
+const std::string PYTHON_UPDATE_BEGIN = "UPDATE BEGIN";
+const std::string PYTHON_UPDATE_END = "UPDATE END";
+const std::string PYTHON_UPDATE_GLOBAL = "GLOBAL";
+const std::string PYTHON_UPDATE_CONFIG = "CONFIG";
+constexpr char const* PYTHON_UPDATE_FILENAME = "pyFinish.txt";
+
+const int SEQUENCE_PYTHONWATCH_TIMEOUT_DURATION = 4000;
+
+#define MAX_FILE_NAMES 256
+
 // This is the minimum time (in seconds) that a correction waveform will be allowed to have. Without this, the algorithm might decide that the 1/2 of a period 
 // of a waveform might be enough, even though this would probably be far below the amount of time an individual waveform is allowed to have according to the 
 // NIAWG (the NIAWG has a minimum waveform size).
@@ -471,6 +483,7 @@ const char * const SERVER_ADDRESS = "192.168.236.1";
 #define IDC_ENTER_EMAIL_INFO 10024
 #define IDC_SELECT_SEQ_COMBO 11025
 #define IDC_ADD_CONFIGSTOSEQ_COMBO 11026
+#define IDC_ADD_CURRENT_CONFIGTOSEQ_COMBO 11027
 // Scripting Window
 
 //#define IDC_MOOG_FUNCTION_COMBO 12001

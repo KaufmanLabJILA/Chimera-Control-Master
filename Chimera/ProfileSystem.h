@@ -36,19 +36,22 @@ class ProfileSystem
 		void saveSequenceAs(MainWindow* mainWin);
 		void renameSequence();
 		void deleteSequence();
+		void clearSequence();
 		void newSequence(CWnd* parent);
 		void openSequence(std::string sequenceName, MainWindow* mainWin);
 		void openSequenceFile(CWnd* parent, MainWindow* mainWin);
 		void readSequence(profileSettings profile, std::fstream& seqFile);
+		void writeSequence(profileSettings profile, std::ofstream& seqFile);
 		void updateSequenceSavedStatus(bool isSaved);
 		bool sequenceSettingsReadyCheck(MainWindow* mainWin);
 		bool checkSequenceSave(std::string prompt, MainWindow* mainWin);
+		bool checkSequenceSave();
 		void sequenceChangeHandler(MainWindow* mainWin);
 		std::string getSequenceNamesString();
 		void loadNullSequence();
 		void addToSequence(CWnd* parent);
 		void addToSequenceFromFile(CWnd* parent);
-		void addToSequenceVector(int index, std::string config, std::string path);
+		void addToSequenceVector(int index, std::string config, std::string path, int reps);
 		std::vector<std::string> getSequenceNames();
 		void reloadSequence(std::string sequenceToReload);
 		void removeConfigFromSequence();
@@ -69,6 +72,7 @@ class ProfileSystem
 											 AuxiliaryWindow* auxWin, CameraWindow* camWin);
 		bool checkConfigurationSave(std::string prompt, ScriptingWindow* scriptWindow, MainWindow* mainWin, 
 									AuxiliaryWindow* auxWin, CameraWindow* camWin);
+		bool checkConfigurationSave();
 		void openConfigFromPath( std::string pathToConfig, ScriptingWindow* scriptWin, MainWindow* mainWin, 
 								 CameraWindow* camWin, AuxiliaryWindow* auxWin );
 		std::string getCurrentPathIncludingCategory();
@@ -109,4 +113,5 @@ class ProfileSystem
 		Control<CStatic> configDisplay;
 		Control<CButton> selectSeqButton;
 		Control<CButton> addConfigsToSeqButton;
+		Control<CButton> addCurrentConfigToSeqButton;
 };

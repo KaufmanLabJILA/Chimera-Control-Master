@@ -89,8 +89,11 @@ class MainWindow : public CDialog
 		mainOptions getMainOptions();
 
 		void checkProfileReady();
+		void checkSequenceReady();
 		void checkProfileSave();
+		bool checkConfigurationSave();
 		void updateConfigurationSavedStatus(bool status);
+		void saveConfiguration();
 
 		void setDebuggingOptions(debugInfo options);
 		void updateStatusText(std::string whichStatus, std::string text);
@@ -119,6 +122,7 @@ class MainWindow : public CDialog
 		void passConfigPress( );
 		void passOpenSeqPress();
 		void passAddConfigsToSeqPress();
+		void passAddCurrentConfigToSeqPress();
 		void changeConfig(std::string pathToConfig);
 		bool sequenceIsRunning = false;
 

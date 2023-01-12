@@ -20,6 +20,8 @@
 #include <experimental/filesystem>
 #include <windows.h>
 #include <string>
+#include <boost/algorithm/string/classification.hpp>
+#include <boost/algorithm/string/split.hpp>
 using namespace boost::posix_time;
 namespace fs = std::experimental::filesystem;
 
@@ -73,6 +75,7 @@ namespace commonFunctions
 			case ID_RUNMENU_RUNSEQUENCE:
 			case ID_ACCELERATOR_F6:
 			{
+				mainWin->checkSequenceReady();
 				mainWin->sequenceIsRunning = true;
 				CWinThread* multiExperimentThread;
 				MultiExperimentInput* input = new MultiExperimentInput;
@@ -96,6 +99,7 @@ namespace commonFunctions
 					break;
 				}
 				bool andorAborted = false, masterAborted = false;
+				mainWin->sequenceIsRunning = false;
 
 				mainWin->stopRearranger( );
 				camWin->wakeRearranger( );
@@ -139,8 +143,6 @@ namespace commonFunctions
 				}
 				//
 				mainWin->waitForRearranger( );
-
-				mainWin -> sequenceIsRunning = false;
 
 				//try
 				//{
@@ -933,6 +935,7 @@ namespace commonFunctions
 		std::vector<std::string> configSequence = profileSeq.sequenceConfigNames;
 		std::vector<std::string> pathSequence = profileSeq.sequenceConfigPaths;
 		std::vector<bool> axPhaseFlags = profileSeq.axLatPhaseFlags;
+		std::vector<int> numReps = profileSeq.numReps;
 		bool abortSequence = false;
 		
 		//Set default behavior of rearrangement and auto-align for non-calibration runs
@@ -964,7 +967,7 @@ namespace commonFunctions
 		{
 			areYouSure = DialogBoxParam(NULL, MAKEINTRESOURCE(IDD_BEGINNING_SETTINGS), 0,
 				beginningSettingsDialogProc, (LPARAM)cstr("\r\n\r\nBegin Sequence Execution?\n\r\n\rDefault Auto-align State: " + defaultAutoAlignStr +	
-					"\n\rDefault Rearranger State: " + defaultGmoogStr));
+					"\n\rDefault Rearranger State: " + defaultGmoogStr + "\n\rDefault Painter State:" +  defaultPainterStr + "\n\rDefault Export Array State:" + defaultExportArrayStr));
 		}
 		
 		if (areYouSure == 0) // Run sequence if user responds ok
@@ -973,15 +976,15 @@ namespace commonFunctions
 			for (UINT configInc = 0; configInc < configSequence.size(); configInc++)
 			{
 				// Update the configuration
-				std::string dateStr;
 				std::string configPath = pathSequence[configInc] + configSequence[configInc];
+				int reps = numReps[configInc];
 				multiExpInput->mainWin->changeConfig(configPath);
 
 				// if experiment aborted, then abort sequence
 				if (!multiExpInput->mainWin->sequenceIsRunning)
 				{
 					multiExpInput->mainWin->getComm()->sendStatus("EXITED SEQUENCE!\r\n");
-					break;
+					goto stop;
 				}
 
 				if (axPhaseFlags[configInc])
@@ -1006,41 +1009,95 @@ namespace commonFunctions
 
 				}
 
-				multiExpInput->camWin->redrawPictures(false);
-				
-				try // execute the experiment
+				for (int i = 0; i < reps; i++)
 				{
-					prepareCamera(multiExpInput->mainWin, multiExpInput->camWin, input, true);
-					prepareMasterThread(multiExpInput->msgID, multiExpInput->scriptWin, multiExpInput->mainWin, multiExpInput->camWin, multiExpInput->auxWin, input, false, true, true, true);
-					multiExpInput->camWin->preparePlotter(input);
-					multiExpInput->camWin->prepareAtomCruncher(input);
+					std::string h5FilePath;
+					multiExpInput->mainWin->getComm()->sendStatus("Beginning repetition " + str(i + 1) +  " of sequence configuration " + str(configInc + 1) + ".\r\n\r\n");
 
-					dateStr = logParameters(input, multiExpInput->camWin, true);
+					multiExpInput->camWin->redrawPictures(false);
 
-					multiExpInput->camWin->startAtomCruncher(input);
-					multiExpInput->camWin->startPlotterThread(input);
-					multiExpInput->camWin->startCamera();
-					startMaster(multiExpInput->mainWin, input, true); // true argument sets wait for experimentThread to finish
-					if (multiExpInput->mainWin->sequenceIsRunning)
+					try // execute the experiment
 					{
-						multiExpInput->mainWin->getComm()->sendStatus("Completed running sequence configuration " + str(configInc + 1) + ":\r\n" + configSequence[configInc] + "\r\n\r\n");
+						prepareCamera(multiExpInput->mainWin, multiExpInput->camWin, input, true);
+						prepareMasterThread(multiExpInput->msgID, multiExpInput->scriptWin, multiExpInput->mainWin, multiExpInput->camWin, multiExpInput->auxWin, input, false, true, true, true);
+						multiExpInput->camWin->preparePlotter(input);
+						multiExpInput->camWin->prepareAtomCruncher(input);
+
+						h5FilePath = logParameters(input, multiExpInput->camWin, true);
+
+						multiExpInput->camWin->startAtomCruncher(input);
+						multiExpInput->camWin->startPlotterThread(input);
+						multiExpInput->camWin->startCamera();
+						startMaster(multiExpInput->mainWin, input, true); // true argument sets wait for experimentThread to finish
+						if (multiExpInput->mainWin->sequenceIsRunning)
+						{
+							multiExpInput->mainWin->getComm()->sendStatus("Completed running repetition " + str(i + 1) + " of sequence configuration " + str(configInc + 1) + ":\r\n" + configSequence[configInc] + "\r\n\r\n");
+						}
+						else
+						{
+							multiExpInput->mainWin->getComm()->sendStatus("EXITED SEQUENCE DURING REPETITION " + str(i+1) + " OF SEQUENCE CONFIGURATION " + str(configInc+1) + "!\r\n");
+							goto stop;
+						}
 					}
-				}
-				catch (Error& err)
-				{
-					if (err.whatBare() == "CANCEL")
+					catch (Error& err)
 					{
-						multiExpInput->mainWin->getComm()->sendStatus("Canceled camera initialization.\r\n");
-						multiExpInput->mainWin->getComm()->sendColorBox(Niawg, 'B');
+						if (err.whatBare() == "CANCEL")
+						{
+							multiExpInput->mainWin->getComm()->sendStatus("Canceled camera initialization.\r\n");
+							multiExpInput->mainWin->getComm()->sendColorBox(Niawg, 'B');
+							break;
+						}
+						multiExpInput->mainWin->getComm()->sendError("EXITED WITH ERROR! " + err.whatStr());
+						multiExpInput->mainWin->getComm()->sendColorBox(Camera, 'R');
+						multiExpInput->mainWin->getComm()->sendStatus("EXITED WITH ERROR!\r\nInitialized Default Waveform\r\n");
+						multiExpInput->mainWin->getComm()->sendTimer("ERROR!");
+						multiExpInput->camWin->assertOff();
+						abortSequence = true;
 						break;
 					}
-					multiExpInput->mainWin->getComm()->sendError("EXITED WITH ERROR! " + err.whatStr());
-					multiExpInput->mainWin->getComm()->sendColorBox(Camera, 'R');
-					multiExpInput->mainWin->getComm()->sendStatus("EXITED WITH ERROR!\r\nInitialized Default Waveform\r\n");
-					multiExpInput->mainWin->getComm()->sendTimer("ERROR!");
-					multiExpInput->camWin->assertOff();
-					abortSequence = true;
-					break;
+
+					// communicate with python
+					int pyStarted = sendPythonInitializationFile(configPath, h5FilePath);
+					if (pyStarted == 0)
+					{
+						multiExpInput->mainWin->getComm()->sendStatus("Python start file created. Waiting for response...\r\n");
+						bool foundPythonUpdate = watchPythonUpdate(multiExpInput->mainWin);
+						if (foundPythonUpdate)
+						{
+							updateVars(multiExpInput->mainWin, multiExpInput->auxWin);
+						}
+					}
+					else
+					{
+						multiExpInput->mainWin->getComm()->sendStatus("FAILED to create Python start file.\r\n");
+					}
+
+					// if experiment aborted, then abort sequence
+					if (!multiExpInput->mainWin->sequenceIsRunning)
+					{
+						multiExpInput->mainWin->getComm()->sendStatus("EXITED SEQUENCE!\r\n");
+						goto stop;
+					}
+				}
+
+				if (!multiExpInput->mainWin->checkConfigurationSave())
+				{
+					try
+					{
+						multiExpInput->mainWin->saveConfiguration();
+					}
+					catch (Error& err)
+					{
+						multiExpInput->mainWin->getComm()->sendStatus("Error when trying to save the configuration.\r\n");
+					}
+					if (multiExpInput->mainWin->checkConfigurationSave())
+					{
+						multiExpInput->mainWin->getComm()->sendStatus("Saved changes to configuration.\r\n");
+					}
+					else 
+					{
+						multiExpInput->mainWin->getComm()->sendStatus("Unable to save changes to configuration.\r\n");
+					}
 				}
 
 				// turn gigamoog to default state
@@ -1065,40 +1122,18 @@ namespace commonFunctions
 				if (!multiExpInput->mainWin->sequenceIsRunning)
 				{
 					multiExpInput->mainWin->getComm()->sendStatus("EXITED SEQUENCE!\r\n");
-					break;
-				}
-
-				// handling for certain configurations
-				if (axPhaseFlags[configInc])
-				{	
-					std::string runType = "axial_phase";
-					int pyStarted = sendPythonInitializationFile(runType, dateStr);
-					if (pyStarted == 0)
-					{
-						multiExpInput->mainWin->getComm()->sendStatus("Python start file created. Waiting for response...\r\n");
-						bool foundPythonUpdate = watchPythonUpdate(multiExpInput->mainWin);
-						if (foundPythonUpdate) 
-						{
-							updateGlobalVars(multiExpInput->mainWin,multiExpInput->auxWin);
-						}
-					}
-					else
-					{
-						multiExpInput->mainWin->getComm()->sendStatus("FAILED to create Python start file.\r\n");
-					}
-				}
-
-				// if experiment aborted, then abort sequence
-				if (!multiExpInput->mainWin->sequenceIsRunning)
-				{
-					multiExpInput->mainWin->getComm()->sendStatus("EXITED SEQUENCE!\r\n");
-					break;
+					goto stop;
 				}
 			}
 		}
 		else
 		{
-			multiExpInput->mainWin->getComm()->sendStatus("Sequence Canceled!");
+			multiExpInput->mainWin->getComm()->sendStatus("Sequence Canceled!\r\n");
+		}
+		stop:
+		if (multiExpInput->mainWin->sequenceIsRunning == true)
+		{
+			multiExpInput->mainWin->getComm()->sendStatus("Sequence completed successfully!\r\n");
 		}
 		multiExpInput->mainWin->sequenceIsRunning = false;
 		return 0;
@@ -1123,9 +1158,13 @@ namespace commonFunctions
 			thrower( "ERROR: No configurations in current sequence! Please set some configurations to run in this "
 					 "sequence or set the null sequence.\r\n" );
 		}
-		// check config settings
-		mainWin->checkProfileReady();
-		scriptWin->checkScriptSaves( );
+		if (!isSequence)
+		{
+			// check config settings
+			mainWin->checkProfileReady();
+			scriptWin->checkScriptSaves();
+		}
+		
 		std::string beginInfo = "Current Settings:\r\n=============================\r\n\r\n";
 		if (runAWG)
 		{
@@ -1406,16 +1445,15 @@ namespace commonFunctions
 
 	}
 
-	int sendPythonInitializationFile(std::string runType, std::string dateStr)
+	int sendPythonInitializationFile(std::string config, std::string h5File)
 	{
 		std::string tmpFile = PYTHON_ANALYSIS_START_FILE_LOCATION + ".tmp";
-		//std::string finalFile = "C:\\Users\\alecj\\Kaufman_Lab\\dummy_data\\pyStart.txt";
 		int pyStarted = 1;
 		std::fstream pyStartFile(tmpFile, std::fstream::out);
 		if (pyStartFile.is_open())
 		{
-			pyStartFile << runType + "\r\n";
-			pyStartFile << dateStr + "\r\n";
+			pyStartFile << config + "\r\n";
+			pyStartFile << h5File + "\r\n";
 			pyStartFile.close();
 			fs::rename(tmpFile, PYTHON_ANALYSIS_START_FILE_LOCATION);
 			pyStarted = 0;
@@ -1470,9 +1508,7 @@ namespace commonFunctions
 
 		OVERLAPPED ovl { 0 };
 		ovl.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
-		//uint8_t change_buf[1024];
-		//char change_buf[16384];
-		std::vector<BYTE> buffer(1024 * 64);
+		std::vector<BYTE> buffer(512);
 
 		bool pyAnalysisFound = false;
 		while (!pyAnalysisFound)
@@ -1480,7 +1516,7 @@ namespace commonFunctions
 			bool watchDir = ReadDirectoryChangesW(file, &buffer[0], buffer.size(), TRUE,
 				FILE_NOTIFY_CHANGE_FILE_NAME, NULL, &ovl, NULL);
 
-			DWORD result = WaitForSingleObject(ovl.hEvent, 15000);
+			DWORD result = WaitForSingleObject(ovl.hEvent, SEQUENCE_PYTHONWATCH_TIMEOUT_DURATION);
 
 			if (result == WAIT_OBJECT_0)
 			{
@@ -1520,10 +1556,10 @@ namespace commonFunctions
 					{
 						//mainWin->getComm()->sendStatus("\r\nRename new detected!\r\n");
 						CString fileName(fni->FileName);
-						if (fileName == "pyFinish.txt")
+						if (fileName == PYTHON_UPDATE_FILENAME)
 						{
 							pyAnalysisFound = true;
-							mainWin->getComm()->sendStatus("Python update detected!\r\n");
+							mainWin->getComm()->sendStatus("Python response detected!\r\n");
 							Sleep(100);
 						}
 					}
@@ -1559,37 +1595,149 @@ namespace commonFunctions
 				break;
 			}
 		}
+		CloseHandle(file);
 		return pyAnalysisFound;
 	}
 
-	void updateGlobalVars(MainWindow* mainWin, AuxiliaryWindow* auxWin)
+
+	void updateVars(MainWindow* mainWin, AuxiliaryWindow* auxWin)
 	{
 		std::fstream pyFinishFile(PYTHON_ANALYSIS_FINISH_FILE_LOCATION);
 		if (pyFinishFile.is_open())
 		{
-			std::string variableToChange;
-			std::string changeValueStr;
-			std::getline(pyFinishFile, variableToChange);
-			std::getline(pyFinishFile, changeValueStr);
-			double changeValue = ::atof(changeValueStr.c_str());
-			try
+			// check if there is python analysis executed for this run and return if not
+			std::string doUpdate;
+			std::getline(pyFinishFile, doUpdate);
+			if (doUpdate == PYTHON_UPDATE_NONE)
 			{
-				if (auxWin->globalVariables.checkVariableExists(variableToChange))
+				mainWin->getComm()->sendStatus("No variables to update.\r\n");
+				pyFinishFile.close();
+				return;
+			}
+			else if (doUpdate == PYTHON_UPDATE_FAIL)
+			{
+				mainWin->getComm()->sendStatus("Python analysis failed. Continuing without updating variables.\r\n");
+				pyFinishFile.close();
+				return;
+			}
+			else if (doUpdate == PYTHON_UPDATE_BEGIN)
+			{
+				while (pyFinishFile)
 				{
-					double currentValue = auxWin->globalVariables.getGlobalVariableValue(variableToChange);
-					auxWin->globalVariables.changeVariableValue(variableToChange, changeValue);
-					mainWin->getComm()->sendStatus("Updated " + variableToChange + " from " + std::to_string(currentValue) + " to " + changeValueStr +".\r\n");
-				}
-				else
-				{
-					throw (variableToChange);
+					// Update variables one by one
+					std::string varType;
+					std::string variableToChange;
+					std::string changeValueStr;
+					std::getline(pyFinishFile, varType);
+					std::getline(pyFinishFile, variableToChange);
+					std::getline(pyFinishFile, changeValueStr);
+
+					if (varType == PYTHON_UPDATE_GLOBAL)
+					{
+						if (auxWin->globalVariables.checkVariableExists(variableToChange))
+						{
+							try
+							{
+								double changeValue = stod(changeValueStr);
+								double currentValue = auxWin->globalVariables.getVariableValue(variableToChange);
+								auxWin->globalVariables.changeVariableValue(variableToChange, changeValue);
+								mainWin->getComm()->sendStatus("Updated " + variableToChange + " from " + std::to_string(currentValue) + " to " + changeValueStr + ".\r\n");
+								mainWin->updateConfigurationSavedStatus(false);
+							}
+							catch (const std::invalid_argument &ia)
+							{
+								mainWin->getComm()->sendStatus("Invalid argument " + changeValueStr + " given for " + variableToChange + ". Skipping...\r\n");
+								continue;
+							}
+							catch (const std::out_of_range& oor)
+							{
+								mainWin->getComm()->sendStatus("Out of range argument " + changeValueStr + " given for " + variableToChange + ". Skipping...\r\n");
+								continue;
+							}
+						}
+						else
+						{
+							mainWin->getComm()->sendStatus(variableToChange + " not found as global variable. Skipping... \r\n");
+						}
+					}
+					else if (varType == PYTHON_UPDATE_CONFIG)
+					{
+						if (auxWin->configVariables.checkVariableExists(variableToChange))
+						{
+							std::vector<std::string> changeConfigVar;
+							boost::split(changeConfigVar, changeValueStr, boost::is_any_of(", "), boost::token_compress_on);
+							if (changeConfigVar.size() == 1)
+							{
+								try
+								{
+									double changeValue = stod(changeValueStr);
+									double currentValue = auxWin->configVariables.getVariableValue(variableToChange);
+									auxWin->configVariables.changeVariableValue(variableToChange, changeValue);
+									mainWin->getComm()->sendStatus("Updated " + variableToChange + " from " + std::to_string(currentValue) + " to " + changeValueStr + ".\r\n");
+									mainWin->updateConfigurationSavedStatus(false);
+								}
+								catch (const std::invalid_argument &ia)
+								{
+									mainWin->getComm()->sendStatus("Invalid argument " + changeValueStr + " given for " + variableToChange + ". Skipping...\r\n");
+									continue;
+								}
+								catch (const std::out_of_range& oor)
+								{
+									mainWin->getComm()->sendStatus("Out of range argument " + changeValueStr + " given for " + variableToChange + ". Skipping...\r\n");
+									continue;
+								}
+							}
+							else if (changeConfigVar.size() == 3)
+							{
+								try
+								{
+									double changeInitValue = stod(changeConfigVar[0]);
+									double changeFinalValue = stod(changeConfigVar[1]);
+									unsigned int changeVariations = stoi(changeConfigVar[2]);
+									if (changeVariations == 0)
+									{
+										throw 0;
+									}
+									auxWin->configVariables.changeVariableValue(variableToChange, changeInitValue, changeFinalValue, changeVariations);
+									mainWin->getComm()->sendStatus("Updated " + variableToChange + " to vary from " + changeConfigVar[0] +
+										" to " + changeConfigVar[1] + " in " + changeConfigVar[2] + ".\r\n");
+									mainWin->updateConfigurationSavedStatus(false);
+								}
+								catch (const std::invalid_argument &ia)
+								{
+									mainWin->getComm()->sendStatus("Invalid argument " + changeValueStr + " given for " + variableToChange + ". Skipping...\r\n");
+									continue;
+								}
+								catch (const std::out_of_range& oor)
+								{
+									mainWin->getComm()->sendStatus("Out of range argument " + changeValueStr + " given for " + variableToChange + ". Skipping...\r\n");
+									continue;
+								}
+							}
+						}
+						else
+						{
+							mainWin->getComm()->sendStatus(variableToChange + " not found as configuration variable. Skipping... \r\n");
+						}
+					}
+					else if (varType == PYTHON_UPDATE_END)
+					{
+						break;
+					}
+					else
+					{
+						mainWin->getComm()->sendStatus("Invalid variable type " + varType + " given for " + variableToChange + ". Skipping... \r\n");
+					}
 				}
 			}
-			catch (std::string variableToChange)
+			else
 			{
-				mainWin->getComm()->sendStatus("Did not find " + variableToChange + " as a global variable.\r\n");
+				mainWin->getComm()->sendStatus("Invalid update status given. No changes will be made.\r\n");
 			}
 		}
+		auxWin->configVariables.updateVariationNumber();
+		mainWin->getComm()->sendStatus("Variable update completed.\r\n");
+		pyFinishFile.close();
 	}
 
 };

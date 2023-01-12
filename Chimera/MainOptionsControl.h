@@ -9,6 +9,7 @@ struct mainOptions
 	bool dontActuallyGenerate;
 	bool randomizeVariations;
 	bool randomizeReps;
+	bool interleaveVariations;
 	UINT atomThresholdForSkip=UINT_MAX;
 };
 
@@ -26,6 +27,7 @@ class MainOptionsControl
 		Control<CStatic> header;
 		Control<CButton> randomizeVariationsButton;
 		Control<CButton> randomizeRepsButton;
+		Control<CButton> interleaveVariationsButton;
 		Control<CStatic> atomThresholdForSkipText;
 		Control<CEdit> atomThresholdForSkipEdit;
 		mainOptions currentOptions;

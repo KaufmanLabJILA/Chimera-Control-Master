@@ -20,5 +20,6 @@ struct profileSettings
 	std::vector<std::string> sequenceConfigNames;
 	std::vector<std::string> sequenceConfigPaths;
 	std::vector<bool> axLatPhaseFlags;
+	std::vector<int> numReps;
 };
 

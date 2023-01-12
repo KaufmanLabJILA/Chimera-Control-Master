@@ -176,6 +176,7 @@ BEGIN_MESSAGE_MAP( MainWindow, CDialog )
 	ON_COMMAND( IDC_SELECT_CONFIG_COMBO, &MainWindow::passConfigPress )
 	ON_COMMAND( IDC_SELECT_SEQ_COMBO, &MainWindow::passOpenSeqPress)
 	ON_COMMAND( IDC_ADD_CONFIGSTOSEQ_COMBO, &MainWindow::passAddConfigsToSeqPress)
+	ON_COMMAND( IDC_ADD_CURRENT_CONFIGTOSEQ_COMBO, &MainWindow::passAddCurrentConfigToSeqPress)
 	ON_COMMAND( IDOK,  &MainWindow::catchEnter)
 END_MESSAGE_MAP()
 
@@ -209,6 +210,18 @@ void MainWindow::passAddConfigsToSeqPress( )
 	try
 	{
 		profile.addToSequenceFromFile(this);
+	}
+	catch (Error& err)
+	{
+		comm.sendError(err.what());
+	}
+}
+
+void MainWindow::passAddCurrentConfigToSeqPress()
+{
+	try
+	{
+		profile.addToSequence(this);
 	}
 	catch (Error& err)
 	{
@@ -426,7 +439,7 @@ BOOL MainWindow::OnInitDialog( )
 	debugStatus.initialize( controlLocation, this, id, 480, "DEBUG STATUS", mainRGBs["theme aqua"], tooltips, IDC_DEBUG_STATUS_BUTTON );
 	controlLocation = { 960, 0 };
 	profile.initialize( controlLocation, this, id, tooltips );
-	controlLocation = { 960, 175};
+	controlLocation = { 960, 650};
 	notes.initialize( controlLocation, this, id, tooltips);
 	controlLocation = { 1440, 50 };
 	repetitionControl.initialize( controlLocation, tooltips, this, id );
@@ -773,7 +786,7 @@ void MainWindow::startMaster( MasterThreadInput* input, bool isTurnOnMot , bool 
 void MainWindow::fillMotInput( MasterThreadInput* input )
 {
 	input->comm = &comm;
-	VariableSystem::generateKey( input->variables, input->settings.randomizeVariations );
+	VariableSystem::generateKey( input->variables, input->settings.randomizeVariations, input->settings.interleaveVariations );
 	for ( auto& variable : input->variables )
 	{
 		if ( variable.constant )
@@ -809,7 +822,7 @@ void MainWindow::fillMasterThreadInput(MasterThreadInput* input)
 	input->gmoog = &gmoog;
 	input->dds = &dds;
 
-	VariableSystem::generateKey( input->variables, input->settings.randomizeVariations );
+	VariableSystem::generateKey( input->variables, input->settings.randomizeVariations, input->settings.interleaveVariations );
 	// it's important to do this after the key is generated so that the constants have their values.
 	for ( auto& variable : input->variables )
 	{
@@ -845,10 +858,27 @@ void MainWindow::checkProfileSave()
 	profile.checkSaveEntireProfile( TheScriptingWindow, this, TheAuxiliaryWindow, TheCameraWindow );
 }
 
+bool MainWindow::checkConfigurationSave()
+{
+	return profile.checkConfigurationSave();
+}
+
+void MainWindow::checkSequenceReady()
+{
+	profile.sequenceSettingsReadyCheck(this);
+}
 
 void MainWindow::updateConfigurationSavedStatus(bool status)
 {
 	profile.updateConfigurationSavedStatus(status);
+}
+
+void MainWindow::saveConfiguration()
+{
+	if (!checkConfigurationSave())
+	{
+		profile.saveConfigurationOnly( TheScriptingWindow, this, TheAuxiliaryWindow, TheCameraWindow );
+	}
 }
 
 

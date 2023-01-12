@@ -143,7 +143,7 @@ std::string DataLogger::initializeDataFiles()
 		thrower( "ERROR: Failed to initialize HDF5 data file: " + err.getDetailMsg() );
 	}
 
-	return dateStr;
+	return dataFilesBaseLocation + yearStr + monthStr + dayStr + "\\Raw Data\\" + finalSaveFileName;
 }
 
 

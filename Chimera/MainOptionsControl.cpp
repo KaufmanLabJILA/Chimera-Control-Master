@@ -8,12 +8,15 @@ void MainOptionsControl::initialize( int& id, POINT& loc, CWnd* parent, cToolTip
 	header.sPos = { loc.x, loc.y, loc.x + 480, loc.y += 20 };
 	header.Create( "MAIN OPTIONS", NORM_HEADER_OPTIONS, header.sPos, parent, id++ );
 	header.fontType = HeadingFont;
-	randomizeRepsButton.sPos = { loc.x, loc.y, loc.x + 480 , loc.y += 25 };
+	randomizeRepsButton.sPos = { loc.x, loc.y, loc.x + 480 , loc.y += 15 };
 	randomizeRepsButton.Create( "Randomize Repetitions?", NORM_CHECK_OPTIONS, randomizeRepsButton.sPos, parent, id++ );
 	randomizeRepsButton.EnableWindow( false );
-	randomizeVariationsButton.sPos = { loc.x, loc.y, loc.x + 480 , loc.y += 25 };
+	randomizeVariationsButton.sPos = { loc.x, loc.y, loc.x + 480 , loc.y += 15 };
 	randomizeVariationsButton.Create( "Randomize Variations?", NORM_CHECK_OPTIONS, randomizeVariationsButton.sPos, 
 									  parent, id++ );
+	interleaveVariationsButton.sPos = { loc.x, loc.y, loc.x + 480 , loc.y += 15 };
+	interleaveVariationsButton.Create("Interleave Variations?", NORM_CHECK_OPTIONS, interleaveVariationsButton.sPos,
+								      parent, id++);
 	atomThresholdForSkipText.sPos = { loc.x, loc.y, loc.x + 240 , loc.y + 25 };
 	atomThresholdForSkipText.Create("Atom Threshold for skip:", NORM_STATIC_OPTIONS, atomThresholdForSkipText.sPos,
 									 parent, id++ );
@@ -22,6 +25,7 @@ void MainOptionsControl::initialize( int& id, POINT& loc, CWnd* parent, cToolTip
 
 	currentOptions.randomizeReps = false;
 	currentOptions.randomizeVariations = true;
+	currentOptions.interleaveVariations = false;
 }
 
 void MainOptionsControl::rearrange( int width, int height, fontMap fonts )
@@ -29,6 +33,7 @@ void MainOptionsControl::rearrange( int width, int height, fontMap fonts )
 	header.rearrange( width, height, fonts );
 	randomizeRepsButton.rearrange( width, height, fonts );
 	randomizeVariationsButton.rearrange( width, height, fonts );
+	interleaveVariationsButton.rearrange(width, height, fonts);
 	atomThresholdForSkipText.rearrange( width, height, fonts );
 	atomThresholdForSkipEdit.rearrange( width, height, fonts );
 }
@@ -50,6 +55,7 @@ void MainOptionsControl::handleSaveConfig(std::ofstream& saveFile)
 	saveFile << "MAIN_OPTIONS\n";
 	saveFile << randomizeRepsButton.GetCheck() << "\n";
 	saveFile << randomizeVariationsButton.GetCheck() << "\n";
+	//saveFile << interleaveVariationsButton.GetCheck() << "\n";
 	CString txt;
 	int tmp;
 	atomThresholdForSkipEdit.GetWindowTextA( txt );
@@ -79,6 +85,8 @@ void MainOptionsControl::handleOpenConfig(std::ifstream& openFile, int versionMa
 	randomizeRepsButton.SetCheck( currentOptions.randomizeReps );
 	openFile >> currentOptions.randomizeVariations;
 	randomizeVariationsButton.SetCheck( currentOptions.randomizeVariations );
+	//openFile >> currentOptions.interleaveVariations;
+	//interleaveVariationsButton.SetCheck(currentOptions.interleaveVariations);
 	if ( (versionMajor == 2 && versionMinor > 9) || versionMajor > 2)
 	{
 		std::string txt;
@@ -105,6 +113,7 @@ mainOptions MainOptionsControl::getOptions()
 {
 	currentOptions.randomizeReps = randomizeRepsButton.GetCheck();
 	currentOptions.randomizeVariations = randomizeVariationsButton.GetCheck();
+	currentOptions.interleaveVariations = interleaveVariationsButton.GetCheck();
 	CString txt;
 	atomThresholdForSkipEdit.GetWindowTextA( txt );
 	try
