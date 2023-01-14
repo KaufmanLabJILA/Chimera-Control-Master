@@ -55,7 +55,7 @@ class gigaMoog {
 
 public:
 	gigaMoog(std::string IPAddress, int port);
-	gigaMoog(void);
+	//gigaMoog(void);
 	virtual ~gigaMoog(void);
 	//gigaMoog(const gigaMoog&) = default;
 	//gigaMoog(gigaMoog&&) = default;

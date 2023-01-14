@@ -53,7 +53,7 @@ namespace commonFunctions
 					camWin->startAtomCruncher(input);
 					camWin->startPlotterThread(input);
 					camWin->startCamera();
-					startMaster( mainWin, input );
+					startMaster( mainWin, input, false );
 				}
 				catch (Error& err)
 				{

@@ -18,10 +18,10 @@ BoostUDP::BoostUDP(std::string IPAddress, int port)
 	read();
 }
 
-BoostUDP::BoostUDP()
-{
-	// do nothing
-}
+//BoostUDP::BoostUDP()
+//{
+//	// do nothing
+//}
 
 BoostUDP::~BoostUDP()
 {

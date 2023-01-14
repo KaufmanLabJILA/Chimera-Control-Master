@@ -9,7 +9,7 @@ class BoostUDP
 {
 public:
 	BoostUDP(std::string IPAddress, int port);
-	BoostUDP();
+	//BoostUDP();
 	~BoostUDP();
 
 	void setReadCallback(const boost::function<void(int)> &read_callback);

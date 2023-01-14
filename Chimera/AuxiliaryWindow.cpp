@@ -9,6 +9,7 @@
 #include "openWithExplorer.h"
 #include "saveWithExplorer.h"
 #include "agilentStructures.h"
+#include <iomanip>
 
 AuxiliaryWindow::AuxiliaryWindow() : CDialog()
 //topBottomTek(TOP_BOTTOM_TEK_SAFEMODE, TOP_BOTTOM_TEK_USB_ADDRESS),
@@ -629,7 +630,14 @@ void AuxiliaryWindow::handleMasterConfigSave(std::stringstream& configStream)
 	{
 		variableType info = globalVariables.getVariableInfo(varInc);
 		configStream << info.name << " ";
-		configStream << info.ranges.front().initialValue << "\n";
+		//if (info.name == "__t0__")
+		//{
+		configStream << info.ranges.front().initialValue << std::setprecision(10) << "\n";
+		//}
+		//else
+		//{
+		//	configStream << info.ranges.front().initialValue << "\n";
+		//}
 		// all globals are constants, no need to output anything else.
 	}
 }

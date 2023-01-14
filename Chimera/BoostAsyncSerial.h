@@ -19,7 +19,7 @@ public:
 		boost::asio::serial_port_base::parity::type parity,
 		boost::asio::serial_port_base::flow_control::type flow_control
 	);
-	BoostAsyncSerial();
+	//BoostAsyncSerial();
 	~BoostAsyncSerial();
 
 	void setReadCallback(const boost::function<void(int)> &read_callback);
