@@ -11,6 +11,7 @@ def paintpotential():
 
   pulseon: gmmove .0001
   t += .1
+  %t += 1000
 
   %pulseon: makotweezer 0.1
   %t += 500
@@ -33,12 +34,14 @@ def paintpotential():
    %on: tweezerao
    pulseon: gmmove .00011
    t += 0.05 % optimized on 221206
+   %t += 50
    on: tweezerao
    t += 0.004
    off: tweezerao
    %off: tweezerao
   end
 
+  %t += 1000
   %pulseon: gmmove .00011
 
   %off: tweezerao

@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "GigaMoog.h"
 #include "cnpy.h"
+#include <fstream>
+#include <experimental/filesystem>
+namespace fs = std::experimental::filesystem;
 
 //using namespace::boost::asio;
 //using namespace::std;
@@ -192,12 +195,45 @@ double gigaMoog::getPaintAmpX(unsigned int xIndex, unsigned int yIndex) {
 	}
 	else
 	{
-		double amplitude = PAINT_ATW_LUT[2 * yDimPaint * xIndex + 2 * yIndex + 0];
-		if (amplitude <= 100) {
+		//New way with offset tracking linear interpolation
+		int offsetSign = int((xOffset - xOffsetManual) > 0) - int((xOffset - xOffsetManual) < 0);
+		double amp1, amp2, freq1, freq2, derivative, amplitude;
+		amp1 = PAINT_ATW_LUT[2 * yDimPaint * xIndex + 2 * yIndex + 0];
+		freq1 = getFreqX(xIndex,yIndex);
+
+		//If frequency in the LUT range then interpolate, else extrapolate
+		if ((xIndex + offsetSign >= 0) && (xIndex + offsetSign < xDimPaint))
+		{
+			amp2 = PAINT_ATW_LUT[2 * yDimPaint * (xIndex + offsetSign) + 2 * yIndex + 0];
+			freq2 = getFreqX(xIndex + offsetSign, yIndex);
+		}
+		else
+		{
+			amp2 = PAINT_ATW_LUT[2 * yDimPaint * (xIndex - offsetSign) + 2 * yIndex + 0];
+			freq2 = getFreqX(xIndex - offsetSign, yIndex);
+		}
+
+		if (freq2 - freq1 != 0)
+		{
+			derivative = (amp2 - amp1) / (freq2 - freq1);
+		}
+		else
+		{
+			derivative = 0.0;
+		}
+		amplitude = amp1 + (xOffset- xOffsetManual) * derivative;
+
+		//Old way without interpolation for offset drift
+		//double amplitude = PAINT_ATW_LUT[2 * yDimPaint * xIndex + 2 * yIndex + 0];
+
+		if (amplitude <= 100 && amplitude >= 0) {
 			return amplitude;
 		}
-		else {
+		else if (amplitude > 100) {
 			return 100.0;
+		}
+		else {
+			return 0.0;
 		}
 	}
 }
@@ -209,12 +245,45 @@ double gigaMoog::getPaintAmpY(unsigned int xIndex, unsigned int yIndex) {
 	}
 	else
 	{
-		double amplitude = PAINT_ATW_LUT[2 * yDimPaint * xIndex + 2 * yIndex + 1];
-		if (amplitude <= 100) {
+		//New way with offset tracking linear interpolation
+		int offsetSign = int((yOffset - yOffsetManual) > 0) - int((yOffset - yOffsetManual) < 0);
+		double amp1, amp2, freq1, freq2, derivative, amplitude;
+		amp1 = PAINT_ATW_LUT[2 * yDimPaint * xIndex + 2 * yIndex + 1];
+		freq1 = getFreqY(xIndex, yIndex);
+
+		if ((yIndex + offsetSign >= 0) && (yIndex + offsetSign < yDimPaint)) //interpolate
+		{
+			amp2 = PAINT_ATW_LUT[2 * yDimPaint * xIndex + 2 * (yIndex + offsetSign) + 1];
+			freq2 = getFreqY(xIndex, yIndex + offsetSign);
+		}
+		else //extrapolate
+		{
+			amp2 = PAINT_ATW_LUT[2 * yDimPaint * xIndex + 2 * (yIndex - offsetSign) + 1];
+			freq2 = getFreqY(xIndex, yIndex - offsetSign);
+		}
+
+		if (freq2 - freq1 != 0)
+		{
+			derivative = (amp2 - amp1) / (freq2 - freq1);
+		}
+		else
+		{
+			derivative = 0.0;
+		}
+		amplitude = amp1 + (yOffset - yOffsetManual) * derivative;
+
+		//Old way without interpolation for offset drift
+		//double amplitude = PAINT_ATW_LUT[2 * yDimPaint * xIndex + 2 * yIndex + 1];
+
+
+		if (amplitude <= 100 && amplitude >= 0) {
 			return amplitude;
 		}
-		else {
+		else if (amplitude > 100) {
 			return 100.0;
+		}
+		else {
+			return 0.0;
 		}
 	}
 }
@@ -520,6 +589,9 @@ void gigaMoog::writePaintMoves(MessageSender& ms)
 		ms.enqueue(m);
 	}
 
+	// track all frequencies and amplitudes used for painting
+	std::string freqXOut, freqYOut, ampXOut, ampYOut;
+
 	// turn on single tone along x at (0, 0)
 	double minFreqX = getFreqX(0, 0);
 	double maxFreqX = getFreqX(48 - 1, 0);
@@ -532,6 +604,8 @@ void gigaMoog::writePaintMoves(MessageSender& ms)
 		.setting(MessageSetting::MOVEFREQUENCY)
 		.frequencyMHz(minFreqX).amplitudePercent(getPaintAmpX(0, 0)).phaseDegrees(0).instantFTW(1).ATWIncr(ampStepPaintMag).stepSequenceID(1).FTWIncr(0).phaseJump(1);;
 	ms.enqueue(m);
+	freqXOut += std::to_string(minFreqX) + ", ";
+	ampXOut += std::to_string(getPaintAmpX(0, 0)) + ", ";
 
 	// turn on all tones equally spaced along y over a given range of rows
 	double phase;
@@ -544,13 +618,19 @@ void gigaMoog::writePaintMoves(MessageSender& ms)
 			size_t hardwareChannel = (channel * 8) % 48 + (channel * 8) / 48;
 			memoryDAC1.moveChannel(hardwareChannel / 8);
 			phase = fmod(180 * pow(channel + 1, 2) / nTweezerY, 360); //this assumes comb of even tones, imperfect, but also short duration so not super critical, and fast.
+			double tmpFreq = minFreqY + (freqStepY * channel);
+			double tmpAmp = getPaintAmpY(0, channel);
 			Message m = Message::make().destination(MessageDestination::KA007)
 				.DAC(MessageDAC::DAC1).channel(hardwareChannel)
 				.setting(MessageSetting::MOVEFREQUENCY)
-				.frequencyMHz(minFreqY + (freqStepY * channel)).amplitudePercent(getPaintAmpY(0, channel)).phaseDegrees(phase).instantFTW(1).ATWIncr(ampStepPaintMag).stepSequenceID(1).FTWIncr(511).phaseJump(1);;
+				.frequencyMHz(tmpFreq).amplitudePercent(tmpAmp).phaseDegrees(phase).instantFTW(1).ATWIncr(ampStepPaintMag).stepSequenceID(1).FTWIncr(511).phaseJump(1);;
 			ms.enqueue(m);
+			freqYOut += std::to_string(tmpFreq) + ", ";
+			ampYOut += std::to_string(tmpAmp) + ", ";
 		}
 	}
+	freqYOut += "\n";
+	ampYOut += "\n";
 
 	double paintAmpX = 0.0;
 	double ATWSign = 1;
@@ -572,11 +652,14 @@ void gigaMoog::writePaintMoves(MessageSender& ms)
 			
 		size_t hardwareChannel = (0 * 8) % 48 + (0 * 8) / 48;
 		memoryDAC0.moveChannel(hardwareChannel / 8);
+		double tmpFreqX = minFreqX + (freqStepX * step);
 		Message m = Message::make().destination(MessageDestination::KA007)
 			.DAC(MessageDAC::DAC0).channel(hardwareChannel)
 			.setting(MessageSetting::MOVEFREQUENCY)
-			.frequencyMHz(minFreqX + (freqStepX * step)).amplitudePercent(paintAmpX).phaseDegrees(0).instantFTW(1).ATWIncr(ATWSign * ampStepPaintMag).stepSequenceID(1 + step).FTWIncr(511).phaseJump(0);;
+			.frequencyMHz(tmpFreqX).amplitudePercent(paintAmpX).phaseDegrees(0).instantFTW(1).ATWIncr(ATWSign * ampStepPaintMag).stepSequenceID(1 + step).FTWIncr(511).phaseJump(0);;
 		ms.enqueue(m);
+		freqXOut += std::to_string(tmpFreqX) + ", ";
+		ampXOut += std::to_string(paintAmpX) + ", ";
 
 		for (unsigned int channel = 0; channel < nTweezerY; channel++) {
 			if (channel < yDimPaint)
@@ -584,15 +667,26 @@ void gigaMoog::writePaintMoves(MessageSender& ms)
 				paintAmpY[channel] = getPaintAmpY(step, channel);
 				ATWSign = lastPaintAmpY[channel] > paintAmpY[channel] ? -1.0 : 1.0;
 				lastPaintAmpY[channel] = paintAmpY[channel];
-
+				double tmpFreqY = minFreqY + (freqStepY * channel);
+				double tmpAmpY = paintAmpY[channel];
 				size_t hardwareChannel = (channel * 8) % 48 + (channel * 8) / 48;
 				memoryDAC1.moveChannel(hardwareChannel / 8);
 				Message m = Message::make().destination(MessageDestination::KA007)
 					.DAC(MessageDAC::DAC1).channel(hardwareChannel)
 					.setting(MessageSetting::MOVEFREQUENCY)
-					.frequencyMHz(minFreqY + (freqStepY * channel)).amplitudePercent(paintAmpY[channel]).phaseDegrees(0).instantFTW(1).ATWIncr(ATWSign * ampStepPaintMag).stepSequenceID(1 + step).FTWIncr(511).phaseJump(0);;
+					.frequencyMHz(tmpFreqY).amplitudePercent(tmpAmpY).phaseDegrees(0).instantFTW(1).ATWIncr(ATWSign * ampStepPaintMag).stepSequenceID(1 + step).FTWIncr(511).phaseJump(0);;
 				ms.enqueue(m);
+
+				freqYOut += std::to_string(tmpFreqY) + ", ";
+				ampYOut += std::to_string(tmpAmpY) + ", ";
 			}
+		}
+		freqYOut += "\n";
+		ampYOut += "\n";
+
+		if (exportPaint)
+		{
+			exportPaintParams(freqXOut,freqYOut,ampXOut,ampYOut);
 		}
 	}
 
@@ -615,6 +709,35 @@ void gigaMoog::writePaintMoves(MessageSender& ms)
 			.frequencyMHz(0).amplitudePercent(0.01).phaseDegrees(0).instantFTW(1).ATWIncr(-ampStepPaintMag).stepSequenceID(2 + stepCountX).FTWIncr(511).phaseJump(0);;
 		ms.enqueue(m);
 	}
+}
+
+
+void gigaMoog::exportPaintParams(std::string freqX, std::string freqY, std::string ampX, std::string ampY)
+{
+	std::string out;
+	out += "Offset, Manual, Auto\n";
+	out += std::to_string(xOffset) + ", " + std::to_string(xOffsetManual) + ", " + std::to_string(xOffsetAuto) + "\n";
+	out += std::to_string(yOffset) + ", " + std::to_string(yOffsetManual) + ", " + std::to_string(yOffsetAuto) + "\n";
+	
+	out += "\nFrequencies X:\n";
+	out += freqX + "\n";
+
+	out += "\nAmplitudes X:\n";
+	out += ampX + "\n";
+
+	out += "\nFrequencies Y:\n";
+	out += freqY;
+
+	out += "\nAmplitudes Y:\n";
+	out += ampY;
+	
+	// create temporary file
+	std::ofstream tmpFile(EXPORT_PAINT_TMP_FILE_LOCATION);
+	tmpFile << out;
+	tmpFile.close();
+
+	// move file (atomic operation)
+	fs::rename(EXPORT_PAINT_TMP_FILE_LOCATION, EXPORT_PAINT_FILE_LOCATION);
 }
 
 
@@ -1293,19 +1416,19 @@ void gigaMoog::updateXYOffsetAuto() {
 
 	if (xOffsetAuto > 1.3)
 	{
-		xOffsetAuto -= 1.9; //TODO: don't hard code this, just use LUT.
+		xOffsetAuto -= 1.92457761; //TODO: don't hard code this, just use LUT.
 	}
 	else if (xOffsetAuto < -1.3)
 	{
-		xOffsetAuto += 1.9;
+		xOffsetAuto += 1.92457761;
 	}
 	if (yOffsetAuto > 1.3)
 	{
-		yOffsetAuto -= 1.9;
+		yOffsetAuto -= 1.98202151;
 	}
 	else if (yOffsetAuto < -1.3)
 	{
-		yOffsetAuto += 1.9;
+		yOffsetAuto += 1.98202151;
 	}
 
 };

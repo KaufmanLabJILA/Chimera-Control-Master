@@ -316,6 +316,7 @@ BEGIN
         MENUITEM "Auto tweezer align active",   ID_GIGAMOOG_AUTOTWEEZERALIGNACTIVE
 		MENUITEM "Painter active",              ID_GIGAMOOG_PAINTERACTIVE
 		MENUITEM "Export array",				ID_GIGAMOOG_EXPORTARRAY
+		MENUITEM "Export paint parameters",     ID_GIGAMOOG_EXPORTPAINT
     END
     POPUP "Andor"
     BEGIN

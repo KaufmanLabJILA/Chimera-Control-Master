@@ -170,7 +170,8 @@
 #define ID_GIGAMOOG_PAINTERACTIVE       40155
 #define ID_GIGAMOOG_EXPORTARRAY         40156
 #define ID_EXPORTVARIABLES				40157
-#define MENU_ID_RANGE_END               40157
+#define ID_GIGAMOOG_EXPORTPAINT        40158
+#define MENU_ID_RANGE_END               40158
 
 // Next default values for new objects
 // 

@@ -41,6 +41,7 @@ class MainWindow : public CDialog
 		void passAutoAlignIsOnPress();
 		void passPainterIsOnPress();
 		void passExportArrayIsOnPress();
+		void passExportPaintIsOnPress();
 		void passExportVariableIsOnPress();
 		bool checkGmoogState();
 		bool checkAutoAlignState();

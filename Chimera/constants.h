@@ -89,6 +89,8 @@
 	const std::string PYTHON_ANALYSIS_FINISH_FILE_LOCATION = PYTHON_ANALYSIS_LOCATION + "pyFinish.txt";
 	const std::string EXPORT_VARIABLE_TMP_FILE_LOCATION = PYTHON_ANALYSIS_LOCATION + "currentVariables.txt.tmp";
 	const std::string EXPORT_VARIABLE_FILE_LOCATION = PYTHON_ANALYSIS_LOCATION + "currentVariables.txt";
+	const std::string EXPORT_PAINT_TMP_FILE_LOCATION = PROJECT_LOCATION + "\\Tweezer LUT\\" + "paintParams.txt.tmp";
+	const std::string EXPORT_PAINT_FILE_LOCATION = PROJECT_LOCATION + "\\Tweezer LUT\\" + "paintParams.txt";
 
 	//Test file for moog
 	const std::string MOOG_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_MOOG_SCRIPT.moogScript";
@@ -396,7 +398,7 @@ const std::string PYTHON_UPDATE_GLOBAL = "GLOBAL";
 const std::string PYTHON_UPDATE_CONFIG = "CONFIG";
 constexpr char const* PYTHON_UPDATE_FILENAME = "pyFinish.txt";
 
-const int SEQUENCE_PYTHONWATCH_TIMEOUT_DURATION = 4000;
+const int SEQUENCE_PYTHONWATCH_TIMEOUT_DURATION = 10000;
 
 #define MAX_FILE_NAMES 256
 

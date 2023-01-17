@@ -306,6 +306,20 @@ void MainWindow::passExportArrayIsOnPress()
 	}
 }
 
+void MainWindow::passExportPaintIsOnPress()
+{
+	if (gmoog.exportPaint)
+	{
+		gmoog.exportPaint = false;
+		menu.CheckMenuItem(ID_GIGAMOOG_EXPORTPAINT, MF_UNCHECKED);
+	}
+	else 
+	{
+		gmoog.exportPaint = true;
+		menu.CheckMenuItem(ID_GIGAMOOG_EXPORTPAINT, MF_CHECKED);
+	}
+}
+
 void MainWindow::passExportVariableIsOnPress()
 {
 	if (exportVariables)

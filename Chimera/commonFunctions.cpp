@@ -816,6 +816,11 @@ namespace commonFunctions
 				mainWin->passExportArrayIsOnPress();
 				break;
 			}
+			case ID_GIGAMOOG_EXPORTPAINT:
+			{
+				mainWin->passExportPaintIsOnPress();
+				break;
+			}
 			case ID_EXPORTVARIABLES:
 			{
 				mainWin->passExportVariableIsOnPress();
@@ -1513,7 +1518,7 @@ namespace commonFunctions
 
 		OVERLAPPED ovl { 0 };
 		ovl.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
-		std::vector<BYTE> buffer(512);
+		std::vector<BYTE> buffer(1024);
 
 		bool pyAnalysisFound = false;
 		while (!pyAnalysisFound)
