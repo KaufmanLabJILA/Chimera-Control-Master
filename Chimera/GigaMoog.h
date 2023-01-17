@@ -117,12 +117,13 @@ private:
 	std::vector<double> FTW_LUT;
 	std::vector<double> subpixelLUT; //This must be synchronized with atomCruncher subpixel masks.
 	std::vector<double> PAINT_ATW_LUT;
+	std::vector<bool> PAINT_MASK_LUT;
 	double xOffset, yOffset;
 	double xOffsetManual, yOffsetManual;
 	std::vector<double> xPix2MHz, yPix2MHz;
 	int nSubpixel;
 	UINT xDim, yDim; //x and y dimensions of atom positions from LUT. Must be coordinated with number of masks in image processing.
-	UINT xDimPaint, yDimPaint;
+	UINT xDimPaint, yDimPaint, xDimPaintMask, yDimPaintMask;
 	int ampStepMag = 134217727;
 	int freqStepMag = 511;
 	int ampStepPaintMag = 134217727;
@@ -134,6 +135,9 @@ private:
 	double getAmpY(int xIndex, int yIndex);
 	double getPaintAmpX(unsigned int xIndex, unsigned int yIndex);
 	double getPaintAmpY(unsigned int xIndex, unsigned int yIndex);
+	bool getPaintMaskX(unsigned int xIndex, unsigned int yIndex);
+	bool getPaintMaskY(unsigned int xIndex, unsigned int yIndex);
+	bool checkPaintMaskY();
 
 	static unsigned long long int getFTW(double frequency) {
 		//36-bit DDS
