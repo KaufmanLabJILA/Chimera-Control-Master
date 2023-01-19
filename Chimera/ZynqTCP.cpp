@@ -260,7 +260,7 @@ int ZynqTCP::writeDDSs(std::vector<DDSChannelSnapshot> ddsChannelSnapshots)
 		end = snapshot.endVal;
 		duration = (unsigned int)(snapshot.rampTime * timeConvDDS);
 
-		sprintf_s(byte_bufCommand, DDS_LEN_BYTE_BUF, "t%08X_c%04X_%c_s%07.3f_e%07.3f_d%08x",
+		sprintf_s(byte_bufCommand, DDS_LEN_BYTE_BUF, "t%08X_c%04X_%c_s%07.6f_e%07.6f_d%08x",
 			time, channel, type, start, end, duration);
 		for (size_t inc = 0; inc < strlen(byte_bufCommand); inc++)
 		{

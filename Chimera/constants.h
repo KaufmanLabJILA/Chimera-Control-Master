@@ -46,7 +46,7 @@
 #define ANDOR_PREAMP_INDEX 2
 #define DIO_LEN_BYTE_BUF 28
 #define DAC_LEN_BYTE_BUF 44
-#define DDS_LEN_BYTE_BUF 46
+#define DDS_LEN_BYTE_BUF 52
 #define DIO_TIME_RESOLUTION = 1e-5; // in ms, 10ns
 #define DAC_TIME_RESOLUTION 0.02 // in ms, 50 kHz update rate
 #define DDS_TIME_RESOLUTION 1.6 // in ms
@@ -132,7 +132,7 @@ const std::string DDS_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAUL
 #define ANDOR_PREAMP_INDEX 2
 #define DIO_LEN_BYTE_BUF 28
 #define DAC_LEN_BYTE_BUF 44
-#define DDS_LEN_BYTE_BUF 46
+#define DDS_LEN_BYTE_BUF 52
 #define DIO_TIME_RESOLUTION = 1e-5; // in ms, 10ns
 #define DAC_TIME_RESOLUTION 0.02 // in ms, 50 kHz update rate
 #define DDS_TIME_RESOLUTION 1.6 // in ms
