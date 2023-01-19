@@ -3,27 +3,18 @@ reset
 
 
 
-setsingle 0 0 clockamp 76 0 0
+setsingle 0 0 clockampawg clockfreq 0 0
 
-setsingle 0 clocktime 100 76 0 0
+setsingle 0 clocktime 0  clockfreq 0 0
 %setsingle 0 clocktime+time 0 clockfreq+2 0 0
 
 program 0
 
-setsteps 1 rbtime/15 0 rbtime
 
-ampgauss 1 0 rbtime rbtime/2.5 1 0 100
+setsingle 1 0 clockampawg clockfreq 1 0
 
-freqlin 1 0 rbtime rbfreq rbfreq  1 0
+setsingle 1 clocktime 0 clockfreq-clocklightshift 0 0
 
-
-setsteps 1 rbtime/15 rbtime 2*rbtime
-
-ampgauss 1 rbtime 2*rbtime rbtime/2.5 -1 100 0
-
-freqlin 1 rbtime 2*rbtime rbfreq rbfreq 0 0
-
-setsingle 1 2*rbtime 0 100 0 0 
 
 
 program 1
@@ -32,14 +23,14 @@ program 1
 
 setsteps 2 rb2time/15 0 rb2time
 
-ampgauss 2 0 rb2time rb2time/2.5 1 0 30 
+ampgauss 2 0 rb2time rb2time/2.5 1 0 20 
 
 freqlin 2 0 rb2time rb2freq rb2freq  1 0
 
 
 setsteps 2 rb2time/15 rb2time 2*rb2time
 
-ampgauss 2 rb2time 2*rb2time rb2time/2.5 -1 30 0
+ampgauss 2 rb2time 2*rb2time rb2time/2.5 -1 20 0
 
 freqlin 2 rb2time 2*rb2time rb2freq rb2freq 0 0
 
@@ -65,3 +56,4 @@ setsingle 3 2*rb3time 0 100 0 0
 
 
 program 3
+ 

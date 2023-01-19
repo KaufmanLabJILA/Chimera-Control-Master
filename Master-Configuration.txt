@@ -79,7 +79,7 @@ ionization
 0
 uv
 0
-blueimage
+gsqubitshutter
 0
 xrot
 0
@@ -145,17 +145,17 @@ tweezerdepth
 slmdepth
 -10 - 10
 0
-clockpiezover
--4 - 4
-0
 clockpiezohor
 -4 - 4
 0
-imagingpow
--10 - 10
+clockpiezover
+-4 - 4
 0
-imagtune
--10 - 10
+gszrotpiezohor
+0 - 10
+0
+gszrotpiezover
+0 - 10
 0
 uvpiezohor
 0 - 10
@@ -199,11 +199,11 @@ sidemotpower
 piezomirror
 -10 - 10
 0
-dac24
--10 - 10
+gsxrotpiezohor
+0 - 10
 0
-dac25
--10 - 10
+gsxrotpiezover
+0 - 10
 0
 dac26
 -10 - 10
@@ -283,49 +283,53 @@ dds11
 0
 0 - 100
 100
-44
+48
 bluemotcoil 1.1
-bluex 0.3316
-bluey 0.2977
-bluez 0.15
+bluex 0.3219
+bluey 0.2211
+bluez -0.03935
 greenmotcoil 0.2
-greenx 0.09626
-greeny 0.03502
-greenz -0.2979
 blueloadtime 200
 greenbroadloadtime 23
 greennarrowloadtime 20
 coolfreq 95.6629
-coolpower 45.0585
+coolpower 65
 cooltime 2
 greennarrowfreq 82.6
-greennarrowpower 2.433
-greennarrowpowerstart 7
+greennarrowpower 3.584
+greennarrowpowerstart 5.568
 bluefreq 110
 bluepower 30
-comploadtime 20
-greenpower 52
+comploadtime 75
+greenpower 58
 greentime 4
-greenfreq 71.0617
-loadtime 300
-loadfreq 98.07
+greenfreq 71.08
+loadtime 200
+loadfreq 98.25
 depth -1.98
-axialcoolfreq 70.67
-axialcoolpower 40
+axialcoolfreq 70.6145
+axialcoolpower 50
 slmpowerfactor 1.92
-xmagic 2.5
-ymagic 0.75993
+xmagic 2.45
+ymagic 0.745
 img_depth -7.62
 overhead_depth -9.9
-filter_depth -0.05
+filter_depth -0.1
 spec_depth -1.068
-xzero 0.0659
-yzero 0.0089
-zzero -0.1969
+xzero 0.049142
+yzero 0.0159294
+zzero -0.133749
 blowaway_depth -0.2
-ramsey_depth -0.12
+ramsey_depth -0.2
 ramptime 2.1
-yclock 4.8
-axisrottime 10
-loadpower 55.06
-115 270 1 210 255 1
+yclock 0.35
+loadpower 88.9
+dds2_factor 1.00911
+load_depth -3.5
+waittime 60
+zop 0.073478
+yop -0.0363
+axisrottime 5
+xclock -0.0478
+zclock -0.111182
+85 240 1 210 255 1

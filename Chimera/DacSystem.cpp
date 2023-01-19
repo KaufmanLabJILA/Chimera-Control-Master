@@ -1159,16 +1159,28 @@ void DacSystem::setMOTValues(VariableSystem* globalVariables)
 			dacValues[0] = variable.ranges[0].initialValue;
 		}
 		else if (variable.name == "bluex") {
-			dacValues[1] = variable.ranges[0].initialValue;
-			dacValues[17] = -variable.ranges[0].initialValue;
+			for (auto variable0 : variables) {
+				if (variable0.name == "xzero") {
+					dacValues[1] = variable.ranges[0].initialValue + variable0.ranges[0].initialValue;
+					dacValues[17] = -variable.ranges[0].initialValue - variable0.ranges[0].initialValue;
+				}
+			}
 		}
 		else if (variable.name == "bluey") {
-			dacValues[2] = variable.ranges[0].initialValue;
-			dacValues[18] = -variable.ranges[0].initialValue;
+			for (auto variable0 : variables) {
+				if (variable0.name == "yzero") {
+					dacValues[2] = variable.ranges[0].initialValue + variable0.ranges[0].initialValue;
+					dacValues[18] = -variable.ranges[0].initialValue - variable0.ranges[0].initialValue;
+				}
+			}
 		}
 		else if (variable.name == "bluez") {
-			dacValues[3] = variable.ranges[0].initialValue;
-			dacValues[19] = -variable.ranges[0].initialValue;
+			for (auto variable0 : variables) {
+				if (variable0.name == "zzero") {
+					dacValues[3] = variable.ranges[0].initialValue + variable0.ranges[0].initialValue;
+					dacValues[19] = -variable.ranges[0].initialValue - variable0.ranges[0].initialValue;
+				}
+			}
 		}
 	}
 	for (int line = 0; line < dacValues.size(); ++line)
