@@ -211,7 +211,7 @@ lattice_pow -5.5
 lattice_zero -0.015
 ax_lattice_pow -4
 ax_lattice_zero -0.01
-axial_phase_set 4.4
+axial_phase_set 9.24579
 xoff 4.2
 yoff 0
 xoff813 -2.12
@@ -225,19 +225,19 @@ mirrorscany 2.92
 f_rad_3d 0.134
 f_ax_3d 0.042
 f_ax_3d_imag 0.126
-imagpowlat 0.142
+imagpowlat 0.137
 moverate 511
 amprate 6000
 imagpow 0.122
-dmbz 0.4
+dmbz 0.399
 by_lacs 0.025
 f_lac -1.64
 c_3p0 80
 fcool 0.071
-c_3p1_lat 79.9927
+c_3p1_lat 79.9959
 bluemottime 50
 uvpm_v_set 0.6
-__t0__ 1673981288
+__t0__ 1674151176
 dr_3p1 0.0039
 uvpm_h_set 0
 75 375 1 100 400 1

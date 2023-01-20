@@ -1,2 +1,2 @@
-C:\Users\KLab\Desktop\Chimera-Control-Master\Configurations\220912_Squeezing\220226_Rydberg.Config
-A:\230116\Raw Data\data_99.h5
+C:\Users\KLab\Desktop\Chimera-Control-Master\Configurations\210220_USETHESE\220305_tweezer_checks.Config
+A:\230119\Raw Data\data_84.h5

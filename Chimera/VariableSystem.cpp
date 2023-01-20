@@ -1,3 +1,4 @@
+
 #include "stdafx.h"
 #include "VariableSystem.h"
 #include "Script.h"

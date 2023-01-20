@@ -119,7 +119,7 @@ void gigaMoog::refreshLUT()
 	i = 0;
 	for (auto& paintMask : paintMaskLUT)
 	{
-		PAINT_MASK_LUT.push_back(paintMask>0.5);
+		PAINT_MASK_LUT.push_back(paintMask);
 		i++;
 	}
 	if (!checkPaintMaskY())
@@ -318,7 +318,7 @@ bool gigaMoog::getPaintMaskX(unsigned int xIndex, unsigned int yIndex)
 	}
 	else
 	{
-		return PAINT_MASK_LUT[2 * yDimPaintMask * xIndex + 2 * yIndex + 0];
+		return PAINT_MASK_LUT[2 * yDimPaintMask * xIndex + 2 * yIndex + 0] > 0.5;
 	}
 }
 
@@ -330,7 +330,7 @@ bool gigaMoog::getPaintMaskY(unsigned int xIndex, unsigned int yIndex)
 	}
 	else
 	{
-		return PAINT_MASK_LUT[2 * yDimPaintMask * xIndex + 2 * yIndex + 1];
+		return PAINT_MASK_LUT[2 * yDimPaintMask * xIndex + 2 * yIndex + 1] > 0.5;
 	}
 }
 
@@ -645,13 +645,15 @@ void gigaMoog::writePaintMoves(MessageSender& ms)
 		ms.enqueue(m);
 	}
 
+	double phase;
 	for (int channel = 0; channel < nTweezerY; channel++) {
 		size_t hardwareChannel = (channel * 8) % 48 + (channel * 8) / 48;
 		memoryDAC1.moveChannel(hardwareChannel / 8);
+		phase = fmod(180 * pow(channel + 1, 2) / nTweezerY, 360); //this assumes comb of even tones, imperfect, but also short duration so not super critical, and fast.
 		Message m = Message::make().destination(MessageDestination::KA007)
 			.DAC(MessageDAC::DAC1).channel(hardwareChannel)
 			.setting(MessageSetting::MOVEFREQUENCY)
-			.frequencyMHz(0).amplitudePercent(0.01).phaseDegrees(0).instantFTW(1).ATWIncr(-ampStepPaintMag).stepSequenceID(0).FTWIncr(0).phaseJump(1);;
+			.frequencyMHz(0).amplitudePercent(0.01).phaseDegrees(phase).instantFTW(1).ATWIncr(-ampStepPaintMag).stepSequenceID(0).FTWIncr(0).phaseJump(1);;
 		ms.enqueue(m);
 	}
 
@@ -659,128 +661,82 @@ void gigaMoog::writePaintMoves(MessageSender& ms)
 	std::string freqXOut, freqYOut, ampXOut, ampYOut;
 	double paintAmpX = 0.0;
 	double ATWSign = 1;
-	double lastPaintAmpX = getPaintAmpX(0, 0);
+	double lastPaintAmpX = 0;
 
 	std::vector<double> paintAmpY;
 	std::vector<double> lastPaintAmpY;
 
 	for (unsigned int channel = 0; channel < nTweezerY; channel++) {
 		paintAmpY.push_back(0);
-		lastPaintAmpY.push_back(getPaintAmpY(0, channel));
+		lastPaintAmpY.push_back(0.0);
 	}
-
-	// turn on single tone along x at (0, 0)
-	double minFreqX = getFreqX(0, 0);
-	//double maxFreqX = getFreqX(48 - 1, 0);
-	unsigned int stepCountX = xDimPaint - 1;
-	//double freqStepX = (maxFreqX - minFreqX) / (stepCountX);
-	size_t hardwareChannel = (0 * 8) % 48 + (0 * 8) / 48;
-	memoryDAC0.moveChannel(hardwareChannel / 8);
-	Message m = Message::make().destination(MessageDestination::KA007)
-		.DAC(MessageDAC::DAC0).channel(hardwareChannel)
-		.setting(MessageSetting::MOVEFREQUENCY)
-		.frequencyMHz(minFreqX).amplitudePercent(getPaintAmpX(0, 0)).phaseDegrees(0).instantFTW(1).ATWIncr(ampStepPaintMag).stepSequenceID(1).FTWIncr(0).phaseJump(1);;
-	ms.enqueue(m);
-	freqXOut += std::to_string(minFreqX) + ", ";
-	ampXOut += std::to_string(getPaintAmpX(0, 0)) + ", ";
-
-	// turn on all tones equally spaced along y over a given range of rows
-	double phase;
-	//double minFreqY = getFreqY(0, yPaintStart);
-	//double maxFreqY = getFreqY(0, yPaintEnd);
-	//double freqStepY = (maxFreqY - minFreqY) / nTweezerY;
-	int indexIncY = 0;
-	for (unsigned int channel = 0; channel < (std::min)(nTweezerY, 24); channel++) {
-		bool enable = getPaintMaskY(0, indexIncY);
-		while (!enable)
-		{
-			indexIncY++;
-			if (indexIncY >= yDimPaintMask){
-				goto stop;
-			}
-			enable = getPaintMaskY(0, indexIncY);
-		}
-		if (enable)
-		{
-			size_t hardwareChannel = (channel * 8) % 48 + (channel * 8) / 48;
-			memoryDAC1.moveChannel(hardwareChannel / 8);
-			phase = fmod(180 * pow(channel + 1, 2) / nTweezerY, 360); //this assumes comb of even tones, imperfect, but also short duration so not super critical, and fast.
-			//double tmpFreq = minFreqY + (freqStepY * channel);
-			double tmpFreq = getFreqY(0, indexIncY);
-			double tmpAmp = getPaintAmpY(0, indexIncY);
-			//double tmpAmp = getPaintAmpY(0, channel);
-			Message m = Message::make().destination(MessageDestination::KA007)
-				.DAC(MessageDAC::DAC1).channel(hardwareChannel)
-				.setting(MessageSetting::MOVEFREQUENCY)
-				.frequencyMHz(tmpFreq).amplitudePercent(tmpAmp).phaseDegrees(phase).instantFTW(1).ATWIncr(ampStepPaintMag).stepSequenceID(1).FTWIncr(511).phaseJump(1);;
-			ms.enqueue(m);
-
-			//paintAmpY.push_back(0);
-			//lastPaintAmpY.push_back(tmpAmp);
-			freqYOut += std::to_string(tmpFreq) + ", ";
-			ampYOut += std::to_string(tmpAmp) + ", ";
-		}
-	}
-stop:
-	freqYOut += "\n";
-	ampYOut += "\n";
 
 	// sweep along x
-	for (unsigned int step = 1; step <= stepCountX; step++) {
+	int totalPaintStepsX = 0;
+	for (unsigned int step = 0; step < xDimPaint; step++) {
 		bool enableX = getPaintMaskX(step, 0);
-		if (enableX)
-		{
-			paintAmpX = getPaintAmpX(step, 0);
-			ATWSign = lastPaintAmpX > paintAmpX ? -1.0 : 1.0;
-			lastPaintAmpX = paintAmpX;
-
-			size_t hardwareChannel = (0 * 8) % 48 + (0 * 8) / 48;
-			memoryDAC0.moveChannel(hardwareChannel / 8);
-			double tmpFreqX = getFreqX(step, 0);
-			Message m = Message::make().destination(MessageDestination::KA007)
-				.DAC(MessageDAC::DAC0).channel(hardwareChannel)
-				.setting(MessageSetting::MOVEFREQUENCY)
-				.frequencyMHz(tmpFreqX).amplitudePercent(paintAmpX).phaseDegrees(0).instantFTW(1).ATWIncr(ATWSign * ampStepPaintMag).stepSequenceID(1 + step).FTWIncr(511).phaseJump(0);;
-			ms.enqueue(m);
-			freqXOut += std::to_string(tmpFreqX) + ", ";
-			ampXOut += std::to_string(paintAmpX) + ", ";
-
-			indexIncY = 0;
-			for (unsigned int channel = 0; channel < (std::min)(nTweezerY, 24); channel++) {
-				bool enableY= getPaintMaskY(step, indexIncY);
-				while (!enableY)
-				{
-					indexIncY++;
-					if (indexIncY >= yDimPaintMask) {
-						goto stop;
-					}
-					enableY = getPaintMaskY(step, indexIncY);
-				}
-				if (channel < yDimPaint)
-				{
-					paintAmpY[channel] = getPaintAmpY(step, indexIncY);
-					double paintFreqY = getFreqY(step, indexIncY);
-					ATWSign = lastPaintAmpY[channel] > paintAmpY[channel] ? -1.0 : 1.0;
-					lastPaintAmpY[channel] = paintAmpY[channel];
-					size_t hardwareChannel = (channel * 8) % 48 + (channel * 8) / 48;
-					memoryDAC1.moveChannel(hardwareChannel / 8);
-					Message m = Message::make().destination(MessageDestination::KA007)
-						.DAC(MessageDAC::DAC1).channel(hardwareChannel)
-						.setting(MessageSetting::MOVEFREQUENCY)
-						.frequencyMHz(paintFreqY).amplitudePercent(paintAmpY[channel]).phaseDegrees(0).instantFTW(1).ATWIncr(ATWSign * ampStepPaintMag).stepSequenceID(1 + step).FTWIncr(511).phaseJump(0);;
-					ms.enqueue(m);
-
-					freqYOut += std::to_string(paintFreqY) + ", ";
-					ampYOut += std::to_string(paintAmpY[channel]) + ", ";
-				}
-			}
-			freqYOut += "\n";
-			ampYOut += "\n";
+		if (!enableX) {
+			continue;
 		}
+
+		totalPaintStepsX++;
+
+		paintAmpX = getPaintAmpX(step, 0);
+		ATWSign = lastPaintAmpX > paintAmpX ? -1.0 : 1.0;
+		lastPaintAmpX = paintAmpX;
+
+		memoryDAC0.moveChannel(0);
+
+		double tmpFreqX = getFreqX(step, 0);
+		Message m = Message::make().destination(MessageDestination::KA007)
+			.DAC(MessageDAC::DAC0).channel(0)
+			.setting(MessageSetting::MOVEFREQUENCY)
+			.frequencyMHz(tmpFreqX).amplitudePercent(paintAmpX).phaseDegrees(0).instantFTW(1).ATWIncr(ATWSign * ampStepPaintMag).stepSequenceID(totalPaintStepsX).FTWIncr(511).phaseJump(0);;
+		ms.enqueue(m);
+
+		freqXOut += std::to_string(tmpFreqX) + ", ";
+		ampXOut += std::to_string(paintAmpX) + ", ";
+
+		int indexIncY = 0;
+		for (unsigned int channel = 0; channel < (std::min)(nTweezerY, 24); channel++) {
+			bool enableY = false; // getPaintMaskY(step, indexIncY);
+			while (!enableY) {
+				if (indexIncY >= yDimPaintMask) {
+					goto endY;
+				}
+
+				enableY = getPaintMaskY(step, indexIncY);
+				indexIncY++;
+			}
+
+			if (enableY) {
+				double paintFreqY = getFreqY(step, indexIncY - 1);
+
+				paintAmpY[channel] = getPaintAmpY(step, indexIncY - 1);
+				ATWSign = lastPaintAmpY[channel] > paintAmpY[channel] ? -1.0 : 1.0;
+				lastPaintAmpY[channel] = paintAmpY[channel];
+
+				phase = fmod(180 * pow(channel + 1, 2) / nTweezerY, 360); //this assumes comb of even tones, imperfect, but also short duration so not super critical, and fast.
+
+				size_t hardwareChannel = (channel * 8) % 48 + (channel * 8) / 48;
+				memoryDAC1.moveChannel(hardwareChannel / 8);
+				Message m = Message::make().destination(MessageDestination::KA007)
+					.DAC(MessageDAC::DAC1).channel(hardwareChannel)
+					.setting(MessageSetting::MOVEFREQUENCY)
+					.frequencyMHz(paintFreqY).amplitudePercent(paintAmpY[channel]).phaseDegrees(phase).instantFTW(1).ATWIncr(ATWSign * ampStepPaintMag).stepSequenceID(totalPaintStepsX).FTWIncr(511).phaseJump(0);;
+				ms.enqueue(m);
+
+				freqYOut += std::to_string(paintFreqY) + ", ";
+				ampYOut += std::to_string(paintAmpY[channel]) + ", ";
+			}
+		}
+
+		endY:
+		freqYOut += "\n";
+		ampYOut += "\n";
 	}
 
-	if (exportPaint)
-	{
+	if (exportPaint) {
 		exportPaintParams(freqXOut, freqYOut, ampXOut, ampYOut);
 	}
 
@@ -791,7 +747,7 @@ stop:
 		Message m = Message::make().destination(MessageDestination::KA007)
 			.DAC(MessageDAC::DAC1).channel(hardwareChannel)
 			.setting(MessageSetting::MOVEFREQUENCY)
-			.frequencyMHz(0).amplitudePercent(0.01).phaseDegrees(0).instantFTW(1).ATWIncr(-ampStepPaintMag).stepSequenceID(2+stepCountX).FTWIncr(511).phaseJump(0);;
+			.frequencyMHz(0).amplitudePercent(0.01).phaseDegrees(0).instantFTW(1).ATWIncr(-ampStepPaintMag).stepSequenceID(1 + totalPaintStepsX).FTWIncr(511).phaseJump(0);;
 		ms.enqueue(m);
 	}
 	for (unsigned int channel = 0; channel < nTweezerX; channel++) {
@@ -800,7 +756,7 @@ stop:
 		Message m = Message::make().destination(MessageDestination::KA007)
 			.DAC(MessageDAC::DAC0).channel(hardwareChannel)
 			.setting(MessageSetting::MOVEFREQUENCY)
-			.frequencyMHz(0).amplitudePercent(0.01).phaseDegrees(0).instantFTW(1).ATWIncr(-ampStepPaintMag).stepSequenceID(2 + stepCountX).FTWIncr(511).phaseJump(0);;
+			.frequencyMHz(0).amplitudePercent(0.01).phaseDegrees(0).instantFTW(1).ATWIncr(-ampStepPaintMag).stepSequenceID(1 + totalPaintStepsX).FTWIncr(511).phaseJump(0);;
 		ms.enqueue(m);
 	}
 }

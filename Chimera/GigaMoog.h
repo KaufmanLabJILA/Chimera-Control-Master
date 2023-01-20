@@ -117,7 +117,7 @@ private:
 	std::vector<double> FTW_LUT;
 	std::vector<double> subpixelLUT; //This must be synchronized with atomCruncher subpixel masks.
 	std::vector<double> PAINT_ATW_LUT;
-	std::vector<bool> PAINT_MASK_LUT;
+	std::vector<double> PAINT_MASK_LUT;
 	double xOffset, yOffset;
 	double xOffsetManual, yOffsetManual;
 	std::vector<double> xPix2MHz, yPix2MHz;
