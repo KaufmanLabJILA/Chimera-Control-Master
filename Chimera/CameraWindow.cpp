@@ -1219,8 +1219,9 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 						//size_t indPixImg = (ix + input->masksCrop[imask + 2 * input->nMask]) + (input->imageDims.width)*(iy + input->masksCrop[imask]); //column major indexing
 						size_t indPixMask = (input->maskWidX)*(input->maskWidY)*imask + ix + iy * (input->maskWidX);
 						try {
-							tempImageROIs[imask] += ((*input->imageQueue)[0][indPixImg] - input->bgImg[indPixImg]) * (input->masks[indPixMask]);
+						tempImageROIs[imask] += ((*input->imageQueue)[0][indPixImg] - input->bgImg[indPixImg]) * (input->masks[indPixMask]);
 						}
+
 						catch (...) {
 							//TODO: work out why this is failing intermittently in debug mode.
 						}
