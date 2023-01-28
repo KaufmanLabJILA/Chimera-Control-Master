@@ -11,8 +11,8 @@
 // build and debug other aspects of the program.
 
 //#define MASTER_COMPUTER
-#define DEEP_THOUGHT
-//#define SAMANTHA
+//#define DEEP_THOUGHT
+#define SAMANTHA
 //#define ADAMS_LAB
 // #define DESKTOP_COMPUTER
 //#define SALAMIS_TABLET
@@ -109,16 +109,17 @@ const std::string DDS_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAUL
 #ifdef SAMANTHA
 #define PYTHON_HOME L"C:\\Users\\klab\\Anaconda3\\"
 #define MOOG_SAFEMODE true
-#define AWG_SAFEMODE true
+#define AWG_SAFEMODE false
 #define GIGAMOOG_SAFEMODE true
 #define ATOMCRUNCHER_SAFEMODE true
+#define AUTOALIGN_SAFEMODE true
 #define NIAWG_SAFEMODE true
 #define ANDOR_SAFEMODE true
 #define MAKO_SAFEMODE true
 #define PYTHON_SAFEMODE true
 #define DIO_SAFEMODE true
 #define DIO_FPGA_SAFEMODE true
-#define DIO_ARM_MODE false
+#define DIO_ARM_MODE true
 #define DDS_SAFEMODE true
 #define DDS_RUNTEST true
 #define DAQMX_SAFEMODE true

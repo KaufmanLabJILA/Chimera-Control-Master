@@ -97,7 +97,13 @@ void StatusControl::appendTimebar()
 	std::string timeStr = "(" + str(currentTime.tm_year + 1900) + ":" + str(currentTime.tm_mon + 1) + ":"
 		+ str(currentTime.tm_mday) + ")" + str(currentTime.tm_hour) + ":"
 		+ str(currentTime.tm_min) + ":" + str(currentTime.tm_sec);
-	setColor(RGB(255, 255, 255));
+	try {
+		setColor(RGB(255, 255, 255));
+	}
+	catch (...) {
+		//TODO: work out why this is failing intermittently in debug mode.
+	}
+	
 	addStatusText("\r\n**********" + timeStr + "**********\r\n", true);
 }
 

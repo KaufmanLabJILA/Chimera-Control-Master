@@ -237,6 +237,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 				//input->moog->loadMoogScript(input->moogScriptAddress);
 				//input->moog->analyzeMoogScript(input->moog, input->variables, variationInc);
 				input->awg->loadAWGScript(input->awgScriptAddress);
+
 				input->awg->analyzeAWGScript(input->awg, input->variables, variationInc);
 			}
 

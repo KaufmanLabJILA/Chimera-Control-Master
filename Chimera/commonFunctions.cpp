@@ -76,6 +76,53 @@ namespace commonFunctions
 
 				break;
 			}
+			case ID_FILE_RUN_AWG_FOLDER:
+			{
+				CWinThread* multiAWGExperimentThread;
+
+				std::string filepath = scriptWin->openAWGScriptFolder(parent);
+				if (filepath == "") {
+					break;
+				}
+				std::string delimiter = "\\";
+				std::vector<std::string> filepathparts;
+
+				size_t pos = 0;
+				std::string token;
+				while ((pos = filepath.find(delimiter)) != std::string::npos) {
+					token = filepath.substr(0, pos);
+					filepathparts.push_back(token);
+					filepath.erase(0, pos + delimiter.length());
+				}
+				std::string folderpath = "";
+				for (int i = 0; i < filepathparts.size(); i++) {
+					folderpath += filepathparts[i] + "\\";
+				}
+				mainWin->getComm()->sendStatus("going to run all AWG scripts the selected folder:" + folderpath + "\r\n");
+
+				std::vector<std::string> AWG_scripts;
+
+				for (const auto & file : boost::filesystem::directory_iterator(folderpath)) {
+					//mainWin->getComm()->sendStatus(file.path().string() + "\r\n");
+					std::string filepathstr = file.path().string();
+					if (filepathstr.substr(filepathstr.find_last_of(".") + 1) == "awgScript") {
+						AWG_scripts.push_back(filepathstr);
+						mainWin->getComm()->sendStatus(filepathstr + "\r\n");
+					}
+				}
+				MultiAWGExperimentInput* multiInput = new MultiAWGExperimentInput;
+				multiInput->auxWin = auxWin;
+				multiInput->camWin = camWin;
+				multiInput->mainWin = mainWin;
+				multiInput->scriptWin = scriptWin;
+				multiInput->parent = parent;
+				multiInput->msgID = msgID;
+				multiInput->AWG_scripts = AWG_scripts;
+				multiAWGExperimentThread = AfxBeginThread(multipleAWGExperimentThreadProcedure, multiInput, THREAD_PRIORITY_HIGHEST);
+				Sleep(3);
+
+				break;
+			}
 			case ID_FILE_RUN_EVERYTHING:
 			case ID_ACCELERATOR_F5:
 			case ID_FILE_MY_WRITE_WAVEFORMS:
@@ -86,7 +133,7 @@ namespace commonFunctions
 				try
 				{
 					prepareCamera( mainWin, camWin, input );
-					prepareMasterThread( msgID, scriptWin, mainWin, camWin, auxWin, input, false, true, true );
+					prepareMasterThread( msgID, scriptWin, mainWin, camWin, auxWin, input, true, true, true,false );
 					camWin->preparePlotter(input);
 					camWin->prepareAtomCruncher(input);
 
@@ -288,7 +335,7 @@ namespace commonFunctions
 				try
 				{
 					commonFunctions::prepareMasterThread( ID_RUNMENU_RUNMASTER, scriptWin, mainWin, camWin, auxWin, 
-														  input, false, true, true );
+														  input, false, true, true,true );
 					commonFunctions::startMaster( mainWin, input );
 				}
 				catch (Error& err)
@@ -669,7 +716,9 @@ namespace commonFunctions
 
 				logParameters(input, multiExpInput->camWin, true);
 
-				multiExpInput->camWin->startAtomCruncher(input);
+				if (!ATOMCRUNCHER_SAFEMODE) {
+					multiExpInput->camWin->startAtomCruncher(input);
+				}
 				multiExpInput->camWin->startPlotterThread(input);
 				multiExpInput->camWin->startCamera();
 				startMaster(multiExpInput->mainWin, input);
@@ -701,6 +750,75 @@ namespace commonFunctions
 		return false;
 	}
 
+	UINT __cdecl multipleAWGExperimentThreadProcedure(void* voidInput) {
+
+		MultiAWGExperimentInput* multiAWGExpInput = (MultiAWGExperimentInput*)voidInput;
+		ExperimentInput input;
+
+		std::string runningMultiAWGExperiment = "\r\n\r\nYou are going to run multiple AWG experiments. I hope this dialog helps.";
+
+		/*INT_PTR delayDialog;
+		delayDialog = DialogBoxParam(NULL, MAKEINTRESOURCE(IDD_BEGINNING_SETTINGS), 0,
+				beginningSettingsDialogProc, (LPARAM)cstr(runningMultiExperiment));*/
+
+		for (int i = 0; i < multiAWGExpInput->AWG_scripts.size(); i++) {
+			if (masterAborted) {
+				break;
+			}
+			multiAWGExpInput->camWin->redrawPictures(false);
+			bool opened_script = multiAWGExpInput->scriptWin->openAWGScriptByPath(multiAWGExpInput->AWG_scripts[i]);
+			if (opened_script == 1) {
+				multiAWGExpInput->mainWin->getComm()->sendError("failed to AWG script: " + multiAWGExpInput->AWG_scripts[i]);
+				break;
+			}
+			try
+			{
+				Sleep(0.5);
+				multiAWGExpInput->mainWin->profile.saveConfigurationOnly(multiAWGExpInput->scriptWin, multiAWGExpInput->mainWin, multiAWGExpInput->auxWin, multiAWGExpInput->camWin);
+				Sleep(0.5);
+				prepareCamera(multiAWGExpInput->mainWin, multiAWGExpInput->camWin, input, false);
+				Sleep(0.5);
+				prepareMasterThread(multiAWGExpInput->msgID, multiAWGExpInput->scriptWin, multiAWGExpInput->mainWin, multiAWGExpInput->camWin, multiAWGExpInput->auxWin,
+					input, false, true, true, false);
+				Sleep(0.5);
+				multiAWGExpInput->camWin->preparePlotter(input);
+				multiAWGExpInput->camWin->prepareAtomCruncher(input);
+
+				logParameters(input, multiAWGExpInput->camWin, true);
+
+				if (!ATOMCRUNCHER_SAFEMODE) {
+					multiAWGExpInput->camWin->startAtomCruncher(input);
+				}
+				multiAWGExpInput->camWin->startPlotterThread(input);
+				multiAWGExpInput->camWin->startCamera();
+				startMaster(multiAWGExpInput->mainWin, input);
+			}
+			catch (Error& err)
+			{
+				if (err.whatBare() == "CANCEL")
+				{
+					multiAWGExpInput->mainWin->getComm()->sendStatus("Canceled camera initialization.\r\n");
+					multiAWGExpInput->mainWin->getComm()->sendColorBox(Niawg, 'B');
+					break;
+				}
+				multiAWGExpInput->mainWin->getComm()->sendError("EXITED WITH ERROR! " + err.whatStr());
+				multiAWGExpInput->mainWin->getComm()->sendColorBox(Camera, 'R');
+				multiAWGExpInput->mainWin->getComm()->sendStatus("EXITED WITH ERROR!\r\nInitialized Default Waveform\r\n");
+				multiAWGExpInput->mainWin->getComm()->sendTimer("ERROR!");
+				multiAWGExpInput->camWin->assertOff();
+				break;
+			}
+			multiAWGExpInput->mainWin->masterThreadManager.runningThread->m_bAutoDelete = FALSE;
+			multiAWGExpInput->mainWin->masterThreadManager.runningThread->ResumeThread();
+			WaitForSingleObject(multiAWGExpInput->mainWin->masterThreadManager.runningThread->m_hThread, INFINITE);
+			Sleep(0.5);
+			delete multiAWGExpInput->mainWin->masterThreadManager.runningThread;
+			multiAWGExpInput->mainWin->masterThreadManager.runningThread = 0;
+			Sleep(0.5);
+		}
+		delete multiAWGExpInput;
+		return false;
+	}
 
 	void prepareMasterThread( int msgID, ScriptingWindow* scriptWin, MainWindow* mainWin, CameraWindow* camWin, 
 		AuxiliaryWindow* auxWin, ExperimentInput& input, bool single, bool runAWG, bool runTtls, bool prompt )
@@ -776,7 +894,7 @@ namespace commonFunctions
 		if (!single && prompt)
 		{
 			areYouSure = DialogBoxParam(NULL, MAKEINTRESOURCE(IDD_BEGINNING_SETTINGS), 0,
-				beginningSettingsDialogProc, (LPARAM)cstr(beginInfo + beginQuestion));
+				beginningSettingsDialogProc, (LPARAM)cstr(beginInfo + beginQuestion)); 
 		}
 		if (areYouSure == 0)
 		{

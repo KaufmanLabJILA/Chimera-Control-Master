@@ -713,6 +713,19 @@ std::string ScriptingWindow::openMasterScriptFolder(CWnd* parent)
 	}
 }
 
+std::string ScriptingWindow::openAWGScriptFolder(CWnd* parent)
+{
+	try
+	{
+		std::string horizontalOpenName = getFolderWithExplorer(parent, AWG_SCRIPT_EXTENSION);
+		return horizontalOpenName;
+	}
+	catch (Error& err)
+	{
+		comm()->sendError("New AWG function Failed: " + err.whatStr() + "\r\n");
+	}
+}
+
 int ScriptingWindow::openMasterScriptByPath(std::string filepath)
 {
 	try
@@ -726,6 +739,23 @@ int ScriptingWindow::openMasterScriptByPath(std::string filepath)
 	catch (Error& err)
 	{
 		comm()->sendError("openMasterScriptByPath function Failed: " + err.whatStr() + "\r\n");
+		return 1;
+	}
+}
+
+int ScriptingWindow::openAWGScriptByPath(std::string filepath)
+{
+	try
+	{
+		awgScript.openParentScript(filepath, getProfile().categoryPath, mainWindowFriend->getRunInfo(), false); //Check later 230120
+		awgScript.updateScriptNameText(getProfile().categoryPath);
+		awgScript.colorEntireScript(auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(),
+			auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames());
+		return 0;
+	}
+	catch (Error& err)
+	{
+		comm()->sendError("openAWGScriptByPath function Failed: " + err.whatStr() + "\r\n");
 		return 1;
 	}
 }
@@ -854,6 +884,7 @@ void ScriptingWindow::openAWGScript(std::string name)
 {
 	awgScript.openParentScript(name, getProfile().categoryPath, mainWindowFriend->getRunInfo());
 }
+
 
 void ScriptingWindow::openGmoogScript(std::string name)
 {

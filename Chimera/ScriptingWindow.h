@@ -88,7 +88,9 @@ class ScriptingWindow : public CDialog
  
 		void newMasterScript(); 
 		std::string openMasterScriptFolder(CWnd* parent);
+		std::string openAWGScriptFolder(CWnd * parent);
 		int openMasterScriptByPath(std::string filepath);
+		int openAWGScriptByPath(std::string filepath);
 		void openMasterScript(CWnd* parent); 
 		void openMasterScript(std::string name); 
 		void saveMasterScript(); 

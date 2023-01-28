@@ -17,6 +17,7 @@ namespace commonFunctions
 	void abortRearrangement( MainWindow* mainWin, CameraWindow* camWin );
 	void startMaster(MainWindow* mainWin, ExperimentInput& input);
 	UINT __cdecl multipleExperimentThreadProcedure(void* voidInput);
+	UINT __cdecl multipleAWGExperimentThreadProcedure(void* voidInput);
 
 	void logParameters( ExperimentInput& input, CameraWindow* camWin, bool takeAndorPictures );
 	//void startFullMasterThread( MainWindow* mainWin, AuxiliaryWindow* auxWin, ScriptingWindow* scriptWin, 
@@ -40,6 +41,19 @@ namespace commonFunctions
 		MainWindow* mainWin;
 		ScriptingWindow* scriptWin;
 		CameraWindow* camWin; 
+		AuxiliaryWindow* auxWin;
+	};
+
+	struct MultiAWGExperimentInput
+	{
+		/*MultiExperimentInput::MultiExperimentInput() :
+			msgID(0), master_scripts({}), parent(NULL), mainWin(NULL), scriptWin(NULL), camWin(NULL), auxWin(NULL) { };*/
+		int msgID;
+		std::vector<std::string> AWG_scripts;
+		CWnd* parent;
+		MainWindow* mainWin;
+		ScriptingWindow* scriptWin;
+		CameraWindow* camWin;
 		AuxiliaryWindow* auxWin;
 	};
 
