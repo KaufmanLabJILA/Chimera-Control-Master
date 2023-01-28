@@ -11,8 +11,10 @@ setsingle 0 clocktime 0  clockfreq 0 0
 program 0
 
 %STARTRB
-
-
+setsingle 1 0*clocktime+0*0.4 clockampawg clockfreq 1 0*clockphase+45
+setsingle 1 1*clocktime+0*0.4 0  clockfreq 0 0
+setsingle 1 1*clocktime+1*0.4 clockampawg clockfreq 1 1*clockphase+45
+setsingle 1 2*clocktime+1*0.4 0  clockfreq 0 0
 
 
 program 1
