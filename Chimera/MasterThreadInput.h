@@ -29,6 +29,7 @@ struct MasterThreadInput
 	//SerialSynth* moog;
 	//std::string moogScriptAddress;
 	fpgaAWG* awg;
+	fpgaAWG* awg2;
 	std::string awgScriptAddress;
 	gigaMoog* gmoog;
 	std::string gmoogScriptAddress;

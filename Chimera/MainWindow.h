@@ -136,6 +136,7 @@ class MainWindow : public CDialog
 		//NiawgController niawg;
 		//SerialSynth moog;
 		fpgaAWG awg;
+		fpgaAWG awg2;
 		gigaMoog gmoog;
 		DDS_SYNTH dds;
 
