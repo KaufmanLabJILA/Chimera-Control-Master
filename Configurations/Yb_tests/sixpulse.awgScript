@@ -1,0 +1,13 @@
+reset
+
+setsingle 1 0    power freq  1 0
+setsingle 1 1    power freq  0 180
+setsingle 1 2    power freq  0 180
+setsingle 1 3    power freq  0 180*2
+setsingle 1 4    0     0     0 0
+
+
+setsingle 1 6000 0     freq 0 0
+
+program 1
+
