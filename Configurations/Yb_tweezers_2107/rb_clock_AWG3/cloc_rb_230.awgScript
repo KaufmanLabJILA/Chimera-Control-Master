@@ -1,0 +1,122 @@
+%zzzzzzxx
+
+
+reset
+
+
+
+
+
+
+
+
+
+setsingle 0 0 clockampawg clockfreq 0 0
+
+setsingle 0 clocktime 0  clockfreq 0 0
+
+
+
+
+
+program 0
+
+
+
+setsingle 1 0 0 clockfreq 1 0
+
+%STARTRB
+setsingle 1 0*clocktime+1*0.3 clockampawg clockfreq 0 0*clockphase+270
+setsingle 1 1*clocktime+1*0.3 0  clockfreq-clocklightshift 0 0
+setsingle 1 1*clocktime+2*0.3 clockampawg clockfreq 0 1*clockphase+270
+setsingle 1 2*clocktime+2*0.3 0  clockfreq-clocklightshift 0 0
+
+
+
+
+
+
+program 1
+
+
+
+setsteps 2 rb2time/25 0 rb2time
+
+
+
+ampgauss 2 0 rb2time rb2time/2.5 1 0 rb2amp
+
+
+
+freqlin 2 0 rb2time rb2freq rb2freq  1 0
+
+
+
+
+
+setsteps 2 rb2time/25 rb2time 2*rb2time
+
+
+
+ampgauss 2 rb2time 2*rb2time rb2time/2.5 -1 rb2amp 0
+
+
+
+freqlin 2 rb2time 2*rb2time rb2freq rb2freq 0 0
+
+
+
+setsingle 2 2*rb2time 0 100 0 0 
+
+
+
+
+
+
+
+program 2
+
+
+
+
+
+setsteps 3 rb3time/25 0 rb3time
+
+
+
+ampgauss 3 0 rb3time rb3time/2.5 1 0 rb3amp 
+
+
+
+freqlin 3 0 rb3time rb3freq rb3freq  1 0
+
+
+
+
+
+setsteps 3 rb3time/25 rb3time 2*rb3time
+
+
+
+ampgauss 3 rb3time 2*rb3time rb3time/2.5 -1 rb3amp 0
+
+
+
+freqlin 3 rb3time 2*rb3time rb3freq rb3freq 0 0
+
+
+
+setsingle 3 2*rb3time 0 100 0 0 
+
+
+
+
+
+program 3
+
+
+
+
+
+
+

@@ -133,7 +133,7 @@ namespace commonFunctions
 				try
 				{
 					prepareCamera( mainWin, camWin, input );
-					prepareMasterThread( msgID, scriptWin, mainWin, camWin, auxWin, input, true, true, true,false );
+					prepareMasterThread( msgID, scriptWin, mainWin, camWin, auxWin, input, false, true, true,true );
 					camWin->preparePlotter(input);
 					camWin->prepareAtomCruncher(input);
 

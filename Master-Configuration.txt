@@ -285,15 +285,15 @@ dds11
 100
 48
 bluemotcoil 1.1
-bluex 0.3105
-bluey 0.2175
-bluez -0.03794
+bluex 0.2531
+bluey 0.2349
+bluez -0.2822
 greenmotcoil 0.2
 blueloadtime 200
 greenbroadloadtime 13
 greennarrowloadtime 20
-coolfreq 95.5632
-coolpower 50
+coolfreq 95.399
+coolpower 53.7054
 cooltime 2
 greennarrowfreq 82.42
 greennarrowpower 3.531
@@ -301,14 +301,14 @@ greennarrowpowerstart 14.72
 bluefreq 110
 bluepower 30
 comploadtime 75
-greenpower 58
+greenpower 36
 greentime 4
-greenfreq 71.08
+greenfreq 71.12
 loadtime 200
 loadfreq 98
 depth -1.98
-axialcoolfreq 70.6145
-axialcoolpower 50
+axialcoolfreq 70.5215
+axialcoolpower 31
 slmpowerfactor 1.92
 xmagic 2.45
 ymagic 0.745
