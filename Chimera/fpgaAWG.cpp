@@ -134,7 +134,7 @@ void fpgaAWG::setSingle(unsigned long channel, float time, float amp, float freq
 	awgCommandList.back().ampPercent = amp;
 	awgCommandList.back().freqMHz = freq;
 	awgCommandList.back().phase_update = phase_update;
-	awgCommandList.back().phaseDegrees = fmod(phase,360);
+	awgCommandList.back().phaseDegrees = phase;
 }
 
 void fpgaAWG::freqLinearRamp(unsigned long channel, float tStart, float tEnd, float fStart, float fEnd, bool phase_update, float phaseStart) {
