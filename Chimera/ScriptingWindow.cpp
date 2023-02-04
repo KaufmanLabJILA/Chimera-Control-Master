@@ -732,8 +732,8 @@ int ScriptingWindow::openMasterScriptByPath(std::string filepath)
 	{
 		masterScript.openParentScript(filepath, getProfile().categoryPath, mainWindowFriend->getRunInfo(), false);
 		masterScript.updateScriptNameText(getProfile().categoryPath);
-		masterScript.colorEntireScript(auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(),
-			auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames());
+		//masterScript.colorEntireScript(auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(),
+			//auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames());
 		return 0;
 	}
 	catch (Error& err)
@@ -747,10 +747,10 @@ int ScriptingWindow::openAWGScriptByPath(std::string filepath)
 {
 	try
 	{
-		awgScript.openParentScript(filepath, getProfile().categoryPath, mainWindowFriend->getRunInfo(), false); //Check later 230120
+		awgScript.openParentScript(filepath, getProfile().categoryPath, mainWindowFriend->getRunInfo(), false); 
 		awgScript.updateScriptNameText(getProfile().categoryPath);
-		awgScript.colorEntireScript(auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(),
-			auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames());
+		//awgScript.colorEntireScript(auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(),
+			//auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames());
 		return 0;
 	}
 	catch (Error& err)

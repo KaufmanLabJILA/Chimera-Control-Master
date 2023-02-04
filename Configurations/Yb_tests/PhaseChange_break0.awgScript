@@ -1,0 +1,24 @@
+reset
+
+
+
+setsingle 1 0*clocktime+0*0.2 clockampawg clockfreq 1 0*clockphase
+setsingle 1 1*clocktime+0*0.2 0  clockfreq-clocklightshift 0 0*clockphase
+setsingle 1 1*clocktime+1*0.2 clockampawg clockfreq 1 1*clockphase
+setsingle 1 2*clocktime+1*0.2 0  clockfreq-clocklightshift 0 1*clockphase
+setsingle 1 2*clocktime+2*0.2 clockampawg clockfreq 1 2*clockphase
+setsingle 1 3*clocktime+2*0.2 0  clockfreq-clocklightshift 0 2*clockphase
+setsingle 1 3*clocktime+3*0.2 clockampawg clockfreq 1 3*clockphase
+setsingle 1 4*clocktime+3*0.2 0  clockfreq-clocklightshift 0 3*clockphase
+setsingle 1 4*clocktime+4*0.2 clockampawg clockfreq 1 4*clockphase
+setsingle 1 5*clocktime+4*0.2 0  clockfreq-clocklightshift 0 4*clockphase
+setsingle 1 5*clocktime+5*0.2 clockampawg clockfreq 1 5*clockphase
+setsingle 1 6*clocktime+5*0.2 0  clockfreq-clocklightshift 0 5*clockphase
+
+
+
+
+setsingle 1 6000 0  clockfreq 0 0
+
+program 1
+

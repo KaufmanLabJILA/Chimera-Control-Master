@@ -43,10 +43,11 @@ public:
 		return(ATW);
 	};
 	static unsigned int getPTW(double phaseDegrees) {
-		if (phaseDegrees < 0 || phaseDegrees > 360) {
-			thrower("AWG phase out of range, should be <360 degrees.");
+		if (phaseDegrees < -3600 ) {
+			thrower("AWG phase out of range, should be >-3600 degrees.");
 		}
-		unsigned int PTW = round(phaseDegrees * 4095 / 360.0);
+
+		unsigned int PTW = round(fmod(phaseDegrees+3600,360) * 4095 / 360.0);
 		return(PTW);
 	}
 	static unsigned long int getTTW(double timeMicrosecs) {
