@@ -269,6 +269,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 			input->ddss->writeDDSs(variationInc, skipOption);
 			input->ttls->writeTtlDataToFPGA(variationInc, skipOption);
 			//input->dacs->startDacs(); 
+			Sleep(500);
 
 			for (UINT repInc = 0; repInc < input->repetitionNumber; repInc++)
 			{

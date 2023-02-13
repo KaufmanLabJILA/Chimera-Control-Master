@@ -703,14 +703,14 @@ namespace commonFunctions
 			}
 			try
 			{
-				Sleep(0.5);
+				Sleep(50);
 				multiExpInput->mainWin->profile.saveConfigurationOnly(multiExpInput->scriptWin, multiExpInput->mainWin, multiExpInput->auxWin, multiExpInput->camWin);
-				Sleep(0.5);
+				Sleep(50);
 				prepareCamera(multiExpInput->mainWin, multiExpInput->camWin, input, false);
-				Sleep(0.5);
+				Sleep(50);
 				prepareMasterThread(multiExpInput->msgID, multiExpInput->scriptWin, multiExpInput->mainWin, multiExpInput->camWin, multiExpInput->auxWin, 
 					input, false, true, true, false);
-				Sleep(0.5);
+				Sleep(50);
 				multiExpInput->camWin->preparePlotter(input);
 				multiExpInput->camWin->prepareAtomCruncher(input);
 
@@ -741,10 +741,10 @@ namespace commonFunctions
 			multiExpInput->mainWin->masterThreadManager.runningThread->m_bAutoDelete = FALSE;
 			multiExpInput->mainWin->masterThreadManager.runningThread->ResumeThread();
 			WaitForSingleObject(multiExpInput->mainWin->masterThreadManager.runningThread->m_hThread, INFINITE);
-			Sleep(0.5);
+			Sleep(50);
 			delete multiExpInput->mainWin->masterThreadManager.runningThread;
 			multiExpInput->mainWin->masterThreadManager.runningThread = 0;
-			Sleep(0.5);
+			Sleep(2000);
 		}
 		delete multiExpInput;
 		return false;
