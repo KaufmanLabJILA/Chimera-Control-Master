@@ -11,8 +11,8 @@
 // build and debug other aspects of the program.
 
 //#define MASTER_COMPUTER
-#define DEEP_THOUGHT
-//#define SAMANTHA
+//#define DEEP_THOUGHT
+#define SAMANTHA
 //#define ADAMS_LAB
 // #define DESKTOP_COMPUTER
 //#define SALAMIS_TABLET
@@ -22,7 +22,8 @@
 #ifdef DEEP_THOUGHT
 #define PYTHON_HOME L"C:\\Users\\klab\\Anaconda3\\"
 #define MOOG_SAFEMODE true
-#define AWG_SAFEMODE false
+#define AWG_SAFEMODE0 false
+#define AWG_SAFEMODE1 true
 #define GIGAMOOG_SAFEMODE false
 #define NIAWG_SAFEMODE true
 #define ANDOR_SAFEMODE false
@@ -54,7 +55,8 @@
 #define DDS_FPGA_PORT "COM7" //Mimas A7 DDS
 #define GIGAMOOG_PORT 804
 #define GIGAMOOG_IPADDRESS "192.168.7.179"
-#define AWG_PORT "COM13"
+#define AWG_PORT0 "COM13"
+#define AWG_PORT1 "COM13"
 #define AWG_BAUD 115200 /*921600*/ 
 #define TOP_BOTTOM_TEK_SAFEMODE true
 #define TOP_BOTTOM_TEK_USB_ADDRESS "USB0::0x0699::0x0343::C021681::0::INSTR"
@@ -109,7 +111,8 @@ const std::string DDS_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAUL
 #ifdef SAMANTHA
 #define PYTHON_HOME L"C:\\Users\\klab\\Anaconda3\\"
 #define MOOG_SAFEMODE true
-#define AWG_SAFEMODE false
+#define AWG_SAFEMODE0 false
+#define AWG_SAFEMODE1 true
 #define GIGAMOOG_SAFEMODE true
 #define ATOMCRUNCHER_SAFEMODE true
 #define AUTOALIGN_SAFEMODE true
@@ -141,7 +144,8 @@ const std::string DDS_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAUL
 #define DDS_FPGA_PORT "COM7" //Mimas A7 DDS
 #define GIGAMOOG_PORT 804
 #define GIGAMOOG_IPADDRESS "192.168.7.179"
-#define AWG_PORT "COM8"
+#define AWG_PORT0 "COM8"
+#define AWG_PORT1 "COM9"
 #define AWG_BAUD 115200 /*921600*/ 
 #define TOP_BOTTOM_TEK_SAFEMODE true
 #define TOP_BOTTOM_TEK_USB_ADDRESS "USB0::0x0699::0x0343::C021681::0::INSTR"
