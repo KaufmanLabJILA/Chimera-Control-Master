@@ -7,7 +7,7 @@ pushbeam
 0
 blue3dmot
 0
-coolmod
+zcor
 0
 greennarrow
 0
@@ -117,7 +117,7 @@ rb3awg
 0
 axialcool
 0
-rb2awg
+xcor
 0
 rb1awg
 0
