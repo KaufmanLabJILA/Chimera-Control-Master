@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "fpgaAWG.h"
 
-fpgaAWG::fpgaAWG(std::string portID, int baudrate) : fpga(portID, AWG_SAFEMODE0 ? -1 : baudrate) {
+fpgaAWG::fpgaAWG(std::string portID, int baudrate, bool AWG_SAFEMODE) : fpga(portID, AWG_SAFEMODE ? -1 : baudrate) {
 	//using ternary operators to change which fpga constructor is called.
 }
 
@@ -91,6 +91,18 @@ std::vector<awgCommand>& fpgaAWG::selectCommandList(unsigned long channel) {
 	}
 	else if (channel == 3) {
 		return awgCommandListDAC3;
+	}
+	else if (channel == 4) {
+		return awgCommandListDAC4;
+	}
+	else if (channel == 5) {
+		return awgCommandListDAC5;
+	}
+	else if (channel == 6) {
+		return awgCommandListDAC6;
+	}
+	else if (channel == 7) {
+		return awgCommandListDAC7;
 	}
 	else {
 		thrower("Writing to multiple AWG channels at once is not currently supported in Chimera.");
@@ -332,6 +344,10 @@ void fpgaAWG::analyzeAWGScript(fpgaAWG* fpgaawg, std::vector<variableType>& vari
 	awgCommandListDAC1.clear();
 	awgCommandListDAC2.clear();
 	awgCommandListDAC3.clear();
+	awgCommandListDAC4.clear();
+	awgCommandListDAC5.clear();
+	awgCommandListDAC6.clear();
+	awgCommandListDAC7.clear();
 	nPreviousStepSetting = 0;
 	startTimeStepSetting = 0.0;
 	stepSize = 1;

@@ -14,7 +14,7 @@
 class fpgaAWG{
 
 public:
-	fpgaAWG(std::string portID, int baudrate);
+	fpgaAWG(std::string portID, int baudrate, bool AWG_SAFEMODE);
 	virtual ~fpgaAWG(void);
 	void trigger();
 	void reset();
@@ -73,6 +73,10 @@ private:
 	std::vector<awgCommand> awgCommandListDAC1;
 	std::vector<awgCommand> awgCommandListDAC2;
 	std::vector<awgCommand> awgCommandListDAC3;
+	std::vector<awgCommand> awgCommandListDAC4;
+	std::vector<awgCommand> awgCommandListDAC5;
+	std::vector<awgCommand> awgCommandListDAC6;
+	std::vector<awgCommand> awgCommandListDAC7;
 	std::vector<awgCommand>& selectCommandList(unsigned long channel);
 
 	// the script file contents get dumped into this.
