@@ -23,7 +23,7 @@
 #define PYTHON_HOME L"C:\\Users\\klab\\Anaconda3\\"
 #define MOOG_SAFEMODE true
 #define AWG_SAFEMODE0 false
-#define AWG_SAFEMODE1 true
+#define AWG_SAFEMODE1 false
 #define GIGAMOOG_SAFEMODE false
 #define NIAWG_SAFEMODE true
 #define ANDOR_SAFEMODE false
