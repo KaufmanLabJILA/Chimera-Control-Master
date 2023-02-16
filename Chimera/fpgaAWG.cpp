@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "fpgaAWG.h"
 
-fpgaAWG::fpgaAWG(std::string portID, int baudrate) : fpga(portID, AWG_SAFEMODE0 ? -1 : baudrate) {
+fpgaAWG::fpgaAWG(std::string portID, int baudrate) : fpga(portID, AWG_SAFEMODE ? -1 : baudrate) {
 	//using ternary operators to change which fpga constructor is called.
 }
 
@@ -239,41 +239,26 @@ void fpgaAWG::freqGaussianRamp(unsigned long channel, float tStart, float tEnd, 
 	awgCommandList[iStart].phase_update = phase_update;
 }
 
-void fpgaAWG::writeCommandList(unsigned long channel, int AWGnum) {
+void fpgaAWG::writeCommandList(unsigned long channel) {
 	std::vector<awgCommand> & awgCommandList = selectCommandList(channel);
 	int numSteps = awgCommandList.size();
 	if (numSteps > 16384) {
 		thrower("AWG out of memory, too many time steps.");
 	}
 	unsigned char channelWord;
-	if (AWGnum== 0) {
-		if (channel == 0) {
-			channelWord = 0b0001;
-		}
-		else if (channel == 1) {
-			channelWord = 0b0010;
-		}
-		else if (channel == 2) {
-			channelWord = 0b0100;
-		}
-		else if (channel == 3) {
-			channelWord = 0b1000;
-		}
+	if (channel == 0) {
+		channelWord = 0b0001;
 	}
-	else if (AWGnum == 1) {
-		if (channel == 4) {
-			channelWord = 0b0001;
-		}
-		else if (channel == 5) {
-			channelWord = 0b0010;
-		}
-		else if (channel == 6) {
-			channelWord = 0b0100;
-		}
-		else if (channel == 7) {
-			channelWord = 0b1000;
-		}
+	else if (channel == 1) {
+		channelWord = 0b0010;
 	}
+	else if (channel == 2) {
+		channelWord = 0b0100;
+	}
+	else if (channel == 3) {
+		channelWord = 0b1000;
+	}
+
 	for (int i = 0; i < numSteps; i++) {
 		writeTimestamp(channelWord, awgCommandList[i].address, awgCommandList[i].timeStampMicro, awgCommandList[i].phase_update, awgCommandList[i].phaseDegrees, awgCommandList[i].ampPercent, awgCommandList[i].freqMHz);
 	};
@@ -417,7 +402,7 @@ void fpgaAWG::analyzeAWGScript(fpgaAWG* fpgaawg, std::vector<variableType>& vari
 		else if (word == "program") {
 			std::string channel;
 			currentAWGScript >> channel;
-			writeCommandList(stoul(channel, nullptr, 0), AWGnum);
+			writeCommandList(stoul(channel, nullptr, 0));
 
 			//Important - after programming a single channel reset resources so another channel can be programmed.
 			nPreviousStepSetting = 0; 

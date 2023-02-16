@@ -24,7 +24,7 @@ public:
 	void setSingle(unsigned long channel, float time, float amp, float freq, bool phase_update, float phase);
 	void freqLinearRamp(unsigned long channel, float tStart, float tEnd, float fStart, float fEnd, bool phase_update, float phaseStart);
 	void freqGaussianRamp(unsigned long channel, float tStart, float tEnd, float tSigma, int direction, float fStart, float fStop, bool phase_update, float phaseStart);
-	void writeCommandList(unsigned long channel, int AWGnum);
+	void writeCommandList(unsigned long channel);
 	void ampLinearRamp(unsigned long channel, float tStart, float tEnd, float aStart, float aEnd);
 	void ampGaussianRamp(unsigned long channel, float tStart, float tEnd, float tSigma, int direction, float aStart, float aStop);
 
