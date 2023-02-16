@@ -1,0 +1,250 @@
+
+
+reset
+
+
+
+
+
+
+
+
+
+setsingle 0 0 clockampawg clockfreq 0 0
+
+setsingle 0 clocktime 0  clockfreq 0 0
+
+
+
+
+
+program 0
+
+
+
+setsingle 1 0 0 clockfreq 1 0
+
+%STARTRB
+
+
+
+
+
+
+program 1
+
+
+
+setsteps 2 rb2time/25 0 rb2time
+
+
+
+ampgauss 2 0 rb2time rb2time/2.5 1 0 rb2amp
+
+
+
+freqlin 2 0 rb2time rb2freq rb2freq  1 0
+
+
+
+
+
+setsteps 2 rb2time/25 rb2time 2*rb2time
+
+
+
+ampgauss 2 rb2time 2*rb2time rb2time/2.5 -1 rb2amp 0
+
+
+
+freqlin 2 rb2time 2*rb2time rb2freq rb2freq 0 0
+
+
+
+setsingle 2 2*rb2time 0 100 0 0 
+
+
+
+
+
+
+
+program 2
+
+
+
+
+
+setsteps 3 rb3time/25 0 rb3time
+
+
+
+ampgauss 3 0 rb3time rb3time/2.5 1 0 rb3amp 
+
+
+
+freqlin 3 0 rb3time rb3freq rb3freq  1 0
+
+
+
+
+
+setsteps 3 rb3time/25 rb3time 2*rb3time
+
+
+
+ampgauss 3 rb3time 2*rb3time rb3time/2.5 -1 rb3amp 0
+
+
+
+freqlin 3 rb3time 2*rb3time rb3freq rb3freq 0 0
+
+
+
+setsingle 3 2*rb3time 0 100 0 0 
+
+
+
+
+
+program 3
+
+setsingle 4 0 0 100 1 0
+
+%STARTRB_X
+
+
+
+
+
+
+program 4
+
+setsingle 5 0 0 80 1 0
+
+%STARTRB_Z
+setsingle 5 0*xrottime+1*0.15 zamp 80 0 0
+setsingle 5 1*zrottime+1*0.15 0 80 0 0
+setsingle 5 1*xrottime+2*0.15 zamp 80 0 0
+setsingle 5 2*zrottime+2*0.15 0 80 0 0
+setsingle 5 2*xrottime+3*0.15 zamp 80 0 0
+setsingle 5 3*zrottime+3*0.15 0 80 0 0
+setsingle 5 3*xrottime+4*0.15 zamp 80 0 0
+setsingle 5 4*zrottime+4*0.15 0 80 0 0
+setsingle 5 4*xrottime+5*0.15 zamp 80 0 0
+setsingle 5 5*zrottime+5*0.15 0 80 0 0
+setsingle 5 5*xrottime+6*0.15 zamp 80 0 0
+setsingle 5 6*zrottime+6*0.15 0 80 0 0
+setsingle 5 6*xrottime+7*0.15 zamp 80 0 0
+setsingle 5 7*zrottime+7*0.15 0 80 0 0
+setsingle 5 7*xrottime+8*0.15 zamp 80 0 0
+setsingle 5 8*zrottime+8*0.15 0 80 0 0
+setsingle 5 8*xrottime+9*0.15 zamp 80 0 0
+setsingle 5 9*zrottime+9*0.15 0 80 0 0
+setsingle 5 9*xrottime+10*0.15 zamp 80 0 0
+setsingle 5 10*zrottime+10*0.15 0 80 0 0
+setsingle 5 10*xrottime+11*0.15 zamp 80 0 0
+setsingle 5 11*zrottime+11*0.15 0 80 0 0
+setsingle 5 11*xrottime+12*0.15 zamp 80 0 0
+setsingle 5 12*zrottime+12*0.15 0 80 0 0
+setsingle 5 12*xrottime+13*0.15 zamp 80 0 0
+setsingle 5 13*zrottime+13*0.15 0 80 0 0
+setsingle 5 13*xrottime+14*0.15 zamp 80 0 0
+setsingle 5 14*zrottime+14*0.15 0 80 0 0
+setsingle 5 14*xrottime+15*0.15 zamp 80 0 0
+setsingle 5 15*zrottime+15*0.15 0 80 0 0
+setsingle 5 15*xrottime+16*0.15 zamp 80 0 0
+setsingle 5 16*zrottime+16*0.15 0 80 0 0
+setsingle 5 16*xrottime+17*0.15 zamp 80 0 0
+setsingle 5 17*zrottime+17*0.15 0 80 0 0
+setsingle 5 17*xrottime+18*0.15 zamp 80 0 0
+setsingle 5 18*zrottime+18*0.15 0 80 0 0
+setsingle 5 18*xrottime+19*0.15 zamp 80 0 0
+setsingle 5 19*zrottime+19*0.15 0 80 0 0
+setsingle 5 19*xrottime+20*0.15 zamp 80 0 0
+setsingle 5 20*zrottime+20*0.15 0 80 0 0
+setsingle 5 20*xrottime+21*0.15 zamp 80 0 0
+setsingle 5 21*zrottime+21*0.15 0 80 0 0
+setsingle 5 21*xrottime+22*0.15 zamp 80 0 0
+setsingle 5 22*zrottime+22*0.15 0 80 0 0
+setsingle 5 22*xrottime+23*0.15 zamp 80 0 0
+setsingle 5 23*zrottime+23*0.15 0 80 0 0
+setsingle 5 23*xrottime+24*0.15 zamp 80 0 0
+setsingle 5 24*zrottime+24*0.15 0 80 0 0
+setsingle 5 24*xrottime+25*0.15 zamp 80 0 0
+setsingle 5 25*zrottime+25*0.15 0 80 0 0
+setsingle 5 25*xrottime+26*0.15 zamp 80 0 0
+setsingle 5 26*zrottime+26*0.15 0 80 0 0
+setsingle 5 26*xrottime+27*0.15 zamp 80 0 0
+setsingle 5 27*zrottime+27*0.15 0 80 0 0
+setsingle 5 27*xrottime+28*0.15 zamp 80 0 0
+setsingle 5 28*zrottime+28*0.15 0 80 0 0
+setsingle 5 28*xrottime+29*0.15 zamp 80 0 0
+setsingle 5 29*zrottime+29*0.15 0 80 0 0
+setsingle 5 29*xrottime+30*0.15 zamp 80 0 0
+setsingle 5 30*zrottime+30*0.15 0 80 0 0
+setsingle 5 30*xrottime+31*0.15 zamp 80 0 0
+setsingle 5 31*zrottime+31*0.15 0 80 0 0
+setsingle 5 31*xrottime+32*0.15 zamp 80 0 0
+setsingle 5 32*zrottime+32*0.15 0 80 0 0
+setsingle 5 32*xrottime+33*0.15 zamp 80 0 0
+setsingle 5 33*zrottime+33*0.15 0 80 0 0
+setsingle 5 33*xrottime+34*0.15 zamp 80 0 0
+setsingle 5 34*zrottime+34*0.15 0 80 0 0
+setsingle 5 34*xrottime+35*0.15 zamp 80 0 0
+setsingle 5 35*zrottime+35*0.15 0 80 0 0
+setsingle 5 35*xrottime+36*0.15 zamp 80 0 0
+setsingle 5 36*zrottime+36*0.15 0 80 0 0
+setsingle 5 36*xrottime+37*0.15 zamp 80 0 0
+setsingle 5 37*zrottime+37*0.15 0 80 0 0
+setsingle 5 37*xrottime+38*0.15 zamp 80 0 0
+setsingle 5 38*zrottime+38*0.15 0 80 0 0
+setsingle 5 38*xrottime+39*0.15 zamp 80 0 0
+setsingle 5 39*zrottime+39*0.15 0 80 0 0
+setsingle 5 39*xrottime+40*0.15 zamp 80 0 0
+setsingle 5 40*zrottime+40*0.15 0 80 0 0
+setsingle 5 40*xrottime+41*0.15 zamp 80 0 0
+setsingle 5 41*zrottime+41*0.15 0 80 0 0
+setsingle 5 41*xrottime+42*0.15 zamp 80 0 0
+setsingle 5 42*zrottime+42*0.15 0 80 0 0
+setsingle 5 42*xrottime+43*0.15 zamp 80 0 0
+setsingle 5 43*zrottime+43*0.15 0 80 0 0
+setsingle 5 43*xrottime+44*0.15 zamp 80 0 0
+setsingle 5 44*zrottime+44*0.15 0 80 0 0
+setsingle 5 44*xrottime+45*0.15 zamp 80 0 0
+setsingle 5 45*zrottime+45*0.15 0 80 0 0
+setsingle 5 45*xrottime+46*0.15 zamp 80 0 0
+setsingle 5 46*zrottime+46*0.15 0 80 0 0
+setsingle 5 46*xrottime+47*0.15 zamp 80 0 0
+setsingle 5 47*zrottime+47*0.15 0 80 0 0
+setsingle 5 47*xrottime+48*0.15 zamp 80 0 0
+setsingle 5 48*zrottime+48*0.15 0 80 0 0
+setsingle 5 48*xrottime+49*0.15 zamp 80 0 0
+setsingle 5 49*zrottime+49*0.15 0 80 0 0
+setsingle 5 49*xrottime+50*0.15 zamp 80 0 0
+setsingle 5 50*zrottime+50*0.15 0 80 0 0
+setsingle 5 50*xrottime+51*0.15 zamp 80 0 0
+setsingle 5 51*zrottime+51*0.15 0 80 0 0
+setsingle 5 51*xrottime+52*0.15 zamp 80 0 0
+setsingle 5 52*zrottime+52*0.15 0 80 0 0
+setsingle 5 52*xrottime+53*0.15 zamp 80 0 0
+setsingle 5 53*zrottime+53*0.15 0 80 0 0
+setsingle 5 53*xrottime+54*0.15 zamp 80 0 0
+setsingle 5 54*zrottime+54*0.15 0 80 0 0
+setsingle 5 54*xrottime+55*0.15 zamp 80 0 0
+setsingle 5 55*zrottime+55*0.15 0 80 0 0
+setsingle 5 55*xrottime+56*0.15 zamp 80 0 0
+setsingle 5 56*zrottime+56*0.15 0 80 0 0
+
+
+
+
+
+
+program 5
+
+
+
+
+
+

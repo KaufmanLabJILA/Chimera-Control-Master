@@ -257,7 +257,7 @@ void fpgaAWG::writeCommandList(unsigned long channel, int AWGnum) {
 	if (numSteps > 16384) {
 		thrower("AWG out of memory, too many time steps.");
 	}
-	unsigned char channelWord;
+	unsigned char channelWord= 0b0000;
 	if (AWGnum== 0) {
 		if (channel == 0) {
 			channelWord = 0b0001;
@@ -271,6 +271,10 @@ void fpgaAWG::writeCommandList(unsigned long channel, int AWGnum) {
 		else if (channel == 3) {
 			channelWord = 0b1000;
 		}
+		for (int i = 0; i < numSteps; i++) {
+			writeTimestamp(channelWord, awgCommandList[i].address, awgCommandList[i].timeStampMicro, awgCommandList[i].phase_update, awgCommandList[i].phaseDegrees, awgCommandList[i].ampPercent, awgCommandList[i].freqMHz);
+		};
+		writeTimestamp(channelWord, numSteps, 0.0, false, 0.0, 0.0, 0.0);
 	}
 	else if (AWGnum == 1) {
 		if (channel == 4) {
@@ -285,11 +289,14 @@ void fpgaAWG::writeCommandList(unsigned long channel, int AWGnum) {
 		else if (channel == 7) {
 			channelWord = 0b1000;
 		}
+		for (int i = 0; i < numSteps; i++) {
+			writeTimestamp(channelWord, awgCommandList[i].address, awgCommandList[i].timeStampMicro, awgCommandList[i].phase_update, awgCommandList[i].phaseDegrees, awgCommandList[i].ampPercent, awgCommandList[i].freqMHz);
+		};
+		writeTimestamp(channelWord, numSteps, 0.0, false, 0.0, 0.0, 0.0);
 	}
-	for (int i = 0; i < numSteps; i++) {
-		writeTimestamp(channelWord, awgCommandList[i].address, awgCommandList[i].timeStampMicro, awgCommandList[i].phase_update, awgCommandList[i].phaseDegrees, awgCommandList[i].ampPercent, awgCommandList[i].freqMHz);
-	};
-	writeTimestamp(channelWord, numSteps, 0.0, false, 0.0, 0.0, 0.0);
+	
+	
+	
 }
 
 void fpgaAWG::loadAWGScript(std::string scriptAddress)
