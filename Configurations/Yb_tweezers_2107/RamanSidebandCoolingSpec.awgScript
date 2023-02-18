@@ -67,17 +67,3 @@ setsingle 3 2*rb3time 0 100 0 0
 
 program 3
  
-
-
-setsingle 4 0 xamp 100 0 0
-setsingle 4 xrottime 0  100 0 0
-
-
-program 4
-
-
-setsingle 5 0 zamp 80 0 0
-setsingle 5 zrottime 0  80 0 0
-
-
-program 5
