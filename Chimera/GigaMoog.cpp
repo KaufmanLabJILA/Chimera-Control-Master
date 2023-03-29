@@ -188,7 +188,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 	int ampstep, freqstep;
 
 	//step 0: turn off all load tones.
-	for (int channel = 0; channel < 16; channel++) {//TODO: 16 could be changed to 48 if using more tones for rearrangement
+	for (int channel = 0; channel < 24; channel++) {//TODO: 16 could be changed to 48 if using more tones for rearrangement
 		if (channel < nTweezerX)
 		{
 			size_t hardwareChannel = (channel * 8) % 48 + (channel * 8) / 48;
@@ -238,7 +238,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 		}
 
 		//step 1: ramp up tones at initial locations and phases
-		for (int channel = 0; channel < 16; channel++) {//TODO: 16 could be changed to 48 if using more tones for rearrangement
+		for (int channel = 0; channel < 24; channel++) {//TODO: 16 could be changed to 48 if using more tones for rearrangement
 			if (ny > 1 && nx == 1 && channel < 3) //Triple up tones if only a single tone on, assuming y axis not already tripled.
 			{
 				size_t hardwareChannel = hardwareChannelsDAC0[channel];
@@ -292,7 +292,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 		}
 
 		//step 2: ramp to new locations
-		for (int channel = 0; channel < 16; channel++) {
+		for (int channel = 0; channel < 24; channel++) {
 			if (ny > 1 && nx == 1 && channel < 3) //Triple up tones if only a single tone on.
 			{
 				size_t hardwareChannel = hardwareChannelsDAC0[channel];
@@ -373,7 +373,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 		}
 
 		//step 3: ramp all tones to 0
-		for (int channel = 0; channel < 16; channel++) {
+		for (int channel = 0; channel < 24; channel++) {
 			if (ny > 1 && nx == 1 && channel < 3) //Triple up tones if only a single tone on.
 			{
 				size_t hardwareChannel = hardwareChannelsDAC0[channel];
@@ -585,9 +585,9 @@ void gigaMoog::writeLoad(MessageSender& ms)
 		for (auto const& channelBool : initialPositionsX)
 		{
 			double phase, amp, freq;
-			if (iTweezer > 16)
+			if (iTweezer > 24)
 			{
-				thrower("For safety, maximum number of x tones is limited to 16 in rearrangement mode");
+				thrower("For safety, maximum number of x tones is limited to 24 in rearrangement mode");
 			}
 			if (channelBool)
 			{
@@ -610,7 +610,7 @@ void gigaMoog::writeLoad(MessageSender& ms)
 		for (auto const& channelBool : initialPositionsY)
 		{
 			double phase, amp, freq;
-			if (iTweezer > 24)
+			if (iTweezer > 2)
 			{
 				thrower("For safety, maximum number of y tones is limited to 24 in rearrangement mode");
 			}

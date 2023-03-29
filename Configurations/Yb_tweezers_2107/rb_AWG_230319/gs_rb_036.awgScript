@@ -1,0 +1,498 @@
+%zzxzxzzxzzxxzxzzxxzxzxxxzzzxzzzxxzzxxzzzxxzzzxxxzxxzxxxzzzxzzzzzxzxzzzxx
+
+
+reset
+
+
+
+
+
+
+
+
+
+setsingle 0 0 clockampawg clockfreq 0 0
+
+setsingle 0 clocktime 0  clockfreq 0 0
+
+
+
+
+
+program 0
+
+
+
+setsingle 1 0 0 clockfreq 1 0
+
+%STARTRB
+
+
+
+
+
+
+program 1
+
+
+
+setsteps 2 rb2time/25 0 rb2time
+
+
+
+ampgauss 2 0 rb2time rb2time/2.5 1 0 rb2amp
+
+
+
+freqlin 2 0 rb2time rb2freq rb2freq  1 0
+
+
+
+
+
+setsteps 2 rb2time/25 rb2time 2*rb2time
+
+
+
+ampgauss 2 rb2time 2*rb2time rb2time/2.5 -1 rb2amp 0
+
+
+
+freqlin 2 rb2time 2*rb2time rb2freq rb2freq 0 0
+
+
+
+setsingle 2 2*rb2time 0 100 0 0 
+
+
+
+
+
+
+
+program 2
+
+
+
+
+
+setsteps 3 rb3time/25 0 rb3time
+
+
+
+ampgauss 3 0 rb3time rb3time/2.5 1 0 rb3amp 
+
+
+
+freqlin 3 0 rb3time rb3freq rb3freq  1 0
+
+
+
+
+
+setsteps 3 rb3time/25 rb3time 2*rb3time
+
+
+
+ampgauss 3 rb3time 2*rb3time rb3time/2.5 -1 rb3amp 0
+
+
+
+freqlin 3 rb3time 2*rb3time rb3freq rb3freq 0 0
+
+
+
+setsingle 3 2*rb3time 0 100 0 0 
+
+
+
+
+
+program 3
+
+
+%STARTQUBIT
+setsingle 4 0 0 100 1 0 
+setsingle 4 1*0.07+1*zcortime+1*0.14+0*xpi2time+0*0.14+0*zcortime+0*0.07+2*0.07+2*zpi2time+2*0.07 xamp 100 0 0
+setsingle 4 1*0.07+1*zcortime+1*0.14+1*xpi2time+0*0.14+0*zcortime+0*0.07+2*0.07+2*zpi2time+2*0.07 0 100 0 0
+setsingle 4 1*0.07+1*zcortime+1*0.14+1*xpi2time+1*0.14+1*zcortime+1*0.07+2*0.07+2*zpi2time+2*0.07 0 100 0 0
+setsingle 4 2*0.07+2*zcortime+2*0.14+1*xpi2time+1*0.14+1*zcortime+1*0.07+3*0.07+3*zpi2time+3*0.07 xamp 100 0 0
+setsingle 4 2*0.07+2*zcortime+2*0.14+2*xpi2time+1*0.14+1*zcortime+1*0.07+3*0.07+3*zpi2time+3*0.07 0 100 0 0
+setsingle 4 2*0.07+2*zcortime+2*0.14+2*xpi2time+2*0.14+2*zcortime+2*0.07+3*0.07+3*zpi2time+3*0.07 0 100 0 0
+setsingle 4 3*0.07+3*zcortime+3*0.14+2*xpi2time+2*0.14+2*zcortime+2*0.07+5*0.07+5*zpi2time+5*0.07 xamp 100 0 0
+setsingle 4 3*0.07+3*zcortime+3*0.14+3*xpi2time+2*0.14+2*zcortime+2*0.07+5*0.07+5*zpi2time+5*0.07 0 100 0 0
+setsingle 4 3*0.07+3*zcortime+3*0.14+3*xpi2time+3*0.14+3*zcortime+3*0.07+5*0.07+5*zpi2time+5*0.07 0 100 0 0
+setsingle 4 4*0.07+4*zcortime+4*0.14+3*xpi2time+3*0.14+3*zcortime+3*0.07+7*0.07+7*zpi2time+7*0.07 xamp 100 0 0
+setsingle 4 4*0.07+4*zcortime+4*0.14+4*xpi2time+3*0.14+3*zcortime+3*0.07+7*0.07+7*zpi2time+7*0.07 0 100 0 0
+setsingle 4 4*0.07+4*zcortime+4*0.14+4*xpi2time+4*0.14+4*zcortime+4*0.07+7*0.07+7*zpi2time+7*0.07 0 100 0 0
+setsingle 4 5*0.07+5*zcortime+5*0.14+4*xpi2time+4*0.14+4*zcortime+4*0.07+7*0.07+7*zpi2time+7*0.07 xamp 100 0 0
+setsingle 4 5*0.07+5*zcortime+5*0.14+5*xpi2time+4*0.14+4*zcortime+4*0.07+7*0.07+7*zpi2time+7*0.07 0 100 0 0
+setsingle 4 5*0.07+5*zcortime+5*0.14+5*xpi2time+5*0.14+5*zcortime+5*0.07+7*0.07+7*zpi2time+7*0.07 0 100 0 0
+setsingle 4 6*0.07+6*zcortime+6*0.14+5*xpi2time+5*0.14+5*zcortime+5*0.07+8*0.07+8*zpi2time+8*0.07 xamp 100 0 0
+setsingle 4 6*0.07+6*zcortime+6*0.14+6*xpi2time+5*0.14+5*zcortime+5*0.07+8*0.07+8*zpi2time+8*0.07 0 100 0 0
+setsingle 4 6*0.07+6*zcortime+6*0.14+6*xpi2time+6*0.14+6*zcortime+6*0.07+8*0.07+8*zpi2time+8*0.07 0 100 0 0
+setsingle 4 7*0.07+7*zcortime+7*0.14+6*xpi2time+6*0.14+6*zcortime+6*0.07+10*0.07+10*zpi2time+10*0.07 xamp 100 0 0
+setsingle 4 7*0.07+7*zcortime+7*0.14+7*xpi2time+6*0.14+6*zcortime+6*0.07+10*0.07+10*zpi2time+10*0.07 0 100 0 0
+setsingle 4 7*0.07+7*zcortime+7*0.14+7*xpi2time+7*0.14+7*zcortime+7*0.07+10*0.07+10*zpi2time+10*0.07 0 100 0 0
+setsingle 4 8*0.07+8*zcortime+8*0.14+7*xpi2time+7*0.14+7*zcortime+7*0.07+10*0.07+10*zpi2time+10*0.07 xamp 100 0 0
+setsingle 4 8*0.07+8*zcortime+8*0.14+8*xpi2time+7*0.14+7*zcortime+7*0.07+10*0.07+10*zpi2time+10*0.07 0 100 0 0
+setsingle 4 8*0.07+8*zcortime+8*0.14+8*xpi2time+8*0.14+8*zcortime+8*0.07+10*0.07+10*zpi2time+10*0.07 0 100 0 0
+setsingle 4 9*0.07+9*zcortime+9*0.14+8*xpi2time+8*0.14+8*zcortime+8*0.07+11*0.07+11*zpi2time+11*0.07 xamp 100 0 0
+setsingle 4 9*0.07+9*zcortime+9*0.14+9*xpi2time+8*0.14+8*zcortime+8*0.07+11*0.07+11*zpi2time+11*0.07 0 100 0 0
+setsingle 4 9*0.07+9*zcortime+9*0.14+9*xpi2time+9*0.14+9*zcortime+9*0.07+11*0.07+11*zpi2time+11*0.07 0 100 0 0
+setsingle 4 10*0.07+10*zcortime+10*0.14+9*xpi2time+9*0.14+9*zcortime+9*0.07+12*0.07+12*zpi2time+12*0.07 xamp 100 0 0
+setsingle 4 10*0.07+10*zcortime+10*0.14+10*xpi2time+9*0.14+9*zcortime+9*0.07+12*0.07+12*zpi2time+12*0.07 0 100 0 0
+setsingle 4 10*0.07+10*zcortime+10*0.14+10*xpi2time+10*0.14+10*zcortime+10*0.07+12*0.07+12*zpi2time+12*0.07 0 100 0 0
+setsingle 4 11*0.07+11*zcortime+11*0.14+10*xpi2time+10*0.14+10*zcortime+10*0.07+12*0.07+12*zpi2time+12*0.07 xamp 100 0 0
+setsingle 4 11*0.07+11*zcortime+11*0.14+11*xpi2time+10*0.14+10*zcortime+10*0.07+12*0.07+12*zpi2time+12*0.07 0 100 0 0
+setsingle 4 11*0.07+11*zcortime+11*0.14+11*xpi2time+11*0.14+11*zcortime+11*0.07+12*0.07+12*zpi2time+12*0.07 0 100 0 0
+setsingle 4 12*0.07+12*zcortime+12*0.14+11*xpi2time+11*0.14+11*zcortime+11*0.07+12*0.07+12*zpi2time+12*0.07 xamp 100 0 0
+setsingle 4 12*0.07+12*zcortime+12*0.14+12*xpi2time+11*0.14+11*zcortime+11*0.07+12*0.07+12*zpi2time+12*0.07 0 100 0 0
+setsingle 4 12*0.07+12*zcortime+12*0.14+12*xpi2time+12*0.14+12*zcortime+12*0.07+12*0.07+12*zpi2time+12*0.07 0 100 0 0
+setsingle 4 13*0.07+13*zcortime+13*0.14+12*xpi2time+12*0.14+12*zcortime+12*0.07+15*0.07+15*zpi2time+15*0.07 xamp 100 0 0
+setsingle 4 13*0.07+13*zcortime+13*0.14+13*xpi2time+12*0.14+12*zcortime+12*0.07+15*0.07+15*zpi2time+15*0.07 0 100 0 0
+setsingle 4 13*0.07+13*zcortime+13*0.14+13*xpi2time+13*0.14+13*zcortime+13*0.07+15*0.07+15*zpi2time+15*0.07 0 100 0 0
+setsingle 4 14*0.07+14*zcortime+14*0.14+13*xpi2time+13*0.14+13*zcortime+13*0.07+18*0.07+18*zpi2time+18*0.07 xamp 100 0 0
+setsingle 4 14*0.07+14*zcortime+14*0.14+14*xpi2time+13*0.14+13*zcortime+13*0.07+18*0.07+18*zpi2time+18*0.07 0 100 0 0
+setsingle 4 14*0.07+14*zcortime+14*0.14+14*xpi2time+14*0.14+14*zcortime+14*0.07+18*0.07+18*zpi2time+18*0.07 0 100 0 0
+setsingle 4 15*0.07+15*zcortime+15*0.14+14*xpi2time+14*0.14+14*zcortime+14*0.07+18*0.07+18*zpi2time+18*0.07 xamp 100 0 0
+setsingle 4 15*0.07+15*zcortime+15*0.14+15*xpi2time+14*0.14+14*zcortime+14*0.07+18*0.07+18*zpi2time+18*0.07 0 100 0 0
+setsingle 4 15*0.07+15*zcortime+15*0.14+15*xpi2time+15*0.14+15*zcortime+15*0.07+18*0.07+18*zpi2time+18*0.07 0 100 0 0
+setsingle 4 16*0.07+16*zcortime+16*0.14+15*xpi2time+15*0.14+15*zcortime+15*0.07+20*0.07+20*zpi2time+20*0.07 xamp 100 0 0
+setsingle 4 16*0.07+16*zcortime+16*0.14+16*xpi2time+15*0.14+15*zcortime+15*0.07+20*0.07+20*zpi2time+20*0.07 0 100 0 0
+setsingle 4 16*0.07+16*zcortime+16*0.14+16*xpi2time+16*0.14+16*zcortime+16*0.07+20*0.07+20*zpi2time+20*0.07 0 100 0 0
+setsingle 4 17*0.07+17*zcortime+17*0.14+16*xpi2time+16*0.14+16*zcortime+16*0.07+20*0.07+20*zpi2time+20*0.07 xamp 100 0 0
+setsingle 4 17*0.07+17*zcortime+17*0.14+17*xpi2time+16*0.14+16*zcortime+16*0.07+20*0.07+20*zpi2time+20*0.07 0 100 0 0
+setsingle 4 17*0.07+17*zcortime+17*0.14+17*xpi2time+17*0.14+17*zcortime+17*0.07+20*0.07+20*zpi2time+20*0.07 0 100 0 0
+setsingle 4 18*0.07+18*zcortime+18*0.14+17*xpi2time+17*0.14+17*zcortime+17*0.07+23*0.07+23*zpi2time+23*0.07 xamp 100 0 0
+setsingle 4 18*0.07+18*zcortime+18*0.14+18*xpi2time+17*0.14+17*zcortime+17*0.07+23*0.07+23*zpi2time+23*0.07 0 100 0 0
+setsingle 4 18*0.07+18*zcortime+18*0.14+18*xpi2time+18*0.14+18*zcortime+18*0.07+23*0.07+23*zpi2time+23*0.07 0 100 0 0
+setsingle 4 19*0.07+19*zcortime+19*0.14+18*xpi2time+18*0.14+18*zcortime+18*0.07+23*0.07+23*zpi2time+23*0.07 xamp 100 0 0
+setsingle 4 19*0.07+19*zcortime+19*0.14+19*xpi2time+18*0.14+18*zcortime+18*0.07+23*0.07+23*zpi2time+23*0.07 0 100 0 0
+setsingle 4 19*0.07+19*zcortime+19*0.14+19*xpi2time+19*0.14+19*zcortime+19*0.07+23*0.07+23*zpi2time+23*0.07 0 100 0 0
+setsingle 4 20*0.07+20*zcortime+20*0.14+19*xpi2time+19*0.14+19*zcortime+19*0.07+26*0.07+26*zpi2time+26*0.07 xamp 100 0 0
+setsingle 4 20*0.07+20*zcortime+20*0.14+20*xpi2time+19*0.14+19*zcortime+19*0.07+26*0.07+26*zpi2time+26*0.07 0 100 0 0
+setsingle 4 20*0.07+20*zcortime+20*0.14+20*xpi2time+20*0.14+20*zcortime+20*0.07+26*0.07+26*zpi2time+26*0.07 0 100 0 0
+setsingle 4 21*0.07+21*zcortime+21*0.14+20*xpi2time+20*0.14+20*zcortime+20*0.07+26*0.07+26*zpi2time+26*0.07 xamp 100 0 0
+setsingle 4 21*0.07+21*zcortime+21*0.14+21*xpi2time+20*0.14+20*zcortime+20*0.07+26*0.07+26*zpi2time+26*0.07 0 100 0 0
+setsingle 4 21*0.07+21*zcortime+21*0.14+21*xpi2time+21*0.14+21*zcortime+21*0.07+26*0.07+26*zpi2time+26*0.07 0 100 0 0
+setsingle 4 22*0.07+22*zcortime+22*0.14+21*xpi2time+21*0.14+21*zcortime+21*0.07+26*0.07+26*zpi2time+26*0.07 xamp 100 0 0
+setsingle 4 22*0.07+22*zcortime+22*0.14+22*xpi2time+21*0.14+21*zcortime+21*0.07+26*0.07+26*zpi2time+26*0.07 0 100 0 0
+setsingle 4 22*0.07+22*zcortime+22*0.14+22*xpi2time+22*0.14+22*zcortime+22*0.07+26*0.07+26*zpi2time+26*0.07 0 100 0 0
+setsingle 4 23*0.07+23*zcortime+23*0.14+22*xpi2time+22*0.14+22*zcortime+22*0.07+27*0.07+27*zpi2time+27*0.07 xamp 100 0 0
+setsingle 4 23*0.07+23*zcortime+23*0.14+23*xpi2time+22*0.14+22*zcortime+22*0.07+27*0.07+27*zpi2time+27*0.07 0 100 0 0
+setsingle 4 23*0.07+23*zcortime+23*0.14+23*xpi2time+23*0.14+23*zcortime+23*0.07+27*0.07+27*zpi2time+27*0.07 0 100 0 0
+setsingle 4 24*0.07+24*zcortime+24*0.14+23*xpi2time+23*0.14+23*zcortime+23*0.07+27*0.07+27*zpi2time+27*0.07 xamp 100 0 0
+setsingle 4 24*0.07+24*zcortime+24*0.14+24*xpi2time+23*0.14+23*zcortime+23*0.07+27*0.07+27*zpi2time+27*0.07 0 100 0 0
+setsingle 4 24*0.07+24*zcortime+24*0.14+24*xpi2time+24*0.14+24*zcortime+24*0.07+27*0.07+27*zpi2time+27*0.07 0 100 0 0
+setsingle 4 25*0.07+25*zcortime+25*0.14+24*xpi2time+24*0.14+24*zcortime+24*0.07+28*0.07+28*zpi2time+28*0.07 xamp 100 0 0
+setsingle 4 25*0.07+25*zcortime+25*0.14+25*xpi2time+24*0.14+24*zcortime+24*0.07+28*0.07+28*zpi2time+28*0.07 0 100 0 0
+setsingle 4 25*0.07+25*zcortime+25*0.14+25*xpi2time+25*0.14+25*zcortime+25*0.07+28*0.07+28*zpi2time+28*0.07 0 100 0 0
+setsingle 4 26*0.07+26*zcortime+26*0.14+25*xpi2time+25*0.14+25*zcortime+25*0.07+28*0.07+28*zpi2time+28*0.07 xamp 100 0 0
+setsingle 4 26*0.07+26*zcortime+26*0.14+26*xpi2time+25*0.14+25*zcortime+25*0.07+28*0.07+28*zpi2time+28*0.07 0 100 0 0
+setsingle 4 26*0.07+26*zcortime+26*0.14+26*xpi2time+26*0.14+26*zcortime+26*0.07+28*0.07+28*zpi2time+28*0.07 0 100 0 0
+setsingle 4 27*0.07+27*zcortime+27*0.14+26*xpi2time+26*0.14+26*zcortime+26*0.07+28*0.07+28*zpi2time+28*0.07 xamp 100 0 0
+setsingle 4 27*0.07+27*zcortime+27*0.14+27*xpi2time+26*0.14+26*zcortime+26*0.07+28*0.07+28*zpi2time+28*0.07 0 100 0 0
+setsingle 4 27*0.07+27*zcortime+27*0.14+27*xpi2time+27*0.14+27*zcortime+27*0.07+28*0.07+28*zpi2time+28*0.07 0 100 0 0
+setsingle 4 28*0.07+28*zcortime+28*0.14+27*xpi2time+27*0.14+27*zcortime+27*0.07+31*0.07+31*zpi2time+31*0.07 xamp 100 0 0
+setsingle 4 28*0.07+28*zcortime+28*0.14+28*xpi2time+27*0.14+27*zcortime+27*0.07+31*0.07+31*zpi2time+31*0.07 0 100 0 0
+setsingle 4 28*0.07+28*zcortime+28*0.14+28*xpi2time+28*0.14+28*zcortime+28*0.07+31*0.07+31*zpi2time+31*0.07 0 100 0 0
+setsingle 4 29*0.07+29*zcortime+29*0.14+28*xpi2time+28*0.14+28*zcortime+28*0.07+36*0.07+36*zpi2time+36*0.07 xamp 100 0 0
+setsingle 4 29*0.07+29*zcortime+29*0.14+29*xpi2time+28*0.14+28*zcortime+28*0.07+36*0.07+36*zpi2time+36*0.07 0 100 0 0
+setsingle 4 29*0.07+29*zcortime+29*0.14+29*xpi2time+29*0.14+29*zcortime+29*0.07+36*0.07+36*zpi2time+36*0.07 0 100 0 0
+setsingle 4 30*0.07+30*zcortime+30*0.14+29*xpi2time+29*0.14+29*zcortime+29*0.07+37*0.07+37*zpi2time+37*0.07 xamp 100 0 0
+setsingle 4 30*0.07+30*zcortime+30*0.14+30*xpi2time+29*0.14+29*zcortime+29*0.07+37*0.07+37*zpi2time+37*0.07 0 100 0 0
+setsingle 4 30*0.07+30*zcortime+30*0.14+30*xpi2time+30*0.14+30*zcortime+30*0.07+37*0.07+37*zpi2time+37*0.07 0 100 0 0
+setsingle 4 31*0.07+31*zcortime+31*0.14+30*xpi2time+30*0.14+30*zcortime+30*0.07+40*0.07+40*zpi2time+40*0.07 xamp 100 0 0
+setsingle 4 31*0.07+31*zcortime+31*0.14+31*xpi2time+30*0.14+30*zcortime+30*0.07+40*0.07+40*zpi2time+40*0.07 0 100 0 0
+setsingle 4 31*0.07+31*zcortime+31*0.14+31*xpi2time+31*0.14+31*zcortime+31*0.07+40*0.07+40*zpi2time+40*0.07 0 100 0 0
+setsingle 4 32*0.07+32*zcortime+32*0.14+31*xpi2time+31*0.14+31*zcortime+31*0.07+40*0.07+40*zpi2time+40*0.07 xamp 100 0 0
+setsingle 4 32*0.07+32*zcortime+32*0.14+32*xpi2time+31*0.14+31*zcortime+31*0.07+40*0.07+40*zpi2time+40*0.07 0 100 0 0
+setsingle 4 32*0.07+32*zcortime+32*0.14+32*xpi2time+32*0.14+32*zcortime+32*0.07+40*0.07+40*zpi2time+40*0.07 0 100 0 0
+program 4 
+setsingle 5 0 0 80 1 0 
+setsingle 5 0*0.07+0*zcortime+0*0.14+0*xpi2time+0*0.14+0*zcortime+0*0.07+1*0.07+0*zpi2time+0*0.07 zamp 80 0 0
+setsingle 5 0*0.07+0*zcortime+0*0.14+0*xpi2time+0*0.14+0*zcortime+0*0.07+1*0.07+1*zpi2time+0*0.07 0 80 0 0
+setsingle 5 0*0.07+0*zcortime+0*0.14+0*xpi2time+0*0.14+0*zcortime+0*0.07+1*0.07+1*zpi2time+1*0.07 0 80 0 0
+setsingle 5 0*0.07+0*zcortime+0*0.14+0*xpi2time+0*0.14+0*zcortime+0*0.07+2*0.07+1*zpi2time+1*0.07 zamp 80 0 0
+setsingle 5 0*0.07+0*zcortime+0*0.14+0*xpi2time+0*0.14+0*zcortime+0*0.07+2*0.07+2*zpi2time+1*0.07 0 80 0 0
+setsingle 5 0*0.07+0*zcortime+0*0.14+0*xpi2time+0*0.14+0*zcortime+0*0.07+2*0.07+2*zpi2time+2*0.07 0 80 0 0
+setsingle 5 1*0.07+0*zcortime+0*0.14+0*xpi2time+0*0.14+0*zcortime+0*0.07+2*0.07+2*zpi2time+2*0.07 zcoramp 80 0 0
+setsingle 5 1*0.07+1*zcortime+0*0.14+0*xpi2time+0*0.14+0*zcortime+0*0.07+2*0.07+2*zpi2time+2*0.07 0 80 0 0
+setsingle 5 1*0.07+1*zcortime+1*0.14+1*xpi2time+1*0.14+0*zcortime+0*0.07+2*0.07+2*zpi2time+2*0.07 zcoramp 80 0 0
+setsingle 5 1*0.07+1*zcortime+1*0.14+1*xpi2time+1*0.14+1*zcortime+0*0.07+2*0.07+2*zpi2time+2*0.07 0 80 0 0
+setsingle 5 1*0.07+1*zcortime+1*0.14+1*xpi2time+1*0.14+1*zcortime+1*0.07+2*0.07+2*zpi2time+2*0.07 0 80 0 0
+setsingle 5 1*0.07+1*zcortime+1*0.14+1*xpi2time+1*0.14+1*zcortime+1*0.07+3*0.07+2*zpi2time+2*0.07 zamp 80 0 0
+setsingle 5 1*0.07+1*zcortime+1*0.14+1*xpi2time+1*0.14+1*zcortime+1*0.07+3*0.07+3*zpi2time+2*0.07 0 80 0 0
+setsingle 5 1*0.07+1*zcortime+1*0.14+1*xpi2time+1*0.14+1*zcortime+1*0.07+3*0.07+3*zpi2time+3*0.07 0 80 0 0
+setsingle 5 2*0.07+1*zcortime+1*0.14+1*xpi2time+1*0.14+1*zcortime+1*0.07+3*0.07+3*zpi2time+3*0.07 zcoramp 80 0 0
+setsingle 5 2*0.07+2*zcortime+1*0.14+1*xpi2time+1*0.14+1*zcortime+1*0.07+3*0.07+3*zpi2time+3*0.07 0 80 0 0
+setsingle 5 2*0.07+2*zcortime+2*0.14+2*xpi2time+2*0.14+1*zcortime+1*0.07+3*0.07+3*zpi2time+3*0.07 zcoramp 80 0 0
+setsingle 5 2*0.07+2*zcortime+2*0.14+2*xpi2time+2*0.14+2*zcortime+1*0.07+3*0.07+3*zpi2time+3*0.07 0 80 0 0
+setsingle 5 2*0.07+2*zcortime+2*0.14+2*xpi2time+2*0.14+2*zcortime+2*0.07+3*0.07+3*zpi2time+3*0.07 0 80 0 0
+setsingle 5 2*0.07+2*zcortime+2*0.14+2*xpi2time+2*0.14+2*zcortime+2*0.07+4*0.07+3*zpi2time+3*0.07 zamp 80 0 0
+setsingle 5 2*0.07+2*zcortime+2*0.14+2*xpi2time+2*0.14+2*zcortime+2*0.07+4*0.07+4*zpi2time+3*0.07 0 80 0 0
+setsingle 5 2*0.07+2*zcortime+2*0.14+2*xpi2time+2*0.14+2*zcortime+2*0.07+4*0.07+4*zpi2time+4*0.07 0 80 0 0
+setsingle 5 2*0.07+2*zcortime+2*0.14+2*xpi2time+2*0.14+2*zcortime+2*0.07+5*0.07+4*zpi2time+4*0.07 zamp 80 0 0
+setsingle 5 2*0.07+2*zcortime+2*0.14+2*xpi2time+2*0.14+2*zcortime+2*0.07+5*0.07+5*zpi2time+4*0.07 0 80 0 0
+setsingle 5 2*0.07+2*zcortime+2*0.14+2*xpi2time+2*0.14+2*zcortime+2*0.07+5*0.07+5*zpi2time+5*0.07 0 80 0 0
+setsingle 5 3*0.07+2*zcortime+2*0.14+2*xpi2time+2*0.14+2*zcortime+2*0.07+5*0.07+5*zpi2time+5*0.07 zcoramp 80 0 0
+setsingle 5 3*0.07+3*zcortime+2*0.14+2*xpi2time+2*0.14+2*zcortime+2*0.07+5*0.07+5*zpi2time+5*0.07 0 80 0 0
+setsingle 5 3*0.07+3*zcortime+3*0.14+3*xpi2time+3*0.14+2*zcortime+2*0.07+5*0.07+5*zpi2time+5*0.07 zcoramp 80 0 0
+setsingle 5 3*0.07+3*zcortime+3*0.14+3*xpi2time+3*0.14+3*zcortime+2*0.07+5*0.07+5*zpi2time+5*0.07 0 80 0 0
+setsingle 5 3*0.07+3*zcortime+3*0.14+3*xpi2time+3*0.14+3*zcortime+3*0.07+5*0.07+5*zpi2time+5*0.07 0 80 0 0
+setsingle 5 3*0.07+3*zcortime+3*0.14+3*xpi2time+3*0.14+3*zcortime+3*0.07+6*0.07+5*zpi2time+5*0.07 zamp 80 0 0
+setsingle 5 3*0.07+3*zcortime+3*0.14+3*xpi2time+3*0.14+3*zcortime+3*0.07+6*0.07+6*zpi2time+5*0.07 0 80 0 0
+setsingle 5 3*0.07+3*zcortime+3*0.14+3*xpi2time+3*0.14+3*zcortime+3*0.07+6*0.07+6*zpi2time+6*0.07 0 80 0 0
+setsingle 5 3*0.07+3*zcortime+3*0.14+3*xpi2time+3*0.14+3*zcortime+3*0.07+7*0.07+6*zpi2time+6*0.07 zamp 80 0 0
+setsingle 5 3*0.07+3*zcortime+3*0.14+3*xpi2time+3*0.14+3*zcortime+3*0.07+7*0.07+7*zpi2time+6*0.07 0 80 0 0
+setsingle 5 3*0.07+3*zcortime+3*0.14+3*xpi2time+3*0.14+3*zcortime+3*0.07+7*0.07+7*zpi2time+7*0.07 0 80 0 0
+setsingle 5 4*0.07+3*zcortime+3*0.14+3*xpi2time+3*0.14+3*zcortime+3*0.07+7*0.07+7*zpi2time+7*0.07 zcoramp 80 0 0
+setsingle 5 4*0.07+4*zcortime+3*0.14+3*xpi2time+3*0.14+3*zcortime+3*0.07+7*0.07+7*zpi2time+7*0.07 0 80 0 0
+setsingle 5 4*0.07+4*zcortime+4*0.14+4*xpi2time+4*0.14+3*zcortime+3*0.07+7*0.07+7*zpi2time+7*0.07 zcoramp 80 0 0
+setsingle 5 4*0.07+4*zcortime+4*0.14+4*xpi2time+4*0.14+4*zcortime+3*0.07+7*0.07+7*zpi2time+7*0.07 0 80 0 0
+setsingle 5 4*0.07+4*zcortime+4*0.14+4*xpi2time+4*0.14+4*zcortime+4*0.07+7*0.07+7*zpi2time+7*0.07 0 80 0 0
+setsingle 5 5*0.07+4*zcortime+4*0.14+4*xpi2time+4*0.14+4*zcortime+4*0.07+7*0.07+7*zpi2time+7*0.07 zcoramp 80 0 0
+setsingle 5 5*0.07+5*zcortime+4*0.14+4*xpi2time+4*0.14+4*zcortime+4*0.07+7*0.07+7*zpi2time+7*0.07 0 80 0 0
+setsingle 5 5*0.07+5*zcortime+5*0.14+5*xpi2time+5*0.14+4*zcortime+4*0.07+7*0.07+7*zpi2time+7*0.07 zcoramp 80 0 0
+setsingle 5 5*0.07+5*zcortime+5*0.14+5*xpi2time+5*0.14+5*zcortime+4*0.07+7*0.07+7*zpi2time+7*0.07 0 80 0 0
+setsingle 5 5*0.07+5*zcortime+5*0.14+5*xpi2time+5*0.14+5*zcortime+5*0.07+7*0.07+7*zpi2time+7*0.07 0 80 0 0
+setsingle 5 5*0.07+5*zcortime+5*0.14+5*xpi2time+5*0.14+5*zcortime+5*0.07+8*0.07+7*zpi2time+7*0.07 zamp 80 0 0
+setsingle 5 5*0.07+5*zcortime+5*0.14+5*xpi2time+5*0.14+5*zcortime+5*0.07+8*0.07+8*zpi2time+7*0.07 0 80 0 0
+setsingle 5 5*0.07+5*zcortime+5*0.14+5*xpi2time+5*0.14+5*zcortime+5*0.07+8*0.07+8*zpi2time+8*0.07 0 80 0 0
+setsingle 5 6*0.07+5*zcortime+5*0.14+5*xpi2time+5*0.14+5*zcortime+5*0.07+8*0.07+8*zpi2time+8*0.07 zcoramp 80 0 0
+setsingle 5 6*0.07+6*zcortime+5*0.14+5*xpi2time+5*0.14+5*zcortime+5*0.07+8*0.07+8*zpi2time+8*0.07 0 80 0 0
+setsingle 5 6*0.07+6*zcortime+6*0.14+6*xpi2time+6*0.14+5*zcortime+5*0.07+8*0.07+8*zpi2time+8*0.07 zcoramp 80 0 0
+setsingle 5 6*0.07+6*zcortime+6*0.14+6*xpi2time+6*0.14+6*zcortime+5*0.07+8*0.07+8*zpi2time+8*0.07 0 80 0 0
+setsingle 5 6*0.07+6*zcortime+6*0.14+6*xpi2time+6*0.14+6*zcortime+6*0.07+8*0.07+8*zpi2time+8*0.07 0 80 0 0
+setsingle 5 6*0.07+6*zcortime+6*0.14+6*xpi2time+6*0.14+6*zcortime+6*0.07+9*0.07+8*zpi2time+8*0.07 zamp 80 0 0
+setsingle 5 6*0.07+6*zcortime+6*0.14+6*xpi2time+6*0.14+6*zcortime+6*0.07+9*0.07+9*zpi2time+8*0.07 0 80 0 0
+setsingle 5 6*0.07+6*zcortime+6*0.14+6*xpi2time+6*0.14+6*zcortime+6*0.07+9*0.07+9*zpi2time+9*0.07 0 80 0 0
+setsingle 5 6*0.07+6*zcortime+6*0.14+6*xpi2time+6*0.14+6*zcortime+6*0.07+10*0.07+9*zpi2time+9*0.07 zamp 80 0 0
+setsingle 5 6*0.07+6*zcortime+6*0.14+6*xpi2time+6*0.14+6*zcortime+6*0.07+10*0.07+10*zpi2time+9*0.07 0 80 0 0
+setsingle 5 6*0.07+6*zcortime+6*0.14+6*xpi2time+6*0.14+6*zcortime+6*0.07+10*0.07+10*zpi2time+10*0.07 0 80 0 0
+setsingle 5 7*0.07+6*zcortime+6*0.14+6*xpi2time+6*0.14+6*zcortime+6*0.07+10*0.07+10*zpi2time+10*0.07 zcoramp 80 0 0
+setsingle 5 7*0.07+7*zcortime+6*0.14+6*xpi2time+6*0.14+6*zcortime+6*0.07+10*0.07+10*zpi2time+10*0.07 0 80 0 0
+setsingle 5 7*0.07+7*zcortime+7*0.14+7*xpi2time+7*0.14+6*zcortime+6*0.07+10*0.07+10*zpi2time+10*0.07 zcoramp 80 0 0
+setsingle 5 7*0.07+7*zcortime+7*0.14+7*xpi2time+7*0.14+7*zcortime+6*0.07+10*0.07+10*zpi2time+10*0.07 0 80 0 0
+setsingle 5 7*0.07+7*zcortime+7*0.14+7*xpi2time+7*0.14+7*zcortime+7*0.07+10*0.07+10*zpi2time+10*0.07 0 80 0 0
+setsingle 5 8*0.07+7*zcortime+7*0.14+7*xpi2time+7*0.14+7*zcortime+7*0.07+10*0.07+10*zpi2time+10*0.07 zcoramp 80 0 0
+setsingle 5 8*0.07+8*zcortime+7*0.14+7*xpi2time+7*0.14+7*zcortime+7*0.07+10*0.07+10*zpi2time+10*0.07 0 80 0 0
+setsingle 5 8*0.07+8*zcortime+8*0.14+8*xpi2time+8*0.14+7*zcortime+7*0.07+10*0.07+10*zpi2time+10*0.07 zcoramp 80 0 0
+setsingle 5 8*0.07+8*zcortime+8*0.14+8*xpi2time+8*0.14+8*zcortime+7*0.07+10*0.07+10*zpi2time+10*0.07 0 80 0 0
+setsingle 5 8*0.07+8*zcortime+8*0.14+8*xpi2time+8*0.14+8*zcortime+8*0.07+10*0.07+10*zpi2time+10*0.07 0 80 0 0
+setsingle 5 8*0.07+8*zcortime+8*0.14+8*xpi2time+8*0.14+8*zcortime+8*0.07+11*0.07+10*zpi2time+10*0.07 zamp 80 0 0
+setsingle 5 8*0.07+8*zcortime+8*0.14+8*xpi2time+8*0.14+8*zcortime+8*0.07+11*0.07+11*zpi2time+10*0.07 0 80 0 0
+setsingle 5 8*0.07+8*zcortime+8*0.14+8*xpi2time+8*0.14+8*zcortime+8*0.07+11*0.07+11*zpi2time+11*0.07 0 80 0 0
+setsingle 5 9*0.07+8*zcortime+8*0.14+8*xpi2time+8*0.14+8*zcortime+8*0.07+11*0.07+11*zpi2time+11*0.07 zcoramp 80 0 0
+setsingle 5 9*0.07+9*zcortime+8*0.14+8*xpi2time+8*0.14+8*zcortime+8*0.07+11*0.07+11*zpi2time+11*0.07 0 80 0 0
+setsingle 5 9*0.07+9*zcortime+9*0.14+9*xpi2time+9*0.14+8*zcortime+8*0.07+11*0.07+11*zpi2time+11*0.07 zcoramp 80 0 0
+setsingle 5 9*0.07+9*zcortime+9*0.14+9*xpi2time+9*0.14+9*zcortime+8*0.07+11*0.07+11*zpi2time+11*0.07 0 80 0 0
+setsingle 5 9*0.07+9*zcortime+9*0.14+9*xpi2time+9*0.14+9*zcortime+9*0.07+11*0.07+11*zpi2time+11*0.07 0 80 0 0
+setsingle 5 9*0.07+9*zcortime+9*0.14+9*xpi2time+9*0.14+9*zcortime+9*0.07+12*0.07+11*zpi2time+11*0.07 zamp 80 0 0
+setsingle 5 9*0.07+9*zcortime+9*0.14+9*xpi2time+9*0.14+9*zcortime+9*0.07+12*0.07+12*zpi2time+11*0.07 0 80 0 0
+setsingle 5 9*0.07+9*zcortime+9*0.14+9*xpi2time+9*0.14+9*zcortime+9*0.07+12*0.07+12*zpi2time+12*0.07 0 80 0 0
+setsingle 5 10*0.07+9*zcortime+9*0.14+9*xpi2time+9*0.14+9*zcortime+9*0.07+12*0.07+12*zpi2time+12*0.07 zcoramp 80 0 0
+setsingle 5 10*0.07+10*zcortime+9*0.14+9*xpi2time+9*0.14+9*zcortime+9*0.07+12*0.07+12*zpi2time+12*0.07 0 80 0 0
+setsingle 5 10*0.07+10*zcortime+10*0.14+10*xpi2time+10*0.14+9*zcortime+9*0.07+12*0.07+12*zpi2time+12*0.07 zcoramp 80 0 0
+setsingle 5 10*0.07+10*zcortime+10*0.14+10*xpi2time+10*0.14+10*zcortime+9*0.07+12*0.07+12*zpi2time+12*0.07 0 80 0 0
+setsingle 5 10*0.07+10*zcortime+10*0.14+10*xpi2time+10*0.14+10*zcortime+10*0.07+12*0.07+12*zpi2time+12*0.07 0 80 0 0
+setsingle 5 11*0.07+10*zcortime+10*0.14+10*xpi2time+10*0.14+10*zcortime+10*0.07+12*0.07+12*zpi2time+12*0.07 zcoramp 80 0 0
+setsingle 5 11*0.07+11*zcortime+10*0.14+10*xpi2time+10*0.14+10*zcortime+10*0.07+12*0.07+12*zpi2time+12*0.07 0 80 0 0
+setsingle 5 11*0.07+11*zcortime+11*0.14+11*xpi2time+11*0.14+10*zcortime+10*0.07+12*0.07+12*zpi2time+12*0.07 zcoramp 80 0 0
+setsingle 5 11*0.07+11*zcortime+11*0.14+11*xpi2time+11*0.14+11*zcortime+10*0.07+12*0.07+12*zpi2time+12*0.07 0 80 0 0
+setsingle 5 11*0.07+11*zcortime+11*0.14+11*xpi2time+11*0.14+11*zcortime+11*0.07+12*0.07+12*zpi2time+12*0.07 0 80 0 0
+setsingle 5 12*0.07+11*zcortime+11*0.14+11*xpi2time+11*0.14+11*zcortime+11*0.07+12*0.07+12*zpi2time+12*0.07 zcoramp 80 0 0
+setsingle 5 12*0.07+12*zcortime+11*0.14+11*xpi2time+11*0.14+11*zcortime+11*0.07+12*0.07+12*zpi2time+12*0.07 0 80 0 0
+setsingle 5 12*0.07+12*zcortime+12*0.14+12*xpi2time+12*0.14+11*zcortime+11*0.07+12*0.07+12*zpi2time+12*0.07 zcoramp 80 0 0
+setsingle 5 12*0.07+12*zcortime+12*0.14+12*xpi2time+12*0.14+12*zcortime+11*0.07+12*0.07+12*zpi2time+12*0.07 0 80 0 0
+setsingle 5 12*0.07+12*zcortime+12*0.14+12*xpi2time+12*0.14+12*zcortime+12*0.07+12*0.07+12*zpi2time+12*0.07 0 80 0 0
+setsingle 5 12*0.07+12*zcortime+12*0.14+12*xpi2time+12*0.14+12*zcortime+12*0.07+13*0.07+12*zpi2time+12*0.07 zamp 80 0 0
+setsingle 5 12*0.07+12*zcortime+12*0.14+12*xpi2time+12*0.14+12*zcortime+12*0.07+13*0.07+13*zpi2time+12*0.07 0 80 0 0
+setsingle 5 12*0.07+12*zcortime+12*0.14+12*xpi2time+12*0.14+12*zcortime+12*0.07+13*0.07+13*zpi2time+13*0.07 0 80 0 0
+setsingle 5 12*0.07+12*zcortime+12*0.14+12*xpi2time+12*0.14+12*zcortime+12*0.07+14*0.07+13*zpi2time+13*0.07 zamp 80 0 0
+setsingle 5 12*0.07+12*zcortime+12*0.14+12*xpi2time+12*0.14+12*zcortime+12*0.07+14*0.07+14*zpi2time+13*0.07 0 80 0 0
+setsingle 5 12*0.07+12*zcortime+12*0.14+12*xpi2time+12*0.14+12*zcortime+12*0.07+14*0.07+14*zpi2time+14*0.07 0 80 0 0
+setsingle 5 12*0.07+12*zcortime+12*0.14+12*xpi2time+12*0.14+12*zcortime+12*0.07+15*0.07+14*zpi2time+14*0.07 zamp 80 0 0
+setsingle 5 12*0.07+12*zcortime+12*0.14+12*xpi2time+12*0.14+12*zcortime+12*0.07+15*0.07+15*zpi2time+14*0.07 0 80 0 0
+setsingle 5 12*0.07+12*zcortime+12*0.14+12*xpi2time+12*0.14+12*zcortime+12*0.07+15*0.07+15*zpi2time+15*0.07 0 80 0 0
+setsingle 5 13*0.07+12*zcortime+12*0.14+12*xpi2time+12*0.14+12*zcortime+12*0.07+15*0.07+15*zpi2time+15*0.07 zcoramp 80 0 0
+setsingle 5 13*0.07+13*zcortime+12*0.14+12*xpi2time+12*0.14+12*zcortime+12*0.07+15*0.07+15*zpi2time+15*0.07 0 80 0 0
+setsingle 5 13*0.07+13*zcortime+13*0.14+13*xpi2time+13*0.14+12*zcortime+12*0.07+15*0.07+15*zpi2time+15*0.07 zcoramp 80 0 0
+setsingle 5 13*0.07+13*zcortime+13*0.14+13*xpi2time+13*0.14+13*zcortime+12*0.07+15*0.07+15*zpi2time+15*0.07 0 80 0 0
+setsingle 5 13*0.07+13*zcortime+13*0.14+13*xpi2time+13*0.14+13*zcortime+13*0.07+15*0.07+15*zpi2time+15*0.07 0 80 0 0
+setsingle 5 13*0.07+13*zcortime+13*0.14+13*xpi2time+13*0.14+13*zcortime+13*0.07+16*0.07+15*zpi2time+15*0.07 zamp 80 0 0
+setsingle 5 13*0.07+13*zcortime+13*0.14+13*xpi2time+13*0.14+13*zcortime+13*0.07+16*0.07+16*zpi2time+15*0.07 0 80 0 0
+setsingle 5 13*0.07+13*zcortime+13*0.14+13*xpi2time+13*0.14+13*zcortime+13*0.07+16*0.07+16*zpi2time+16*0.07 0 80 0 0
+setsingle 5 13*0.07+13*zcortime+13*0.14+13*xpi2time+13*0.14+13*zcortime+13*0.07+17*0.07+16*zpi2time+16*0.07 zamp 80 0 0
+setsingle 5 13*0.07+13*zcortime+13*0.14+13*xpi2time+13*0.14+13*zcortime+13*0.07+17*0.07+17*zpi2time+16*0.07 0 80 0 0
+setsingle 5 13*0.07+13*zcortime+13*0.14+13*xpi2time+13*0.14+13*zcortime+13*0.07+17*0.07+17*zpi2time+17*0.07 0 80 0 0
+setsingle 5 13*0.07+13*zcortime+13*0.14+13*xpi2time+13*0.14+13*zcortime+13*0.07+18*0.07+17*zpi2time+17*0.07 zamp 80 0 0
+setsingle 5 13*0.07+13*zcortime+13*0.14+13*xpi2time+13*0.14+13*zcortime+13*0.07+18*0.07+18*zpi2time+17*0.07 0 80 0 0
+setsingle 5 13*0.07+13*zcortime+13*0.14+13*xpi2time+13*0.14+13*zcortime+13*0.07+18*0.07+18*zpi2time+18*0.07 0 80 0 0
+setsingle 5 14*0.07+13*zcortime+13*0.14+13*xpi2time+13*0.14+13*zcortime+13*0.07+18*0.07+18*zpi2time+18*0.07 zcoramp 80 0 0
+setsingle 5 14*0.07+14*zcortime+13*0.14+13*xpi2time+13*0.14+13*zcortime+13*0.07+18*0.07+18*zpi2time+18*0.07 0 80 0 0
+setsingle 5 14*0.07+14*zcortime+14*0.14+14*xpi2time+14*0.14+13*zcortime+13*0.07+18*0.07+18*zpi2time+18*0.07 zcoramp 80 0 0
+setsingle 5 14*0.07+14*zcortime+14*0.14+14*xpi2time+14*0.14+14*zcortime+13*0.07+18*0.07+18*zpi2time+18*0.07 0 80 0 0
+setsingle 5 14*0.07+14*zcortime+14*0.14+14*xpi2time+14*0.14+14*zcortime+14*0.07+18*0.07+18*zpi2time+18*0.07 0 80 0 0
+setsingle 5 15*0.07+14*zcortime+14*0.14+14*xpi2time+14*0.14+14*zcortime+14*0.07+18*0.07+18*zpi2time+18*0.07 zcoramp 80 0 0
+setsingle 5 15*0.07+15*zcortime+14*0.14+14*xpi2time+14*0.14+14*zcortime+14*0.07+18*0.07+18*zpi2time+18*0.07 0 80 0 0
+setsingle 5 15*0.07+15*zcortime+15*0.14+15*xpi2time+15*0.14+14*zcortime+14*0.07+18*0.07+18*zpi2time+18*0.07 zcoramp 80 0 0
+setsingle 5 15*0.07+15*zcortime+15*0.14+15*xpi2time+15*0.14+15*zcortime+14*0.07+18*0.07+18*zpi2time+18*0.07 0 80 0 0
+setsingle 5 15*0.07+15*zcortime+15*0.14+15*xpi2time+15*0.14+15*zcortime+15*0.07+18*0.07+18*zpi2time+18*0.07 0 80 0 0
+setsingle 5 15*0.07+15*zcortime+15*0.14+15*xpi2time+15*0.14+15*zcortime+15*0.07+19*0.07+18*zpi2time+18*0.07 zamp 80 0 0
+setsingle 5 15*0.07+15*zcortime+15*0.14+15*xpi2time+15*0.14+15*zcortime+15*0.07+19*0.07+19*zpi2time+18*0.07 0 80 0 0
+setsingle 5 15*0.07+15*zcortime+15*0.14+15*xpi2time+15*0.14+15*zcortime+15*0.07+19*0.07+19*zpi2time+19*0.07 0 80 0 0
+setsingle 5 15*0.07+15*zcortime+15*0.14+15*xpi2time+15*0.14+15*zcortime+15*0.07+20*0.07+19*zpi2time+19*0.07 zamp 80 0 0
+setsingle 5 15*0.07+15*zcortime+15*0.14+15*xpi2time+15*0.14+15*zcortime+15*0.07+20*0.07+20*zpi2time+19*0.07 0 80 0 0
+setsingle 5 15*0.07+15*zcortime+15*0.14+15*xpi2time+15*0.14+15*zcortime+15*0.07+20*0.07+20*zpi2time+20*0.07 0 80 0 0
+setsingle 5 16*0.07+15*zcortime+15*0.14+15*xpi2time+15*0.14+15*zcortime+15*0.07+20*0.07+20*zpi2time+20*0.07 zcoramp 80 0 0
+setsingle 5 16*0.07+16*zcortime+15*0.14+15*xpi2time+15*0.14+15*zcortime+15*0.07+20*0.07+20*zpi2time+20*0.07 0 80 0 0
+setsingle 5 16*0.07+16*zcortime+16*0.14+16*xpi2time+16*0.14+15*zcortime+15*0.07+20*0.07+20*zpi2time+20*0.07 zcoramp 80 0 0
+setsingle 5 16*0.07+16*zcortime+16*0.14+16*xpi2time+16*0.14+16*zcortime+15*0.07+20*0.07+20*zpi2time+20*0.07 0 80 0 0
+setsingle 5 16*0.07+16*zcortime+16*0.14+16*xpi2time+16*0.14+16*zcortime+16*0.07+20*0.07+20*zpi2time+20*0.07 0 80 0 0
+setsingle 5 17*0.07+16*zcortime+16*0.14+16*xpi2time+16*0.14+16*zcortime+16*0.07+20*0.07+20*zpi2time+20*0.07 zcoramp 80 0 0
+setsingle 5 17*0.07+17*zcortime+16*0.14+16*xpi2time+16*0.14+16*zcortime+16*0.07+20*0.07+20*zpi2time+20*0.07 0 80 0 0
+setsingle 5 17*0.07+17*zcortime+17*0.14+17*xpi2time+17*0.14+16*zcortime+16*0.07+20*0.07+20*zpi2time+20*0.07 zcoramp 80 0 0
+setsingle 5 17*0.07+17*zcortime+17*0.14+17*xpi2time+17*0.14+17*zcortime+16*0.07+20*0.07+20*zpi2time+20*0.07 0 80 0 0
+setsingle 5 17*0.07+17*zcortime+17*0.14+17*xpi2time+17*0.14+17*zcortime+17*0.07+20*0.07+20*zpi2time+20*0.07 0 80 0 0
+setsingle 5 17*0.07+17*zcortime+17*0.14+17*xpi2time+17*0.14+17*zcortime+17*0.07+21*0.07+20*zpi2time+20*0.07 zamp 80 0 0
+setsingle 5 17*0.07+17*zcortime+17*0.14+17*xpi2time+17*0.14+17*zcortime+17*0.07+21*0.07+21*zpi2time+20*0.07 0 80 0 0
+setsingle 5 17*0.07+17*zcortime+17*0.14+17*xpi2time+17*0.14+17*zcortime+17*0.07+21*0.07+21*zpi2time+21*0.07 0 80 0 0
+setsingle 5 17*0.07+17*zcortime+17*0.14+17*xpi2time+17*0.14+17*zcortime+17*0.07+22*0.07+21*zpi2time+21*0.07 zamp 80 0 0
+setsingle 5 17*0.07+17*zcortime+17*0.14+17*xpi2time+17*0.14+17*zcortime+17*0.07+22*0.07+22*zpi2time+21*0.07 0 80 0 0
+setsingle 5 17*0.07+17*zcortime+17*0.14+17*xpi2time+17*0.14+17*zcortime+17*0.07+22*0.07+22*zpi2time+22*0.07 0 80 0 0
+setsingle 5 17*0.07+17*zcortime+17*0.14+17*xpi2time+17*0.14+17*zcortime+17*0.07+23*0.07+22*zpi2time+22*0.07 zamp 80 0 0
+setsingle 5 17*0.07+17*zcortime+17*0.14+17*xpi2time+17*0.14+17*zcortime+17*0.07+23*0.07+23*zpi2time+22*0.07 0 80 0 0
+setsingle 5 17*0.07+17*zcortime+17*0.14+17*xpi2time+17*0.14+17*zcortime+17*0.07+23*0.07+23*zpi2time+23*0.07 0 80 0 0
+setsingle 5 18*0.07+17*zcortime+17*0.14+17*xpi2time+17*0.14+17*zcortime+17*0.07+23*0.07+23*zpi2time+23*0.07 zcoramp 80 0 0
+setsingle 5 18*0.07+18*zcortime+17*0.14+17*xpi2time+17*0.14+17*zcortime+17*0.07+23*0.07+23*zpi2time+23*0.07 0 80 0 0
+setsingle 5 18*0.07+18*zcortime+18*0.14+18*xpi2time+18*0.14+17*zcortime+17*0.07+23*0.07+23*zpi2time+23*0.07 zcoramp 80 0 0
+setsingle 5 18*0.07+18*zcortime+18*0.14+18*xpi2time+18*0.14+18*zcortime+17*0.07+23*0.07+23*zpi2time+23*0.07 0 80 0 0
+setsingle 5 18*0.07+18*zcortime+18*0.14+18*xpi2time+18*0.14+18*zcortime+18*0.07+23*0.07+23*zpi2time+23*0.07 0 80 0 0
+setsingle 5 19*0.07+18*zcortime+18*0.14+18*xpi2time+18*0.14+18*zcortime+18*0.07+23*0.07+23*zpi2time+23*0.07 zcoramp 80 0 0
+setsingle 5 19*0.07+19*zcortime+18*0.14+18*xpi2time+18*0.14+18*zcortime+18*0.07+23*0.07+23*zpi2time+23*0.07 0 80 0 0
+setsingle 5 19*0.07+19*zcortime+19*0.14+19*xpi2time+19*0.14+18*zcortime+18*0.07+23*0.07+23*zpi2time+23*0.07 zcoramp 80 0 0
+setsingle 5 19*0.07+19*zcortime+19*0.14+19*xpi2time+19*0.14+19*zcortime+18*0.07+23*0.07+23*zpi2time+23*0.07 0 80 0 0
+setsingle 5 19*0.07+19*zcortime+19*0.14+19*xpi2time+19*0.14+19*zcortime+19*0.07+23*0.07+23*zpi2time+23*0.07 0 80 0 0
+setsingle 5 19*0.07+19*zcortime+19*0.14+19*xpi2time+19*0.14+19*zcortime+19*0.07+24*0.07+23*zpi2time+23*0.07 zamp 80 0 0
+setsingle 5 19*0.07+19*zcortime+19*0.14+19*xpi2time+19*0.14+19*zcortime+19*0.07+24*0.07+24*zpi2time+23*0.07 0 80 0 0
+setsingle 5 19*0.07+19*zcortime+19*0.14+19*xpi2time+19*0.14+19*zcortime+19*0.07+24*0.07+24*zpi2time+24*0.07 0 80 0 0
+setsingle 5 19*0.07+19*zcortime+19*0.14+19*xpi2time+19*0.14+19*zcortime+19*0.07+25*0.07+24*zpi2time+24*0.07 zamp 80 0 0
+setsingle 5 19*0.07+19*zcortime+19*0.14+19*xpi2time+19*0.14+19*zcortime+19*0.07+25*0.07+25*zpi2time+24*0.07 0 80 0 0
+setsingle 5 19*0.07+19*zcortime+19*0.14+19*xpi2time+19*0.14+19*zcortime+19*0.07+25*0.07+25*zpi2time+25*0.07 0 80 0 0
+setsingle 5 19*0.07+19*zcortime+19*0.14+19*xpi2time+19*0.14+19*zcortime+19*0.07+26*0.07+25*zpi2time+25*0.07 zamp 80 0 0
+setsingle 5 19*0.07+19*zcortime+19*0.14+19*xpi2time+19*0.14+19*zcortime+19*0.07+26*0.07+26*zpi2time+25*0.07 0 80 0 0
+setsingle 5 19*0.07+19*zcortime+19*0.14+19*xpi2time+19*0.14+19*zcortime+19*0.07+26*0.07+26*zpi2time+26*0.07 0 80 0 0
+setsingle 5 20*0.07+19*zcortime+19*0.14+19*xpi2time+19*0.14+19*zcortime+19*0.07+26*0.07+26*zpi2time+26*0.07 zcoramp 80 0 0
+setsingle 5 20*0.07+20*zcortime+19*0.14+19*xpi2time+19*0.14+19*zcortime+19*0.07+26*0.07+26*zpi2time+26*0.07 0 80 0 0
+setsingle 5 20*0.07+20*zcortime+20*0.14+20*xpi2time+20*0.14+19*zcortime+19*0.07+26*0.07+26*zpi2time+26*0.07 zcoramp 80 0 0
+setsingle 5 20*0.07+20*zcortime+20*0.14+20*xpi2time+20*0.14+20*zcortime+19*0.07+26*0.07+26*zpi2time+26*0.07 0 80 0 0
+setsingle 5 20*0.07+20*zcortime+20*0.14+20*xpi2time+20*0.14+20*zcortime+20*0.07+26*0.07+26*zpi2time+26*0.07 0 80 0 0
+setsingle 5 21*0.07+20*zcortime+20*0.14+20*xpi2time+20*0.14+20*zcortime+20*0.07+26*0.07+26*zpi2time+26*0.07 zcoramp 80 0 0
+setsingle 5 21*0.07+21*zcortime+20*0.14+20*xpi2time+20*0.14+20*zcortime+20*0.07+26*0.07+26*zpi2time+26*0.07 0 80 0 0
+setsingle 5 21*0.07+21*zcortime+21*0.14+21*xpi2time+21*0.14+20*zcortime+20*0.07+26*0.07+26*zpi2time+26*0.07 zcoramp 80 0 0
+setsingle 5 21*0.07+21*zcortime+21*0.14+21*xpi2time+21*0.14+21*zcortime+20*0.07+26*0.07+26*zpi2time+26*0.07 0 80 0 0
+setsingle 5 21*0.07+21*zcortime+21*0.14+21*xpi2time+21*0.14+21*zcortime+21*0.07+26*0.07+26*zpi2time+26*0.07 0 80 0 0
+setsingle 5 22*0.07+21*zcortime+21*0.14+21*xpi2time+21*0.14+21*zcortime+21*0.07+26*0.07+26*zpi2time+26*0.07 zcoramp 80 0 0
+setsingle 5 22*0.07+22*zcortime+21*0.14+21*xpi2time+21*0.14+21*zcortime+21*0.07+26*0.07+26*zpi2time+26*0.07 0 80 0 0
+setsingle 5 22*0.07+22*zcortime+22*0.14+22*xpi2time+22*0.14+21*zcortime+21*0.07+26*0.07+26*zpi2time+26*0.07 zcoramp 80 0 0
+setsingle 5 22*0.07+22*zcortime+22*0.14+22*xpi2time+22*0.14+22*zcortime+21*0.07+26*0.07+26*zpi2time+26*0.07 0 80 0 0
+setsingle 5 22*0.07+22*zcortime+22*0.14+22*xpi2time+22*0.14+22*zcortime+22*0.07+26*0.07+26*zpi2time+26*0.07 0 80 0 0
+setsingle 5 22*0.07+22*zcortime+22*0.14+22*xpi2time+22*0.14+22*zcortime+22*0.07+27*0.07+26*zpi2time+26*0.07 zamp 80 0 0
+setsingle 5 22*0.07+22*zcortime+22*0.14+22*xpi2time+22*0.14+22*zcortime+22*0.07+27*0.07+27*zpi2time+26*0.07 0 80 0 0
+setsingle 5 22*0.07+22*zcortime+22*0.14+22*xpi2time+22*0.14+22*zcortime+22*0.07+27*0.07+27*zpi2time+27*0.07 0 80 0 0
+setsingle 5 23*0.07+22*zcortime+22*0.14+22*xpi2time+22*0.14+22*zcortime+22*0.07+27*0.07+27*zpi2time+27*0.07 zcoramp 80 0 0
+setsingle 5 23*0.07+23*zcortime+22*0.14+22*xpi2time+22*0.14+22*zcortime+22*0.07+27*0.07+27*zpi2time+27*0.07 0 80 0 0
+setsingle 5 23*0.07+23*zcortime+23*0.14+23*xpi2time+23*0.14+22*zcortime+22*0.07+27*0.07+27*zpi2time+27*0.07 zcoramp 80 0 0
+setsingle 5 23*0.07+23*zcortime+23*0.14+23*xpi2time+23*0.14+23*zcortime+22*0.07+27*0.07+27*zpi2time+27*0.07 0 80 0 0
+setsingle 5 23*0.07+23*zcortime+23*0.14+23*xpi2time+23*0.14+23*zcortime+23*0.07+27*0.07+27*zpi2time+27*0.07 0 80 0 0
+setsingle 5 24*0.07+23*zcortime+23*0.14+23*xpi2time+23*0.14+23*zcortime+23*0.07+27*0.07+27*zpi2time+27*0.07 zcoramp 80 0 0
+setsingle 5 24*0.07+24*zcortime+23*0.14+23*xpi2time+23*0.14+23*zcortime+23*0.07+27*0.07+27*zpi2time+27*0.07 0 80 0 0
+setsingle 5 24*0.07+24*zcortime+24*0.14+24*xpi2time+24*0.14+23*zcortime+23*0.07+27*0.07+27*zpi2time+27*0.07 zcoramp 80 0 0
+setsingle 5 24*0.07+24*zcortime+24*0.14+24*xpi2time+24*0.14+24*zcortime+23*0.07+27*0.07+27*zpi2time+27*0.07 0 80 0 0
+setsingle 5 24*0.07+24*zcortime+24*0.14+24*xpi2time+24*0.14+24*zcortime+24*0.07+27*0.07+27*zpi2time+27*0.07 0 80 0 0
+setsingle 5 24*0.07+24*zcortime+24*0.14+24*xpi2time+24*0.14+24*zcortime+24*0.07+28*0.07+27*zpi2time+27*0.07 zamp 80 0 0
+setsingle 5 24*0.07+24*zcortime+24*0.14+24*xpi2time+24*0.14+24*zcortime+24*0.07+28*0.07+28*zpi2time+27*0.07 0 80 0 0
+setsingle 5 24*0.07+24*zcortime+24*0.14+24*xpi2time+24*0.14+24*zcortime+24*0.07+28*0.07+28*zpi2time+28*0.07 0 80 0 0
+setsingle 5 25*0.07+24*zcortime+24*0.14+24*xpi2time+24*0.14+24*zcortime+24*0.07+28*0.07+28*zpi2time+28*0.07 zcoramp 80 0 0
+setsingle 5 25*0.07+25*zcortime+24*0.14+24*xpi2time+24*0.14+24*zcortime+24*0.07+28*0.07+28*zpi2time+28*0.07 0 80 0 0
+setsingle 5 25*0.07+25*zcortime+25*0.14+25*xpi2time+25*0.14+24*zcortime+24*0.07+28*0.07+28*zpi2time+28*0.07 zcoramp 80 0 0
+setsingle 5 25*0.07+25*zcortime+25*0.14+25*xpi2time+25*0.14+25*zcortime+24*0.07+28*0.07+28*zpi2time+28*0.07 0 80 0 0
+setsingle 5 25*0.07+25*zcortime+25*0.14+25*xpi2time+25*0.14+25*zcortime+25*0.07+28*0.07+28*zpi2time+28*0.07 0 80 0 0
+setsingle 5 26*0.07+25*zcortime+25*0.14+25*xpi2time+25*0.14+25*zcortime+25*0.07+28*0.07+28*zpi2time+28*0.07 zcoramp 80 0 0
+setsingle 5 26*0.07+26*zcortime+25*0.14+25*xpi2time+25*0.14+25*zcortime+25*0.07+28*0.07+28*zpi2time+28*0.07 0 80 0 0
+setsingle 5 26*0.07+26*zcortime+26*0.14+26*xpi2time+26*0.14+25*zcortime+25*0.07+28*0.07+28*zpi2time+28*0.07 zcoramp 80 0 0
+setsingle 5 26*0.07+26*zcortime+26*0.14+26*xpi2time+26*0.14+26*zcortime+25*0.07+28*0.07+28*zpi2time+28*0.07 0 80 0 0
+setsingle 5 26*0.07+26*zcortime+26*0.14+26*xpi2time+26*0.14+26*zcortime+26*0.07+28*0.07+28*zpi2time+28*0.07 0 80 0 0
+setsingle 5 27*0.07+26*zcortime+26*0.14+26*xpi2time+26*0.14+26*zcortime+26*0.07+28*0.07+28*zpi2time+28*0.07 zcoramp 80 0 0
+setsingle 5 27*0.07+27*zcortime+26*0.14+26*xpi2time+26*0.14+26*zcortime+26*0.07+28*0.07+28*zpi2time+28*0.07 0 80 0 0
+setsingle 5 27*0.07+27*zcortime+27*0.14+27*xpi2time+27*0.14+26*zcortime+26*0.07+28*0.07+28*zpi2time+28*0.07 zcoramp 80 0 0
+setsingle 5 27*0.07+27*zcortime+27*0.14+27*xpi2time+27*0.14+27*zcortime+26*0.07+28*0.07+28*zpi2time+28*0.07 0 80 0 0
+setsingle 5 27*0.07+27*zcortime+27*0.14+27*xpi2time+27*0.14+27*zcortime+27*0.07+28*0.07+28*zpi2time+28*0.07 0 80 0 0
+setsingle 5 27*0.07+27*zcortime+27*0.14+27*xpi2time+27*0.14+27*zcortime+27*0.07+29*0.07+28*zpi2time+28*0.07 zamp 80 0 0
+setsingle 5 27*0.07+27*zcortime+27*0.14+27*xpi2time+27*0.14+27*zcortime+27*0.07+29*0.07+29*zpi2time+28*0.07 0 80 0 0
+setsingle 5 27*0.07+27*zcortime+27*0.14+27*xpi2time+27*0.14+27*zcortime+27*0.07+29*0.07+29*zpi2time+29*0.07 0 80 0 0
+setsingle 5 27*0.07+27*zcortime+27*0.14+27*xpi2time+27*0.14+27*zcortime+27*0.07+30*0.07+29*zpi2time+29*0.07 zamp 80 0 0
+setsingle 5 27*0.07+27*zcortime+27*0.14+27*xpi2time+27*0.14+27*zcortime+27*0.07+30*0.07+30*zpi2time+29*0.07 0 80 0 0
+setsingle 5 27*0.07+27*zcortime+27*0.14+27*xpi2time+27*0.14+27*zcortime+27*0.07+30*0.07+30*zpi2time+30*0.07 0 80 0 0
+setsingle 5 27*0.07+27*zcortime+27*0.14+27*xpi2time+27*0.14+27*zcortime+27*0.07+31*0.07+30*zpi2time+30*0.07 zamp 80 0 0
+setsingle 5 27*0.07+27*zcortime+27*0.14+27*xpi2time+27*0.14+27*zcortime+27*0.07+31*0.07+31*zpi2time+30*0.07 0 80 0 0
+setsingle 5 27*0.07+27*zcortime+27*0.14+27*xpi2time+27*0.14+27*zcortime+27*0.07+31*0.07+31*zpi2time+31*0.07 0 80 0 0
+setsingle 5 28*0.07+27*zcortime+27*0.14+27*xpi2time+27*0.14+27*zcortime+27*0.07+31*0.07+31*zpi2time+31*0.07 zcoramp 80 0 0
+setsingle 5 28*0.07+28*zcortime+27*0.14+27*xpi2time+27*0.14+27*zcortime+27*0.07+31*0.07+31*zpi2time+31*0.07 0 80 0 0
+setsingle 5 28*0.07+28*zcortime+28*0.14+28*xpi2time+28*0.14+27*zcortime+27*0.07+31*0.07+31*zpi2time+31*0.07 zcoramp 80 0 0
+setsingle 5 28*0.07+28*zcortime+28*0.14+28*xpi2time+28*0.14+28*zcortime+27*0.07+31*0.07+31*zpi2time+31*0.07 0 80 0 0
+setsingle 5 28*0.07+28*zcortime+28*0.14+28*xpi2time+28*0.14+28*zcortime+28*0.07+31*0.07+31*zpi2time+31*0.07 0 80 0 0
+setsingle 5 28*0.07+28*zcortime+28*0.14+28*xpi2time+28*0.14+28*zcortime+28*0.07+32*0.07+31*zpi2time+31*0.07 zamp 80 0 0
+setsingle 5 28*0.07+28*zcortime+28*0.14+28*xpi2time+28*0.14+28*zcortime+28*0.07+32*0.07+32*zpi2time+31*0.07 0 80 0 0
+setsingle 5 28*0.07+28*zcortime+28*0.14+28*xpi2time+28*0.14+28*zcortime+28*0.07+32*0.07+32*zpi2time+32*0.07 0 80 0 0
+setsingle 5 28*0.07+28*zcortime+28*0.14+28*xpi2time+28*0.14+28*zcortime+28*0.07+33*0.07+32*zpi2time+32*0.07 zamp 80 0 0
+setsingle 5 28*0.07+28*zcortime+28*0.14+28*xpi2time+28*0.14+28*zcortime+28*0.07+33*0.07+33*zpi2time+32*0.07 0 80 0 0
+setsingle 5 28*0.07+28*zcortime+28*0.14+28*xpi2time+28*0.14+28*zcortime+28*0.07+33*0.07+33*zpi2time+33*0.07 0 80 0 0
+setsingle 5 28*0.07+28*zcortime+28*0.14+28*xpi2time+28*0.14+28*zcortime+28*0.07+34*0.07+33*zpi2time+33*0.07 zamp 80 0 0
+setsingle 5 28*0.07+28*zcortime+28*0.14+28*xpi2time+28*0.14+28*zcortime+28*0.07+34*0.07+34*zpi2time+33*0.07 0 80 0 0
+setsingle 5 28*0.07+28*zcortime+28*0.14+28*xpi2time+28*0.14+28*zcortime+28*0.07+34*0.07+34*zpi2time+34*0.07 0 80 0 0
+setsingle 5 28*0.07+28*zcortime+28*0.14+28*xpi2time+28*0.14+28*zcortime+28*0.07+35*0.07+34*zpi2time+34*0.07 zamp 80 0 0
+setsingle 5 28*0.07+28*zcortime+28*0.14+28*xpi2time+28*0.14+28*zcortime+28*0.07+35*0.07+35*zpi2time+34*0.07 0 80 0 0
+setsingle 5 28*0.07+28*zcortime+28*0.14+28*xpi2time+28*0.14+28*zcortime+28*0.07+35*0.07+35*zpi2time+35*0.07 0 80 0 0
+setsingle 5 28*0.07+28*zcortime+28*0.14+28*xpi2time+28*0.14+28*zcortime+28*0.07+36*0.07+35*zpi2time+35*0.07 zamp 80 0 0
+setsingle 5 28*0.07+28*zcortime+28*0.14+28*xpi2time+28*0.14+28*zcortime+28*0.07+36*0.07+36*zpi2time+35*0.07 0 80 0 0
+setsingle 5 28*0.07+28*zcortime+28*0.14+28*xpi2time+28*0.14+28*zcortime+28*0.07+36*0.07+36*zpi2time+36*0.07 0 80 0 0
+setsingle 5 29*0.07+28*zcortime+28*0.14+28*xpi2time+28*0.14+28*zcortime+28*0.07+36*0.07+36*zpi2time+36*0.07 zcoramp 80 0 0
+setsingle 5 29*0.07+29*zcortime+28*0.14+28*xpi2time+28*0.14+28*zcortime+28*0.07+36*0.07+36*zpi2time+36*0.07 0 80 0 0
+setsingle 5 29*0.07+29*zcortime+29*0.14+29*xpi2time+29*0.14+28*zcortime+28*0.07+36*0.07+36*zpi2time+36*0.07 zcoramp 80 0 0
+setsingle 5 29*0.07+29*zcortime+29*0.14+29*xpi2time+29*0.14+29*zcortime+28*0.07+36*0.07+36*zpi2time+36*0.07 0 80 0 0
+setsingle 5 29*0.07+29*zcortime+29*0.14+29*xpi2time+29*0.14+29*zcortime+29*0.07+36*0.07+36*zpi2time+36*0.07 0 80 0 0
+setsingle 5 29*0.07+29*zcortime+29*0.14+29*xpi2time+29*0.14+29*zcortime+29*0.07+37*0.07+36*zpi2time+36*0.07 zamp 80 0 0
+setsingle 5 29*0.07+29*zcortime+29*0.14+29*xpi2time+29*0.14+29*zcortime+29*0.07+37*0.07+37*zpi2time+36*0.07 0 80 0 0
+setsingle 5 29*0.07+29*zcortime+29*0.14+29*xpi2time+29*0.14+29*zcortime+29*0.07+37*0.07+37*zpi2time+37*0.07 0 80 0 0
+setsingle 5 30*0.07+29*zcortime+29*0.14+29*xpi2time+29*0.14+29*zcortime+29*0.07+37*0.07+37*zpi2time+37*0.07 zcoramp 80 0 0
+setsingle 5 30*0.07+30*zcortime+29*0.14+29*xpi2time+29*0.14+29*zcortime+29*0.07+37*0.07+37*zpi2time+37*0.07 0 80 0 0
+setsingle 5 30*0.07+30*zcortime+30*0.14+30*xpi2time+30*0.14+29*zcortime+29*0.07+37*0.07+37*zpi2time+37*0.07 zcoramp 80 0 0
+setsingle 5 30*0.07+30*zcortime+30*0.14+30*xpi2time+30*0.14+30*zcortime+29*0.07+37*0.07+37*zpi2time+37*0.07 0 80 0 0
+setsingle 5 30*0.07+30*zcortime+30*0.14+30*xpi2time+30*0.14+30*zcortime+30*0.07+37*0.07+37*zpi2time+37*0.07 0 80 0 0
+setsingle 5 30*0.07+30*zcortime+30*0.14+30*xpi2time+30*0.14+30*zcortime+30*0.07+38*0.07+37*zpi2time+37*0.07 zamp 80 0 0
+setsingle 5 30*0.07+30*zcortime+30*0.14+30*xpi2time+30*0.14+30*zcortime+30*0.07+38*0.07+38*zpi2time+37*0.07 0 80 0 0
+setsingle 5 30*0.07+30*zcortime+30*0.14+30*xpi2time+30*0.14+30*zcortime+30*0.07+38*0.07+38*zpi2time+38*0.07 0 80 0 0
+setsingle 5 30*0.07+30*zcortime+30*0.14+30*xpi2time+30*0.14+30*zcortime+30*0.07+39*0.07+38*zpi2time+38*0.07 zamp 80 0 0
+setsingle 5 30*0.07+30*zcortime+30*0.14+30*xpi2time+30*0.14+30*zcortime+30*0.07+39*0.07+39*zpi2time+38*0.07 0 80 0 0
+setsingle 5 30*0.07+30*zcortime+30*0.14+30*xpi2time+30*0.14+30*zcortime+30*0.07+39*0.07+39*zpi2time+39*0.07 0 80 0 0
+setsingle 5 30*0.07+30*zcortime+30*0.14+30*xpi2time+30*0.14+30*zcortime+30*0.07+40*0.07+39*zpi2time+39*0.07 zamp 80 0 0
+setsingle 5 30*0.07+30*zcortime+30*0.14+30*xpi2time+30*0.14+30*zcortime+30*0.07+40*0.07+40*zpi2time+39*0.07 0 80 0 0
+setsingle 5 30*0.07+30*zcortime+30*0.14+30*xpi2time+30*0.14+30*zcortime+30*0.07+40*0.07+40*zpi2time+40*0.07 0 80 0 0
+setsingle 5 31*0.07+30*zcortime+30*0.14+30*xpi2time+30*0.14+30*zcortime+30*0.07+40*0.07+40*zpi2time+40*0.07 zcoramp 80 0 0
+setsingle 5 31*0.07+31*zcortime+30*0.14+30*xpi2time+30*0.14+30*zcortime+30*0.07+40*0.07+40*zpi2time+40*0.07 0 80 0 0
+setsingle 5 31*0.07+31*zcortime+31*0.14+31*xpi2time+31*0.14+30*zcortime+30*0.07+40*0.07+40*zpi2time+40*0.07 zcoramp 80 0 0
+setsingle 5 31*0.07+31*zcortime+31*0.14+31*xpi2time+31*0.14+31*zcortime+30*0.07+40*0.07+40*zpi2time+40*0.07 0 80 0 0
+setsingle 5 31*0.07+31*zcortime+31*0.14+31*xpi2time+31*0.14+31*zcortime+31*0.07+40*0.07+40*zpi2time+40*0.07 0 80 0 0
+setsingle 5 32*0.07+31*zcortime+31*0.14+31*xpi2time+31*0.14+31*zcortime+31*0.07+40*0.07+40*zpi2time+40*0.07 zcoramp 80 0 0
+setsingle 5 32*0.07+32*zcortime+31*0.14+31*xpi2time+31*0.14+31*zcortime+31*0.07+40*0.07+40*zpi2time+40*0.07 0 80 0 0
+setsingle 5 32*0.07+32*zcortime+32*0.14+32*xpi2time+32*0.14+31*zcortime+31*0.07+40*0.07+40*zpi2time+40*0.07 zcoramp 80 0 0
+setsingle 5 32*0.07+32*zcortime+32*0.14+32*xpi2time+32*0.14+32*zcortime+31*0.07+40*0.07+40*zpi2time+40*0.07 0 80 0 0
+setsingle 5 32*0.07+32*zcortime+32*0.14+32*xpi2time+32*0.14+32*zcortime+32*0.07+40*0.07+40*zpi2time+40*0.07 0 80 0 0
+program 5
+
+
+
+

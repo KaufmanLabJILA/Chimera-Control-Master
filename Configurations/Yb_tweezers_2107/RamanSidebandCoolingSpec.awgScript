@@ -67,3 +67,21 @@ setsingle 3 2*rb3time 0 100 0 0
 
 program 3
  
+
+setsteps 6 rbtime/25 0 rbtime
+
+ampgauss 6 0 rbtime rbtime/2.5 1 0 rbamp
+
+freqlin 6 0 rbtime rbfreq rbfreq  1 0
+
+
+setsteps 6 rbtime/25 rbtime 2*rbtime
+
+ampgauss 6 rbtime 2*rbtime rbtime/2.5 -1 rbamp 0
+
+freqlin 6 rbtime 2*rbtime rbfreq rbfreq 0 0
+
+setsingle 6 2*rbtime 0 100 0 0 
+
+
+program 6

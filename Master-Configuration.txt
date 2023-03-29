@@ -39,7 +39,7 @@ greenshutter
 0
 slmshutter
 0
-gm1
+shutter532
 0
 gm2
 0
@@ -283,7 +283,7 @@ dds11
 0
 0 - 100
 100
-51
+58
 bluemotcoil 1.1
 bluex 0.2689
 bluey 0.2109
@@ -301,14 +301,14 @@ greennarrowpowerstart 15.15
 bluefreq 110
 bluepower 30
 comploadtime 75
-greenpower 40
+greenpower 33
 greentime 3.5
 greenfreq 71.12
 loadtime 200
 loadfreq 98
 depth -1.98
 axialcoolfreq 70.5215
-axialcoolpower 32
+axialcoolpower 37
 slmpowerfactor 1.92
 xmagic 2.45
 ymagic 0.745
@@ -326,13 +326,20 @@ yclock 4.8
 loadpower 100
 dds2_factor 1.00911
 load_depth -3.5
-waittime 7
+waittime 0.5
 zop 0.073478
 yop -0.0363
-axisrottime 2
+axisrottime 1.5
 xclock -0.0478
 zclock -0.111182
 xqubit -0.424295
 yqubit 4.8
 zqubit -0.0903879
+yclockpi -0.0154
+zclockpi -0.13794
+xclockpi 2.45
+gmcfreq 97.4272
+gmcpower 38.9
+gmc_depth -2.414
+axisrottime2 10
 75 260 1 220 245 1

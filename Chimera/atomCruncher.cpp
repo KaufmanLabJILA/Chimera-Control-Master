@@ -192,6 +192,42 @@ void atomCruncher::scrunchX(moveSequence& moveseq, bool centered = false) {
 	}
 }
 
+void atomCruncher::LightShifting(moveSequence& moveseq, bool centered = false) {
+	int iy = 0;
+	int iyl = 0;
+	int nx = gmoog->nTweezerX;
+	std::vector<int> ixs = {};
+	for (auto const& channelBoolY : positionsY)
+	{
+		if (channelBoolY) //If first step, choose the rows with load tweezers. If not first step, choose the rows that atoms were scrunched to.
+		{
+			moveSingle single;
+			int ix = 0;
+			int ixl = 0;
+			std::vector<int> ixs = {};
+			for (auto const& channelBoolX : positionsX)
+			{
+				if (channelBoolX)
+				{
+					if ((*rearrangerAtomQueue)[0][nx - ixl - 1 + iyl * nx]) {
+						single.startAOX.push_back(ix); //Place tweezers on all atoms in row
+						(*rearrangerAtomQueue)[0][nx - ixl - 1 + iyl * nx] = 0; //remove atom from pickup location
+					}
+					ixl++;
+					ixs.push_back(ix);
+				}
+				ix++;
+			}
+			single.startAOY.push_back(iy); //Single tone in y
+			single.endAOY.push_back(iy); //y does not move
+			moveseq.moves.push_back(single);
+
+			iyl++;
+		}
+		iy++;
+	}
+}
+
 void atomCruncher::scrunchY(moveSequence& moveseq, bool centered = false) {
 	int ix = 0;
 	for (auto const& channelBoolX : positionsX)
@@ -638,6 +674,10 @@ moveSequence atomCruncher::getRearrangeMoves(std::string rearrangeType) {
 	else if (rearrangeType == "scrunchy")
 	{
 		scrunchY(moveseq);
+	}
+	else if (rearrangeType == "lightshifting")
+	{
+		LightShifting(moveseq);
 	}
 	else if (rearrangeType == "equalscrunchy")
 	{

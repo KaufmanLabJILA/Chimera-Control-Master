@@ -1,0 +1,114 @@
+reset
+
+
+
+
+setsingle 0 0 clockampawg clockfreq 0 0
+setsingle 0 clocktime 0  clockfreq 0 0
+
+
+program 0
+
+
+setsteps 1 rbtime/25 0 rbtime
+
+ampgauss 1 0 rbtime rbtime/2.5 1 0 rbamp
+
+freqlin 1 0 rbtime rbfreq rbfreq  1 0
+
+
+setsteps 1 rbtime/25 rbtime 2*rbtime
+
+ampgauss 1 rbtime 2*rbtime rbtime/2.5 -1 rbamp 0
+
+freqlin 1 rbtime 2*rbtime rbfreq rbfreq 0 0
+
+setsingle 1 2*rbtime 0 100 0 0 
+
+
+program 1
+
+
+setsteps 2 rb2time/25 0 rb2time
+
+ampgauss 2 0 rb2time rb2time/2.5 1 0 rb2amp
+
+freqlin 2 0 rb2time rb2freq rb2freq  1 0
+
+
+setsteps 2 rb2time/25 rb2time 2*rb2time
+
+ampgauss 2 rb2time 2*rb2time rb2time/2.5 -1 rb2amp 0
+
+freqlin 2 rb2time 2*rb2time rb2freq rb2freq 0 0
+
+setsingle 2 2*rb2time 0 100 0 0 
+
+
+
+program 2
+
+
+setsteps 3 rb3time/25 0 rb3time
+
+ampgauss 3 0 rb3time rb3time/2.5 1 0 rb3amp 
+
+freqlin 3 0 rb3time rb3freq rb3freq  1 0
+
+
+setsteps 3 rb3time/25 rb3time 2*rb3time
+
+ampgauss 3 rb3time 2*rb3time rb3time/2.5 -1 rb3amp 0
+
+freqlin 3 rb3time 2*rb3time rb3freq rb3freq 0 0
+
+setsingle 3 2*rb3time 0 100 0 0 
+
+
+program 3
+ 
+setsingle 4 0 0 100 1 0
+
+%STARTRB_X
+setsingle 4 0*xpi2time+1*0.1 xamp 100 0 0
+setsingle 4 1*xpi2time+1*0.1 0 100 0 0
+setsingle 4 1*xpi2time+2*0.1 xamp 100 0 0
+setsingle 4 2*xpi2time+2*0.1 0 100 0 0
+setsingle 4 2*xpi2time+3*0.1 xamp 100 0 0
+setsingle 4 3*xpi2time+3*0.1 0 100 0 0
+setsingle 4 3*xpi2time+4*0.1 xamp 100 0 0
+setsingle 4 4*xpi2time+4*0.1 0 100 0 0
+setsingle 4 4*xpi2time+5*0.1 xamp 100 0 0
+setsingle 4 5*xpi2time+5*0.1 0 100 0 0
+setsingle 4 5*xpi2time+6*0.1 xamp 100 0 0
+setsingle 4 6*xpi2time+6*0.1 0 100 0 0
+setsingle 4 6*xpi2time+7*0.1 xamp 100 0 0
+setsingle 4 7*xpi2time+7*0.1 0 100 0 0
+setsingle 4 7*xpi2time+8*0.1 xamp 100 0 0
+setsingle 4 8*xpi2time+8*0.1 0 100 0 0
+setsingle 4 8*xpi2time+9*0.1 xamp 100 0 0
+setsingle 4 9*xpi2time+9*0.1 0 100 0 0
+setsingle 4 9*xpi2time+10*0.1 xamp 100 0 0
+setsingle 4 10*xpi2time+10*0.1 0 100 0 0
+setsingle 4 10*xpi2time+11*0.1 xamp 100 0 0
+setsingle 4 11*xpi2time+11*0.1 0 100 0 0
+setsingle 4 11*xpi2time+12*0.1 xamp 100 0 0
+setsingle 4 12*xpi2time+12*0.1 0 100 0 0
+setsingle 4 12*xpi2time+13*0.1 xamp 100 0 0
+setsingle 4 13*xpi2time+13*0.1 0 100 0 0
+setsingle 4 13*xpi2time+14*0.1 xamp 100 0 0
+setsingle 4 14*xpi2time+14*0.1 0 100 0 0
+setsingle 4 14*xpi2time+15*0.1 xamp 100 0 0
+setsingle 4 15*xpi2time+15*0.1 0 100 0 0
+setsingle 4 15*xpi2time+16*0.1 xamp 100 0 0
+setsingle 4 16*xpi2time+16*0.1 0 100 0 0
+
+
+program 4
+
+
+%setsingle 5 0 0 80 0 0
+%setsingle 5 zrottime 0  80 0 0
+
+
+program 5
