@@ -46,7 +46,7 @@ def bluemot_steadystate():
   on: blueshut
   on: blowawayshutter
   on: blue3d
-  on: red3d
+%  on: red3d
   on: rp707
   on: rp679
   on: shut707

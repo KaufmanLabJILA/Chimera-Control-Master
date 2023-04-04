@@ -9,10 +9,11 @@ def mako_image_singleBeam(imageLength):
   %on: slower
   %on: blowawayttl
   %t += .25
-  dac: blowFreq -1
+  %dac: blowFreq -1
   on: blowawayttl
   t += imageLength
   off: blowawayttl
+  off: imag461
   off: mako1
   off: imagShut
  

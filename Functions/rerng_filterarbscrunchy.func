@@ -59,15 +59,19 @@ end
 t += .1
 
 on: radial2
-daclinspace: axialpow ax_lattice_pow ax_lattice_zero 3 15
-t += 4
-daclinspace: latticepow lattice_pow lattice_zero 3 30
+daclinspace: axialpow ax_lattice_pow ax_lattice_zero 1 15
+t += 1
+%t += filterramptime
+daclinspace: latticepow lattice_pow lattice_zero 1 15
 t += 10
+%t += filtertime
 off: radial2
-daclinspace: axialpow ax_lattice_zero ax_lattice_pow 3 15
-t += 4
-daclinspace: latticepow lattice_zero lattice_pow 3 15
-t += 5
+daclinspace: axialpow ax_lattice_zero ax_lattice_pow 1 15
+t += 1
+%t += filterramptime
+daclinspace: latticepow lattice_zero lattice_pow 1 15
+t += 1
+%t += filterramptime
 
 pulseon: resetdds .1
 t += .2

@@ -15,12 +15,12 @@ on: radial
 on: radial2
 %on: axial
 
-repeat: 27
+repeat: 31
  pulseon: gmmove .00011
  t += 0.08
 % t += 100.1
  pulseon: gmmove .00011
- t += 1
+ t += 1.11
 % t += 100.1
  pulseon: gmmove .00011
  t += 0.08

@@ -1,0 +1,43 @@
+def blue_mot86(loadtime):
+
+  dac: blue3dpow .3
+%  on: red3d
+%  dac: red3dpow .25
+  on: blue3d
+  on: slower
+
+  dac: bigzcoil 1.6
+
+  dac: x1coil -.06
+  dac: y1coil .01
+  dac: y2coil .01
+  dac: z1coil -.0
+
+
+%  dac: x1coil -0.08
+%  dac: y1coil 0.03
+%  dac: y2coil 0.03
+%  dac: z1coil 0.1
+
+  t += 120
+
+  %Drop power for additional cooling 
+%  dac: x1coil -0.07
+%  dac: y1coil .02
+%  dac: y2coil .02
+%  dac: z1coil .1
+
+%on: blowawayttl
+%on: imag461
+%  daclinspace: blue3dpow .3 .05 12 15
+%  daclinspace: bigzcoil 1.6 0.5 12 15
+%  t += 12
+%  dac: blue3dpow 0.02 %.06 %0.077
+%  t += 2
+
+  %Try compressing the mot
+  off: blue3d
+  off: slower
+%  off: rp707
+%  off: rp679
+  t += 0.01

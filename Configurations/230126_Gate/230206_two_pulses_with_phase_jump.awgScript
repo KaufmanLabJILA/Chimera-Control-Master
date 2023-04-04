@@ -1,0 +1,29 @@
+% start by resetting synthesizer
+reset
+
+%%% normal single step:
+setsingle 0 0 awgamp (ryd_freq+detuning) 1 0
+setsingle 0 uvtime 0 (ryd_freq+detuning) 0 0
+
+setsingle 0 uvtime+delay awgamp (ryd_freq+detuning) 1 phasejump
+setsingle 0 2*uvtime+delay 0 (ryd_freq+detuning) 0 phasejump
+
+setsingle 0 20 0 (ryd_freq+detuning) 0 phasejump
+
+program 0
+
+%%% for monitoring:
+setsingle 1 0 40 ryd_freq 1 0
+setsingle 1 uvtime 0 ryd_freq 0 0
+
+setsingle 1 uvtime+delay 40 ryd_freq 1 phasejump
+setsingle 1 2*uvtime+delay 0 ryd_freq 0 phasejump
+
+setsingle 1 20 0 (ryd_freq) 0 phasejump
+
+
+program 1
+
+% Software trigger for testing
+%trigger
+%trigger

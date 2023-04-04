@@ -6,13 +6,12 @@ def blue_mot(loadTime):
   on: blue3d
   on: slower
 
-  dac: bigzcoil 1
+  dac: bigzcoil 1.6
 
-  dac: x1coil -.06
-  dac: y1coil .01
-  dac: y2coil .01
-  dac: z1coil .0
-
+  dac: x1coil -.075
+  dac: y1coil .065
+  dac: y2coil .065
+  dac: z1coil .16
 
 %  dac: x1coil -0.08
 %  dac: y1coil 0.03
@@ -37,5 +36,4 @@ def blue_mot(loadTime):
   off: blue3d
 %  off: rp707
 %  off: rp679
-  t += 0.01
-
+  t += 0.01

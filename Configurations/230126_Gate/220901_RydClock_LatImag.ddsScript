@@ -1,0 +1,108 @@
+% Channel order:
+% latticemod 698freq_res. UVao 698_detuned red3dnarrow radial axial radial2
+
+%%%
+
+phaseoffset 0 0 (p01+pscan1) (p0+pscan) 0 0 0 0
+
+% SB COOL LATTICE
+reset
+freqs 80 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p1_lat+f_rad_3d+.003+(__ts__-__t0__)*dr_3p1/86400 c_3p1_lat+f_rad_3d+.003+(__ts__-__t0__)*dr_3p1/86400 c_3p1_lat+f_ax_3d+0.005+(__ts__-__t0__)*dr_3p1/86400 c_3p1_lat+f_rad_3d-.007+(__ts__-__t0__)*dr_3p1/86400
+%freqs 80 c_3p0+spec3p0/1000 180 c_3p0+spec3p0/1000+.3 c_3p1_lat+f_rad_3d+.003 c_3p1_lat+f_rad_3d+.003 c_3p1_lat+f_ax_3d+0.005 c_3p1_lat+f_rad_3d-.007
+%amps  0 0 30 92 0 7 3 1.5
+%amps  0 90 30 90 0 3.5 2 3.5 pre 22/11/18 3 clock dds change
+amps  0 75 90 90 0 3.5 2 3.5
+
+% IMAGE LATTICE
+snapshot 0 reps 2
+%freqs 80 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 79.74+(__ts__-__t0__)*dr_3p1/86400 c_3p1_lat+f_rad_3d+.003+(__ts__-__t0__)*dr_3p1/86400 c_3p1_lat+f_ax_3d_imag+(__ts__-__t0__)*dr_3p1/86400 c_3p1_lat+f_rad_3d-0.007+(__ts__-__t0__)*dr_3p1/86400
+freqs 80 c_3p0+spec3p0/1000 81.905 c_3p0+spec3p0/1000 79.74+(__ts__-__t0__)*dr_3p1/86400 c_3p1_lat+f_rad_3d+.003+(__ts__-__t0__)*dr_3p1/86400 c_3p1_lat+f_ax_3d_imag+(__ts__-__t0__)*dr_3p1/86400 c_3p1_lat+f_rad_3d-0.007+(__ts__-__t0__)*dr_3p1/86400
+%freqs 80 c_3p0+1 180 80 79.74 c_3p1_lat+f_rad_3d+.003 c_3p1_lat+f_ax_3d_imag c_3p1_lat+f_rad_3d-0.007
+%amps  0 0 30 92 0 10 9 50
+amps  0 75 90 60 0 11.5 12 2.5
+%amps  0 0 30 92 0 20 20 20
+
+
+% FILTER
+snapshot 1 reps 2
+freqs 80 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p1+f_rad_3d+(__ts__-__t0__)*dr_3p1/86400 c_3p1+f_rad_3d+(__ts__-__t0__)*dr_3p1/86400 c_3p1+f_ax_3d+(__ts__-__t0__)*dr_3p1/86400 c_3p1+(__ts__-__t0__)*dr_3p1/86400
+%freqs 80 c_3p0+spec3p0/1000 180 c_3p0+spec3p0/1000+.3 c_3p1+f_rad_3d c_3p1+f_rad_3d c_3p1+f_ax_3d c_3p1
+amps  0 75 90 90 0 0 3.5 1.25
+
+% SPECTROSCOPY
+snapshot 2 reps 2
+freqs 80 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 spec3p1+(__ts__-__t0__)*dr_3p1/86400 spec3p1+(__ts__-__t0__)*dr_3p1/86400 spec3p1+(__ts__-__t0__)*dr_3p1/86400 spec3p1+(__ts__-__t0__)*dr_3p1/86400
+%freqs 80 c_3p0+spec3p0/1000 180 c_3p0+spec3p0/1000+.5 spec3p1 spec3p1 spec3p1 spec3p1
+%amps  0 75 90 90 0 3.5 3.5 3*.75
+% 3P2 Shelving:
+amps  0 75 90 90 0 10 3.5 10
+
+
+%for imaging optimization
+%freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000+1 c_3p1+f_3d c_3p1+fcool c_3p1+fcools c_3p1+fcool+.001
+%amps  0 100 30 100 18 18 15 3
+%freqs 80 c_3p0+1 80 80 79.74 c_3p1+f_rad c_3p1+f_ax_3d_imag c_3p1+f_rad_3d 
+%amps  0 100 30 100 0 6 12 5.5
+% for shelving:
+%amps  0 100 30 100 28 20.5 3 30.8
+% for filtering:
+%amps  0 0 30 92 0 3.0 3.5 2.5
+
+%%%
+% MOT
+snapshot 3 reps 2
+freqs 80 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p1+f_rmot_narrow+(__ts__-__t0__)*dr_3p1/86400 c_3p1+f_lac+(__ts__-__t0__)*dr_3p1/86400 c_3p1+f_lac+(__ts__-__t0__)*dr_3p1/86400 80+(__ts__-__t0__)*dr_3p1/86400
+%freqs 80 c_3p0+spec3p0/1000 180 c_3p0+spec3p0/1000+.5 c_3p1+f_rmot_narrow c_3p1+f_lac c_3p1+f_lac 80
+amps  0 75 90 90 13.5 20 0 20
+
+% IMAGE TWEEZERS
+snapshot 4 reps 2
+freqs 80 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p1+fcool+(__ts__-__t0__)*dr_3p1/86400 c_3p1+fcool+(__ts__-__t0__)*dr_3p1/86400 c_3p1+.14+(__ts__-__t0__)*dr_3p1/86400 c_3p1+fcool+(__ts__-__t0__)*dr_3p1/86400
+%freqs 80 c_3p0+spec3p0/1000 180 c_3p0+spec3p0/1000+1 c_3p1+fcool c_3p1+fcool c_3p1+.14 c_3p1+fcool
+amps  0 75 90 90 16 14 9 4
+
+% SB COOL TWEEZER
+snapshot 5 reps 2
+freqs 80 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 79.74+(__ts__-__t0__)*dr_3p1/86400 c_3p1+f_rad+(__ts__-__t0__)*dr_3p1/86400 c_3p1+0.03+(__ts__-__t0__)*dr_3p1/86400 c_3p1+f_rad2+(__ts__-__t0__)*dr_3p1/86400
+%freqs 80 c_3p0+spec3p0/1000 180 c_3p0+spec3p0/1000+.5 79.74 c_3p1+f_rad c_3p1+0.03 c_3p1+f_rad2
+amps  0 75 90 90 0 14 6 3
+
+% spectroscopy2
+snapshot 6 reps 2
+freqs 80 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 79.74+(__ts__-__t0__)*dr_3p1/86400 c_3p1+f_rad_3d+(__ts__-__t0__)*dr_3p1/86400 c_3p1+f_ax_3d+(__ts__-__t0__)*dr_3p1/86400 c_3p1+1+(__ts__-__t0__)*dr_3p1/86400
+%freqs 80 c_3p0+spec3p0/1000 ryd_freq c_3p0+spec3p0/1000+.3 79.74 c_3p1+f_rad_3d c_3p1+f_ax_3d c_3p1+1
+%freqs 80 c_3p0+.5 80 80 79.74 c_3p1+f_rad_3d c_3p1+f_ax_3d c_3p1+f_rad_3d
+amps  0 75 90 90 0 0 0 0
+%amps  0 100 25 92  0 0 0 0
+
+% phase jump
+snapshot 6 reps 2
+freqs 80 c_3p0+spec3p01/1000 c_3p0+spec3p01/1000 c_3p0+spec3p01/1000 79.74+(__ts__-__t0__)*dr_3p1/86400 c_3p1+f_rad_3d+(__ts__-__t0__)*dr_3p1/86400 c_3p1+f_ax_3d+(__ts__-__t0__)*dr_3p1/86400 c_3p1+1+(__ts__-__t0__)*dr_3p1/86400
+%freqs 80 c_3p0+spec3p0/1000 ryd_freq c_3p0+spec3p0/1000+.3 79.74 c_3p1+f_rad_3d c_3p1+f_ax_3d c_3p1+1
+%freqs 80 c_3p0+.5 80 80 79.74 c_3p1+f_rad_3d c_3p1+f_ax_3d c_3p1+f_rad_3d
+amps  0 75 90 90 0 0 0 0
+%amps  0 100 25 92  0 0 0 0
+
+% spectroscopy2
+snapshot 8 reps 2
+freqs 80 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 79.74+(__ts__-__t0__)*dr_3p1/86400 c_3p1+f_rad_3d+(__ts__-__t0__)*dr_3p1/86400 c_3p1+f_ax_3d+(__ts__-__t0__)*dr_3p1/86400 c_3p1+1+(__ts__-__t0__)*dr_3p1/86400
+%freqs 80 c_3p0+spec3p0/1000 ryd_freq c_3p0+spec3p0/1000+.3 79.74 c_3p1+f_rad_3d c_3p1+f_ax_3d c_3p1+1
+%freqs 80 c_3p0+.5 80 80 79.74 c_3p1+f_rad_3d c_3p1+f_ax_3d c_3p1+f_rad_3d
+amps  0 75 90 90 0 0 0 0
+%amps  0 100 25 92  0 0 0 0
+
+% Reservoir filter
+snapshot 9 reps 2
+freqs 80 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 79.74+(__ts__-__t0__)*dr_3p1/86400 c_3p1+f_rad+(__ts__-__t0__)*dr_3p1/86400 c_3p1+faxcool+(__ts__-__t0__)*dr_3p1/86400 c_3p1+(__ts__-__t0__)*dr_3p1/86400
+%freqs 80 c_3p0+spec3p0/1000 180 c_3p0+spec3p0/1000+.3 79.74 c_3p1+f_rad c_3p1+faxcool c_3p1
+amps  0 75 90 90 0 6 6 0.5
+
+% SB COOL LATTICE - high field
+snapshot 10 reps 2
+freqs 80 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p1_lat+shift_3p1/1000+f_rad_3d+.003+(__ts__-__t0__)*dr_3p1/86400 c_3p1_lat+shift_3p1/1000+f_rad_3d+.003+(__ts__-__t0__)*dr_3p1/86400 c_3p1_lat+shift_3p1/1000+f_ax_3d+.005+(__ts__-__t0__)*dr_3p1/86400 c_3p1_lat+shift_3p1/1000+f_rad_3d-0.007+(__ts__-__t0__)*dr_3p1/86400
+%amps  0 0 0 0 0 2.5 2.5 1.5
+amps  0 75 90 90 0 3.5 2 3.5
+
+
+
+end

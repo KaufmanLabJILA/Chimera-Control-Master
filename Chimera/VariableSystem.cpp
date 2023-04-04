@@ -1696,7 +1696,7 @@ void VariableSystem::generateKey( std::vector<variableType>& variables, bool ran
 	randomizerMultiKey.resize(totalVariations);
 	std::vector<int> randomizerInterleaveKey(interleaveVariations);
 	
-	if (!interleaveVariablesOption)
+	if ((!interleaveVariablesOption) || (maxDim == 1))
 	{
 		UINT count = 0;
 		for (auto& keyElem : randomizerMultiKey.values)
@@ -1719,7 +1719,7 @@ void VariableSystem::generateKey( std::vector<variableType>& variables, bool ran
 		std::random_device rng;
 		std::mt19937 urng( rng( ) );
 		// and shuffle.
-		if (!interleaveVariablesOption)
+		if ((!interleaveVariablesOption) || (maxDim == 1))
 		{
 			std::shuffle(randomizerMultiKey.values.begin(), randomizerMultiKey.values.end(), urng);
 		}
