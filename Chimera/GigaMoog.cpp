@@ -166,6 +166,54 @@ double gigaMoog::getAmpY(int xIndex, int yIndex) {
 	}
 }
 
+void gigaMoog::writeZerotone(moveSequence input, MessageSender& ms) {
+	//Important: this function automatically writes the terminator and sends the data
+	UINT nMoves = input.nMoves();
+
+	memoryController memoryDAC0;
+	memoryController memoryDAC1;
+
+	if (nMoves > 256 / 3)
+	{
+		thrower("ERROR: too many moves for gmoog buffer");
+		return;
+	}
+
+	//First write all zeroes for load. Depreciated 220124
+	//writeOff(ms);
+	writeMoveOff(ms);
+
+	size_t nx, ny;
+	double phase, amp, freq, ampPrev, freqPrev;
+	int ampstep, freqstep;
+
+	//step 0: turn off all load tones.
+	for (int channel = 0; channel < 24; channel++) {//TODO: 16 could be changed to 48 if using more tones for rearrangement
+		if (channel < nTweezerX)
+		{
+			size_t hardwareChannel = (channel * 8) % 48 + (channel * 8) / 48;
+			memoryDAC0.moveChannel(hardwareChannel / 8);
+			Message m = Message::make().destination(MessageDestination::KA007)
+				.DAC(MessageDAC::DAC0).channel(hardwareChannel)
+				.setting(MessageSetting::MOVEFREQUENCY)
+				.frequencyMHz(0).amplitudePercent(0.01).phaseDegrees(0).instantFTW(1).ATWIncr(-ampStepMag).stepSequenceID(0).FTWIncr(0).phaseJump(1);;
+			ms.enqueue(m);
+		}
+	}
+	for (int channel = 0; channel < 24; channel++) {
+		if (channel < nTweezerY)
+		{
+			size_t hardwareChannel = (channel * 8) % 48 + (channel * 8) / 48;
+			memoryDAC1.moveChannel(hardwareChannel / 8);
+			Message m = Message::make().destination(MessageDestination::KA007)
+				.DAC(MessageDAC::DAC1).channel(hardwareChannel)
+				.setting(MessageSetting::MOVEFREQUENCY)
+				.frequencyMHz(0).amplitudePercent(0.01).phaseDegrees(0).instantFTW(1).ATWIncr(-ampStepMag).stepSequenceID(0).FTWIncr(0).phaseJump(1);;
+			ms.enqueue(m);
+		}
+	}
+}
+
 void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 	//Important: this function automatically writes the terminator and sends the data
 	UINT nMoves = input.nMoves();
@@ -1009,6 +1057,7 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vari
 		writeOff(msTest);
 		writeLoad(msTest);
 		writeRearrangeMoves(testInput, msTest);
+		writeZerotone(testInput, msTest);
 		writeTerminator(msTest);
 		send(msTest);
 	}

@@ -42,7 +42,7 @@
 #define ZYNQ_ADDRESS "10.10.0.2"
 #define ZYNQ_PORT "8080"
 #define ZYNQ_MAX_BUFF 64
-#define ANDOR_HSS_INDEX 3
+#define ANDOR_HSS_INDEX 2
 #define ANDOR_VSS_INDEX 3
 #define ANDOR_PREAMP_INDEX 2
 #define DIO_LEN_BYTE_BUF 28

@@ -1074,7 +1074,8 @@ namespace commonFunctions
 			logger->logAndorSettings(input.camSettings, takeAndorPictures, input.cruncherInput->nMask);
 		}
 		logger->logMasterParameters( input.masterInput );
-		logger->logAWGParameters(input.masterInput);
+		logger->logAWGParameters(input.masterInput); 
+		logger->logGmoogParameters(input.masterInput);
 		logger->logMiscellaneous();
 		//logger->closeFile(); //TODO: May have to remove this once andor is integrated.
 	}

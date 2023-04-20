@@ -61,6 +61,6 @@ setsingle 4 0 0 100 1 0
  
 program 4 
 
-setsingle 5 0 zamp 80 1 0
-setsingle 5 zpi2time 0 80 0 0
-program 5
+setsingle 7 0 zamp 80 1 0
+setsingle 7 zpi2time 0 80 0 0
+program 7

@@ -378,8 +378,8 @@ void DataLogger::logGmoogParameters(MasterThreadInput* input)
 		H5::Group runParametersGroup(file.createGroup("/Gmoog-Parameters"));
 		//H5::Group tweezerAutoOffsetGroup(file.createGroup("/Tweezer-auto-offset"));
 
-		writeDataSet(!MOOG_SAFEMODE, "Run-Gmoog", runParametersGroup);
-		if (!MOOG_SAFEMODE)
+		writeDataSet(!GIGAMOOG_SAFEMODE, "Run-Gmoog", runParametersGroup);
+		if (!GIGAMOOG_SAFEMODE)
 		{
 			std::ifstream gmoogScript(input->gmoogScriptAddress);
 			if (!gmoogScript.is_open())

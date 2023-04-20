@@ -71,6 +71,7 @@ public:
 	void updateXYOffsetAuto();
 
 	void writeRearrangeMoves(moveSequence input, MessageSender& ms);
+	void writeZerotone(moveSequence input, MessageSender & ms);
 
 	bool rearrangerActive = false;
 	bool autoTweezerOffsetActive = false;
@@ -116,6 +117,8 @@ private:
 	double getAmpX(int xIndex, int yIndex);
 	double getFreqY(int xIndex, int yIndex);
 	double getAmpY(int xIndex, int yIndex);
+
+
 
 	static unsigned long long int getFTW(double frequency) {
 		//36-bit DDS

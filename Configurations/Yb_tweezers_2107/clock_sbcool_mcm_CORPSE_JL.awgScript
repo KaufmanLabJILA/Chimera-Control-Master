@@ -12,30 +12,30 @@ program 0
 
 setsingle 1 0 clockampawg clockfreq 1 0
 setsingle 1 1*clocktime 0  clockfreq 0 0
-setsingle 1 1*clocktime+1*0.08 clockampawg clockfreq 0 0
-setsingle 1 2*clocktime+1*0.08 0  clockfreq 0 0
-setsingle 1 2*clocktime+2*0.08 clockampawg clockfreq 0 0
-setsingle 1 3*clocktime+2*0.08  0  clockfreq 0 0
-setsingle 1 3*clocktime+3*0.08 clockampawg clockfreq 0 0
-setsingle 1 4*clocktime+3*0.08 0  clockfreq 0 0
-setsingle 1 4*clocktime+4*0.08 clockampawg clockfreq 0 0
-setsingle 1 5*clocktime+4*0.08 0  clockfreq 0 0
-setsingle 1 5*clocktime+5*0.08 clockampawg clockfreq 0 0
-setsingle 1 6*clocktime+5*0.08 0  clockfreq 0 0
-setsingle 1 6*clocktime+6*0.08 clockampawg clockfreq 0 0
-setsingle 1 7*clocktime+6*0.08 0  clockfreq 0 0
-setsingle 1 7*clocktime+7*0.08 clockampawg clockfreq 0 180
-setsingle 1 8*clocktime+7*0.08 0  clockfreq 0 0
-setsingle 1 8*clocktime+8*0.08 clockampawg clockfreq 0 180
-setsingle 1 9*clocktime+8*0.08 0  clockfreq 0 0
-setsingle 1 9*clocktime+9*0.08 clockampawg clockfreq 0 180
-setsingle 1 10*clocktime+9*0.08 0  clockfreq 0 0
-setsingle 1 10*clocktime+10*0.08 clockampawg clockfreq 0 180
-setsingle 1 11*clocktime+10*0.08 0  clockfreq 0 0
-setsingle 1 11*clocktime+11*0.08 clockampawg clockfreq 0 180
-setsingle 1 12*clocktime+11*0.08 0  clockfreq 0 0
-setsingle 1 12*clocktime+12*0.08 clockampawg clockfreq 0 0
-setsingle 1 13*clocktime+12*0.08 0  clockfreq 0 0 
+setsingle 1 1*clocktime+0.2 clockampawg clockfreq 0 0
+setsingle 1 2*clocktime+0.2 0  clockfreq 0 0
+setsingle 1 2*clocktime+2*0.2 clockampawg clockfreq 0 0
+setsingle 1 3*clocktime+2*0.2 0  clockfreq 0 0
+setsingle 1 3*clocktime+3*0.2 clockampawg clockfreq 0 0
+setsingle 1 4*clocktime+3*0.2 0  clockfreq 0 0
+setsingle 1 4*clocktime+4*0.2 clockampawg clockfreq 0 0
+setsingle 1 5*clocktime+4*0.2 0  clockfreq 0 0
+setsingle 1 5*clocktime+5*0.2 clockampawg clockfreq 0 0
+setsingle 1 6*clocktime+5*0.2 0  clockfreq 0 0
+setsingle 1 6*clocktime+6*0.2 clockampawg clockfreq 0 0
+setsingle 1 7*clocktime+6*0.2 0  clockfreq 0 0
+setsingle 1 7*clocktime+7*0.2 clockampawg clockfreq 0 180
+setsingle 1 8*clocktime+7*0.2 0  clockfreq 0 0
+setsingle 1 8*clocktime+8*0.2 clockampawg clockfreq 0 180
+setsingle 1 9*clocktime+8*0.2 0  clockfreq 0 0
+setsingle 1 9*clocktime+9*0.2 clockampawg clockfreq 0 180
+setsingle 1 10*clocktime+9*0.2 0  clockfreq 0 0
+setsingle 1 10*clocktime+10*0.2 clockampawg clockfreq 0 180
+setsingle 1 11*clocktime+10*0.2 0  clockfreq 0 0
+setsingle 1 11*clocktime+11*0.2 clockampawg clockfreq 0 180
+setsingle 1 12*clocktime+11*0.2 0  clockfreq 0 0
+setsingle 1 12*clocktime+12*0.2 clockampawg clockfreq 0 0
+setsingle 1 13*clocktime+12*0.2 0  clockfreq 0 0 
 
 
 
@@ -80,7 +80,8 @@ setsingle 3 2*rb3time 0 100 0 0
 
 program 3
 
-setsingle 4 0 0 100 1 0 
+setsingle 4 0 xamp 100 1 0 
+setsingle 4 xpi2time 0 100 0 0
 %setsingle 4 1*0.07+1*zpi2time+1*0.07+1*0.07+0*xpi2time+0*0.07 xamp 100 0 0
 %setsingle 4 1*0.07+1*zpi2time+1*0.07+1*0.07+1*xpi2time+0*0.07 0 100 0 0
 %setsingle 4 1*0.07+1*zpi2time+1*0.07+1*0.07+1*xpi2time+1*0.07 0 100 0 0

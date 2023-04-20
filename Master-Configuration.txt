@@ -121,9 +121,9 @@ xcor
 0
 awgtrigger2
 0
-dio8.5
+metaxrot
 0
-dio8.6
+metazrot
 0
 dio8.7
 0
@@ -205,17 +205,17 @@ gsxrotpiezohor
 gsxrotpiezover
 0 - 10
 0
-dac26
--10 - 10
+metaxrotpiezohor
+-0 - 10
 0
-dac27
--10 - 10
+metaxrotpiezover
+-0 - 10
 0
-dac28
--10 - 10
+metazrotpiezohor
+-0 - 10
 0
-dac29
--10 - 10
+metazrotpiezover
+-0 - 10
 0
 dac30
 -10 - 10
@@ -283,7 +283,7 @@ dds11
 0
 0 - 100
 100
-58
+63
 bluemotcoil 1.1
 bluex 0.2689
 bluey 0.2109
@@ -292,22 +292,22 @@ greenmotcoil 0.2
 blueloadtime 200
 greenbroadloadtime 20
 greennarrowloadtime 20
-coolfreq 95.399
-coolpower 53.7054
+coolfreq 95
+coolpower 30
 cooltime 2
 greennarrowfreq 82.6
-greennarrowpower 2.081
-greennarrowpowerstart 15.15
+greennarrowpower 1.66
+greennarrowpowerstart 13.79
 bluefreq 110
 bluepower 30
 comploadtime 75
-greenpower 33
+greenpower 10
 greentime 3.5
 greenfreq 71.12
 loadtime 200
 loadfreq 98
 depth -1.98
-axialcoolfreq 70.5215
+axialcoolfreq 70.52
 axialcoolpower 37
 slmpowerfactor 1.92
 xmagic 2.45
@@ -321,7 +321,7 @@ yzero 0.0159294
 zzero -0.133749
 blowaway_depth -0.2
 ramsey_depth -0.2
-ramptime 2.1
+ramptime 2
 yclock 4.8
 loadpower 100
 dds2_factor 1.00911
@@ -342,4 +342,9 @@ gmcfreq 97.4272
 gmcpower 38.9
 gmc_depth -2.414
 axisrottime2 10
+zqubitpi 0.051959
+yqubitpi 0.27027
+xqubitpi 2.45
+ramptime2 4.5
+axisrottime3 5
 75 260 1 220 245 1

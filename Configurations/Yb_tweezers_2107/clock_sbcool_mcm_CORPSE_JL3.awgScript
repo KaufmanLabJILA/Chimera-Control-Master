@@ -60,7 +60,7 @@ setsingle 3 2*rb3time 0 100 0 0
 program 3
 
 setsingle 4 0 0 100 1 0 
-%setsingle 4 1*0.07+1*zpi2time+1*0.07+1*0.07+0*xpi2time+0*0.07 xamp 100 0 0
+setsingle 4 xpi2time 0 100 0 0
 %setsingle 4 1*0.07+1*zpi2time+1*0.07+1*0.07+1*xpi2time+0*0.07 0 100 0 0
 %setsingle 4 1*0.07+1*zpi2time+1*0.07+1*0.07+1*xpi2time+1*0.07 0 100 0 0
 
