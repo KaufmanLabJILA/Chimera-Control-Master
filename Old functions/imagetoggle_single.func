@@ -1,0 +1,21 @@
+% Master-Script See the "?" for info on commands.
+def imagetoggle_single():
+
+on: andortrig
+t += .2 
+%off: radial
+
+on: imag461
+on: red3dnarrow
+%on: radial
+t += 75
+off: red3dnarrow
+off: imag461
+  
+off: imag461
+off: andortrig
+off: radial
+t += 1
+
+
+

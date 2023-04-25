@@ -8,14 +8,14 @@ def paintpotential():
   pulseon: gmmove .0001
   t += .1
   
-  %t += 2000
+  %t += 1000
   
   % move along x
   repeat: 14 % 49
    %on: tweezerao
    pulseon: gmmove .00011
    t += 0.05 % optimized on 221206
-   %t += 200
+   t += 200
    on: tweezerao
    t += 0.004
    off: tweezerao
@@ -25,7 +25,7 @@ def paintpotential():
   % turn off all tweezers
   pulseon: gmmove .0001
   t += .1
-  %t += 2000
+  %t += 10
 
   % reset to load for next cycle
   pulseon: gmload .0001

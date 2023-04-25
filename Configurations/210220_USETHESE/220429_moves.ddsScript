@@ -12,7 +12,7 @@ reset
 %freqs 80 c_3p0+spec3p0/1000 80 c_3p0+spec3p0/1000 c_3p1_lat+f_rad_3d+.003 c_3p1_lat+f_rad_3d+.003 c_3p1_lat+f_ax_3d c_3p1_lat+f_rad_3d-.003
 %amps  0 0 30 92 0 3.5 3.5 1.5
 % below taken from squeezing script 221112 %
-freqs 80 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p1_lat+f_rad_3d+.003+(__ts__-__t0__)*dr_3p1/86400 c_3p1_lat+f_rad_3d+.003+(__ts__-__t0__)*dr_3p1/86400 c_3p1_lat+f_ax_3d+0.005+(__ts__-__t0__)*dr_3p1/86400 c_3p1_lat+f_rad_3d-.007+(__ts__-__t0__)*dr_3p1/86400
+freqs 80 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p1_lat+f_rad_3d+.003+(__ts__-__t0__)*dr_3p1/86400 c_3p1_lat+f_rad_3d+.003+(__ts__-__t0__)*dr_3p1/86400 c_3p1_lat+f_ax_3d+(__ts__-__t0__)*dr_3p1/86400 c_3p1_lat+f_rad_3d-.003+(__ts__-__t0__)*dr_3p1/86400
 %freqs 80 c_3p0+spec3p0/1000 180 c_3p0+spec3p0/1000+.3 c_3p1_lat+f_rad_3d+.003 c_3p1_lat+f_rad_3d+.003 c_3p1_lat+f_ax_3d+0.005 c_3p1_lat+f_rad_3d-.007
 %amps  0 0 30 92 0 7 3 1.5
 amps  0 75 90 90 0 3.5 2 3.5
@@ -43,6 +43,7 @@ snapshot 2 reps 2
 % use for spectroscopy
 freqs 80 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 spec3p1+(__ts__-__t0__)*dr_3p1/86400 spec3p1+(__ts__-__t0__)*dr_3p1/86400 spec3p1+(__ts__-__t0__)*dr_3p1/86400 spec3p1+(__ts__-__t0__)*dr_3p1/86400
 amps  0 75 90 90 0 3.5 3.5 2
+%amps  0 75 90 90 0 3.5 3.5 8
 
 % use for dummy image
 %freqs 80 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 79.74 c_3p1_lat+f_rad_dummy+.003 c_3p1_lat+f_ax_3d_imag c_3p1_lat+f_rad_dummy-.007

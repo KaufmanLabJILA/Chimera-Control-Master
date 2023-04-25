@@ -35,7 +35,7 @@ freqs 80 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 spec3p1+(__ts_
 %freqs 80 c_3p0+spec3p0/1000 180 c_3p0+spec3p0/1000+.5 spec3p1 spec3p1 spec3p1 spec3p1
 %amps  0 75 90 90 0 3.5 3.5 3*.75
 % 3P2 Shelving:
-amps  0 75 90 90 0 10 3.5 10
+%amps  0 75 90 90 0 10 3.5 10
 
 
 %for imaging optimization
@@ -44,7 +44,7 @@ amps  0 75 90 90 0 10 3.5 10
 %freqs 80 c_3p0+1 80 80 79.74 c_3p1+f_rad c_3p1+f_ax_3d_imag c_3p1+f_rad_3d 
 %amps  0 100 30 100 0 6 12 5.5
 % for shelving:
-%amps  0 100 30 100 28 20.5 3 30.8
+amps  0 100 30 100 28 20.5 3 30.8
 % for filtering:
 %amps  0 0 30 92 0 3.0 3.5 2.5
 

@@ -292,6 +292,20 @@ void MainWindow::passPainterIsOnPress()
 	}
 }
 
+void MainWindow::passPaintStaticIsOnPress()
+{
+	if (gmoog.paintStatic)
+	{
+		gmoog.paintStatic = false;
+		menu.CheckMenuItem(ID_GIGAMOOG_PAINTSTATIC, MF_UNCHECKED);
+	}
+	else
+	{
+		gmoog.paintStatic = true;
+		menu.CheckMenuItem(ID_GIGAMOOG_PAINTSTATIC, MF_CHECKED);
+	}
+}
+
 void MainWindow::passExportArrayIsOnPress()
 {
 	if (gmoog.exportArray)
@@ -347,6 +361,11 @@ bool MainWindow::checkAutoAlignState()
 bool MainWindow::checkPainterState()
 {
 	return gmoog.painterActive;
+}
+
+bool MainWindow::checkPaintStatic()
+{
+	return gmoog.paintStatic;
 }
 
 bool MainWindow::checkExportArrayState()

@@ -402,6 +402,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 				{
 					//reset gmoog load settings if using auto calibration.
 					MessageSender ms;
+					input->gmoog->writeOff(ms);
 					input->gmoog->writeLoad(ms);
 					input->gmoog->writeTerminator(ms);
 					input->gmoog->send(ms);

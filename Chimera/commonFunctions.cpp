@@ -811,6 +811,11 @@ namespace commonFunctions
 				mainWin->passPainterIsOnPress();
 				break;
 			}
+			case ID_GIGAMOOG_PAINTSTATIC:
+			{
+				mainWin->passPaintStaticIsOnPress();
+				break;
+			}
 			case ID_GIGAMOOG_EXPORTARRAY:
 			{
 				mainWin->passExportArrayIsOnPress();

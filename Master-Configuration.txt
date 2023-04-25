@@ -199,10 +199,10 @@ uvpm_h
 uvpm_v
 0 - 10
 0
-40
+41
 rmbx 0.005
 rmby 0.015
-rmbz 0.0242
+rmbz 0.0243
 tune461 -0.2
 bluetuneval 0.25
 bluetune_imag 0.025
@@ -211,7 +211,7 @@ lattice_pow -5.5
 lattice_zero -0.015
 ax_lattice_pow -4
 ax_lattice_zero -0.01
-axial_phase_set 7.1
+axial_phase_set 4.14
 xoff 4.2
 yoff 0
 xoff813 -2.12
@@ -222,22 +222,23 @@ f_rmot_narrow 0.5
 swapmottime 50
 mirrorscanx 1.6
 mirrorscany 2.92
-f_rad_3d 0.134
-f_ax_3d 0.042
+f_rad_3d 0.139
+f_ax_3d 0.04
 f_ax_3d_imag 0.126
-imagpowlat 0.15
+imagpowlat 0.155
 moverate 511
 amprate 6000
-imagpow 0.148
-dmbz 0.399
+imagpow 0.149
+dmbz 0.3985
 by_lacs 0.025
 f_lac -1.64
 c_3p0 80
 fcool 0.071
-c_3p1_lat 79.9964
-bluemottime 70
-uvpm_v_set 0.5
-__t0__ 1680628489
+c_3p1_lat 79.9988
+bluemottime 65
+uvpm_v_set 4.8
+__t0__ 1682436590
 dr_3p1 0.0039
 uvpm_h_set -0.5
+narrowmottime 180
 75 375 1 100 400 1

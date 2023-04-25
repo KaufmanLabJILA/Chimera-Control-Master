@@ -1,0 +1,50 @@
+% Master-Script See the "?" for info on commands.
+def fieldsmallz():
+  call fieldzero()
+
+%%% High field condition
+  t += 4
+  dac: bigzcoil 0
+  t += 4
+  off: bigzantihelm
+  t += 1
+  dac: bigzcoil 0.29  %2*0.08875 %1.775 %0.7
+  %t += 3.82 %3.91 %7.4 
+  %dac: bigzcoil 0.2 %0.5 %2
+
+  t += 3.91 %3.82 %7.4 
+  dac: bigzcoil 0.25 %0.2 %2 %1.0
+
+
+%%% Low field condition
+  %t += 4
+  %dac: bigzcoil 0
+  %off: bigzantihelm
+  %t += 1
+  %dac: bigzcoil .1115 %.11
+  %t += 3.84 % 3.9
+  %dac: bigzcoil .2
+%%%
+
+%%% Even lower field condition
+  %t += 4
+  %dac: bigzcoil 0
+  %off: bigzantihelm
+  %t += 1
+  %dac: bigzcoil .1
+%%%
+
+  t += 15
+
+
+%  dac: bigzcoil 1.725
+%  t +=  7.25
+%  dac: bigzcoil 1.95
+
+  %dac: bigzcoil 0.65 
+  %t +=  3.99 
+  %dac: bigzcoil 1 
+  %t += 15
+%  dac: bigzcoil 1.745
+%  t +=  7.25
+%  dac: bigzcoil 1.99 

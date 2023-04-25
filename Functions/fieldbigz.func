@@ -13,7 +13,11 @@ def fieldbigz():
   %dac: bigzcoil 0.2 %0.5 %2
 
   t += 3.91 %3.82 %7.4 
-  dac: bigzcoil 0.5 %1 %0.2 %2 %1.0
+  % gate conditions
+  %dac: bigzcoil 0.5 %1 %0.2 %2 %1.0
+
+  % squeezing paper conditions
+  dac: bigzcoil 1.0 %1 %0.2 %2 %1.0
 
 
 %%% Low field condition

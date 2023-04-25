@@ -1,7 +1,7 @@
 % Master-Script See the "?" for info on commands.
 def rerng_filterarbscrunchy():
 
-on: t515hold
+%on: t515hold
 pulseon: gmload .0001
 t += .1
 pulseon: gmmove .0001
@@ -97,5 +97,5 @@ t += 5
 dac: tweezerpow tweezer_pow
 pulseon: gmload .0001
 t += 1
-off: t515hold
+%off: t515hold
 

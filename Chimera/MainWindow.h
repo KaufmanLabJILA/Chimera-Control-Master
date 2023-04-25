@@ -40,12 +40,14 @@ class MainWindow : public CDialog
 		void passGmoogIsOnPress( );
 		void passAutoAlignIsOnPress();
 		void passPainterIsOnPress();
+		void passPaintStaticIsOnPress();
 		void passExportArrayIsOnPress();
 		void passExportPaintIsOnPress();
 		void passExportVariableIsOnPress();
 		bool checkGmoogState();
 		bool checkAutoAlignState();
 		bool checkPainterState();
+		bool checkPaintStatic();
 		bool checkExportArrayState();
 		MainWindow(UINT id, CDialog*);
 		BOOL OnInitDialog() override;

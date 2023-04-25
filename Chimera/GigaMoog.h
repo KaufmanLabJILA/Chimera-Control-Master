@@ -83,6 +83,7 @@ public:
 	bool rearrangerActive = false;
 	bool autoTweezerOffsetActive = false;
 	bool painterActive = false;
+	bool paintStatic = false;
 	bool exportArray = false;
 	bool exportPaint = false;
 	std::vector<bool> initialPositionsX; //initial and target positions saved in gigamoog object mostly because it already handles the script, but these only get used by the rearrangement thread.
@@ -137,6 +138,7 @@ private:
 	double getPaintAmpY(unsigned int xIndex, unsigned int yIndex);
 	bool getPaintMaskX(unsigned int xIndex, unsigned int yIndex);
 	bool getPaintMaskY(unsigned int xIndex, unsigned int yIndex);
+	bool checkPaintMaskX();
 	bool checkPaintMaskY();
 
 	static unsigned long long int getFTW(double frequency) {

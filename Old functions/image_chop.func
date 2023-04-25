@@ -1,0 +1,31 @@
+% Master-Script See the "?" for info on commands.
+def image_chop():
+  dac: bluetune bluetune_imag
+  dac: imagingPow imagpow
+  on: andorshut
+  on: imagshut
+  t += 4
+  on: andortrig
+  t += .2
+  on: imag461
+  
+  repeat: 50
+   on: axial
+   t += .5
+   off: axial
+   on: radial
+   t += .5
+   off: radial
+   on: axial
+   t += .5
+   off: axial
+   on: radial2
+   t += .5
+   off: radial2
+  end
+
+  off: andortrig
+  off: andorshut
+  off: imag461
+  off: imagshut
+  t += .01

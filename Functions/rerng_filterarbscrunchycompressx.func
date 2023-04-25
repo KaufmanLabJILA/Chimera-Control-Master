@@ -4,7 +4,8 @@ def rerng_filterarbscrunchycompressx():
 %daclinspace: latticepow lattice_pow lattice_pow2 3 15
 %t += 10
 
-on: t515hold
+%on: t515hold
+t += 1
 pulseon: gmload .00011
 t += .1
 pulseon: gmmove .00011
@@ -106,7 +107,7 @@ t += 5
 dac: tweezerpow tweezer_pow
 pulseon: gmload .0001
 t += 1
-off: t515hold
+%off: t515hold
 
 %daclinspace: latticepow lattice_pow2 lattice_pow 3 15
 %t += 10
