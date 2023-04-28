@@ -93,14 +93,14 @@ void gigaMoog::refreshLUT()
 double gigaMoog::getFreqX(int xIndex, int yIndex) {
 	yIndex = (yIndex < 0) ? 0 : yIndex;
 
-	if (xIndex == -1 && yIndex >= 0) //special handling for atom removal
+	if (xIndex < 0 && yIndex >= 0) //special handling for feedback
 	{
-		return 60 + xOffset;
+		return 72 + xOffset + xIndex*((72.0-55.0)/24.0);
 	}
-	else if (xIndex == -2 && yIndex >= 0)
+	/*else if (xIndex == -2 && yIndex >= 0)
 	{
 		return 300 + xOffset;
-	}
+	}*/
 	else if (xIndex >= 0 && yIndex >= 0)
 	{
 		return FTW_LUT[2 * yDim * xIndex + 2 * yIndex + 0] + xOffset;
@@ -114,7 +114,7 @@ double gigaMoog::getFreqX(int xIndex, int yIndex) {
 double gigaMoog::getAmpX(int xIndex, int yIndex) {
 	yIndex = (yIndex < 0) ? 0 : yIndex;
 
-	if ((xIndex == -1 || xIndex == -2) && yIndex >= 0) //special handling for atom removal
+	if ((xIndex < 0) && yIndex >= 0) //special handling for feedback
 	{
 		return ATW_LUT[2 * yDim * 0 + 2 * yIndex + 0];
 	}
@@ -546,22 +546,22 @@ void gigaMoog::writeMoveOff(MessageSender& ms) {
 				.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0.0).instantFTW(1).ATWIncr(0).stepSequenceID(stepID).FTWIncr(0).phaseJump(0);;
 			ms.enqueue(m);
 		}
-		//TODO: put back in after programming rate fixed, and when using both rails.
-		//for (int channel = 0; channel < 48; channel++) {
-		//	Message m = Message::make().destination(MessageDestination::KA007)
-		//		.DAC(MessageDAC::DAC2).channel(channel)
-		//		.setting(MessageSetting::MOVEFREQUENCY)
-		//		.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0.0).instantFTW(1).ATWIncr(0).stepSequenceID(stepID).FTWIncr(0).phaseJump(0);;
-		//	ms.enqueue(m);
-		//}
+		
+		/*for (int channel = 0; channel < 48; channel++) {
+			Message m = Message::make().destination(MessageDestination::KA007)
+				.DAC(MessageDAC::DAC2).channel(channel)
+				.setting(MessageSetting::MOVEFREQUENCY)
+				.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0.0).instantFTW(1).ATWIncr(0).stepSequenceID(stepID).FTWIncr(0).phaseJump(0);;
+			ms.enqueue(m);
+		}
 
-		//for (int channel = 0; channel < 48; channel++) {
-		//	Message m = Message::make().destination(MessageDestination::KA007)
-		//		.DAC(MessageDAC::DAC3).channel(channel)
-		//		.setting(MessageSetting::MOVEFREQUENCY)
-		//		.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0.0).instantFTW(1).ATWIncr(0).stepSequenceID(stepID).FTWIncr(0).phaseJump(0);;
-		//	ms.enqueue(m);
-		//}
+		for (int channel = 0; channel < 48; channel++) {
+			Message m = Message::make().destination(MessageDestination::KA007)
+				.DAC(MessageDAC::DAC3).channel(channel)
+				.setting(MessageSetting::MOVEFREQUENCY)
+				.frequencyMHz(0).amplitudePercent(0).phaseDegrees(0.0).instantFTW(1).ATWIncr(0).stepSequenceID(stepID).FTWIncr(0).phaseJump(0);;
+			ms.enqueue(m);
+		}*/
 	}
 }
 

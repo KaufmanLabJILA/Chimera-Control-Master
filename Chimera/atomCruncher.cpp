@@ -213,9 +213,9 @@ void atomCruncher::feedBack(moveSequence& moveseq, bool centered = false) {
 						single.startAOX.push_back(ix); //Place tweezers on all atoms in row
 						(*rearrangerAtomQueue)[0][nx - ixl - 1 + iyl * nx] = 0; //remove atom from pickup location
 					}
-					/*else {
-						single.startAOX.push_back(-ixl);
-					}*/
+					else {
+						single.startAOX.push_back(-ixl-1);
+					}
 					ixl++;
 					ixs.push_back(ix);
 				}
@@ -728,6 +728,10 @@ moveSequence atomCruncher::getRearrangeMoves(std::string rearrangeType) {
 	if (rearrangeType == "scrunchx")
 	{
 		scrunchX(moveseq);
+	}
+	if (rearrangeType == "feedback")
+	{
+		feedBack(moveseq);
 	}
 	else if (rearrangeType == "scrunchy")
 	{

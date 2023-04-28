@@ -1,4 +1,4 @@
-rearrange scrunchx 1 6000 30 %max is ampstep 134217727(?may be 26 bit), freqstep 511
+rearrange feedback 1 6000 30 %max is ampstep 134217727(?may be 26 bit), freqstep 511
 %filterarbscrunchycompressx 
 xoffset aodxoff
 yoffset aodyoff

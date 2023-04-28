@@ -1274,7 +1274,7 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 					(*input->rearrangerAtomQueue).push_back(tempAtomArray); //put atom array in rearrange queue
 					input->rearrangerConditionWatcher->notify_all();
 
-					if (input->nAtom >= input->gmoog->targetNumber)
+					if (input->nAtom >= 0)//input->gmoog->targetNumber)
 					{
 						try
 						{
@@ -1293,24 +1293,24 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 							//TODO: add handling for reporting rearrangement errors.
 						}
 					}
-					else if (input->nAtom == 0)//when there are no atom
-					{
-						try
-						{
-							//REARRANGE
-							//moveSequence moveseq = input->getRearrangeMoves();
-							MessageSender ms;
-							input->gmoog->writeOff(ms); //Important to start with load tones off, so that every tone has explicit settings.
-							input->gmoog->writeZerotone(input->getRearrangeMoves(input->gmoog->rearrangeMode), ms);
-							input->gmoog->writeTerminator(ms);
-							input->gmoog->send(ms);
-						}
-						catch (Error& exception)
-						{
-							/*input->comm->sendError(exception.what());*/
-							//TODO: add handling for reporting rearrangement errors.
-						}
-					}
+					//else if (input->nAtom == 0)//when there are no atom
+					//{
+					//	try
+					//	{
+					//		//REARRANGE
+					//		//moveSequence moveseq = input->getRearrangeMoves();
+					//		MessageSender ms;
+					//		input->gmoog->writeOff(ms); //Important to start with load tones off, so that every tone has explicit settings.
+					//		input->gmoog->writeZerotone(input->getRearrangeMoves(input->gmoog->rearrangeMode), ms);
+					//		input->gmoog->writeTerminator(ms);
+					//		input->gmoog->send(ms);
+					//	}
+					//	catch (Error& exception)
+					//	{
+					//		/*input->comm->sendError(exception.what());*/
+					//		//TODO: add handling for reporting rearrangement errors.
+					//	}
+					//}
 					(*input->rearrangerAtomQueue).clear(); //clear the rearrange queue once we've completed or ignored the rearrangement.
 
 				}

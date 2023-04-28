@@ -82,6 +82,9 @@ public:
 	std::vector<bool> filterPositionsX;
 	std::vector<bool> filterPositionsY;
 
+	std::vector<bool> initialPositionsX;
+	std::vector<bool> initialPositionsY;
+
 	int xPixelOffsetAuto = 0;
 	int yPixelOffsetAuto = 0;
 	int subpixelIndexOffsetAuto = 12;
