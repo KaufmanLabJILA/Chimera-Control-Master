@@ -6,7 +6,7 @@
 
 struct DacCommandForm
 {
-	// can either be "dac", "dacarange", or "daclinspace"
+	// can either be "dac", "dacarange", "daclinspace", "daccosspace", or "dacexpspace"
 	std::string commandName;
 
 	unsigned short line;

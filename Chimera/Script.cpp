@@ -346,7 +346,7 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 		{
 			return rgbs["theme purple"];
 		}
-		if (word == "dac:" || word == "dacarange:" || word == "daclinspace:")
+		if (word == "dac:" || word == "dacarange:" || word == "daclinspace:" || word == "daccosspace:" || word == "dacexpspace:")
 		{
 			return rgbs["theme yellow"];
 		}

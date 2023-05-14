@@ -8,7 +8,7 @@ setsingle 0 uvtime 0 (ryd_freq+detuning) 0 0
 setsingle 0 uvtime+delay awgamp (ryd_freq+detuning) 1 phasejump
 setsingle 0 2*uvtime+delay 0 (ryd_freq+detuning) 0 phasejump
 
-setsingle 0 20 0 (ryd_freq+detuning) 0 phasejump
+%setsingle 0 20 0 (ryd_freq+detuning) 0 phasejump
 
 program 0
 

@@ -776,6 +776,86 @@ void DacSystem::interpretKey( std::vector<variableType>& variables, std::string&
 				tempEvent.time = initTime + rampTime;
 				dacCommandList[variationInc].push_back( tempEvent );
 			}
+			else if (dacCommandFormList[eventInc].commandName == "daccosspace:")
+			{
+				// interpret ramp time command. I need to know whether it's ramping or not.
+				double rampTime = dacCommandFormList[eventInc].rampTime.evaluate(variables, variationInc);
+				/// many points to be made.
+				// convert initValue and finalValue to doubles to be used
+				double initValue, finalValue, numSteps;
+				initValue = dacCommandFormList[eventInc].initVal.evaluate(variables, variationInc);
+				// deal with final value;
+				finalValue = dacCommandFormList[eventInc].finalVal.evaluate(variables, variationInc);
+				// deal with numPoints
+				numSteps = dacCommandFormList[eventInc].numSteps.evaluate(variables, variationInc);
+				double rampInc = (finalValue - initValue) / numSteps;
+				if ((fabs(rampInc) < 10.0 / pow(2, 16)) && !resolutionWarningPosted)
+				{
+					resolutionWarningPosted = true;
+					warnings += "Warning: numPoints of " + str(numSteps) + " results in a ramp increment of " + str(rampInc) + " is below the resolution of the dacs (which is 10/2^16 = " + str(10.0 / pow(2, 16)) + "). It's likely taxing the system to "
+																																																					  "calculate the ramp unnecessarily.\r\n";
+				}
+				// This might be the first not i++ usage of a for loop I've ever done... XD
+				// calculate the time increment:
+				double timeInc = rampTime / numSteps;
+				double initTime = tempEvent.time;
+				double currentTime = tempEvent.time;
+				double val = initValue;
+				double rampAmplitude = (finalValue - initValue);
+				// handle the two directions seperately.
+				for (auto stepNum : range(numSteps))
+				{
+					tempEvent.value = val;
+					tempEvent.time = currentTime;
+					dacCommandList[variationInc].push_back(tempEvent);
+					currentTime += timeInc;
+					// val += rampInc;
+					val = initValue + rampAmplitude * (1 - pow(cos(((stepNum + 1) / numSteps) * 3.14159 / 2), 2));
+				}
+				// and get the final value. Just use the nums explicitly to avoid rounding error I guess.
+				tempEvent.value = finalValue;
+				tempEvent.time = initTime + rampTime;
+				dacCommandList[variationInc].push_back(tempEvent);
+			}
+			else if (dacCommandFormList[eventInc].commandName == "dacexpspace:")
+			{
+				// interpret ramp time command. I need to know whether it's ramping or not.
+				double rampTime = dacCommandFormList[eventInc].rampTime.evaluate(variables, variationInc);
+				/// many points to be made.
+				// convert initValue and finalValue to doubles to be used
+				double initValue, finalValue, numSteps;
+				initValue = dacCommandFormList[eventInc].initVal.evaluate(variables, variationInc);
+				// deal with final value;
+				finalValue = dacCommandFormList[eventInc].finalVal.evaluate(variables, variationInc);
+				// deal with numPoints
+				numSteps = dacCommandFormList[eventInc].numSteps.evaluate(variables, variationInc);
+				double rampInc = (finalValue - initValue) / numSteps;
+				if ((fabs(rampInc) < 10.0 / pow(2, 16)) && !resolutionWarningPosted)
+				{
+					resolutionWarningPosted = true;
+					warnings += "Warning: numPoints of " + str(numSteps) + " results in a ramp increment of " + str(rampInc) + " is below the resolution of the dacs (which is 10/2^16 = " + str(10.0 / pow(2, 16)) + "). It's likely taxing the system to "
+																																																					  "calculate the ramp unnecessarily.\r\n";
+				}
+				// This might be the first not i++ usage of a for loop I've ever done... XD
+				// calculate the time increment:
+				double timeInc = rampTime / numSteps;
+				double initTime = tempEvent.time;
+				double currentTime = tempEvent.time;
+				double val = initValue;
+				// handle the two directions seperately.
+				for (auto stepNum : range(numSteps))
+				{
+					tempEvent.value = val;
+					tempEvent.time = currentTime;
+					dacCommandList[variationInc].push_back(tempEvent);
+					currentTime += timeInc;
+					val += rampInc;
+				}
+				// and get the final value. Just use the nums explicitly to avoid rounding error I guess.
+				tempEvent.value = finalValue;
+				tempEvent.time = initTime + rampTime;
+				dacCommandList[variationInc].push_back(tempEvent);
+			}
 			else
 			{
 				thrower( "ERROR: Unrecognized dac command name: " + dacCommandFormList[eventInc].commandName );
@@ -1042,7 +1122,7 @@ void DacSystem::makeFinalDataFormat(UINT variation)
 void DacSystem::handleDacScriptCommand( DacCommandForm command, std::string name, std::vector<UINT>& dacShadeLocations,
 										std::vector<variableType>& vars, DioSystem* ttls )
 {
-	if ( command.commandName != "dac:" && command.commandName != "dacarange:" && command.commandName != "daclinspace:" )
+	if (command.commandName != "dac:" && command.commandName != "dacarange:" && command.commandName != "daclinspace:" && command.commandName != "daccosspace:" && command.commandName != "dacexpspace:")
 	{
 		thrower( "ERROR: dac commandName not recognized!" );
 	}

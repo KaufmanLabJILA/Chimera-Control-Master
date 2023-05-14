@@ -47,6 +47,7 @@ amps  0 75 90 90 0 14 6 3
 snapshot 6 reps 2
 freqs 80 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p1_lat+shift_3p1/1000+f_rad_3d+(__ts__-__t0__)*dr_3p1/86400 c_3p1_lat+shift_3p1/1000+f_rad_lat+(__ts__-__t0__)*dr_3p1/86400 c_3p1_lat+shift_3p1/1000+f_ax_3d+(__ts__-__t0__)*dr_3p1/86400 c_3p1_lat+shift_3p1/1000+f_rad2_lat+(__ts__-__t0__)*dr_3p1/86400
 %amps  0 0 0 0 0 2.5 2.5 1.5
+%amps  0 75 90 90 0 6 4 5.5
 amps  0 75 90 90 0 6 4 5.5
 
 end

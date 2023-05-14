@@ -924,6 +924,70 @@ void MasterManager::analyzeFunction( std::string function, std::vector<std::stri
 				thrower( err.whatStr( ) + "... in \"dacLinSpace:\" command inside function " + function );
 			}
 		}
+		else if (word == "daccosspace:")
+		{
+			DacCommandForm command;
+			std::string name;
+			// get dac name
+			functionStream >> name;
+			// get ramp initial value
+			functionStream >> command.initVal;
+			command.initVal.assertValid(vars);
+			// get ramp final value
+			functionStream >> command.finalVal;
+			command.finalVal.assertValid(vars);
+			// get total ramp time;
+			functionStream >> command.rampTime;
+			command.rampTime.assertValid(vars);
+			// get ramp point increment.
+			functionStream >> command.numSteps;
+			command.numSteps.assertValid(vars);
+			command.time = operationTime;
+			command.commandName = "daccosspace:";
+			// not used here.
+			command.rampInc.expressionStr = "__NONE__";
+			//
+			try
+			{
+				dacs->handleDacScriptCommand(command, name, dacShades, vars, ttls);
+			}
+			catch (Error &err)
+			{
+				thrower(err.whatStr() + "... in \"dacCosSpace:\" command inside function " + function);
+			}
+		}
+		else if (word == "dacexpspace:")
+		{
+			DacCommandForm command;
+			std::string name;
+			// get dac name
+			functionStream >> name;
+			// get ramp initial value
+			functionStream >> command.initVal;
+			command.initVal.assertValid(vars);
+			// get ramp final value
+			functionStream >> command.finalVal;
+			command.finalVal.assertValid(vars);
+			// get total ramp time;
+			functionStream >> command.rampTime;
+			command.rampTime.assertValid(vars);
+			// get ramp point increment.
+			functionStream >> command.numSteps;
+			command.numSteps.assertValid(vars);
+			command.time = operationTime;
+			command.commandName = "daccosspace:";
+			// not used here.
+			command.rampInc.expressionStr = "__NONE__";
+			//
+			try
+			{
+				dacs->handleDacScriptCommand(command, name, dacShades, vars, ttls);
+			}
+			catch (Error &err)
+			{
+				thrower(err.whatStr() + "... in \"dacCosSpace:\" command inside function " + function);
+			}
+		}
 		else if (word == "dacarange:")
 		{
 			DacCommandForm command;
@@ -1219,6 +1283,60 @@ void MasterManager::analyzeMasterScript( DioSystem* ttls, DacSystem* dacs,
 				thrower( err.whatStr( ) + "... in \"dacLinSpace:\" command inside main script.\r\n" );
 			}
 		}
+		else if (word == "daccosspace:")
+		{
+			DacCommandForm command;
+			std::string name;
+			currentMasterScript >> name;
+			currentMasterScript >> command.initVal;
+			command.initVal.assertValid(vars);
+			currentMasterScript >> command.finalVal;
+			command.finalVal.assertValid(vars);
+			currentMasterScript >> command.rampTime;
+			command.rampTime.assertValid(vars);
+			currentMasterScript >> command.numSteps;
+			command.numSteps.assertValid(vars);
+			command.time = operationTime;
+			command.commandName = "daccosspace:";
+			// not used here.
+			command.rampInc.expressionStr = "__NONE__";
+			//
+			try
+			{
+				dacs->handleDacScriptCommand(command, name, dacShades, vars, ttls);
+			}
+			catch (Error &err)
+			{
+				thrower(err.whatStr() + "... in \"dacCosSpace:\" command inside main script.\r\n");
+			}
+		}
+		else if (word == "dacexpspace:")
+		{
+			DacCommandForm command;
+			std::string name;
+			currentMasterScript >> name;
+			currentMasterScript >> command.initVal;
+			command.initVal.assertValid(vars);
+			currentMasterScript >> command.finalVal;
+			command.finalVal.assertValid(vars);
+			currentMasterScript >> command.rampTime;
+			command.rampTime.assertValid(vars);
+			currentMasterScript >> command.numSteps;
+			command.numSteps.assertValid(vars);
+			command.time = operationTime;
+			command.commandName = "dacexpspace:";
+			// not used here.
+			command.rampInc.expressionStr = "__NONE__";
+			//
+			try
+			{
+				dacs->handleDacScriptCommand(command, name, dacShades, vars, ttls);
+			}
+			catch (Error &err)
+			{
+				thrower(err.whatStr() + "... in \"dacExpSpace:\" command inside main script.\r\n");
+			}
+		}
 		else if (word == "dacarange:")
 		{
 			DacCommandForm command;
@@ -1372,7 +1490,7 @@ void MasterManager::callCppCodeFunction()
 bool MasterManager::isValidWord( std::string word )
 {
 	if (word == "t" || word == "t++" || word == "t+=" || word == "t=" || word == "on:" || word == "off:"
-		 || word == "dac:" || word == "dacarange:" || word == "daclinspace:" || word == "rsg:" || word == "call" 
+		 || word == "dac:" || word == "dacarange:" || word == "daclinspace:" || word == "daccosspace:" || word == "dacexpspace:" || word == "rsg:" || word == "call" 
 		 || word == "repeat:" || word == "end" || word == "pulseon:" || word == "pulseoff:" || word == "callcppcode")
 	{
 		return true;
