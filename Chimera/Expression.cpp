@@ -2,6 +2,9 @@
 #include "Expression.h"
 #include <vector>
 #include <boost/tokenizer.hpp>
+#include <cmath>
+#include "chebyshev.h"
+using namespace Storage_B::Chebyshev;
 
 Expression::Expression( )
 {
@@ -35,7 +38,7 @@ std::vector<std::string> Expression::splitString( std::string workingString )
 	std::vector<std::string> terms;
 	// separate terms out.
 	// specify only the kept separators
-	boost::char_separator<char> sep( "", " \t+-*/()" );
+	boost::char_separator<char> sep( "", " \t+-*/^()," );
 	boost::tokenizer<boost::char_separator<char>> tokens( workingString, sep );
 	for ( std::string t : tokens )
 	{
@@ -46,6 +49,51 @@ std::vector<std::string> Expression::splitString( std::string workingString )
 		}
 	}
 	return terms;
+}
+
+void Expression::doPower(std::vector<std::string>& terms)
+{
+	/// find mult do mult
+	// this can be done as just a scan from left to right.
+	for (UINT count = 0; count < terms.size(); count++)
+	{
+		if (terms[count] == "^")
+		{
+			std::string individualResult;
+			double leftTerm = 0, rightTerm = 0;
+			try
+			{
+				if (count <= 0)
+				{
+					thrower("ERROR: Operator " + terms[count] + " has no value on its left!");
+				}
+				leftTerm = std::stod(terms[count - 1]);
+			}
+			catch (std::invalid_argument&)
+			{
+				thrower("ERROR: Tried and failed to evaluate string " + terms[count - 1]
+					+ " to a double (error in for multiplication / division section)!");
+			}
+			try
+			{
+				rightTerm = std::stod(terms[count + 1]);
+			}
+			catch (std::invalid_argument&)
+			{
+				thrower("ERROR: Tried and failed to convert string " + terms[count + 1] + " to a double (error in for"
+					" multiplication / division section)!");
+			}
+			// calculate the result
+			
+			individualResult = str(pow(leftTerm, rightTerm), 13);
+			// replace the * expression with the result.
+			terms.erase(terms.begin() + (count - 1), terms.begin() + (count + 2));
+			terms.insert(terms.begin() + (count - 1), individualResult);
+			// this accounts for the fact that we just deleted several terms from the vector, making sure that
+			// the function looks at the correct next term afterwards.
+			count -= 1;
+		}
+	}
 }
 
 
@@ -231,6 +279,8 @@ double Expression::reduce( std::vector<std::string> terms )
 			}
 		}
 
+		doPower( rightmostParenthesisTerms );
+
 		doMultAndDiv( rightmostParenthesisTerms );
 
 		doAddAndSub( rightmostParenthesisTerms );
@@ -274,7 +324,8 @@ double Expression::reduce( std::vector<std::string> terms )
 void Expression::evaluateFunctions( std::vector<std::string>& terms )
 {
 	// list of supported functions.
-	std::vector<std::string> functionList = { "sin", "cos", "exp", "ln", "log10" };
+	std::vector<std::string> functionList = { "sin", "cos", "exp", "ln", "log10", "chebt" };
+	int argumentNumber = 1;
 	bool functionExists = true;
 	while ( functionExists )
 	{
@@ -292,6 +343,10 @@ void Expression::evaluateFunctions( std::vector<std::string>& terms )
 					// just always reset it
 					funcPos = count;
 					funcName = elem;
+					if (elem == "chebt")
+					{
+						argumentNumber = 2;
+					}
 				}
 			}
 			count++;
@@ -303,7 +358,7 @@ void Expression::evaluateFunctions( std::vector<std::string>& terms )
 			functionExists = false;
 			break;
 		}
-		if ( funcPos >= terms.size( ) - 3 )
+		if (funcPos >= terms.size( ) - 3)
 		{
 			// the function position needs to have at least 3 terms after it (2 for parenthesis, 1 for the arg). 
 			// the last value is at position terms.size() - 1.
@@ -322,6 +377,7 @@ void Expression::evaluateFunctions( std::vector<std::string>& terms )
 		std::vector<std::string> maxArg = std::vector<std::string>( &terms[funcArgPosLeft] + 1, &terms.back( ) + 1 );
 		bool closingParenthesisExists = false;
 		int subParenthesisCount = 0;
+		std::vector<int> commaPos;
 		count = 0;
 		for ( auto& elem : maxArg )
 		{
@@ -334,12 +390,39 @@ void Expression::evaluateFunctions( std::vector<std::string>& terms )
 
 				if ( subParenthesisCount == 0 )
 				{
+					if (commaPos.size() != argumentNumber-1)
+					{
+						thrower("Invalid number of delimiting ,'s provided in function");
+					}
+
 					// then I've found the closing parenthesis of the function arguments.
 					funcArgPosRight = funcArgPosLeft + count;
+					if (argumentNumber > 1)
+					{
+						if (funcArgPosRight == commaPos.back() + 1)
+						{
+							thrower("No argument provided to right of last , in function.");
+						}
+					}
 					closingParenthesisExists = true;
 					break;
 				}
 				subParenthesisCount--;
+			}
+			else if (elem == ",")
+			{
+				if (count == 0)
+				{
+					thrower("No argument provided to left of first , in function.");
+				}
+				if (commaPos.size() > 0)
+				{
+					if (count == commaPos.back() + 1)
+					{
+						thrower("No argument provided between ,'s in function.");
+					}
+				}
+				commaPos.push_back(funcArgPosLeft + count);
 			}
 			count++;
 		}
@@ -347,37 +430,75 @@ void Expression::evaluateFunctions( std::vector<std::string>& terms )
 		{
 			thrower( "Function argument's enclosing () were unclosed! The initial ( didn't have a matching )!" );
 		}
-		// now I have a term which I can analyze.
-		functionArgUnevaluated = std::vector<std::string>( &terms[funcArgPosLeft], &terms[funcArgPosRight + 2] );
-
-		// reduce whatever's in the function argument
-		double functionArg = reduce( functionArgUnevaluated );
-
+		
 		// evaluate the function.
 		double functionResult;
 
-		// { "sin", "cos", "exp", "ln", "log10" };
-		if ( funcName == "sin" )
+		if (argumentNumber == 1)
 		{
-			functionResult = sin( functionArg );
+			// now I have a term which I can analyze.
+			functionArgUnevaluated = std::vector<std::string>(&terms[funcArgPosLeft], &terms[funcArgPosRight + 2]);
+
+			// reduce whatever's in the function argument
+			double functionArg = reduce(functionArgUnevaluated);
+
+			// { "sin", "cos", "exp", "ln", "log10" };
+			if (funcName == "sin")
+			{
+				functionResult = sin(functionArg);
+			}
+			else if (funcName == "cos")
+			{
+				functionResult = cos(functionArg);
+			}
+			else if (funcName == "exp")
+			{
+				functionResult = exp(functionArg);
+			}
+			else if (funcName == "ln")
+			{
+				// log in cmath is the natural log.
+				functionResult = log(functionArg);
+			}
+			else if (funcName == "log10")
+			{
+				functionResult = log10(functionArg);
+			}
 		}
-		else if ( funcName == "cos" )
+		else
 		{
-			functionResult = cos( functionArg );
+			std::vector<double> functionArgs;
+			for (int i = 0; i < argumentNumber; i++)
+			{
+				if (i == 0)
+				{
+					functionArgUnevaluated = std::vector<std::string>(&terms[funcArgPosLeft], &terms[commaPos[i] + 1]);
+					functionArgUnevaluated.push_back(")");
+				}
+				else if (i == argumentNumber-1)
+				{
+					functionArgUnevaluated = std::vector<std::string>(&terms[commaPos[i - 1] + 2], &terms[funcArgPosRight + 2]);
+					functionArgUnevaluated.insert(functionArgUnevaluated.begin(),"(");
+				}
+				else
+				{
+					functionArgUnevaluated = std::vector<std::string>(&terms[commaPos[i - 1] + 2], &terms[commaPos[i] + 1]);
+					functionArgUnevaluated.insert(functionArgUnevaluated.begin(), "(");
+					functionArgUnevaluated.push_back(")");
+				}
+				functionArgs.push_back(reduce(functionArgUnevaluated));
+			}
+
+			if (funcName == "chebt")
+			{
+				if ((functionArgs[1] > 1) || (functionArgs[1] < -1))
+				{
+					thrower("Invalid argument passed to chebyshev function. Domain is -1 to 1.");
+				}
+				functionResult = Tn<double>( (unsigned int) functionArgs[0], functionArgs[1]);
+			}
 		}
-		else if ( funcName == "exp" )
-		{
-			functionResult = exp( functionArg );
-		}
-		else if ( funcName == "ln" )
-		{
-			// log in cmath is the natural log.
-			functionResult = log( functionArg );
-		}
-		else if ( funcName == "log10" )
-		{
-			functionResult = log10( functionArg );
-		}
+
 		std::string resultStr = str( functionResult, 13 );
 		terms.erase( terms.begin( ) + funcPos, terms.begin( ) + (funcArgPosRight + 2) );
 		terms.insert( terms.begin( ) + funcPos, resultStr );

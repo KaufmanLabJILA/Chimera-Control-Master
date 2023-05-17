@@ -32,6 +32,11 @@ setsingle 1 uvtime 0 ryd_freq/10 0 0
 
 program 1
 
+%setsingle 2 0 awgamp ryd_freq 1 0 
+%setsingle 0 uvtime 0 ryd_freq 0 0
+
+%program 2
+
 % Software trigger for testing
 %trigger
 %trigger

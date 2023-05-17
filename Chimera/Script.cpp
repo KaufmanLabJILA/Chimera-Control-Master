@@ -269,6 +269,11 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 		{
 			return rgbs["theme aqua"];
 		}
+		// check function
+		else if (word == "sin" || word == "cos" || word == "exp" || word == "log10" || word == "ln" || word == "chebt")
+		{
+			return rgbs["theme green"];
+		}
 		if (word.size() > 8)
 		{
 			if (word.substr(word.size() - 8, 8) == ".awgScript")
@@ -276,6 +281,7 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 				return rgbs["theme yellow"];
 			}
 		}
+
 	}
 	if (editType == "Gmoog") {
 		if (word == "set" || word == "setmove" || word == "initx" || word == "inity" || word == "rearrange" || word == "targetstart" || word == "targetend")

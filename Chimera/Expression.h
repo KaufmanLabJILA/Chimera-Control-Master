@@ -18,6 +18,7 @@ class Expression
 	private:
 		void doMultAndDiv( std::vector<std::string>& terms );
 		void doAddAndSub( std::vector<std::string>& terms );
+		void doPower(std::vector<std::string>& terms);
 		double reduce( std::vector<std::string> terms );
 		void evaluateFunctions( std::vector<std::string>& terms );
 		bool expressionVaries = false;

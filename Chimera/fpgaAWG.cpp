@@ -134,7 +134,14 @@ void fpgaAWG::setSingle(unsigned long channel, float time, float amp, float freq
 	awgCommandList.back().ampPercent = amp;
 	awgCommandList.back().freqMHz = freq;
 	awgCommandList.back().phase_update = phase_update;
-	awgCommandList.back().phaseDegrees = phase;
+	awgCommandList.back().phaseDegrees = fmod(phase, 360.0);
+	
+
+	//std::ofstream tmpFile;
+	//tmpFile.open(ATOM_ARRAY_TMP_FILE_LOCATION, std::ios_base::app);
+	//tmpFile << std::fixed << std::setprecision(8) << phase;
+	//tmpFile << "\n";
+	//tmpFile.close();
 }
 
 void fpgaAWG::freqLinearRamp(unsigned long channel, float tStart, float tEnd, float fStart, float fEnd, bool phase_update, float phaseStart) {
