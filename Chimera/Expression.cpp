@@ -239,7 +239,7 @@ double Expression::reduce( std::vector<std::string> terms )
 			count++;
 		}
 		//
-		if ( leftExists )
+		if  ( leftExists )
 		{
 			rightmostParenthesisTerms = std::vector<std::string>( &terms[leftPos] + 1, &terms.back( ) + 1 );
 			bool rightExists = false;
@@ -324,7 +324,7 @@ double Expression::reduce( std::vector<std::string> terms )
 void Expression::evaluateFunctions( std::vector<std::string>& terms )
 {
 	// list of supported functions.
-	std::vector<std::string> functionList = { "sin", "cos", "exp", "ln", "log10", "chebt" };
+	std::vector<std::string> functionList = { "sin", "cos", "exp", "ln", "log10", "tanh", "sech", "chebt" };
 	int argumentNumber = 1;
 	bool functionExists = true;
 	while ( functionExists )
@@ -343,10 +343,6 @@ void Expression::evaluateFunctions( std::vector<std::string>& terms )
 					// just always reset it
 					funcPos = count;
 					funcName = elem;
-					if (elem == "chebt")
-					{
-						argumentNumber = 2;
-					}
 				}
 			}
 			count++;
@@ -390,10 +386,6 @@ void Expression::evaluateFunctions( std::vector<std::string>& terms )
 
 				if ( subParenthesisCount == 0 )
 				{
-					if (commaPos.size() != argumentNumber-1)
-					{
-						thrower("Invalid number of delimiting ,'s provided in function");
-					}
 
 					// then I've found the closing parenthesis of the function arguments.
 					funcArgPosRight = funcArgPosLeft + count;
@@ -434,7 +426,7 @@ void Expression::evaluateFunctions( std::vector<std::string>& terms )
 		// evaluate the function.
 		double functionResult;
 
-		if (argumentNumber == 1)
+		if (commaPos.size() == 0)
 		{
 			// now I have a term which I can analyze.
 			functionArgUnevaluated = std::vector<std::string>(&terms[funcArgPosLeft], &terms[funcArgPosRight + 2]);
@@ -442,7 +434,7 @@ void Expression::evaluateFunctions( std::vector<std::string>& terms )
 			// reduce whatever's in the function argument
 			double functionArg = reduce(functionArgUnevaluated);
 
-			// { "sin", "cos", "exp", "ln", "log10" };
+			// { "sin", "cos", "exp", "ln", "log10", "tanh", "sech"};
 			if (funcName == "sin")
 			{
 				functionResult = sin(functionArg);
@@ -464,18 +456,26 @@ void Expression::evaluateFunctions( std::vector<std::string>& terms )
 			{
 				functionResult = log10(functionArg);
 			}
+			else if (funcName == "tanh")
+			{
+				functionResult = tanh(functionArg);
+			}
+			else if (funcName == "sech")
+			{
+				functionResult = 1.0 / cosh(functionArg);
+			}
 		}
 		else
 		{
 			std::vector<double> functionArgs;
-			for (int i = 0; i < argumentNumber; i++)
+			for (int i = 0; i < commaPos.size()+1; i++)
 			{
 				if (i == 0)
 				{
 					functionArgUnevaluated = std::vector<std::string>(&terms[funcArgPosLeft], &terms[commaPos[i] + 1]);
 					functionArgUnevaluated.push_back(")");
 				}
-				else if (i == argumentNumber-1)
+				else if (i == commaPos.size())
 				{
 					functionArgUnevaluated = std::vector<std::string>(&terms[commaPos[i - 1] + 2], &terms[funcArgPosRight + 2]);
 					functionArgUnevaluated.insert(functionArgUnevaluated.begin(),"(");
@@ -491,11 +491,16 @@ void Expression::evaluateFunctions( std::vector<std::string>& terms )
 
 			if (funcName == "chebt")
 			{
-				if ((functionArgs[1] > 1) || (functionArgs[1] < -1))
+				if ((functionArgs[0] > 1) || (functionArgs[0] < -1))
 				{
 					thrower("Invalid argument passed to chebyshev function. Domain is -1 to 1.");
 				}
-				functionResult = Tn<double>( (unsigned int) functionArgs[0], functionArgs[1]);
+				functionResult = 0;
+				for (unsigned int i = 0; i < functionArgs.size(); i++)
+				{
+					functionResult += functionArgs[i+1]*Tn<double>(i, functionArgs[0]);
+				}
+				//functionResult = Tn<double>( (unsigned int) functionArgs[0], functionArgs[1]);
 			}
 		}
 
@@ -598,7 +603,7 @@ void Expression::assertValid( std::vector<variableType>& variables )
 					// it's a valid math symbol.
 					continue;
 				}
-				if ( elem == "sin" || elem == "cos" || elem == "exp" || elem == "ln" || elem == "log10" )
+				if ( elem == "sin" || elem == "cos" || elem == "exp" || elem == "ln" || elem == "log10" || elem == "tanh" || elem == "sech")
 				{
 					// it's a supported math function.
 					continue;

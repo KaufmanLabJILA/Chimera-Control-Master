@@ -270,7 +270,7 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 			return rgbs["theme aqua"];
 		}
 		// check function
-		else if (word == "sin" || word == "cos" || word == "exp" || word == "log10" || word == "ln" || word == "chebt")
+		else if (word == "sin" || word == "cos" || word == "exp" || word == "log10" || word == "ln" || word == "tanh" || word == "sech" || word == "chebt")
 		{
 			return rgbs["theme green"];
 		}

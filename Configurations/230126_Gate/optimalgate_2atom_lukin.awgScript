@@ -1,0 +1,68 @@
+reset
+
+%%Program gate%%
+
+setsingle 0 0 0 ryd_freq 1 0
+setsingle 0 0.080+0.000000 awgamp ryd_freq 0 a*cos(omega*0.000000-phi0)/2+delta0*0.000000/2+phase_offset_awg
+setsingle 0 0.080+0.013072 awgamp ryd_freq 0 a*cos(omega*0.013072-phi0)/2+delta0*0.013072/2+phase_offset_awg
+setsingle 0 0.080+0.026144 awgamp ryd_freq 0 a*cos(omega*0.026144-phi0)/2+delta0*0.026144/2+phase_offset_awg
+setsingle 0 0.080+0.039216 awgamp ryd_freq 0 a*cos(omega*0.039216-phi0)/2+delta0*0.039216/2+phase_offset_awg
+setsingle 0 0.080+0.052288 awgamp ryd_freq 0 a*cos(omega*0.052288-phi0)/2+delta0*0.052288/2+phase_offset_awg
+setsingle 0 0.080+0.065360 awgamp ryd_freq 0 a*cos(omega*0.065360-phi0)/2+delta0*0.065360/2+phase_offset_awg
+setsingle 0 0.080+0.078432 awgamp ryd_freq 0 a*cos(omega*0.078432-phi0)/2+delta0*0.078432/2+phase_offset_awg
+setsingle 0 0.080+0.091504 awgamp ryd_freq 0 a*cos(omega*0.091504-phi0)/2+delta0*0.091504/2+phase_offset_awg
+setsingle 0 0.080+0.104576 awgamp ryd_freq 0 a*cos(omega*0.104576-phi0)/2+delta0*0.104576/2+phase_offset_awg
+setsingle 0 0.080+0.117648 awgamp ryd_freq 0 a*cos(omega*0.117648-phi0)/2+delta0*0.117648/2+phase_offset_awg
+setsingle 0 0.080+0.130720 awgamp ryd_freq 0 a*cos(omega*0.130720-phi0)/2+delta0*0.130720/2+phase_offset_awg
+setsingle 0 0.080+0.143792 awgamp ryd_freq 0 a*cos(omega*0.143792-phi0)/2+delta0*0.143792/2+phase_offset_awg
+setsingle 0 0.080+0.156864 awgamp ryd_freq 0 a*cos(omega*0.156864-phi0)/2+delta0*0.156864/2+phase_offset_awg
+setsingle 0 0.080+0.169936 awgamp ryd_freq 0 a*cos(omega*0.169936-phi0)/2+delta0*0.169936/2+phase_offset_awg
+setsingle 0 0.080+0.183008 awgamp ryd_freq 0 a*cos(omega*0.183008-phi0)/2+delta0*0.183008/2+phase_offset_awg
+setsingle 0 0.080+0.196080 awgamp ryd_freq 0 a*cos(omega*0.196080-phi0)/2+delta0*0.196080/2+phase_offset_awg
+setsingle 0 0.080+0.209152 awgamp ryd_freq 0 a*cos(omega*0.209152-phi0)/2+delta0*0.209152/2+phase_offset_awg
+setsingle 0 0.080+0.222224 awgamp ryd_freq 0 a*cos(omega*0.222224-phi0)/2+delta0*0.222224/2+phase_offset_awg
+setsingle 0 0.080+0.235296 awgamp ryd_freq 0 a*cos(omega*0.235296-phi0)/2+delta0*0.235296/2+phase_offset_awg
+setsingle 0 0.080+0.248368 awgamp ryd_freq 0 a*cos(omega*0.248368-phi0)/2+delta0*0.248368/2+phase_offset_awg
+setsingle 0 0.080+0.261440 awgamp ryd_freq 0 a*cos(omega*0.261440-phi0)/2+delta0*0.261440/2+phase_offset_awg
+setsingle 0 0.080+0.274512 awgamp ryd_freq 0 a*cos(omega*0.274512-phi0)/2+delta0*0.274512/2+phase_offset_awg
+setsingle 0 0.080+0.287584 awgamp ryd_freq 0 a*cos(omega*0.287584-phi0)/2+delta0*0.287584/2+phase_offset_awg
+setsingle 0 0.080+0.300656 awgamp ryd_freq 0 a*cos(omega*0.300656-phi0)/2+delta0*0.300656/2+phase_offset_awg
+setsingle 0 0.080+0.313728 awgamp ryd_freq 0 a*cos(omega*0.313728-phi0)/2+delta0*0.313728/2+phase_offset_awg
+setsingle 0 0.080+0.326800 awgamp ryd_freq 0 a*cos(omega*0.326800-phi0)/2+delta0*0.326800/2+phase_offset_awg
+setsingle 0 0.080+0.339872 awgamp ryd_freq 0 a*cos(omega*0.339872-phi0)/2+delta0*0.339872/2+phase_offset_awg
+setsingle 0 0.080+0.352944 awgamp ryd_freq 0 a*cos(omega*0.352944-phi0)/2+delta0*0.352944/2+phase_offset_awg
+setsingle 0 0.080+0.366016 awgamp ryd_freq 0 a*cos(omega*0.366016-phi0)/2+delta0*0.366016/2+phase_offset_awg
+setsingle 0 0.080+0.379088 awgamp ryd_freq 0 a*cos(omega*0.379088-phi0)/2+delta0*0.379088/2+phase_offset_awg
+setsingle 0 0.080+0.392160 awgamp ryd_freq 0 a*cos(omega*0.392160-phi0)/2+delta0*0.392160/2+phase_offset_awg
+setsingle 0 0.080+0.405232 awgamp ryd_freq 0 a*cos(omega*0.405232-phi0)/2+delta0*0.405232/2+phase_offset_awg
+setsingle 0 0.080+0.418304 awgamp ryd_freq 0 a*cos(omega*0.418304-phi0)/2+delta0*0.418304/2+phase_offset_awg
+setsingle 0 0.080+0.431376 awgamp ryd_freq 0 a*cos(omega*0.431376-phi0)/2+delta0*0.431376/2+phase_offset_awg
+setsingle 0 0.080+0.444448 awgamp ryd_freq 0 a*cos(omega*0.444448-phi0)/2+delta0*0.444448/2+phase_offset_awg
+setsingle 0 0.080+0.457520 awgamp ryd_freq 0 a*cos(omega*0.457520-phi0)/2+delta0*0.457520/2+phase_offset_awg
+setsingle 0 0.080+0.470592 awgamp ryd_freq 0 a*cos(omega*0.470592-phi0)/2+delta0*0.470592/2+phase_offset_awg
+setsingle 0 0.080+0.483664 awgamp ryd_freq 0 a*cos(omega*0.483664-phi0)/2+delta0*0.483664/2+phase_offset_awg
+setsingle 0 0.080+0.496736 awgamp ryd_freq 0 a*cos(omega*0.496736-phi0)/2+delta0*0.496736/2+phase_offset_awg
+setsingle 0 0.080+0.509808 awgamp ryd_freq 0 a*cos(omega*0.509808-phi0)/2+delta0*0.509808/2+phase_offset_awg
+setsingle 0 0.080+0.522880 awgamp ryd_freq 0 a*cos(omega*0.522880-phi0)/2+delta0*0.522880/2+phase_offset_awg
+setsingle 0 0.080+0.535952 awgamp ryd_freq 0 a*cos(omega*0.535952-phi0)/2+delta0*0.535952/2+phase_offset_awg
+setsingle 0 0.080+0.549024 awgamp ryd_freq 0 a*cos(omega*0.549024-phi0)/2+delta0*0.549024/2+phase_offset_awg
+setsingle 0 0.080+0.562096 awgamp ryd_freq 0 a*cos(omega*0.562096-phi0)/2+delta0*0.562096/2+phase_offset_awg
+setsingle 0 0.080+0.575168 awgamp ryd_freq 0 a*cos(omega*0.575168-phi0)/2+delta0*0.575168/2+phase_offset_awg
+setsingle 0 0.080+0.588240 awgamp ryd_freq 0 a*cos(omega*0.588240-phi0)/2+delta0*0.588240/2+phase_offset_awg
+setsingle 0 0.080+0.601312 awgamp ryd_freq 0 a*cos(omega*0.601312-phi0)/2+delta0*0.601312/2+phase_offset_awg
+setsingle 0 0.080+0.614384 awgamp ryd_freq 0 a*cos(omega*0.614384-phi0)/2+delta0*0.614384/2+phase_offset_awg
+setsingle 0 0.080+0.627456 awgamp ryd_freq 0 a*cos(omega*0.627456-phi0)/2+delta0*0.627456/2+phase_offset_awg
+setsingle 0 0.080+0.640528 awgamp ryd_freq 0 a*cos(omega*0.640528-phi0)/2+delta0*0.640528/2+phase_offset_awg
+setsingle 0 0.080+0.653600 awgamp ryd_freq 0 a*cos(omega*0.653600-phi0)/2+delta0*0.653600/2+phase_offset_awg
+setsingle 0 0.080+0.666672 awgamp ryd_freq 0 a*cos(omega*0.666672-phi0)/2+delta0*0.666672/2+phase_offset_awg
+setsingle 0 0.080+0.679744 awgamp ryd_freq 0 a*cos(omega*0.679744-phi0)/2+delta0*0.679744/2+phase_offset_awg
+setsingle 0 0.080+0.692816 awgamp ryd_freq 0 a*cos(omega*0.692816-phi0)/2+delta0*0.692816/2+phase_offset_awg
+setsingle 0 0.080+0.705888 0 ryd_freq 0 0
+
+program 0
+
+%%Program monitor%%
+
+setsingle 2 0 75 ryd_freq 1 0
+
+program 2
