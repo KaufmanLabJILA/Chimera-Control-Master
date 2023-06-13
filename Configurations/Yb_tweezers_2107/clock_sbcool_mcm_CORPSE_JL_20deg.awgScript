@@ -10,24 +10,24 @@ setsingle 0 clocktime 0  clockfreq 0 0
 program 0
 
 
-setsingle 1 0*corpsetime3+0*0.08 clockampawg clockfreq 1 0
-setsingle 1 1*corpsetime3+0*0.08 0  clockfreq 0 0
-setsingle 1 1*corpsetime3+1*0.08 clockampawg clockfreq 0 0
-setsingle 1 2*corpsetime3+1*0.08 0  clockfreq 0 0
-setsingle 1 2*corpsetime3+2*0.08 clockampawg clockfreq 0 0
-setsingle 1 3*corpsetime3+2*0.08 0  clockfreq 0 0
-setsingle 1 3*corpsetime3+3*0.08 clockampawg clockfreq 0 0
-setsingle 1 4*corpsetime3+3*0.08 0  clockfreq 0 0
-setsingle 1 4*corpsetime3+4*0.08 clockampawg clockfreq 0 0
-setsingle 1 5*corpsetime3+4*0.08 0  clockfreq 0 0
-setsingle 1 5*corpsetime3+5*0.08 clockampawg clockfreq 0 0
-setsingle 1 6*corpsetime3+5*0.08 0  clockfreq 0 0
-setsingle 1 6*corpsetime3+6*0.08 clockampawg clockfreq 0 0
-setsingle 1 7*corpsetime3+6*0.08 0  clockfreq 0 0
-setsingle 1 7*corpsetime3+7*0.08 clockampawg clockfreq 0 0
-setsingle 1 8*corpsetime3+7*0.08 0  clockfreq 0 0
-setsingle 1 8*corpsetime3+8*0.08 clockampawg clockfreq 0 0
-setsingle 1 9*corpsetime3+8*0.08 0  clockfreq 0 0
+setsingle 1 0*corpsetime3+0*0.1 clockampawg clockfreq 1 0
+setsingle 1 1*corpsetime3+0*0.1 0  clockfreq 0 0
+setsingle 1 1*corpsetime3+1*0.1 clockampawg clockfreq 0 0
+setsingle 1 2*corpsetime3+1*0.1 0  clockfreq 0 0
+setsingle 1 2*corpsetime3+2*0.1 clockampawg clockfreq 0 0
+setsingle 1 3*corpsetime3+2*0.1 0  clockfreq 0 0
+setsingle 1 3*corpsetime3+3*0.1 clockampawg clockfreq 0 0
+setsingle 1 4*corpsetime3+3*0.1 0  clockfreq 0 0
+setsingle 1 4*corpsetime3+4*0.1 clockampawg clockfreq 0 0
+setsingle 1 5*corpsetime3+4*0.1 0  clockfreq 0 0
+setsingle 1 5*corpsetime3+5*0.1 clockampawg clockfreq 0 0
+setsingle 1 6*corpsetime3+5*0.1 0  clockfreq 0 0
+setsingle 1 6*corpsetime3+6*0.1 clockampawg clockfreq 0 0
+setsingle 1 7*corpsetime3+6*0.1 0  clockfreq 0 0
+setsingle 1 7*corpsetime3+7*0.1 clockampawg clockfreq 0 0
+setsingle 1 8*corpsetime3+7*0.1 0  clockfreq 0 0
+setsingle 1 8*corpsetime3+8*0.1 clockampawg clockfreq 0 0
+setsingle 1 9*corpsetime3+8*0.1 0  clockfreq 0 0
 
 
 

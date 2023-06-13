@@ -82,8 +82,9 @@ public:
 	std::vector<bool> filterPositionsX;
 	std::vector<bool> filterPositionsY;
 
-	std::vector<bool> initialPositionsX;
-	std::vector<bool> initialPositionsY;
+	std::vector<bool> initialPositionsX2;
+	std::vector<bool> initialPositionsY2;
+	std::vector<bool> initialPositions2;
 
 	int xPixelOffsetAuto = 0;
 	int yPixelOffsetAuto = 0;
@@ -92,7 +93,7 @@ public:
 	double yOffsetAuto = NULL;
 
 	int targetNumber;
-	int nTweezerX, nTweezerY;
+	int nTweezerX, nTweezerY, nTweezerX2, nTweezerY2;
 	int nFilterTweezerX, nFilterTweezerY;
 	int scrunchSpacing;
 	std::string rearrangeMode;
@@ -107,9 +108,11 @@ private:
 	//std::vector<unsigned long long int> FTW_LUT;
 	std::vector<double> ATW_LUT;
 	std::vector<double> FTW_LUT;
+	std::vector<double> ATW_LUT2;
+	std::vector<double> FTW_LUT2;
 	std::vector<double> subpixelLUT; //This must be synchronized with atomCruncher subpixel masks.
-	double xOffset, yOffset;
-	double xOffsetManual, yOffsetManual;
+	double xOffset, yOffset, xOffset2, yOffset2;
+	double xOffsetManual, yOffsetManual, xOffsetManual2, yOffsetManual2;
 	std::vector<double> xPix2MHz, yPix2MHz;
 	int nSubpixel;
 	UINT xDim, yDim; //x and y dimensions of atom positions from LUT. Must be coordinated with number of masks in image processing.

@@ -1194,7 +1194,7 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 		{
 			continue;
 		}
-		if (imageCount % input->picsPerRep == 1)
+		if (imageCount % input->picsPerRep == 0)
 		{
 			input->catchPicTime->push_back(std::chrono::high_resolution_clock::now());
 		}
@@ -1219,7 +1219,8 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 						//size_t indPixImg = (ix + input->masksCrop[imask + 2 * input->nMask]) + (input->imageDims.width)*(iy + input->masksCrop[imask]); //column major indexing
 						size_t indPixMask = (input->maskWidX)*(input->maskWidY)*imask + ix + iy * (input->maskWidX);
 						try {
-						tempImageROIs[imask] += ((*input->imageQueue)[0][indPixImg] - input->bgImg[indPixImg]) * (input->masks[indPixMask]);
+
+							tempImageROIs[imask] += ((*input->imageQueue)[0][indPixImg] - input->bgImg[indPixImg]) * (input->masks[indPixMask]);
 						}
 
 						catch (...) {
@@ -1265,7 +1266,7 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 		{
 			// copies the array if first pic of rep. Only looks at first picture because its rearranging. Could change
 			// if we need to do funny experiments, just need to change rearranger handling.
-			if (imageCount % input->picsPerRep == 1)
+			if (imageCount % input->picsPerRep == 0)
 			{
 				{
 					std::lock_guard<std::mutex> locker2(*input->imageLock);
@@ -1276,8 +1277,8 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 
 					if (input->nAtom >= 0)//input->gmoog->targetNumber)
 					{
-						try
-						{
+						//try
+						//{
 							//REARRANGE
 							//moveSequence moveseq = input->getRearrangeMoves();
 							MessageSender ms;
@@ -1286,12 +1287,12 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 							input->gmoog->writeRearrangeMoves(input->getRearrangeMoves(input->gmoog->rearrangeMode), ms);
 							input->gmoog->writeTerminator(ms);
 							input->gmoog->send(ms);
-						}
-						catch (Error& exception)
-						{
-							/*input->comm->sendError(exception.what());*/
-							//TODO: add handling for reporting rearrangement errors.
-						}
+						//}
+						//catch (Error& exception)
+						//{
+						//	/*input->comm->sendError(exception.what());*/
+						//	//TODO: add handling for reporting rearrangement errors.
+						//}
 					}
 					//else if (input->nAtom == 0)//when there are no atom
 					//{
@@ -1317,7 +1318,7 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 				input->finTime->push_back(std::chrono::high_resolution_clock::now());
 			}
 		}
-		if (imageCount % input->picsPerRep == 1) //Just always run this and store the measured values on first image. Control whether this gets applied in gmoog. input->autoTweezerOffsetActive
+		if (imageCount % input->picsPerRep == 0) //Just always run this and store the measured values on first image. Control whether this gets applied in gmoog. input->autoTweezerOffsetActive
 		{
 			//if (input->nAtom >= 100) //enforce enough atoms for decent single shot signal.
 			if (!AUTOALIGN_SAFEMODE) //always check, due to jumps by 1 lattice spacing.

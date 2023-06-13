@@ -1,0 +1,9 @@
+% set DAC, channel, amp, freq, phase
+
+set DAC0 0 74.06 80 11.2
+
+set DAC1 0 74.06 80 11.2
+
+set DAC2 0 74.06 80 11.2
+
+set DAC3 0 74.06 80 11.2

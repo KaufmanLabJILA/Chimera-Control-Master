@@ -77,7 +77,7 @@
 #define UWAVE_AGILENT_USB_ADDRESS ""
 
 const std::string PROJECT_LOCATION = "C:\\Users\\klab\\Documents\\Chimera-Control-Master\\";
-const std::string DATABASE_LOCATION = "B:\\Yb heap\\Yb_data\\";
+const std::string DATABASE_LOCATION = "B:\\Yb heap\\Yb_data\\"; //"C:\\Users\\klab\\Documents\\Yb_data_temp\\";//
 const std::string MASKS_FILE_LOCATION = PROJECT_LOCATION + "\\Image Processing\\" + "masks.npy";
 const std::string MASKS_CROP_FILE_LOCATION = PROJECT_LOCATION + "\\Image Processing\\" + "maskPtsCrop.npy";
 const std::string BG_IMAGE_FILE_LOCATION = PROJECT_LOCATION + "\\Image Processing\\" + "bgImg.npy";
@@ -85,6 +85,8 @@ const std::string SUBPIXELMASKS_FILE_LOCATION = PROJECT_LOCATION + "\\Image Proc
 const std::string SUBPIXELLUT_FILE_LOCATION = PROJECT_LOCATION + "\\Tweezer LUT\\" + "subpixelLUT.npy";
 const std::string TWEEZER_AMPLITUDE_LUT_FILE_LOCATION = PROJECT_LOCATION + "\\Tweezer LUT\\" + "ampLUT.npy";
 const std::string TWEEZER_FREQUENCY_LUT_FILE_LOCATION = PROJECT_LOCATION + "\\Tweezer LUT\\" + "freqLUT.npy";
+const std::string TWEEZER_AMPLITUDE_LUT_FILE_LOCATION2 = PROJECT_LOCATION + "\\Tweezer LUT\\" + "ampLUT2.npy";
+const std::string TWEEZER_FREQUENCY_LUT_FILE_LOCATION2 = PROJECT_LOCATION + "\\Tweezer LUT\\" + "freqLUT2.npy";
 const std::string PYTHON_CODE_LOCATION = "C:/Users/klab/Documents/Chimera-Control-Master/";
 // same as debug output location but with forward slashes for ease of use in python
 const std::string PYTHON_INPUT_LOCATION = "C:/Users/klab/Documents/Chimera-Control-Master/Debug-Output";

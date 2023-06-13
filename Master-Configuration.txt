@@ -27,13 +27,13 @@ rb2
 0
 rb3
 0
-rb4
+shutter680
 0
 op
 0
 blue3dmotshutter
 0
-blue2dmotshutter
+greenimagedoppshutter
 0
 greenshutter
 0
@@ -71,7 +71,7 @@ clockawg
 0
 specrb3
 0
-jhonathantest
+jonathantest
 0
 chooserb2spec
 0
@@ -95,9 +95,9 @@ awgsbspec
 0
 clockrepump
 0
-dio7.0
+blue2dmotshutter
 0
-dio7.1
+greenimagedopp
 0
 dio7.2
 0
@@ -172,8 +172,8 @@ tweezerpow
 clockpow
 -0.1 - 0.1
 0
-blue3dpow
--10 - 10
+y680
+0 - 10
 0
 lspower
 -10 - 10
@@ -283,7 +283,7 @@ dds11
 0
 0 - 100
 100
-63
+68
 bluemotcoil 1.1
 bluex 0.2689
 bluey 0.2109
@@ -301,50 +301,55 @@ greennarrowpowerstart 13.79
 bluefreq 110
 bluepower 30
 comploadtime 75
-greenpower 10
+greenpower 10.58
 greentime 3.5
 greenfreq 71.12
 loadtime 200
 loadfreq 98
 depth -1.98
 axialcoolfreq 70.52
-axialcoolpower 37
+axialcoolpower 39.2759
 slmpowerfactor 1.92
 xmagic 2.45
 ymagic 0.745
-img_depth -7.62
+img_depth -5.61
 overhead_depth -9.9
-filter_depth -0.1
-spec_depth -1.068
+filter_depth -0.0736
+spec_depth -0.786
 xzero 0.049142
 yzero 0.0159294
 zzero -0.133749
-blowaway_depth -0.2
-ramsey_depth -0.2
+blowaway_depth -0.147
+ramsey_depth -0.147
 ramptime 2
 yclock 4.8
 loadpower 100
 dds2_factor 1.00911
-load_depth -3.5
+load_depth -2.58
 waittime 0.5
 zop 0.073478
 yop -0.0363
 axisrottime 1.5
 xclock -0.0478
 zclock -0.111182
-xqubit -0.424295
-yqubit 4.8
+xqubit -0.837053
+yqubit 4.7409
 zqubit -0.0903879
 yclockpi -0.0154
 zclockpi -0.13794
 xclockpi 2.45
-gmcfreq 95.6182
-gmcpower 38.9
-gmc_depth -2.414
+gmcfreq 96.0993
+gmcpower 56.1681
+gmc_depth -1.777
 axisrottime2 10
 zqubitpi 0.051959
 yqubitpi 0.27027
 xqubitpi 2.45
 ramptime2 4.5
 axisrottime3 5
-75 260 1 220 245 1
+imagefreq2 71.38
+axialpower2 1.5
+radialpower2 27.5
+imagetime2 30
+img_depth2 -3
+84 315 1 215 270 1

@@ -10,12 +10,12 @@ setsingle 0 clocktime 0  clockfreq 0 0
 program 0
 
 
-setsingle 1 0*corpsetime2+0*0.08 clockampawg clockfreq 1 0
-setsingle 1 1*corpsetime2+0*0.08 0  clockfreq 0 0
-setsingle 1 1*corpsetime2+1*0.08 clockampawg clockfreq 0 0
-setsingle 1 2*corpsetime2+1*0.08 0  clockfreq 0 0
-setsingle 1 2*corpsetime2+2*0.08 clockampawg clockfreq 0 0
-setsingle 1 3*corpsetime2+2*0.08 0  clockfreq 0 0
+setsingle 1 0*corpsetime2+0*0.1 clockampawg clockfreq 1 0
+setsingle 1 1*corpsetime2+0*0.1 0  clockfreq 0 0
+setsingle 1 1*corpsetime2+1*0.1 clockampawg clockfreq 0 0
+setsingle 1 2*corpsetime2+1*0.1 0  clockfreq 0 0
+setsingle 1 2*corpsetime2+2*0.1 clockampawg clockfreq 0 0
+setsingle 1 3*corpsetime2+2*0.1 0  clockfreq 0 0
 
 
 
