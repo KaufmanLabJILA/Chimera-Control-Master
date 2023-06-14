@@ -477,9 +477,6 @@
     <ClInclude Include="awgCommand.h">
       <Filter>Main Window</Filter>
     </ClInclude>
-    <ClInclude Include="fpgaawg.h">
-      <Filter>Main Window</Filter>
-    </ClInclude>
     <ClInclude Include="DDS_SYNTH.h">
       <Filter>Auxiliary Window</Filter>
     </ClInclude>
@@ -497,6 +494,9 @@
     </ClInclude>
     <ClInclude Include="traceoutput.h">
       <Filter>Constants, Externals, Etc.</Filter>
+    </ClInclude>
+    <ClInclude Include="fpgaAWG.h">
+      <Filter>Main Window</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
