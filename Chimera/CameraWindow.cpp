@@ -1194,7 +1194,7 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 		{
 			continue;
 		}
-		if (imageCount % 2 == 0)
+		if (imageCount % input->picsPerRep == 0)
 		{
 			input->catchPicTime->push_back(std::chrono::high_resolution_clock::now());
 		}
@@ -1219,7 +1219,8 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 						//size_t indPixImg = (ix + input->masksCrop[imask + 2 * input->nMask]) + (input->imageDims.width)*(iy + input->masksCrop[imask]); //column major indexing
 						size_t indPixMask = (input->maskWidX)*(input->maskWidY)*imask + ix + iy * (input->maskWidX);
 						try {
-						tempImageROIs[imask] += ((*input->imageQueue)[0][indPixImg] - input->bgImg[indPixImg]) * (input->masks[indPixMask]);
+
+							tempImageROIs[imask] += ((*input->imageQueue)[0][indPixImg] - input->bgImg[indPixImg]) * (input->masks[indPixMask]);
 						}
 
 						catch (...) {
@@ -1274,10 +1275,10 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 					(*input->rearrangerAtomQueue).push_back(tempAtomArray); //put atom array in rearrange queue
 					input->rearrangerConditionWatcher->notify_all();
 
-					if (input->nAtom >= input->gmoog->targetNumber)
+					if (input->nAtom >= 0)//input->gmoog->targetNumber)
 					{
-						try
-						{
+						//try
+						//{
 							//REARRANGE
 							//moveSequence moveseq = input->getRearrangeMoves();
 							MessageSender ms;
@@ -1286,13 +1287,31 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 							input->gmoog->writeRearrangeMoves(input->getRearrangeMoves(input->gmoog->rearrangeMode), ms);
 							input->gmoog->writeTerminator(ms);
 							input->gmoog->send(ms);
-						}
-						catch (Error& exception)
-						{
-							/*input->comm->sendError(exception.what());*/
-							//TODO: add handling for reporting rearrangement errors.
-						}
+						//}
+						//catch (Error& exception)
+						//{
+						//	/*input->comm->sendError(exception.what());*/
+						//	//TODO: add handling for reporting rearrangement errors.
+						//}
 					}
+					//else if (input->nAtom == 0)//when there are no atom
+					//{
+					//	try
+					//	{
+					//		//REARRANGE
+					//		//moveSequence moveseq = input->getRearrangeMoves();
+					//		MessageSender ms;
+					//		input->gmoog->writeOff(ms); //Important to start with load tones off, so that every tone has explicit settings.
+					//		input->gmoog->writeZerotone(input->getRearrangeMoves(input->gmoog->rearrangeMode), ms);
+					//		input->gmoog->writeTerminator(ms);
+					//		input->gmoog->send(ms);
+					//	}
+					//	catch (Error& exception)
+					//	{
+					//		/*input->comm->sendError(exception.what());*/
+					//		//TODO: add handling for reporting rearrangement errors.
+					//	}
+					//}
 					(*input->rearrangerAtomQueue).clear(); //clear the rearrange queue once we've completed or ignored the rearrangement.
 
 				}

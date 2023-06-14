@@ -13,20 +13,6 @@ program 0
 setsingle 1 0 0 clockfreq 1 0
 setsingle 1 0*clocktime+1*0.3 clockampawg clockfreq 0 0*clockphase+45
 setsingle 1 1*clocktime+1*0.3 0  clockfreq-clocklightshift 0 0
-setsingle 1 1*clocktime+2*0.3 clockampawg clockfreq 0 1*clockphase+135
-setsingle 1 2*clocktime+2*0.3 0  clockfreq-clocklightshift 0 0
-setsingle 1 2*clocktime+3*0.3 clockampawg clockfreq 0 2*clockphase+135
-setsingle 1 3*clocktime+3*0.3 0  clockfreq-clocklightshift 0 0
-setsingle 1 3*clocktime+4*0.3 clockampawg clockfreq 0 3*clockphase+135
-setsingle 1 4*clocktime+4*0.3 0  clockfreq-clocklightshift 0 0
-setsingle 1 4*clocktime+5*0.3 clockampawg clockfreq 0 4*clockphase+225
-setsingle 1 5*clocktime+5*0.3 0  clockfreq-clocklightshift 0 0
-setsingle 1 5*clocktime+6*0.3 clockampawg clockfreq 0 5*clockphase+225
-setsingle 1 6*clocktime+6*0.3 0  clockfreq-clocklightshift 0 0
-setsingle 1 6*clocktime+7*0.3 clockampawg clockfreq 0 6*clockphase+270
-setsingle 1 7*clocktime+7*0.3 0  clockfreq-clocklightshift 0 0
-setsingle 1 7*clocktime+8*0.3 clockampawg clockfreq 0 7*clockphase+270
-setsingle 1 8*clocktime+8*0.3 0  clockfreq-clocklightshift 0 0
 
 
 program 1

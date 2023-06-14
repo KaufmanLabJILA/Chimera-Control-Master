@@ -22,11 +22,12 @@
 #ifdef DEEP_THOUGHT
 #define PYTHON_HOME L"C:\\Users\\klab\\Anaconda3\\"
 #define MOOG_SAFEMODE true
-#define AWG_SAFEMODE false
+#define AWG_SAFEMODE0 false
+#define AWG_SAFEMODE1 false
 #define GIGAMOOG_SAFEMODE false
 #define NIAWG_SAFEMODE true
 #define ANDOR_SAFEMODE false
-#define ATOMCRUNCHER_SAFEMODE true
+#define ATOMCRUNCHER_SAFEMODE false
 #define AUTOALIGN_SAFEMODE true
 #define MAKO_SAFEMODE true
 #define PYTHON_SAFEMODE true
@@ -41,7 +42,7 @@
 #define ZYNQ_ADDRESS "10.10.0.2"
 #define ZYNQ_PORT "8080"
 #define ZYNQ_MAX_BUFF 64
-#define ANDOR_HSS_INDEX 3
+#define ANDOR_HSS_INDEX 2
 #define ANDOR_VSS_INDEX 3
 #define ANDOR_PREAMP_INDEX 2
 #define DIO_LEN_BYTE_BUF 28
@@ -54,7 +55,8 @@
 #define DDS_FPGA_PORT "COM7" //Mimas A7 DDS
 #define GIGAMOOG_PORT 804
 #define GIGAMOOG_IPADDRESS "192.168.7.179"
-#define AWG_PORT "COM13"
+#define AWG_PORT0 "COM13"
+#define AWG_PORT1 "COM5"
 #define AWG_BAUD 115200 /*921600*/ 
 #define TOP_BOTTOM_TEK_SAFEMODE true
 #define TOP_BOTTOM_TEK_USB_ADDRESS "USB0::0x0699::0x0343::C021681::0::INSTR"
@@ -75,7 +77,7 @@
 #define UWAVE_AGILENT_USB_ADDRESS ""
 
 const std::string PROJECT_LOCATION = "C:\\Users\\klab\\Documents\\Chimera-Control-Master\\";
-const std::string DATABASE_LOCATION = "B:\\Yb heap\\Yb_data\\";
+const std::string DATABASE_LOCATION = "B:\\Yb heap\\Yb_data\\"; //"C:\\Users\\klab\\Documents\\Yb_data_temp\\";//
 const std::string MASKS_FILE_LOCATION = PROJECT_LOCATION + "\\Image Processing\\" + "masks.npy";
 const std::string MASKS_CROP_FILE_LOCATION = PROJECT_LOCATION + "\\Image Processing\\" + "maskPtsCrop.npy";
 const std::string BG_IMAGE_FILE_LOCATION = PROJECT_LOCATION + "\\Image Processing\\" + "bgImg.npy";
@@ -83,6 +85,8 @@ const std::string SUBPIXELMASKS_FILE_LOCATION = PROJECT_LOCATION + "\\Image Proc
 const std::string SUBPIXELLUT_FILE_LOCATION = PROJECT_LOCATION + "\\Tweezer LUT\\" + "subpixelLUT.npy";
 const std::string TWEEZER_AMPLITUDE_LUT_FILE_LOCATION = PROJECT_LOCATION + "\\Tweezer LUT\\" + "ampLUT.npy";
 const std::string TWEEZER_FREQUENCY_LUT_FILE_LOCATION = PROJECT_LOCATION + "\\Tweezer LUT\\" + "freqLUT.npy";
+const std::string TWEEZER_AMPLITUDE_LUT_FILE_LOCATION2 = PROJECT_LOCATION + "\\Tweezer LUT\\" + "ampLUT2.npy";
+const std::string TWEEZER_FREQUENCY_LUT_FILE_LOCATION2 = PROJECT_LOCATION + "\\Tweezer LUT\\" + "freqLUT2.npy";
 const std::string PYTHON_CODE_LOCATION = "C:/Users/klab/Documents/Chimera-Control-Master/";
 // same as debug output location but with forward slashes for ease of use in python
 const std::string PYTHON_INPUT_LOCATION = "C:/Users/klab/Documents/Chimera-Control-Master/Debug-Output";

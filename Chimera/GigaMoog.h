@@ -71,6 +71,7 @@ public:
 	void updateXYOffsetAuto();
 
 	void writeRearrangeMoves(moveSequence input, MessageSender& ms);
+	void writeZerotone(moveSequence input, MessageSender & ms);
 
 	bool rearrangerActive = false;
 	bool autoTweezerOffsetActive = false;
@@ -81,6 +82,10 @@ public:
 	std::vector<bool> filterPositionsX;
 	std::vector<bool> filterPositionsY;
 
+	std::vector<bool> initialPositionsX2;
+	std::vector<bool> initialPositionsY2;
+	std::vector<bool> initialPositions2;
+
 	int xPixelOffsetAuto = 0;
 	int yPixelOffsetAuto = 0;
 	int subpixelIndexOffsetAuto = 12;
@@ -88,7 +93,7 @@ public:
 	double yOffsetAuto = NULL;
 
 	int targetNumber;
-	int nTweezerX, nTweezerY;
+	int nTweezerX, nTweezerY, nTweezerX2, nTweezerY2;
 	int nFilterTweezerX, nFilterTweezerY;
 	int scrunchSpacing;
 	std::string rearrangeMode;
@@ -103,9 +108,11 @@ private:
 	//std::vector<unsigned long long int> FTW_LUT;
 	std::vector<double> ATW_LUT;
 	std::vector<double> FTW_LUT;
+	std::vector<double> ATW_LUT2;
+	std::vector<double> FTW_LUT2;
 	std::vector<double> subpixelLUT; //This must be synchronized with atomCruncher subpixel masks.
-	double xOffset, yOffset;
-	double xOffsetManual, yOffsetManual;
+	double xOffset, yOffset, xOffset2, yOffset2;
+	double xOffsetManual, yOffsetManual, xOffsetManual2, yOffsetManual2;
 	std::vector<double> xPix2MHz, yPix2MHz;
 	int nSubpixel;
 	UINT xDim, yDim; //x and y dimensions of atom positions from LUT. Must be coordinated with number of masks in image processing.
@@ -116,6 +123,8 @@ private:
 	double getAmpX(int xIndex, int yIndex);
 	double getFreqY(int xIndex, int yIndex);
 	double getAmpY(int xIndex, int yIndex);
+
+
 
 	static unsigned long long int getFTW(double frequency) {
 		//36-bit DDS

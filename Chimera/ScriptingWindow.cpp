@@ -385,8 +385,8 @@ void ScriptingWindow::openAWGScript(CWnd* parent)
 			mainWindowFriend->getRunInfo());
 		updateConfigurationSavedStatus(false);
 		awgScript.updateScriptNameText(getProfile().categoryPath);
-		awgScript.colorEntireScript(auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(),
-			auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames());
+		awgScript.colorEntireScript(auxWindowFriend->getAllVariables(), mainWindowFriend->getRgbs(),//
+			auxWindowFriend->getTtlNames(), auxWindowFriend->getDacNames()); //
 	}
 	catch (Error& err)
 	{

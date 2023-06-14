@@ -15,6 +15,7 @@ MFCApplication3/
 .vs/
 *.fits
 *.script
+*.awgScript
 *.nScript
 *.cConfig
 *.hConfig
@@ -1290,3 +1291,13 @@ Configurations/Yb_tweezers_2107/rb_clock_AWG7/cloc_rb_198.awgScript
 Configurations/Yb_tweezers_2107/rb_clock_AWG7/cloc_rb_199.awgScript
 
 Configurations/Yb_tweezers_2107/rb_clock_AWG7/experiment_gate_list.txt
+
+Configurations/Yb_tweezers_2107/AWGscript/metarb_AWG_230424B/experiment_gate_list.txt
+
+Configurations/Yb_tweezers_2107/AWGscript/metarb_AWG_230424D/experiment_gate_list.txt
+
+Configurations/Yb_tweezers_2107/metarb_AWG_230422/experiment_gate_list.txt
+
+Configurations/Yb_tweezers_2107/metarb_AWG_230424/experiment_gate_list.txt
+
+Configurations/Yb_tweezers_2107/metarb_AWG_230424C/experiment_gate_list.txt

@@ -213,7 +213,8 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 		}
 	}
 	if (editType == "Gmoog") {
-		if (word == "set" || word == "setmove" || word == "initx" || word == "inity" || word == "rearrange" || word == "targetstart" || word == "targetend")
+		if (word == "set" || word == "setmove" || word == "initx" || word == "inity" || word == "initx2" || word == "inity2" || 
+			word == "rearrange" || word == "targetstart" || word == "targetend")
 		{
 			return rgbs["theme purple"];
 		}
@@ -1095,7 +1096,7 @@ void Script::openParentScript(std::string parentScriptFileAndPath, std::string c
 	// Check location of vertical script.
 	int sPos = parentScriptFileAndPath.find_last_of('\\');
 	std::string scriptLocation = parentScriptFileAndPath.substr(0, sPos);
-	if (scriptLocation + "\\" != categoryPath && categoryPath != "" && prompt)
+	/*if (scriptLocation + "\\" != categoryPath && categoryPath != "" && prompt)
 	{
 		int answer = promptBox("The requested " + deviceType + " script: " + parentScriptFileAndPath + " is not "
 								"currently located in the current configuration folder. This is recommended so that "
@@ -1107,7 +1108,7 @@ void Script::openParentScript(std::string parentScriptFileAndPath, std::string c
 			std::string path = categoryPath + scriptName;
 			saveScriptAs(path, info);
 		}
-	}
+	}*/
 	updateScriptNameText( categoryPath );
 	availableFunctionsCombo.SelectString(0, "Parent Script");
 }

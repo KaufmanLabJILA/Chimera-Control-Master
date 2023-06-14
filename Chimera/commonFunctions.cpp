@@ -744,7 +744,7 @@ namespace commonFunctions
 			Sleep(50);
 			delete multiExpInput->mainWin->masterThreadManager.runningThread;
 			multiExpInput->mainWin->masterThreadManager.runningThread = 0;
-			Sleep(2000);
+			Sleep(500);
 		}
 		delete multiExpInput;
 		return false;
@@ -773,14 +773,14 @@ namespace commonFunctions
 			}
 			try
 			{
-				Sleep(0.5);
+				Sleep(50);
 				multiAWGExpInput->mainWin->profile.saveConfigurationOnly(multiAWGExpInput->scriptWin, multiAWGExpInput->mainWin, multiAWGExpInput->auxWin, multiAWGExpInput->camWin);
-				Sleep(0.5);
+				Sleep(50);
 				prepareCamera(multiAWGExpInput->mainWin, multiAWGExpInput->camWin, input, false);
-				Sleep(0.5);
+				Sleep(50);
 				prepareMasterThread(multiAWGExpInput->msgID, multiAWGExpInput->scriptWin, multiAWGExpInput->mainWin, multiAWGExpInput->camWin, multiAWGExpInput->auxWin,
 					input, false, true, true, false);
-				Sleep(0.5);
+				Sleep(50);
 				multiAWGExpInput->camWin->preparePlotter(input);
 				multiAWGExpInput->camWin->prepareAtomCruncher(input);
 
@@ -811,10 +811,10 @@ namespace commonFunctions
 			multiAWGExpInput->mainWin->masterThreadManager.runningThread->m_bAutoDelete = FALSE;
 			multiAWGExpInput->mainWin->masterThreadManager.runningThread->ResumeThread();
 			WaitForSingleObject(multiAWGExpInput->mainWin->masterThreadManager.runningThread->m_hThread, INFINITE);
-			Sleep(0.5);
+			Sleep(50);
 			delete multiAWGExpInput->mainWin->masterThreadManager.runningThread;
 			multiAWGExpInput->mainWin->masterThreadManager.runningThread = 0;
-			Sleep(0.5);
+			Sleep(500);
 		}
 		delete multiAWGExpInput;
 		return false;
@@ -1074,7 +1074,8 @@ namespace commonFunctions
 			logger->logAndorSettings(input.camSettings, takeAndorPictures, input.cruncherInput->nMask);
 		}
 		logger->logMasterParameters( input.masterInput );
-		logger->logAWGParameters(input.masterInput);
+		logger->logAWGParameters(input.masterInput); 
+		logger->logGmoogParameters(input.masterInput);
 		logger->logMiscellaneous();
 		//logger->closeFile(); //TODO: May have to remove this once andor is integrated.
 	}
