@@ -212,7 +212,7 @@
     <ClInclude Include="DDS_SYNTH.h" />
     <ClInclude Include="DebugOptionsControl.h" />
     <ClInclude Include="Expression.h" />
-    <ClInclude Include="fpgaawg.h" />
+    <ClInclude Include="fpgaAWG.h" />
     <ClInclude Include="GigaMoog.h" />
     <ClInclude Include="MasterThreadInput.h" />
     <ClInclude Include="MessagePrinter.h" />

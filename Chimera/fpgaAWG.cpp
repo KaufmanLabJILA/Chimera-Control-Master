@@ -12,13 +12,13 @@ fpgaAWG::~fpgaAWG(void) {
 std::vector<unsigned char> fpgaAWG::messageToVector(int message, int bytes) {
 	std::vector<unsigned char> msg(bytes);
 	for (int i = 0; i < bytes; i++) {
-		msg[bytes-1-i] = (message >> i*8);
+		msg[bytes - 1 - i] = (message >> i * 8);
 	}
 	return msg;
 }
 
 void fpgaAWG::trigger() {
-	fpga.write(messageToVector(0xA200,2));	//the uart buffer is only 16 bytes deep, so we need to wait until all data is written after every word
+	fpga.write(messageToVector(0xA200, 2));	//the uart buffer is only 16 bytes deep, so we need to wait until all data is written after every word
 	//fpga.flush();
 }
 
@@ -38,7 +38,7 @@ void fpgaAWG::writeTimestamp(unsigned char channel, unsigned short address, floa
 	unsigned short int atw = getATW(ampPercent);
 	unsigned long int ftw = getFTW(freqMHz);
 
-	fpga.write(messageToVector(0xA1,1));
+	fpga.write(messageToVector(0xA1, 1));
 	//std::cout << "\nfifo trans";
 	//std::cout << std::hex << 0xA1;
 
@@ -121,7 +121,7 @@ void fpgaAWG::setStep(unsigned long channel, float tStep, float tStart, float tE
 	if (numSteps <= 1) {
 		thrower("Steps duration shorter than step size.");
 	};
-	
+
 	std::vector<awgCommand> & awgCommandList = selectCommandList(channel);
 
 	nPreviousStepSetting = awgCommandList.size();
@@ -152,7 +152,7 @@ void fpgaAWG::setSingle(unsigned long channel, float time, float amp, float freq
 void fpgaAWG::freqLinearRamp(unsigned long channel, float tStart, float tEnd, float fStart, float fEnd, bool phase_update, float phaseStart) {
 	int iStart = nPreviousStepSetting + ceil((tStart - startTimeStepSetting) / (stepSize * AWGMINSTEP));
 	int numSteps = ceil((tEnd - tStart) / (stepSize * AWGMINSTEP));
-	float fStep = (fEnd - fStart) / (numSteps-1);
+	float fStep = (fEnd - fStart) / (numSteps - 1);
 
 	std::vector<awgCommand> & awgCommandList = selectCommandList(channel);
 
@@ -203,7 +203,7 @@ void fpgaAWG::ampGaussianRamp(unsigned long channel, float tStart, float tEnd, f
 			awgCommandList[iStart + i].ampPercent = aVal;
 		};
 	}
-	else if (direction == -1){
+	else if (direction == -1) {
 		for (int i = 0; i < numSteps; i++) {
 			t = stepSize * AWGMINSTEP * i + tStart;
 			aVal = (aStart - aStop) * exp(-1 * pow((t - tStart), 2) / (2 * pow(tSigma, 2))) + aStop;
@@ -251,14 +251,14 @@ void fpgaAWG::freqGaussianRamp(unsigned long channel, float tStart, float tEnd, 
 	awgCommandList[iStart].phase_update = phase_update;
 }
 
-void fpgaAWG::writeCommandList(unsigned long channel) {
+void fpgaAWG::writeCommandList(unsigned long channel, int AWGnum) {
 	std::vector<awgCommand> & awgCommandList = selectCommandList(channel);
 	int numSteps = awgCommandList.size();
 	if (numSteps > 16384) {
 		thrower("AWG out of memory, too many time steps.");
 	}
-	unsigned char channelWord= 0b0000;
-	if (AWGnum== 0) {
+	unsigned char channelWord = 0b0000;
+	if (AWGnum == 0) {
 		if (channel == 0) {
 			channelWord = 0b0001;
 		}
@@ -294,9 +294,9 @@ void fpgaAWG::writeCommandList(unsigned long channel) {
 		};
 		writeTimestamp(channelWord, numSteps, 0.0, false, 0.0, 0.0, 0.0);
 	}
-	
-	
-	
+
+
+
 }
 
 void fpgaAWG::loadAWGScript(std::string scriptAddress)
@@ -345,7 +345,7 @@ void fpgaAWG::analyzeAWGScript(fpgaAWG* fpgaawg, std::vector<variableType>& vari
 	currentAWGScript >> word;
 	std::vector<UINT> totalRepeatNum, currentRepeatNum;
 	std::vector<std::streamoff> repeatPos;
-	
+
 	//Important: clear all old settings before new write.
 	awgCommandListDAC0.clear();
 	awgCommandListDAC1.clear();
@@ -358,7 +358,7 @@ void fpgaAWG::analyzeAWGScript(fpgaAWG* fpgaawg, std::vector<variableType>& vari
 	nPreviousStepSetting = 0;
 	startTimeStepSetting = 0.0;
 	stepSize = 1;
-	
+
 	// the analysis loop.
 
 	while (!(currentAWGScript.peek() == EOF) || word != "__end__")
@@ -412,7 +412,7 @@ void fpgaAWG::analyzeAWGScript(fpgaAWG* fpgaawg, std::vector<variableType>& vari
 		}
 		else if (word == "freqgauss") {
 			std::string channel;
-			Expression tstart, tstop, tSigma, direction,fstart, fstop, phase_update, phaseDegrees;
+			Expression tstart, tstop, tSigma, direction, fstart, fstop, phase_update, phaseDegrees;
 			currentAWGScript >> channel;
 			currentAWGScript >> tstart;
 			currentAWGScript >> tstop;
@@ -440,10 +440,10 @@ void fpgaAWG::analyzeAWGScript(fpgaAWG* fpgaawg, std::vector<variableType>& vari
 		else if (word == "program") {
 			std::string channel;
 			currentAWGScript >> channel;
-			writeCommandList(stoul(channel, nullptr, 0));
+			writeCommandList(stoul(channel, nullptr, 0), AWGnum);
 
 			//Important - after programming a single channel reset resources so another channel can be programmed.
-			nPreviousStepSetting = 0; 
+			nPreviousStepSetting = 0;
 			startTimeStepSetting = 0.0;
 			std::vector<awgCommand> & awgCommandList = selectCommandList(stoul(channel, nullptr, 0));
 			awgCommandList.clear();

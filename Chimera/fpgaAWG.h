@@ -11,7 +11,7 @@
 
 #define AWGMINSTEP    (double)0.0065104166666666666666666666666 //Minimum step size in us.
 
-class fpgaAWG{
+class fpgaAWG {
 
 public:
 	fpgaAWG(std::string portID, int baudrate, bool AWG_SAFEMODE);
@@ -24,7 +24,7 @@ public:
 	void setSingle(unsigned long channel, float time, float amp, float freq, bool phase_update, float phase);
 	void freqLinearRamp(unsigned long channel, float tStart, float tEnd, float fStart, float fEnd, bool phase_update, float phaseStart);
 	void freqGaussianRamp(unsigned long channel, float tStart, float tEnd, float tSigma, int direction, float fStart, float fStop, bool phase_update, float phaseStart);
-	void writeCommandList(unsigned long channel);
+	void writeCommandList(unsigned long channel, int AWGnum);
 	void ampLinearRamp(unsigned long channel, float tStart, float tEnd, float aStart, float aEnd);
 	void ampGaussianRamp(unsigned long channel, float tStart, float tEnd, float tSigma, int direction, float aStart, float aStop);
 
@@ -43,11 +43,11 @@ public:
 		return(ATW);
 	};
 	static unsigned int getPTW(double phaseDegrees) {
-		if (phaseDegrees < -3600 ) {
+		if (phaseDegrees < -3600) {
 			thrower("AWG phase out of range, should be >-3600 degrees.");
 		}
 
-		unsigned int PTW = round(fmod(phaseDegrees+3600,360) * 4095 / 360.0);
+		unsigned int PTW = round(fmod(phaseDegrees + 3600, 360) * 4095 / 360.0);
 		return(PTW);
 	}
 	static unsigned long int getTTW(double timeMicrosecs) {

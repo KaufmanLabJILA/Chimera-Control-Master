@@ -53,7 +53,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 	bool foundRearrangement = false;
 
 	ZynqTCP zynq_tcp;
-	
+
 	/// //////////////////////////// 
 	/// start analysis & experiment 
 	try
@@ -77,11 +77,11 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 
 		//initialize devices
 		input->thisObj->sendZynqCommand(zynq_tcp, "initExp");
-		
+
 		//input->rsg->clearFrequencies(); 
 		if (input->runMaster)
 		{
-			input->thisObj->analyzeMasterScript(input->ttls, input->dacs, input->ddss, ttlShadeLocs, 
+			input->thisObj->analyzeMasterScript(input->ttls, input->dacs, input->ddss, ttlShadeLocs,
 				dacShadeLocs, ddsShadeLocs, input->variables);
 		}
 		/// prep Moog 
@@ -233,13 +233,20 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 				input->gmoog->analyzeMoogScript(input->gmoog, input->variables, variationInc);
 			}
 
-			if (input->runAWG && !AWG_SAFEMODE) {
+			if (input->runAWG && !AWG_SAFEMODE0) {
 				//input->moog->loadMoogScript(input->moogScriptAddress);
 				//input->moog->analyzeMoogScript(input->moog, input->variables, variationInc);
-				input->awg->loadAWGScript(input->awgScriptAddress);
-				input->awg->analyzeAWGScript(input->awg, input->variables, variationInc,0);
+				input->awg0->loadAWGScript(input->awgScriptAddress);
+				input->awg0->analyzeAWGScript(input->awg0, input->variables, variationInc, 0);
 
-			
+
+			}
+			if (input->runAWG && !AWG_SAFEMODE1) {
+				//input->moog->loadMoogScript(input->moogScriptAddress);
+				//input->moog->analyzeMoogScript(input->moog, input->variables, variationInc);
+
+				input->awg1->loadAWGScript(input->awgScriptAddress);
+				input->awg1->analyzeAWGScript(input->awg1, input->variables, variationInc, 1);
 			}
 
 			input->comm->sendError(warnings);
@@ -502,8 +509,8 @@ void MasterManager::startExperimentThread(MasterThreadInput* input)
 	if (input->runAWG)
 	{
 		//input->moog->loadMoogScript(input->moogScriptAddress);
-		input->awg->loadAWGScript(input->awgScriptAddress);
-		input->awg->loadAWGScript(input->awgScriptAddress);
+		input->awg0->loadAWGScript(input->awgScriptAddress);
+		input->awg1->loadAWGScript(input->awgScriptAddress);
 	}
 	// start thread. 
 	runningThread = AfxBeginThread(experimentThreadProcedure, input, THREAD_PRIORITY_HIGHEST);
@@ -914,9 +921,9 @@ void MasterManager::analyzeFunction(std::string function, std::vector<std::strin
 			{
 				thrower(err.whatStr() + "... in \"ddsamp:\" command inside main script");
 			}
-			}
-			else if (word == "ddsfreq:") //ddsfreq: name freq
-			{
+		}
+		else if (word == "ddsfreq:") //ddsfreq: name freq
+		{
 			DDSCommandForm command;
 			std::string name;
 			currentMasterScript >> name;
@@ -960,9 +967,9 @@ void MasterManager::analyzeFunction(std::string function, std::vector<std::strin
 			{
 				thrower(err.whatStr() + "... in \"ddslinspaceamp:\" command inside main script.\r\n");
 			}
-			}
-			else if (word == "ddslinspacefreq:")  //ddslinspacefreq: name initFreq finalFreq rampTime numSteps
-			{
+		}
+		else if (word == "ddslinspacefreq:")  //ddslinspacefreq: name initFreq finalFreq rampTime numSteps
+		{
 			DDSCommandForm command;
 			std::string name;
 			currentMasterScript >> name;
@@ -1008,7 +1015,7 @@ void MasterManager::analyzeFunction(std::string function, std::vector<std::strin
 			{
 				thrower(err.whatStr() + "... in \"ddsrampamp:\" command inside main script");
 			}
-			}
+		}
 		else if (word == "ddsrampfreq:") // ddsrampfreq: name intiFreq finalFreq rampTime
 		{
 			DDSCommandForm command;
