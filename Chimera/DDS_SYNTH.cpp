@@ -6,21 +6,29 @@
 using namespace std;
 
 DDS_SYNTH::DDS_SYNTH(std::string portID, int baudrate) : dds(portID, DDS_SAFEMODE ? -1 : baudrate) {
-
+	//
+	if (!DDS_SAFEMODE) {
+		Sleep(100);
+		program_default();
+	}
 }
 
 DDS_SYNTH::~DDS_SYNTH() {
-	//disconnect();
+	//
 }
 
-void DDS_SYNTH::connectasync(const char devSerial[])
-{
-	
-}
-
-void DDS_SYNTH::disconnect()
-{
-	
+void DDS_SYNTH::program_default() {
+	if (!DDS_SAFEMODE) {
+		clear();
+		Sleep(10);
+		lockPLLs(10, 10);
+		Sleep(10);
+		writeamps(defaultAmps);
+		Sleep(10);
+		writefreqs(defaultFreqs);
+		Sleep(10);
+		done();
+	}
 }
 
 std::vector<unsigned char> DDS_SYNTH::messageToVector(int message, int bytes) {
@@ -31,9 +39,12 @@ std::vector<unsigned char> DDS_SYNTH::messageToVector(int message, int bytes) {
 	return msg;
 }
 
-void DDS_SYNTH::clear() 
-{
-		dds.write(messageToVector(0x0000000000, 5));
+void DDS_SYNTH::clear() {
+	for (int i = 0; i < 5; i++) {
+		dds.write(messageToVector(0x00, 1));
+		Sleep(10);
+	}
+
 }
 
 void DDS_SYNTH::lockPLLs(UINT m1, UINT m2) {
@@ -41,53 +52,98 @@ void DDS_SYNTH::lockPLLs(UINT m1, UINT m2) {
 	UINT8 m2_bytes = (1 << 7) + (m1 << 2);
 
 	dds.write(messageToVector(0xC1, 1));
+	Sleep(10);
 	dds.write(messageToVector(m1_bytes, 1));
+	Sleep(10);
 	dds.write(messageToVector(0x0000, 2));
-
+	Sleep(10);
 	dds.write(messageToVector(m2_bytes, 1));
+	Sleep(10);
 	dds.write(messageToVector(0x0000, 2));
+	Sleep(10);
+	dds.write(messageToVector(0x0000000000000000000000000000000000000000, 18));
 
-	for (int ii = 0; ii < 9; ii++) {
-		dds.write(messageToVector(0x0000, 2));
-	}
-
-	Sleep(100);
 }
 
 //Input frequency in MHz
-UINT* DDS_SYNTH::getFTWs(double freqs[]) {//Negative ints, Nyquist freq, works out.
-	UINT FTWs[8];
-	for (int ii = 0; ii < 8; ii++) {
-		if (freqs[ii] > INTERNAL_CLOCK / 2) {
-			thrower("DDS frequency out of range. Must be <250MHz. ");
-		}
-		FTWs[ii] = (UINT)round((freqs[ii] * pow(2, 32)) / (INTERNAL_CLOCK));
+UINT DDS_SYNTH::getFTW(double freq) {
+	UINT FTW;
+	if (freq > INTERNAL_CLOCK / 2) {
+		thrower("DDS frequency out of range. Must be <250MHz. ");
 	}
-	return(FTWs);
+	FTW = (UINT)round((freq * (pow(2, 32) - 1)) / (INTERNAL_CLOCK));
+	return FTW;
 }
 
-void DDS_SYNTH::writefreq(double freqs[]) {
-	
-	UINT* FTWs = getFTWs(freqs);
+//Input amp 0-100
+UINT DDS_SYNTH::getATW(double amp) {
+	UINT ATW;
+	if (amp > 100) {
+		thrower("DDS amplitude out of range, should be <100%.");
+	}
+	ATW = (UINT)round(amp * (pow(2, 10) - 1) / 100.0);
+	return ATW;
+}
 
-	//UINT8 byte4 = FTWs & 0x000000ffUL;
-	//UINT8 byte3 = (FTWs & 0x0000ff00UL) >> 8;
-	//UINT8 byte2 = (FTWs & 0x00ff0000UL) >> 16;
-	//UINT8 byte1 = (FTWs & 0xff000000UL) >> 24;
+void DDS_SYNTH::writefreqs(double freqs[]) {
+
+	UINT FTWs[8];
+
+	for (int i = 0; i < 8; i++) {
+		FTWs[i] = getFTW(freqs[i]);
+	}
+
+	dds.write(messageToVector(0xC4, 1));
+	Sleep(10);
+
+	for (int i = 0; i < 8; i++) {
+		UINT FTW = FTWs[i];
+		UINT8 byte4 = (FTW & 0x000000ffUL);
+		UINT8 byte3 = (FTW & 0x0000ff00UL) >> 8;
+		UINT8 byte2 = (FTW & 0x00ff0000UL) >> 16;
+		UINT8 byte1 = (FTW & 0xff000000UL) >> 24;
+		dds.write(messageToVector(byte1, 1));
+		Sleep(10);
+		dds.write(messageToVector(byte2, 1));
+		Sleep(10);
+		dds.write(messageToVector(byte3, 1));
+		Sleep(10);
+		dds.write(messageToVector(byte4, 1));
+		Sleep(10);
+	}
 
 }
 
-void DDS_SYNTH::writeamp(UINT8 device, UINT8 channel, double amp) {
+void DDS_SYNTH::writeamps(double amps[]) {
 
-	//UINT ATW = getATW(amp);
+	UINT ATWs[8];
 
-	//UINT8 byte2 = ATW & 0x000000ffUL;
-	//UINT8 byte1 = ATW >> 8;
+	for (int i = 0; i < 8; i++) {
+		ATWs[i] = getATW(amps[i]);
+	}
 
-	//byte1 |= 1 << 4; //Necessary to turn on amplitude multiplier.
+	dds.write(messageToVector(0xC6, 1));
 
-	//write(device, 6, 0, 0, 0, byte2); //TODO: Fix this. Currently sets Mult to off and then back to force a rewrite, solving issue with inactive channels.
-	//write(device, 6, 0, 0, byte1, byte2);
+	for (int i = 0; i < 8; i++) {
+		UINT ATW = ATWs[i];
+		UINT8 byte3 = (ATW & 0x0000ffUL);
+		UINT8 byte2 = 16 + ((ATW & 0x00ff00UL) >> 8);
+		UINT8 byte1 = 0x00;
+		/*if ((i - 1) % 3 == 0) {
+
+		}*/
+		dds.write(messageToVector(byte1, 1));
+		Sleep(10);
+		dds.write(messageToVector(byte2, 1));
+		Sleep(10);
+		dds.write(messageToVector(byte3, 1));
+		Sleep(10);
+	}
+}
+
+void DDS_SYNTH::done() {
+	dds.write(messageToVector(0x40, 1));
+	Sleep(10);
 }
 
 void DDS_SYNTH::loadDDSScript(std::string scriptAddress)
@@ -128,6 +184,11 @@ void DDS_SYNTH::loadDDSScript(std::string scriptAddress)
 
 void DDS_SYNTH::programDDS(DDS_SYNTH* dds, std::vector<variableType>& variables, UINT variation)
 {
+	clear();
+	Sleep(10);
+	lockPLLs(10, 10);
+	Sleep(10);
+
 	currentDDSScriptText = currentDDSScript.str();
 	if (currentDDSScript.str() == "")
 	{
@@ -138,148 +199,57 @@ void DDS_SYNTH::programDDS(DDS_SYNTH* dds, std::vector<variableType>& variables,
 	// the analysis loop.
 	while (!(currentDDSScript.peek() == EOF) || word != "__end__")
 	{
-		if (word == "testsequence") {
-			int snapshot_num = 0;
-			/*writeArrFreq(WBWRITE_ARRAY, 0x400+snapshot_num, 0);
-			write(WBWRITE_ARRAY, 0x0+snapshot_num, 0, 0, 0, 0);
-			snapshot_num = 1;
-			writeArrFreq(WBWRITE_ARRAY, 0x400 + snapshot_num, 0);
-			write(WBWRITE_ARRAY, 0x0 + snapshot_num, 0, 0, 0, 0);
-			snapshot_num = 2;
-			writeArrFreq(WBWRITE_ARRAY, 0x400 + snapshot_num, 0);
-			write(WBWRITE_ARRAY, 0x0 + snapshot_num, 0, 0, 0, 0);*/
-		}
-		else if (word == "reset") {
-			Expression freq, amp;
-			std::string subWord;
-			currentDDSScript >> subWord;
-
-			for (UINT8 device = 0; device < 2; device++)
-			{
-
-				//write(device, 0, 0, 0, 0, 0xF0); //select all channels on device.
-				//UINT8 byte1 = 1 << 4; //Necessary to turn on amplitude multiplier.
-				//write(device, 6, 0, 0, 0, 0); //TODO: Fix this. Currently sets Mult to off and then back to force a rewrite, solving issue with inactive channels.
-				//write(device, 6, 0, 0, byte1, 0);
-			}
-
-			if (subWord == "freqs") {
-				for (UINT8 device = 0; device < 2; device++)
-				{
-					for (UINT8 channel = 0; channel < 4; channel++)
-					{
-						currentDDSScript >> freq;
-						//writeArrResetFreq(device, channel, freq.evaluate(variables, variation));
-						currentState.freqs[device][channel] = freq.evaluate(variables, variation);
-					}
-				}
-			}
-			else {
-				thrower("Incorrect snapshot sequence. Must set repetitions, then frequencies, then amplitudes");
-			}
-			currentDDSScript >> subWord;
-			if (subWord == "amps") {
-				for (UINT8 device = 0; device < 2; device++)
-				{
-					for (UINT8 channel = 0; channel < 4; channel++)
-					{
-						currentDDSScript >> amp;
-						//writeArrResetAmp(device, channel, amp.evaluate(variables, variation));
-						currentState.amps[device][channel] = amp.evaluate(variables, variation);
-					}
-				}
-			}
-			else {
-				thrower("Incorrect snapshot sequence. Must set repetitions, then frequencies, then amplitudes");
-			}
-		}
-		else if (word == "snapshot") {
-			Expression index, freq, amp, rep;
+		if (word == "snapshot") {
+			Expression index, freqExp, ampExp;
 			UINT8 indexVal;
-			UINT16 repVal;
-			double freqstep, ampstep;
+			double freqs[8], amps[8];
 			std::string subWord;
 			currentDDSScript >> index;
 			currentDDSScript >> subWord;
 			indexVal = index.evaluate(variables, variation);
-			if (indexVal > 255) {
-				thrower("Maximum number of DDS snapshots is 256. ");
+			if (indexVal > 1000) {
+				thrower("Maximum number of DDS snapshots is 1000.");
 			}
 			currentState.index = indexVal;
-			if (subWord == "reps") {
-				currentDDSScript >> rep;
-				repVal = rep.evaluate(variables, variation);
-				if (repVal > 65535) {
-					thrower("Maximum number of steps in ramp is 65535. ");
+			if (subWord == "amps") {
+				for (UINT8 channel = 0; channel < 8; channel++)
+				{
+					currentDDSScript >> ampExp;
+					amps[channel] = ampExp.evaluate(variables, variation);
+					if (amps[channel] > 100) {
+						thrower("DDS amplitude too large, must be <100%.");
+					}
+					if (amps[channel] < 0) {
+						thrower("DDS amplitude step too small, must be >0%.");
+					}
+					currentState.amps[channel] = amps[channel];
 				}
-				//writeArrReps(indexVal, repVal);
+				writeamps(amps);
+				Sleep(10);
 			}
 			else {
-				thrower("Incorrect snapshot sequence. Must set repetitions, then frequencies, then amplitudes");
+				thrower("Incorrect snapshot sequence. Must set amplitudes, then frequencies");
 			}
 			currentDDSScript >> subWord;
 			if (subWord == "freqs") {
-				for (UINT8 device = 0; device < 2; device++)
+				for (UINT8 channel = 0; channel < 8; channel++)
 				{
-					for (UINT8 channel = 0; channel < 4; channel++)
-					{
-						currentDDSScript >> freq;
-						freqstep = (freq.evaluate(variables, variation) - currentState.freqs[device][channel]) / static_cast<double>(repVal);
-						if (freqstep > INTERNAL_CLOCK / 4) {
-							thrower("DDS frequency step too large, must be <125MHz. Try adding more reps to ramp.");
-						}
-						//writeArrDeltaFreq(device, channel, indexVal, freqstep);
-						currentState.freqs[device][channel] = freq.evaluate(variables, variation);
+					currentDDSScript >> freqExp;
+					freqs[channel] = freqExp.evaluate(variables, variation);
+					if (freqs[channel] > INTERNAL_CLOCK / 2) {
+						thrower("DDS frequency too large, must be <250MHz");
 					}
+					currentState.freqs[channel] = freqs[channel];
 				}
+				writefreqs(freqs);
+				Sleep(10);
 			}
 			else {
-				thrower("Incorrect snapshot sequence. Must set repetitions, then frequencies, then amplitudes");
-			}
-			currentDDSScript >> subWord;
-			if (subWord == "amps") {
-				for (UINT8 device = 0; device < 2; device++)
-				{
-					for (UINT8 channel = 0; channel < 4; channel++)
-					{
-						currentDDSScript >> amp;
-						ampstep = (amp.evaluate(variables, variation) - currentState.amps[device][channel]) / static_cast<double>(repVal);
-						if (ampstep > 50) {
-							thrower("DDS amplitude step too large, must be <50%. Try adding more reps to ramp.");
-						}
-						//writeArrDeltaAmp(device, channel, indexVal, ampstep);
-						currentState.amps[device][channel] = amp.evaluate(variables, variation);
-					}
-				}
-			}
-			else {
-				thrower("Incorrect snapshot sequence. Must set repetitions, then frequencies, then amplitudes");
+				thrower("Incorrect snapshot sequence. Must set amplitudes, then frequencies");
 			}
 		}
 		else if (word == "end") {
-			UINT8 indexVal = currentState.index + 1;
-			//writeArrReps(indexVal, 0);
-			for (UINT8 device = 0; device < 2; device++)
-			{
-				for (UINT8 channel = 0; channel < 4; channel++)
-				{
-					//writeArrDeltaFreq(device, channel, indexVal, 0);
-					//writeArrDeltaAmp(device, channel, indexVal, 0);
-				}
-			}
-		}
-		else if (word == "set") {
-			std::string devicenum;
-			std::string channelnum;
-			Expression freq;
-			Expression amp;
-			currentDDSScript >> devicenum;
-			currentDDSScript >> channelnum;
-			currentDDSScript >> freq;
-			currentDDSScript >> amp;
-			
-			//writefreq(stoul(devicenum, nullptr), stoul(channelnum, nullptr), freq.evaluate(variables, variation));
-			//writeamp(stoul(devicenum, nullptr), stoul(channelnum, nullptr), amp.evaluate(variables, variation));
+
 		}
 		else
 		{
@@ -288,4 +258,5 @@ void DDS_SYNTH::programDDS(DDS_SYNTH* dds, std::vector<variableType>& variables,
 		word = "";
 		currentDDSScript >> word;
 	}
+	done();
 }

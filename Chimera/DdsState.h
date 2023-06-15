@@ -4,7 +4,7 @@
 
 struct DdsState
 {
-	double freqs [2][4];
-	double amps [2][4];
+	double freqs [8];
+	double amps [8];
 	UINT8 index;
 };

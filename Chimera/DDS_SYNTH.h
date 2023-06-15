@@ -25,17 +25,21 @@ private:
 	std::string currentDDSScriptText;
 	ScriptStream currentDDSScript;
 	DdsState currentState;
+	double defaultAmps[8] = { 100,100,100,100,100,15,100,100 };
+	double defaultFreqs[8] = { 100 , 80 , 80 , 200 , 95 , 80 , 85 , 80 };
+
 public:
 	DDS_SYNTH(std::string portID, int baudrate);
 	~DDS_SYNTH();
-	void connectasync(const char devSerial[]);
-	void disconnect();
 	void clear();
 	std::vector<unsigned char> messageToVector(int message, int bytes);
 	void lockPLLs(UINT m1, UINT m2);
-	UINT* getFTWs(double freqs[]);
-	void writeamp(UINT8 device, UINT8 channel, double freq);
-	void writefreq(double freqs[]);
+	UINT getFTW(double freq);
+	UINT getATW(double amp);
+	void writeamps(double amps[]);
+	void writefreqs(double freqs[]);
+	void done();
+	void program_default();
 
 	void loadDDSScript(std::string scriptAddress);
 	void programDDS(DDS_SYNTH* dds, std::vector<variableType>& vars, UINT variation);

@@ -1,97 +1,31 @@
 % Channel order:
 
-% latticemod 698freq UVao null red3dnarrow radial axial radial2
+% 
+
+snapshot 0
+
+amps  100 100 100 100 100 100 80 100
+
+freqs 80 80 80 80 80 80 65 80 
 
 
+snapshot 1
 
-%%%
+amps  100 100 100 100 100 100 55 100
 
+freqs 80 80 80 80 80 100 75 80
 
+snapshot 2
 
-% SB COOL
+amps  100 100 100 100 100 100 55 100
 
-reset
+freqs 80 80 80 80 80 100 85 80
 
-%freqs 80 80 75 80 79.74 c_3p1+f_rad c_3p1+f_ax c_3p1+f_rad2
+snapshot 3
 
-%amps  0 100 100 100 0 3 2 5
+amps  100 100 100 100 100 100 40 100
 
-%freqs 80 80 75 80 79.74 c_3p1+.08 c_3p1+.08 c_3p1+.08
-
-%amps  0 100 100 100 0 5 3 5
-
-%freqs 80 80 75 80 79.74 c_3p1+.07 c_3p1+.08 c_3p1+.07
-
-%amps  0 100 100 100 0 16 5 25
-
-freqs 30 30 30 30 30 30 30 30 
-
-%amps  0 100 100 100 0 9 8 7
-
-amps  100 100 100 100 100 100 100 100
-
-
-% SPECTROSCOPY
-
-snapshot 0 reps 2
-
-freqs 30 30 30 30 30 30 30 30 
-
-amps  100 100 100 100 100 100 100 100
-
-%amps  0 100 100 100 0 3 3.5 20
-
-%freqs 80 80 75 80 79.74 c_3p1+fcool c_3p1+faxcool c_3p1+fcool+.001
-
-%amps  0 100 100 100 0 radpow axpow rad2pow
-
-
-
-% IMAGE
-
-snapshot 1 reps 2
-
-%freqs 80 80 75 80 79.74 c_3p1+.08 c_3p1+.08 c_3p1+.08
-
-%amps  0 100 100 100 0 15 3 5
-
-freqs 30 4 80 80 79.74 30 30 30
-
-amps  0 100 100 100 0 5 9 50
-
-%amps  0 100 100 100 0 3 9 6
-
-
-
-%radpow axpow rad2pow
-
-
-
-%%%
-
-% MOT
-
-snapshot 2 reps 2
-
-freqs 80 4 80 80 30 80 80 80
-
-amps  0 100 100 100 20 0 0 0
-
-
-
-% LAC
-
-snapshot 3 reps 2
-
-%freqs 80 80 75 80 79.74 80.05 80.05 80.05
-
-%amps  0 100 100 100 0 10 70 18
-
-freqs 80 4 80 80 79.74 30 30 30
-
-amps  0 100 100 100 0 10 5 10
-
-
+freqs 80 80 80 80 80 100 95 80
 
 end
 

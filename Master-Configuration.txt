@@ -71,7 +71,7 @@ clockawg
 0
 specrb3
 0
-jonathantest
+ddsreset
 0
 chooserb2spec
 0
@@ -95,7 +95,7 @@ awgsbspec
 0
 clockrepump
 0
-blue2dmotshutter
+ddstrigger
 0
 greenimagedopp
 0
