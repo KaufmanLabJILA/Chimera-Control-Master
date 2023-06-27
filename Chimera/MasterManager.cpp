@@ -146,11 +146,6 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 				input->ttls->checkNotTooManyTimes(variationInc);
 				input->ttls->checkFinalFormatTimes(variationInc);
 				input->dacs->checkTimingsWork(variationInc);
-
-				if (!DDS_SAFEMODE) {
-					input->dds->loadDDSScript(input->ddsScriptAddress);
-					input->dds->programDDS(input->dds, input->variables, variationInc);
-				}
 			}
 			//input->rsg->orderEvents( variationInc ); 
 		}
@@ -231,6 +226,11 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 			if (!GIGAMOOG_SAFEMODE) {
 				input->gmoog->loadMoogScript(input->gmoogScriptAddress);
 				input->gmoog->analyzeMoogScript(input->gmoog, input->variables, variationInc);
+			}
+
+			if (!DDS_SAFEMODE) {
+				input->dds->loadDDSScript(input->ddsScriptAddress);
+				input->dds->programDDS(input->dds, input->variables, variationInc);
 			}
 
 			if (input->runAWG && !AWG_SAFEMODE0) {
@@ -353,6 +353,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 		input->thisObj->sendZynqCommand(zynq_tcp, "disableSeq");
 		input->thisObj->sendZynqCommand(zynq_tcp, "lockPLL");
 		input->ddss->setDDSsAmpFreq();
+		input->dds->program_default();
 		//input->dacs->setDACsSeq();
 		input->dacs->zeroDACValues();
 		input->thisObj->sendZynqCommand(zynq_tcp, "trigger");
@@ -390,6 +391,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 		input->thisObj->sendZynqCommand(zynq_tcp, "lockPLL");
 		input->ddss->setDDSsAmpFreq();
 		input->dacs->setDACsSeq();
+		input->dds->program_default();
 		input->thisObj->sendZynqCommand(zynq_tcp, "trigger");
 		if (input->settings.saveMakoImages) {
 			input->comm->sendCloseMako();

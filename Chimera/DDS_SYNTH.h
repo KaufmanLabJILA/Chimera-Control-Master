@@ -3,17 +3,9 @@
 #include "DdsState.h"
 #include "BoostAsyncSerial.h"
 
-#define MSGLENGTH         7
-#define WBWRITE           (unsigned char)161
-#define WBWRITE_ARRAY     (unsigned char)2 //Add 2 to WBWRITE
-#define WRITESPERDATAPT   3
-#define BUFFERSIZESER     100
-#define BUFFERSIZEASYNC   2048
 #define INTERNAL_CLOCK    (double)500.0 //Internal clock in MHz
 
-#define NONE            0
-#define SERIAL          1
-#define ASYNC           2
+#define DDS_SLEEP_TIME 5
 
 //Array begins with FTW, then increments by step size, and number of repetitions
 

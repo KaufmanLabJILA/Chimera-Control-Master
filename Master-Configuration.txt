@@ -95,7 +95,7 @@ awgsbspec
 0
 clockrepump
 0
-ddstrigger
+blue2dmotshutter
 0
 greenimagedopp
 0
@@ -109,7 +109,7 @@ dio7.5
 0
 dio7.6
 0
-dio7.7
+ddstrigger
 0
 cameratrig
 0
@@ -352,4 +352,4 @@ axialpower2 1.5
 radialpower2 27.5
 imagetime2 30
 img_depth2 -3
-84 315 1 215 270 1
+44 370 1 250 270 1

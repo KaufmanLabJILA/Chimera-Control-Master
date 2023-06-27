@@ -8,7 +8,6 @@ using namespace std;
 DDS_SYNTH::DDS_SYNTH(std::string portID, int baudrate) : dds(portID, DDS_SAFEMODE ? -1 : baudrate) {
 	//
 	if (!DDS_SAFEMODE) {
-		Sleep(100);
 		program_default();
 	}
 }
@@ -20,13 +19,9 @@ DDS_SYNTH::~DDS_SYNTH() {
 void DDS_SYNTH::program_default() {
 	if (!DDS_SAFEMODE) {
 		clear();
-		Sleep(10);
 		lockPLLs(10, 10);
-		Sleep(10);
 		writeamps(defaultAmps);
-		Sleep(10);
 		writefreqs(defaultFreqs);
-		Sleep(10);
 		done();
 	}
 }
@@ -42,7 +37,6 @@ std::vector<unsigned char> DDS_SYNTH::messageToVector(int message, int bytes) {
 void DDS_SYNTH::clear() {
 	for (int i = 0; i < 5; i++) {
 		dds.write(messageToVector(0x00, 1));
-		Sleep(10);
 	}
 
 }
@@ -52,15 +46,10 @@ void DDS_SYNTH::lockPLLs(UINT m1, UINT m2) {
 	UINT8 m2_bytes = (1 << 7) + (m1 << 2);
 
 	dds.write(messageToVector(0xC1, 1));
-	Sleep(10);
 	dds.write(messageToVector(m1_bytes, 1));
-	Sleep(10);
 	dds.write(messageToVector(0x0000, 2));
-	Sleep(10);
 	dds.write(messageToVector(m2_bytes, 1));
-	Sleep(10);
 	dds.write(messageToVector(0x0000, 2));
-	Sleep(10);
 	dds.write(messageToVector(0x0000000000000000000000000000000000000000, 18));
 
 }
@@ -94,7 +83,6 @@ void DDS_SYNTH::writefreqs(double freqs[]) {
 	}
 
 	dds.write(messageToVector(0xC4, 1));
-	Sleep(10);
 
 	for (int i = 0; i < 8; i++) {
 		UINT FTW = FTWs[i];
@@ -102,14 +90,8 @@ void DDS_SYNTH::writefreqs(double freqs[]) {
 		UINT8 byte3 = (FTW & 0x0000ff00UL) >> 8;
 		UINT8 byte2 = (FTW & 0x00ff0000UL) >> 16;
 		UINT8 byte1 = (FTW & 0xff000000UL) >> 24;
-		dds.write(messageToVector(byte1, 1));
-		Sleep(10);
-		dds.write(messageToVector(byte2, 1));
-		Sleep(10);
-		dds.write(messageToVector(byte3, 1));
-		Sleep(10);
-		dds.write(messageToVector(byte4, 1));
-		Sleep(10);
+		std::vector<unsigned char> bytevec = { byte1, byte2, byte3, byte4 };
+		dds.write(bytevec);
 	}
 
 }
@@ -129,21 +111,13 @@ void DDS_SYNTH::writeamps(double amps[]) {
 		UINT8 byte3 = (ATW & 0x0000ffUL);
 		UINT8 byte2 = 16 + ((ATW & 0x00ff00UL) >> 8);
 		UINT8 byte1 = 0x00;
-		/*if ((i - 1) % 3 == 0) {
-
-		}*/
-		dds.write(messageToVector(byte1, 1));
-		Sleep(10);
-		dds.write(messageToVector(byte2, 1));
-		Sleep(10);
-		dds.write(messageToVector(byte3, 1));
-		Sleep(10);
+		std::vector<unsigned char> bytevec = { byte1, byte2, byte3 };
+		dds.write(bytevec);
 	}
 }
 
 void DDS_SYNTH::done() {
 	dds.write(messageToVector(0x40, 1));
-	Sleep(10);
 }
 
 void DDS_SYNTH::loadDDSScript(std::string scriptAddress)
@@ -185,9 +159,7 @@ void DDS_SYNTH::loadDDSScript(std::string scriptAddress)
 void DDS_SYNTH::programDDS(DDS_SYNTH* dds, std::vector<variableType>& variables, UINT variation)
 {
 	clear();
-	Sleep(10);
 	lockPLLs(10, 10);
-	Sleep(10);
 
 	currentDDSScriptText = currentDDSScript.str();
 	if (currentDDSScript.str() == "")
@@ -225,7 +197,6 @@ void DDS_SYNTH::programDDS(DDS_SYNTH* dds, std::vector<variableType>& variables,
 					currentState.amps[channel] = amps[channel];
 				}
 				writeamps(amps);
-				Sleep(10);
 			}
 			else {
 				thrower("Incorrect snapshot sequence. Must set amplitudes, then frequencies");
@@ -242,7 +213,6 @@ void DDS_SYNTH::programDDS(DDS_SYNTH* dds, std::vector<variableType>& variables,
 					currentState.freqs[channel] = freqs[channel];
 				}
 				writefreqs(freqs);
-				Sleep(10);
 			}
 			else {
 				thrower("Incorrect snapshot sequence. Must set amplitudes, then frequencies");

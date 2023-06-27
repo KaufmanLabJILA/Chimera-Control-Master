@@ -144,7 +144,7 @@ void atomCruncher::scrunchX(moveSequence& moveseq, bool centered = false) {
 	std::vector<int> ixs = {};
 	for (auto const& channelBoolY : positionsY)
 	{
-		if (channelBoolY) //If first step, choose the rows with load tweezers. If not first step, choose the rows that atoms were scrunched to.
+		if (channelBoolY)
 		{
 			moveSingle single;
 			int ix = 0;
@@ -163,8 +163,8 @@ void atomCruncher::scrunchX(moveSequence& moveseq, bool centered = false) {
 				}
 				ix++;
 			}
-			single.startAOY.push_back(iy); //Single tone in y
-			single.endAOY.push_back(iy); //y does not move
+			single.startAOY.push_back(iy); // Single tone in y
+			single.endAOY.push_back(iy); // y does not move
 			moveseq.moves.push_back(single);
 
 			int nGap = 0;
@@ -176,14 +176,79 @@ void atomCruncher::scrunchX(moveSequence& moveseq, bool centered = false) {
 			}
 			for (int ix2 = 0; ix2 < nAtomsInRow; ix2++)
 			{
-				if (nGap + (gmoog->scrunchSpacing) * ix2 >= positionsX.size())
+				if (nGap + (gmoog->scrunchSpacing) * ix2 >= nx)
 				{
 					moveseq.moves.back().endAOX.push_back(-2); // remove atom from higher frequency side
 				}
 				else
 				{
-					moveseq.moves.back().endAOX.push_back(nGap + ixs[ix2]);
-					(*rearrangerAtomQueue)[0][ix2 + iyl * nx] = 1; // place atom in dropoff location
+					moveseq.moves.back().endAOX.push_back(nGap + ixs[(gmoog->scrunchSpacing) * ix2]);
+					(*rearrangerAtomQueue)[0][(gmoog->scrunchSpacing) * ix2 + iyl * nx] = 1; // place atom in dropoff location
+				}
+			};
+			iyl++;
+		}
+		iy++;
+	}
+}
+
+void atomCruncher::scrunchXTarget(moveSequence& moveseq, bool centered = false) {
+	UINT wx = (positionsX.size());
+	UINT wy = (positionsY.size());
+	int iy = 0;
+	int iyl = 0;
+	int nx = gmoog->nTweezerX;
+	std::vector<int> ixs = {};
+	for (auto const& channelBoolY : positionsY)
+	{
+		if (channelBoolY)
+		{
+			moveSingle single;
+			int ix = 0;
+			int ixl = 0;
+			int nxTarget = 0;
+			std::vector<int> ixs = {};
+			for (auto const& channelBoolX : positionsX)
+			{
+				if (targetPositionsTemp[ix + wx * iy])
+				{
+					nxTarget++;
+				}
+				if (channelBoolX)
+				{
+					if ((*rearrangerAtomQueue)[0][nx - ixl - 1 + iyl * nx]) {
+						single.startAOX.push_back(ix); //Place tweezers on all atoms in row
+						(*rearrangerAtomQueue)[0][nx - ixl - 1 + iyl * nx] = 0; //remove atom from pickup location
+					}
+					ixl++;
+					ixs.push_back(ix);
+				}
+				ix++;
+			}
+			single.startAOY.push_back(iy); // Single tone in y
+			single.endAOY.push_back(iy); // y does not move
+			moveseq.moves.push_back(single);
+
+			int nGap = 0;
+			int nAtomsInRow = moveseq.moves.back().nx();
+			int ixTarget = 0;
+			if (centered)
+			{
+				nGap = positionsX.size() / 2 - gmoog->scrunchSpacing * (nAtomsInRow / 2);
+				nGap = (nGap < 0) ? 0 : nGap;
+			}
+			for (int ix2 = 0; ix2 < nAtomsInRow; ix2++)
+			{
+				if (nxTarget > 0)
+				{
+					while (targetPositionsTemp[ixTarget + wx * iy] == 0) { ixTarget++; } // iterate to next target site
+					moveseq.moves.back().endAOX.push_back(ixTarget); // Move tweezer to target site
+					//(*rearrangerAtomQueue)[0][ix2 + iyl * nx] = 1; // place atom in dropoff location
+					targetPositionsTemp[ixTarget + wx * iy] = 0; // remove target site
+					nxTarget--;
+				}
+				else {
+					moveseq.moves.back().endAOX.push_back(-1 * ix2); // remove atom from higher frequency side
 				}
 			};
 			iyl++;
@@ -199,7 +264,7 @@ void atomCruncher::scrunchY(moveSequence& moveseq, bool centered = false) {
 	std::vector<int> iys = {};
 	for (auto const& channelBoolX : positionsX)
 	{
-		if (channelBoolX) //If first step, choose the rows with load tweezers. If not first step, choose the rows that atoms were scrunched to.
+		if (channelBoolX)
 		{
 			moveSingle single;
 			int iy = 0;
@@ -472,7 +537,6 @@ int atomCruncher::equalizeY(moveSequence& moveseq) {
 	return nxMean;
 }
 
-
 void atomCruncher::scrunchYTarget(moveSequence& moveseq, bool constantMoves = false) {
 	UINT wx = (positionsX.size()); //For convenience, could remove.
 	UINT wy = (positionsY.size());
@@ -533,6 +597,68 @@ void atomCruncher::scrunchYTarget(moveSequence& moveseq, bool constantMoves = fa
 		ix++;
 	}
 }
+
+
+//void atomCruncher::scrunchYTarget(moveSequence& moveseq, bool constantMoves = false) {
+//	UINT wx = (positionsX.size()); //For convenience, could remove.
+//	UINT wy = (positionsY.size());
+//
+//	int ix = 0;
+//	for (auto const& channelBoolX : positionsX)
+//	{
+//		if (channelBoolX)
+//		{
+//			int nxTarget = 0;
+//			for (int iy = 0; iy < wy; iy++) //count number of target sites in column.
+//			{
+//				if (targetPositionsTemp[ix + wx * iy])
+//				{
+//					nxTarget++;
+//				}
+//			}
+//
+//			moveSingle single;
+//			int iy = 0;
+//			for (auto const& channelBoolY : positionsY)
+//			{
+//				if (channelBoolY && (*rearrangerAtomQueue)[0][ix + wx * iy])
+//				{
+//					single.startAOY.push_back(iy); //Place tweezers on all atoms in column
+//					(*rearrangerAtomQueue)[0][ix + wx * iy] = 0; //remove atom from pickup location
+//				}
+//				iy++;
+//			}
+//			single.startAOX.push_back(ix); //Single tone in x
+//			single.endAOX.push_back(ix); //x does not move
+//			if (single.ny() > 0 || constantMoves) { moveseq.moves.push_back(single); }
+//
+//			int nAtomsInRow = moveseq.moves.back().ny();
+//			int iyTarget = 0;
+//			for (int iy2 = 0; iy2 < nAtomsInRow; iy2++)
+//			{
+//				if (iy2 < (nAtomsInRow - nxTarget) / 2)
+//				{
+//					//moveseq.moves.back().endAOY.push_back(-1); // remove atom from lower frequency side
+//					moveseq.moves.back().endAOY.push_back(iy2);
+//				}
+//				else if (nxTarget > 0)
+//				{
+//					while (targetPositionsTemp[ix + wx * iyTarget] == 0) { iyTarget++; } //iterate to next target site
+//					moveseq.moves.back().endAOY.push_back(iyTarget); //Move tweezer to target site
+//					(*rearrangerAtomQueue)[0][ix + wx * iyTarget] = 1; //place atom in dropoff location
+//					targetPositionsTemp[ix + wx * iyTarget] = 0; //remove target site
+//					nxTarget--;
+//				}
+//				else
+//				{
+//					//moveseq.moves.back().endAOY.push_back(-2); // remove atom from higher frequency side
+//					moveseq.moves.back().endAOY.push_back(wy - (nAtomsInRow - iy2) - 2);
+//				}
+//			};
+//		}
+//		ix++;
+//	}
+//}
 
 void atomCruncher::enoughY(moveSequence& moveseq, bool constantMoves = false) {
 	///Ensure the number of atoms in each column is sufficient for target pattern.
@@ -738,6 +864,10 @@ moveSequence atomCruncher::getRearrangeMoves(std::string rearrangeType) {
 	if (rearrangeType == "scrunchx")
 	{
 		scrunchX(moveseq);
+	}
+	else if (rearrangeType == "arbscrunchx") {
+		//enoughX(moveseq);
+		scrunchXTarget(moveseq);
 	}
 	else if (rearrangeType == "feedback")
 	{

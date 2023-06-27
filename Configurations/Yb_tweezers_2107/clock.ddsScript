@@ -1,0 +1,14 @@
+% Channel order:
+
+% 
+
+snapshot 0
+
+amps  100 100 100 100 100 15 100 100
+
+freqs 100 80 80 200 95 80 85 80 
+
+end
+
+%
+

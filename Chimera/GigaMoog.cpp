@@ -117,11 +117,11 @@ double gigaMoog::getFreqX(int xIndex, int yIndex) {
 
 	if (xIndex < 0 && yIndex >= 0) //special handling for feedback
 	{
-		return 72 + xOffset + xIndex*((72.0-55.0)/24.0);
+		return 110 + xOffset - xIndex*1;
 	}
 	/*else if (xIndex == -2 && yIndex >= 0)
 	{
-		return 300 + xOffset;
+		return 150 + xOffset;
 	}*/
 	else if (xIndex >= 0 && yIndex >= 0)
 	{

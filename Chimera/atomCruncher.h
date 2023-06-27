@@ -18,7 +18,8 @@ public:
 	void offsetMasks(int xOffPixels, int yOffPixels);
 	moveSequence getRearrangeMoves(std::string rearrangeType);
 	void scrunchX(moveSequence& moveseq, bool centered);
-	void atomCruncher::feedBack(moveSequence& moveseq, bool centered);
+	void scrunchXTarget(moveSequence& moveseq, bool centered);
+	void feedBack(moveSequence& moveseq, bool centered);
 	void LightShifting(moveSequence& moveseq, bool centered);
 	void compressX(moveSequence& moveseq);
 	void filterReservoir(moveSequence& moveseq);
