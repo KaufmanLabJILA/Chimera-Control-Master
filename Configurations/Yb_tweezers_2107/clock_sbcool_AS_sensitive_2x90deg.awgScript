@@ -78,9 +78,14 @@ setsingle 7 1*0.04+1*zpi2time+0*0.04+0*0.04+0*xpi2time+0*0.04 0 80 0 0
 %setsingle 7 2*0.04+1*zpi2time+1*0.04+0*0.04+0*xpi2time+0*0.04 zamp 80 0 0
 %setsingle 7 2*0.04+2*zpi2time+1*0.04+0*0.04+0*xpi2time+0*0.04 0 80 0 0
 
-
-
 program 7
+setsingle 5 0 100 uvfreq 1 0
+setsingle 5 uvtime 0  uvfreq+2 0 0
+%setsingle 5 time+uvtime 100 uvfreq 0 0
+%setsingle 5 time+2*uvtime 0  uvfreq 0 0
+
+program 5
+
 
 
 

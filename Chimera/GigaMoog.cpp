@@ -553,7 +553,7 @@ void gigaMoog::loadMoogScript(std::string scriptAddress)
 
 void gigaMoog::writeMoveOff(MessageSender& ms) {
 	for (int stepID = 0; stepID < 256; stepID++) {
-		for (int channel = 8; channel < 31; channel++) {
+		for (int channel = 4; channel < 42; channel++) {
 			Message m = Message::make().destination(MessageDestination::KA007)
 				.DAC(MessageDAC::DAC0).channel(channel)
 				.setting(MessageSetting::MOVEFREQUENCY)
@@ -561,7 +561,7 @@ void gigaMoog::writeMoveOff(MessageSender& ms) {
 			ms.enqueue(m);
 		}
 
-		for (int channel = 17; channel < 29; channel++) {
+		for (int channel = 16; channel < 20; channel++) {
 			Message m = Message::make().destination(MessageDestination::KA007)
 				.DAC(MessageDAC::DAC1).channel(channel)
 				.setting(MessageSetting::MOVEFREQUENCY)

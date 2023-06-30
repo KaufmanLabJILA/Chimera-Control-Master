@@ -289,7 +289,7 @@ bluex 0.2689
 bluey 0.2109
 bluez -0.1937
 greenmotcoil 0.2
-blueloadtime 200
+blueloadtime 150
 greenbroadloadtime 20
 greennarrowloadtime 20
 coolfreq 95
@@ -352,4 +352,4 @@ axialpower2 1.5
 radialpower2 27.5
 imagetime2 30
 img_depth2 -3
-44 370 1 250 270 1
+16 345 1 234 249 1
