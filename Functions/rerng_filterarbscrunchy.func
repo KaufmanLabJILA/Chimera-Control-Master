@@ -58,6 +58,8 @@ repeat: 2
 end
 t += .1
 
+%on: imagshut
+
 on: radial2
 daclinspace: axialpow ax_lattice_pow ax_lattice_zero 1 15
 t += 1
@@ -65,6 +67,15 @@ t += 1
 daclinspace: latticepow lattice_pow lattice_zero 1 15
 t += 10
 %t += filtertime
+
+%%% testing 230703
+%t += 5
+%on: imag461
+%t += 2
+%off: imag461
+%off: imagshut
+%t += 5
+
 off: radial2
 daclinspace: axialpow ax_lattice_zero ax_lattice_pow 1 15
 t += 1

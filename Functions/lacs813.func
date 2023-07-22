@@ -1,0 +1,33 @@
+% Master-Script See the "?" for info on commands.
+def lacs813(lactime):
+  %DDS state: Image
+% pulseon: resetdds .1
+% t += .2
+% repeat: 2
+%  pulseon: stepdds 0.007
+%  t += .1
+% end
+
+ dac: bluetune bluetune_imag
+ dac: imagingPow imagpow813
+ %on: rp707
+
+ t += .1
+
+ on: rp707
+ on: rp679
+ on: imag461
+ %on: red3dnarrow
+ %on: radial2
+ on: radial
+ on: axial
+ t += lactime
+ off: radial2
+ off: axial
+ off: radial
+ off: red3dnarrow
+ off: imag461
+ off: shut707
+ off: shut679
+ off: rp707
+ off: rp679

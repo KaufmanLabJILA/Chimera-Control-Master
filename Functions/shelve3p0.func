@@ -2,7 +2,10 @@
 def shelve3p0(reptime):
   %This expects to be in spectroscopy DDS mode with 
   %spec3p1 set to the red side (80.075)
+  
+  daccosspace: latticepow .05 lattice_pow 4 50
 
+  on: imagshut
   on: shut688
   on: shut707
   off: shut679
@@ -12,13 +15,17 @@ def shelve3p0(reptime):
   on: rp707
   on: rp688
   on: radial
+  on: radial2
   %on: axial
   t += reptime
   
+   daccosspace: latticepow lattice_pow .05 4 50
+ 
   off: radial
   off: axial
   off: rp688
   off: rp707
   off: shut688
   off: shut707
+  off: imagshut
   t += 4

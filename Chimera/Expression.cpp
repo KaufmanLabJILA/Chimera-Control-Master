@@ -598,7 +598,7 @@ void Expression::assertValid( std::vector<variableType>& variables )
 			std::vector<std::string> terms = splitString( expressionStr );
 			for ( auto elem : terms )
 			{
-				if ( elem == "(" || elem == "+" || elem == "-" || elem == "*" || elem == "/" || elem == ")" )
+				if ( elem == "(" || elem == "+" || elem == "-" || elem == "*" || elem == "/" || elem == ")"  || elem == "^")
 				{
 					// it's a valid math symbol.
 					continue;

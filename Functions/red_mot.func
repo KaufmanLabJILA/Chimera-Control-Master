@@ -16,7 +16,7 @@ def red_mot(loadTime):
   
   t += loadTime
   
-  dac: latticepow lattice_zero
+  %dac: latticepow lattice_zero
   dac: axialpow ax_lattice_zero
 
   %daclinspace: red3dpow 1.5 .5 10 20

@@ -16,8 +16,15 @@ reset
 %setsingle 0 8000+970+uvtime 0 ryd_freq 0 0
 
 %%% normal single step:
-setsingle 0 0 awgamp ryd_freq 1 0
-setsingle 0 uvtime 0 ryd_freq 0 0
+setsingle 0 0 0 ryd_freq 1 0
+setsingle 0 0.08 awgamp ryd_freq 0 0
+setsingle 0 (uvtime + 0.08) 0 ryd_freq 0 0
+setsingle 0 (uvtime + 0.08 + delay) awgamp ryd_freq 0 0
+setsingle 0 (2*uvtime + 0.08 + delay) 0 ryd_freq 0 0
+%setsingle 0 (uvtime2 + 0.08) 0 ryd_freq 0 0
+%setsingle 0 (uvtime2 + 0.08 + delay/2) 0 ryd_freq 0 phasejump
+%setsingle 0 (uvtime2 + 0.08 + delay) awgamp-2 ryd_freq 0 phasejump
+%setsingle 0 (2*uvtime2 + 0.08 + delay) 0 ryd_freq 0 phasejump
 
 program 0
 
@@ -36,6 +43,15 @@ setsingle 2 0 75 ryd_freq 1 0
 %setsingle 0 uvtime 0 ryd_freq 0 0
 
 program 2
+
+setsingle 3 0 0 80 1 0
+%setsingle 3 (.08+uvtime) 20 80 0 0
+%setsingle 3 (.08+uvtime+time407) 0 80 0 0
+%setsingle 3 (.08+2*uvtime+delay) 20 80 0 0
+%setsingle 3 (.08+2*uvtime+delay+time407) 0 80 0 0
+
+
+program 3
 
 % Software trigger for testing
 %trigger

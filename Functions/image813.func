@@ -1,23 +1,34 @@
 % Master-Script See the "?" for info on commands.
-def image813():
-  dac: bluetune bluetune_imag
-  dac: imagingPow .1
+def image813(imageTime):
 
+  dac: bluetune bluetune_imag
+  dac: imagingPow imagpow813
+  off: radial2
   on: andorshut
   on: imagshut
+  on: shut707
+  on: shut679
   t += 4
   on: andortrig
   t += .2
   on: imag461
-  %on: radial
-  on: radial2
+  %on: radial2
+  on: radial
   %on: axial
-  t += 49
-  off: andortrig
-  off: andorshut
-  off: radial
+  %on: red3dnarrow
+  on: rp707
+  on: rp679
+  t += imageTime
   off: radial2
   off: axial
+  off: radial
+  off: red3dnarrow
+  off: rp707
+  off: rp679
+  off: shut707
+  off: shut679
+  off: andortrig
+  off: andorshut   
   off: imag461
   off: imagshut
   t += .01

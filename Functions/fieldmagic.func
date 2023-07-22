@@ -1,5 +1,5 @@
 def fieldMagic():
  dac: z1coil .005
- dac: y1coil 0.67
- dac: y2coil 0.67
+ dac: y1coil fmby_813
+ dac: y2coil fmby_813
  dac: x1coil 0.51

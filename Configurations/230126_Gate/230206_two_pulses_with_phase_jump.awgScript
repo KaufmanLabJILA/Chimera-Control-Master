@@ -2,29 +2,39 @@
 reset
 
 %%% normal single step:
-setsingle 0 0 awgamp (ryd_freq+detuning) 1 0
-setsingle 0 uvtime 0 (ryd_freq+detuning) 0 0
+setsingle 0 0 0 (ryd_freq+detuning) 1 0
+setsingle 0 0.08 awgamp (ryd_freq+detuning) 0 0
+setsingle 0 0.08+uvtime 0 (ryd_freq+detuning) 0 0
 
-setsingle 0 uvtime+delay awgamp (ryd_freq+detuning) 1 phasejump
-setsingle 0 2*uvtime+delay 0 (ryd_freq+detuning) 0 phasejump
+setsingle 0 0.08+uvtime+delay awgamp (ryd_freq+detuning) 0 phasejump
+setsingle 0 0.08+2*uvtime+delay 0 (ryd_freq+detuning) 0 phasejump
 
 %setsingle 0 20 0 (ryd_freq+detuning) 0 phasejump
 
 program 0
 
 %%% for monitoring:
-setsingle 1 0 40 ryd_freq/10 1 0
-setsingle 1 uvtime 0 ryd_freq/10 0 0
+%setsingle 1 0 40 ryd_freq/10 1 0
+%setsingle 1 uvtime 0 ryd_freq/10 0 0
 
-setsingle 1 uvtime+delay 40 ryd_freq/10 1 phasejump
-setsingle 1 2*uvtime+delay 0 ryd_freq/10 0 phasejump
+%setsingle 1 uvtime+delay 40 ryd_freq/10 1 phasejump
+%setsingle 1 2*uvtime+delay 0 ryd_freq/10 0 phasejump
 
-setsingle 1 2 40 (ryd_freq) 0 phasejump
-setsingle 1 (2+2+chebt(2,0.7*1-0.5)) 0 (ryd_freq) 0 phasejump
+%setsingle 1 2 40 (ryd_freq) 0 phasejump
+%setsingle 1 (2+2+chebt(2,0.7*1-0.5)) 0 (ryd_freq) 0 phasejump
 
 
-program 1
+%program 1
+
+setsingle 2 0 75 (ryd_freq+detuning) 1 0 
+%setsingle 0 uvtime 0 ryd_freq 0 0
+
+program 2
 
 % Software trigger for testing
 %trigger
 %trigger
+
+setsingle 3 0 30 80 1 0
+
+program 3

@@ -1,0 +1,90 @@
+reset
+
+%%Program gate%%
+
+setsingle 0 0 0 ryd_freq 1 0
+setsingle 0 0.080+0.000000 awgamp ryd_freq 0 a1_3*sin(omega1_3*(-0.496736))/2+a2_3*sin(omega2_3*(-0.496736))/2+b_3*tanh(lambda_3*(-0.496736))/2+delta0_3*(-0.496736)/2+phase_offset_awg
+setsingle 0 0.080+0.013072 awgamp ryd_freq 0 a1_3*sin(omega1_3*(-0.483664))/2+a2_3*sin(omega2_3*(-0.483664))/2+b_3*tanh(lambda_3*(-0.483664))/2+delta0_3*(-0.483664)/2+phase_offset_awg
+setsingle 0 0.080+0.026144 awgamp ryd_freq 0 a1_3*sin(omega1_3*(-0.470592))/2+a2_3*sin(omega2_3*(-0.470592))/2+b_3*tanh(lambda_3*(-0.470592))/2+delta0_3*(-0.470592)/2+phase_offset_awg
+setsingle 0 0.080+0.039216 awgamp ryd_freq 0 a1_3*sin(omega1_3*(-0.457520))/2+a2_3*sin(omega2_3*(-0.457520))/2+b_3*tanh(lambda_3*(-0.457520))/2+delta0_3*(-0.457520)/2+phase_offset_awg
+setsingle 0 0.080+0.052288 awgamp ryd_freq 0 a1_3*sin(omega1_3*(-0.444448))/2+a2_3*sin(omega2_3*(-0.444448))/2+b_3*tanh(lambda_3*(-0.444448))/2+delta0_3*(-0.444448)/2+phase_offset_awg
+setsingle 0 0.080+0.065360 awgamp ryd_freq 0 a1_3*sin(omega1_3*(-0.431376))/2+a2_3*sin(omega2_3*(-0.431376))/2+b_3*tanh(lambda_3*(-0.431376))/2+delta0_3*(-0.431376)/2+phase_offset_awg
+setsingle 0 0.080+0.078432 awgamp ryd_freq 0 a1_3*sin(omega1_3*(-0.418304))/2+a2_3*sin(omega2_3*(-0.418304))/2+b_3*tanh(lambda_3*(-0.418304))/2+delta0_3*(-0.418304)/2+phase_offset_awg
+setsingle 0 0.080+0.091504 awgamp ryd_freq 0 a1_3*sin(omega1_3*(-0.405232))/2+a2_3*sin(omega2_3*(-0.405232))/2+b_3*tanh(lambda_3*(-0.405232))/2+delta0_3*(-0.405232)/2+phase_offset_awg
+setsingle 0 0.080+0.104576 awgamp ryd_freq 0 a1_3*sin(omega1_3*(-0.392160))/2+a2_3*sin(omega2_3*(-0.392160))/2+b_3*tanh(lambda_3*(-0.392160))/2+delta0_3*(-0.392160)/2+phase_offset_awg
+setsingle 0 0.080+0.117648 awgamp ryd_freq 0 a1_3*sin(omega1_3*(-0.379088))/2+a2_3*sin(omega2_3*(-0.379088))/2+b_3*tanh(lambda_3*(-0.379088))/2+delta0_3*(-0.379088)/2+phase_offset_awg
+setsingle 0 0.080+0.130720 awgamp ryd_freq 0 a1_3*sin(omega1_3*(-0.366016))/2+a2_3*sin(omega2_3*(-0.366016))/2+b_3*tanh(lambda_3*(-0.366016))/2+delta0_3*(-0.366016)/2+phase_offset_awg
+setsingle 0 0.080+0.143792 awgamp ryd_freq 0 a1_3*sin(omega1_3*(-0.352944))/2+a2_3*sin(omega2_3*(-0.352944))/2+b_3*tanh(lambda_3*(-0.352944))/2+delta0_3*(-0.352944)/2+phase_offset_awg
+setsingle 0 0.080+0.156864 awgamp ryd_freq 0 a1_3*sin(omega1_3*(-0.339872))/2+a2_3*sin(omega2_3*(-0.339872))/2+b_3*tanh(lambda_3*(-0.339872))/2+delta0_3*(-0.339872)/2+phase_offset_awg
+setsingle 0 0.080+0.169936 awgamp ryd_freq 0 a1_3*sin(omega1_3*(-0.326800))/2+a2_3*sin(omega2_3*(-0.326800))/2+b_3*tanh(lambda_3*(-0.326800))/2+delta0_3*(-0.326800)/2+phase_offset_awg
+setsingle 0 0.080+0.183008 awgamp ryd_freq 0 a1_3*sin(omega1_3*(-0.313728))/2+a2_3*sin(omega2_3*(-0.313728))/2+b_3*tanh(lambda_3*(-0.313728))/2+delta0_3*(-0.313728)/2+phase_offset_awg
+setsingle 0 0.080+0.196080 awgamp ryd_freq 0 a1_3*sin(omega1_3*(-0.300656))/2+a2_3*sin(omega2_3*(-0.300656))/2+b_3*tanh(lambda_3*(-0.300656))/2+delta0_3*(-0.300656)/2+phase_offset_awg
+setsingle 0 0.080+0.209152 awgamp ryd_freq 0 a1_3*sin(omega1_3*(-0.287584))/2+a2_3*sin(omega2_3*(-0.287584))/2+b_3*tanh(lambda_3*(-0.287584))/2+delta0_3*(-0.287584)/2+phase_offset_awg
+setsingle 0 0.080+0.222224 awgamp ryd_freq 0 a1_3*sin(omega1_3*(-0.274512))/2+a2_3*sin(omega2_3*(-0.274512))/2+b_3*tanh(lambda_3*(-0.274512))/2+delta0_3*(-0.274512)/2+phase_offset_awg
+setsingle 0 0.080+0.235296 awgamp ryd_freq 0 a1_3*sin(omega1_3*(-0.261440))/2+a2_3*sin(omega2_3*(-0.261440))/2+b_3*tanh(lambda_3*(-0.261440))/2+delta0_3*(-0.261440)/2+phase_offset_awg
+setsingle 0 0.080+0.248368 awgamp ryd_freq 0 a1_3*sin(omega1_3*(-0.248368))/2+a2_3*sin(omega2_3*(-0.248368))/2+b_3*tanh(lambda_3*(-0.248368))/2+delta0_3*(-0.248368)/2+phase_offset_awg
+setsingle 0 0.080+0.261440 awgamp ryd_freq 0 a1_3*sin(omega1_3*(-0.235296))/2+a2_3*sin(omega2_3*(-0.235296))/2+b_3*tanh(lambda_3*(-0.235296))/2+delta0_3*(-0.235296)/2+phase_offset_awg
+setsingle 0 0.080+0.274512 awgamp ryd_freq 0 a1_3*sin(omega1_3*(-0.222224))/2+a2_3*sin(omega2_3*(-0.222224))/2+b_3*tanh(lambda_3*(-0.222224))/2+delta0_3*(-0.222224)/2+phase_offset_awg
+setsingle 0 0.080+0.287584 awgamp ryd_freq 0 a1_3*sin(omega1_3*(-0.209152))/2+a2_3*sin(omega2_3*(-0.209152))/2+b_3*tanh(lambda_3*(-0.209152))/2+delta0_3*(-0.209152)/2+phase_offset_awg
+setsingle 0 0.080+0.300656 awgamp ryd_freq 0 a1_3*sin(omega1_3*(-0.196080))/2+a2_3*sin(omega2_3*(-0.196080))/2+b_3*tanh(lambda_3*(-0.196080))/2+delta0_3*(-0.196080)/2+phase_offset_awg
+setsingle 0 0.080+0.313728 awgamp ryd_freq 0 a1_3*sin(omega1_3*(-0.183008))/2+a2_3*sin(omega2_3*(-0.183008))/2+b_3*tanh(lambda_3*(-0.183008))/2+delta0_3*(-0.183008)/2+phase_offset_awg
+setsingle 0 0.080+0.326800 awgamp ryd_freq 0 a1_3*sin(omega1_3*(-0.169936))/2+a2_3*sin(omega2_3*(-0.169936))/2+b_3*tanh(lambda_3*(-0.169936))/2+delta0_3*(-0.169936)/2+phase_offset_awg
+setsingle 0 0.080+0.339872 awgamp ryd_freq 0 a1_3*sin(omega1_3*(-0.156864))/2+a2_3*sin(omega2_3*(-0.156864))/2+b_3*tanh(lambda_3*(-0.156864))/2+delta0_3*(-0.156864)/2+phase_offset_awg
+setsingle 0 0.080+0.352944 awgamp ryd_freq 0 a1_3*sin(omega1_3*(-0.143792))/2+a2_3*sin(omega2_3*(-0.143792))/2+b_3*tanh(lambda_3*(-0.143792))/2+delta0_3*(-0.143792)/2+phase_offset_awg
+setsingle 0 0.080+0.366016 awgamp ryd_freq 0 a1_3*sin(omega1_3*(-0.130720))/2+a2_3*sin(omega2_3*(-0.130720))/2+b_3*tanh(lambda_3*(-0.130720))/2+delta0_3*(-0.130720)/2+phase_offset_awg
+setsingle 0 0.080+0.379088 awgamp ryd_freq 0 a1_3*sin(omega1_3*(-0.117648))/2+a2_3*sin(omega2_3*(-0.117648))/2+b_3*tanh(lambda_3*(-0.117648))/2+delta0_3*(-0.117648)/2+phase_offset_awg
+setsingle 0 0.080+0.392160 awgamp ryd_freq 0 a1_3*sin(omega1_3*(-0.104576))/2+a2_3*sin(omega2_3*(-0.104576))/2+b_3*tanh(lambda_3*(-0.104576))/2+delta0_3*(-0.104576)/2+phase_offset_awg
+setsingle 0 0.080+0.405232 awgamp ryd_freq 0 a1_3*sin(omega1_3*(-0.091504))/2+a2_3*sin(omega2_3*(-0.091504))/2+b_3*tanh(lambda_3*(-0.091504))/2+delta0_3*(-0.091504)/2+phase_offset_awg
+setsingle 0 0.080+0.418304 awgamp ryd_freq 0 a1_3*sin(omega1_3*(-0.078432))/2+a2_3*sin(omega2_3*(-0.078432))/2+b_3*tanh(lambda_3*(-0.078432))/2+delta0_3*(-0.078432)/2+phase_offset_awg
+setsingle 0 0.080+0.431376 awgamp ryd_freq 0 a1_3*sin(omega1_3*(-0.065360))/2+a2_3*sin(omega2_3*(-0.065360))/2+b_3*tanh(lambda_3*(-0.065360))/2+delta0_3*(-0.065360)/2+phase_offset_awg
+setsingle 0 0.080+0.444448 awgamp ryd_freq 0 a1_3*sin(omega1_3*(-0.052288))/2+a2_3*sin(omega2_3*(-0.052288))/2+b_3*tanh(lambda_3*(-0.052288))/2+delta0_3*(-0.052288)/2+phase_offset_awg
+setsingle 0 0.080+0.457520 awgamp ryd_freq 0 a1_3*sin(omega1_3*(-0.039216))/2+a2_3*sin(omega2_3*(-0.039216))/2+b_3*tanh(lambda_3*(-0.039216))/2+delta0_3*(-0.039216)/2+phase_offset_awg
+setsingle 0 0.080+0.470592 awgamp ryd_freq 0 a1_3*sin(omega1_3*(-0.026144))/2+a2_3*sin(omega2_3*(-0.026144))/2+b_3*tanh(lambda_3*(-0.026144))/2+delta0_3*(-0.026144)/2+phase_offset_awg
+setsingle 0 0.080+0.483664 awgamp ryd_freq 0 a1_3*sin(omega1_3*(-0.013072))/2+a2_3*sin(omega2_3*(-0.013072))/2+b_3*tanh(lambda_3*(-0.013072))/2+delta0_3*(-0.013072)/2+phase_offset_awg
+setsingle 0 0.080+0.496736 awgamp ryd_freq 0 a1_3*sin(omega1_3*(0.000000))/2+a2_3*sin(omega2_3*(0.000000))/2+b_3*tanh(lambda_3*(0.000000))/2+delta0_3*(0.000000)/2+phase_offset_awg
+setsingle 0 0.080+0.509808 awgamp ryd_freq 0 a1_3*sin(omega1_3*(0.013072))/2+a2_3*sin(omega2_3*(0.013072))/2+b_3*tanh(lambda_3*(0.013072))/2+delta0_3*(0.013072)/2+phase_offset_awg
+setsingle 0 0.080+0.522880 awgamp ryd_freq 0 a1_3*sin(omega1_3*(0.026144))/2+a2_3*sin(omega2_3*(0.026144))/2+b_3*tanh(lambda_3*(0.026144))/2+delta0_3*(0.026144)/2+phase_offset_awg
+setsingle 0 0.080+0.535952 awgamp ryd_freq 0 a1_3*sin(omega1_3*(0.039216))/2+a2_3*sin(omega2_3*(0.039216))/2+b_3*tanh(lambda_3*(0.039216))/2+delta0_3*(0.039216)/2+phase_offset_awg
+setsingle 0 0.080+0.549024 awgamp ryd_freq 0 a1_3*sin(omega1_3*(0.052288))/2+a2_3*sin(omega2_3*(0.052288))/2+b_3*tanh(lambda_3*(0.052288))/2+delta0_3*(0.052288)/2+phase_offset_awg
+setsingle 0 0.080+0.562096 awgamp ryd_freq 0 a1_3*sin(omega1_3*(0.065360))/2+a2_3*sin(omega2_3*(0.065360))/2+b_3*tanh(lambda_3*(0.065360))/2+delta0_3*(0.065360)/2+phase_offset_awg
+setsingle 0 0.080+0.575168 awgamp ryd_freq 0 a1_3*sin(omega1_3*(0.078432))/2+a2_3*sin(omega2_3*(0.078432))/2+b_3*tanh(lambda_3*(0.078432))/2+delta0_3*(0.078432)/2+phase_offset_awg
+setsingle 0 0.080+0.588240 awgamp ryd_freq 0 a1_3*sin(omega1_3*(0.091504))/2+a2_3*sin(omega2_3*(0.091504))/2+b_3*tanh(lambda_3*(0.091504))/2+delta0_3*(0.091504)/2+phase_offset_awg
+setsingle 0 0.080+0.601312 awgamp ryd_freq 0 a1_3*sin(omega1_3*(0.104576))/2+a2_3*sin(omega2_3*(0.104576))/2+b_3*tanh(lambda_3*(0.104576))/2+delta0_3*(0.104576)/2+phase_offset_awg
+setsingle 0 0.080+0.614384 awgamp ryd_freq 0 a1_3*sin(omega1_3*(0.117648))/2+a2_3*sin(omega2_3*(0.117648))/2+b_3*tanh(lambda_3*(0.117648))/2+delta0_3*(0.117648)/2+phase_offset_awg
+setsingle 0 0.080+0.627456 awgamp ryd_freq 0 a1_3*sin(omega1_3*(0.130720))/2+a2_3*sin(omega2_3*(0.130720))/2+b_3*tanh(lambda_3*(0.130720))/2+delta0_3*(0.130720)/2+phase_offset_awg
+setsingle 0 0.080+0.640528 awgamp ryd_freq 0 a1_3*sin(omega1_3*(0.143792))/2+a2_3*sin(omega2_3*(0.143792))/2+b_3*tanh(lambda_3*(0.143792))/2+delta0_3*(0.143792)/2+phase_offset_awg
+setsingle 0 0.080+0.653600 awgamp ryd_freq 0 a1_3*sin(omega1_3*(0.156864))/2+a2_3*sin(omega2_3*(0.156864))/2+b_3*tanh(lambda_3*(0.156864))/2+delta0_3*(0.156864)/2+phase_offset_awg
+setsingle 0 0.080+0.666672 awgamp ryd_freq 0 a1_3*sin(omega1_3*(0.169936))/2+a2_3*sin(omega2_3*(0.169936))/2+b_3*tanh(lambda_3*(0.169936))/2+delta0_3*(0.169936)/2+phase_offset_awg
+setsingle 0 0.080+0.679744 awgamp ryd_freq 0 a1_3*sin(omega1_3*(0.183008))/2+a2_3*sin(omega2_3*(0.183008))/2+b_3*tanh(lambda_3*(0.183008))/2+delta0_3*(0.183008)/2+phase_offset_awg
+setsingle 0 0.080+0.692816 awgamp ryd_freq 0 a1_3*sin(omega1_3*(0.196080))/2+a2_3*sin(omega2_3*(0.196080))/2+b_3*tanh(lambda_3*(0.196080))/2+delta0_3*(0.196080)/2+phase_offset_awg
+setsingle 0 0.080+0.705888 awgamp ryd_freq 0 a1_3*sin(omega1_3*(0.209152))/2+a2_3*sin(omega2_3*(0.209152))/2+b_3*tanh(lambda_3*(0.209152))/2+delta0_3*(0.209152)/2+phase_offset_awg
+setsingle 0 0.080+0.718960 awgamp ryd_freq 0 a1_3*sin(omega1_3*(0.222224))/2+a2_3*sin(omega2_3*(0.222224))/2+b_3*tanh(lambda_3*(0.222224))/2+delta0_3*(0.222224)/2+phase_offset_awg
+setsingle 0 0.080+0.732032 awgamp ryd_freq 0 a1_3*sin(omega1_3*(0.235296))/2+a2_3*sin(omega2_3*(0.235296))/2+b_3*tanh(lambda_3*(0.235296))/2+delta0_3*(0.235296)/2+phase_offset_awg
+setsingle 0 0.080+0.745104 awgamp ryd_freq 0 a1_3*sin(omega1_3*(0.248368))/2+a2_3*sin(omega2_3*(0.248368))/2+b_3*tanh(lambda_3*(0.248368))/2+delta0_3*(0.248368)/2+phase_offset_awg
+setsingle 0 0.080+0.758176 awgamp ryd_freq 0 a1_3*sin(omega1_3*(0.261440))/2+a2_3*sin(omega2_3*(0.261440))/2+b_3*tanh(lambda_3*(0.261440))/2+delta0_3*(0.261440)/2+phase_offset_awg
+setsingle 0 0.080+0.771248 awgamp ryd_freq 0 a1_3*sin(omega1_3*(0.274512))/2+a2_3*sin(omega2_3*(0.274512))/2+b_3*tanh(lambda_3*(0.274512))/2+delta0_3*(0.274512)/2+phase_offset_awg
+setsingle 0 0.080+0.784320 awgamp ryd_freq 0 a1_3*sin(omega1_3*(0.287584))/2+a2_3*sin(omega2_3*(0.287584))/2+b_3*tanh(lambda_3*(0.287584))/2+delta0_3*(0.287584)/2+phase_offset_awg
+setsingle 0 0.080+0.797392 awgamp ryd_freq 0 a1_3*sin(omega1_3*(0.300656))/2+a2_3*sin(omega2_3*(0.300656))/2+b_3*tanh(lambda_3*(0.300656))/2+delta0_3*(0.300656)/2+phase_offset_awg
+setsingle 0 0.080+0.810464 awgamp ryd_freq 0 a1_3*sin(omega1_3*(0.313728))/2+a2_3*sin(omega2_3*(0.313728))/2+b_3*tanh(lambda_3*(0.313728))/2+delta0_3*(0.313728)/2+phase_offset_awg
+setsingle 0 0.080+0.823536 awgamp ryd_freq 0 a1_3*sin(omega1_3*(0.326800))/2+a2_3*sin(omega2_3*(0.326800))/2+b_3*tanh(lambda_3*(0.326800))/2+delta0_3*(0.326800)/2+phase_offset_awg
+setsingle 0 0.080+0.836608 awgamp ryd_freq 0 a1_3*sin(omega1_3*(0.339872))/2+a2_3*sin(omega2_3*(0.339872))/2+b_3*tanh(lambda_3*(0.339872))/2+delta0_3*(0.339872)/2+phase_offset_awg
+setsingle 0 0.080+0.849680 awgamp ryd_freq 0 a1_3*sin(omega1_3*(0.352944))/2+a2_3*sin(omega2_3*(0.352944))/2+b_3*tanh(lambda_3*(0.352944))/2+delta0_3*(0.352944)/2+phase_offset_awg
+setsingle 0 0.080+0.862752 awgamp ryd_freq 0 a1_3*sin(omega1_3*(0.366016))/2+a2_3*sin(omega2_3*(0.366016))/2+b_3*tanh(lambda_3*(0.366016))/2+delta0_3*(0.366016)/2+phase_offset_awg
+setsingle 0 0.080+0.875824 awgamp ryd_freq 0 a1_3*sin(omega1_3*(0.379088))/2+a2_3*sin(omega2_3*(0.379088))/2+b_3*tanh(lambda_3*(0.379088))/2+delta0_3*(0.379088)/2+phase_offset_awg
+setsingle 0 0.080+0.888896 awgamp ryd_freq 0 a1_3*sin(omega1_3*(0.392160))/2+a2_3*sin(omega2_3*(0.392160))/2+b_3*tanh(lambda_3*(0.392160))/2+delta0_3*(0.392160)/2+phase_offset_awg
+setsingle 0 0.080+0.901968 awgamp ryd_freq 0 a1_3*sin(omega1_3*(0.405232))/2+a2_3*sin(omega2_3*(0.405232))/2+b_3*tanh(lambda_3*(0.405232))/2+delta0_3*(0.405232)/2+phase_offset_awg
+setsingle 0 0.080+0.915040 awgamp ryd_freq 0 a1_3*sin(omega1_3*(0.418304))/2+a2_3*sin(omega2_3*(0.418304))/2+b_3*tanh(lambda_3*(0.418304))/2+delta0_3*(0.418304)/2+phase_offset_awg
+setsingle 0 0.080+0.928112 awgamp ryd_freq 0 a1_3*sin(omega1_3*(0.431376))/2+a2_3*sin(omega2_3*(0.431376))/2+b_3*tanh(lambda_3*(0.431376))/2+delta0_3*(0.431376)/2+phase_offset_awg
+setsingle 0 0.080+0.941184 awgamp ryd_freq 0 a1_3*sin(omega1_3*(0.444448))/2+a2_3*sin(omega2_3*(0.444448))/2+b_3*tanh(lambda_3*(0.444448))/2+delta0_3*(0.444448)/2+phase_offset_awg
+setsingle 0 0.080+0.954256 awgamp ryd_freq 0 a1_3*sin(omega1_3*(0.457520))/2+a2_3*sin(omega2_3*(0.457520))/2+b_3*tanh(lambda_3*(0.457520))/2+delta0_3*(0.457520)/2+phase_offset_awg
+setsingle 0 0.080+0.967328 awgamp ryd_freq 0 a1_3*sin(omega1_3*(0.470592))/2+a2_3*sin(omega2_3*(0.470592))/2+b_3*tanh(lambda_3*(0.470592))/2+delta0_3*(0.470592)/2+phase_offset_awg
+setsingle 0 0.080+0.980400 awgamp ryd_freq 0 a1_3*sin(omega1_3*(0.483664))/2+a2_3*sin(omega2_3*(0.483664))/2+b_3*tanh(lambda_3*(0.483664))/2+delta0_3*(0.483664)/2+phase_offset_awg
+setsingle 0 0.080+0.993472 0 ryd_freq 0 0
+
+program 0
+
+%%Program monitor%%
+
+setsingle 2 0 75 ryd_freq 1 0
+
+program 2

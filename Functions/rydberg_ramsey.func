@@ -1,0 +1,18 @@
+% Master-Script See the "?" for info on commands.
+def rydberg_ramsey(ryd_time):
+  % insert commands here...
+  on: uvttl
+  off: pi407
+  on: latticehold
+  t += .001
+  pulseon: awgtrig .0001
+  t += (.59+.08)/1000
+  on: latblink
+  t += 2*ryd_time/1000
+  t += time407/1000
+  t += .25/1000
+  t += .0003
+  off: latblink 
+  t += .001
+  off: uvttl
+  off: latticehold

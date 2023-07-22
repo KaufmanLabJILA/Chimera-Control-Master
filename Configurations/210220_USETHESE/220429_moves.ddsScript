@@ -29,7 +29,8 @@ snapshot 0 reps 2
 freqs 80 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 79.74 c_3p1_lat+f_rad_3d+.003+(__ts__-__t0__)*dr_3p1/86400 c_3p1_lat+f_ax_3d_imag+(__ts__-__t0__)*dr_3p1/86400 c_3p1_lat+f_rad_3d-0.007+(__ts__-__t0__)*dr_3p1/86400
 %freqs 80 c_3p0+1 180 80 79.74 c_3p1_lat+f_rad_3d+.003 c_3p1_lat+f_ax_3d_imag c_3p1_lat+f_rad_3d-0.007
 %amps  0 0 30 92 0 10 9 50
-amps  0 75 90 90 0 12.5 15 8
+%amps  0 75 90 90 0 12.5 15 8
+amps  0 75 90 90 0 10 12.5 8
 %amps  0 0 30 92 0 20 20 20
 
 
@@ -42,7 +43,7 @@ amps  0 75 90 90 0 0 3.5 1.25
 snapshot 2 reps 2
 % use for spectroscopy
 freqs 80 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 spec3p1+(__ts__-__t0__)*dr_3p1/86400 spec3p1+(__ts__-__t0__)*dr_3p1/86400 spec3p1+(__ts__-__t0__)*dr_3p1/86400 spec3p1+(__ts__-__t0__)*dr_3p1/86400
-amps  0 75 90 90 0 3.5 3.5 2
+amps  0 75 90 90 0 3.5 3.5 5
 %amps  0 75 90 90 0 3.5 3.5 8
 
 % use for dummy image

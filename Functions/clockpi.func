@@ -1,0 +1,10 @@
+% Master-Script See the "?" for info on commands.
+def clockpi(piquarters):
+  % insert commands here...
+
+ repeat: 4
+ on: clockttl
+ t += piquarters
+ off: clockttl
+ t += .001
+ end

@@ -3,7 +3,7 @@
 
 %%%
 
-phaseoffset 0 0 (p01+pscan1) (p0+pscan) 0 0 0 0
+phaseoffset 0 0 (p01+pscan1+pscan) (p0+pscan) 0 0 0 0
 
 % SB COOL LATTICE
 reset
