@@ -1082,11 +1082,13 @@ void MasterManager::analyzeFunction( std::string function, std::vector<std::stri
 		}
 		else if ( word == "repeat:" )
 		{
-			std::string repeatStr;
+			//std::string repeatStr;
+			Expression repeatStr;
 			functionStream >> repeatStr;
 			try
 			{
-				totalRepeatNum.push_back( std::stoi( repeatStr ) );
+				//totalRepeatNum.push_back( std::stoi( repeatStr ) );
+				totalRepeatNum.push_back( repeatStr.evaluate() );
 			}
 			catch ( std::invalid_argument& )
 			{
@@ -1230,6 +1232,16 @@ void MasterManager::analyzeMasterScript( DioSystem* ttls, DacSystem* dacs,
 			pulseLength.assertValid( vars );
 			// should be good to go.
 			ttls->handleTtlScriptCommand( word, operationTime, name, pulseLength, ttlShades, vars );
+		}
+		else if (word == "variableon")
+		{
+			// this is for setting a ttl to on or off based on a variable
+			std::string name;
+			Expression ttlState;
+			currentMasterScript >> name;
+			currentMasterScript >> ttlState;
+			ttlState.assertValid(vars);
+			ttls->handleTtlScriptCommand(word, operationTime, name, ttlState, ttlShades, vars);
 		}
 
 		/// deal with dac commands
@@ -1421,7 +1433,7 @@ void MasterManager::analyzeMasterScript( DioSystem* ttls, DacSystem* dacs,
 			currentMasterScript >> repeatStr;
 			try
 			{
-				totalRepeatNum.push_back( repeatStr.evaluate( ) );
+				totalRepeatNum.push_back(  repeatStr.evaluate( ) );
 			}
 			catch (Error&)
 			{

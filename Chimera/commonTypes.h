@@ -25,6 +25,9 @@ typedef std::pair<std::vector<Expression>, double> timeType;
 typedef std::chrono::high_resolution_clock chronoClock;
 typedef std::vector<std::chrono::time_point<chronoClock>> chronoTimes;
 
+// same for bools
+typedef std::pair<std::vector<Expression>, bool> boolType;
+
 // the first value of the pair in the map is the array of values that the variable name takes on.
 // the second value here stores whether it varies or not. This is mainly used to determine if the value is displayed on the status or not.
 //typedef std::unordered_map<std::string, std::pair<std::vector<double>, bool>> keyMap;

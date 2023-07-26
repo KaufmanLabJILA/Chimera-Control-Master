@@ -9,7 +9,7 @@ def lacs(lactime):
 % end
 
  dac: bluetune bluetune_imag
- dac: imagingPow imagpow
+ dac: imagingPow imagpow/1.5
  %on: rp707
 
  t += .1

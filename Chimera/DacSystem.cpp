@@ -849,7 +849,15 @@ void DacSystem::interpretKey( std::vector<variableType>& variables, std::string&
 					tempEvent.time = currentTime;
 					dacCommandList[variationInc].push_back(tempEvent);
 					currentTime += timeInc;
-					val += rampInc;
+					// val += rampInc;
+					if (abs(initValue) >= abs(finalValue))
+					{
+						val = finalValue + (initValue-finalValue) * exp(-5 * (stepNum + 1) / numSteps);
+					}
+					else
+					{
+						val = initValue + (finalValue - initValue) * exp(-5 * (numSteps - stepNum - 1) / numSteps);
+					}
 				}
 				// and get the final value. Just use the nums explicitly to avoid rounding error I guess.
 				tempEvent.value = finalValue;

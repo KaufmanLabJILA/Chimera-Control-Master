@@ -56,6 +56,7 @@ class DioSystem
 		void ttlOff(UINT row, UINT column, timeType time);
 		void ttlOffDirect( UINT row, UINT column, double time, UINT variation );
 		void forceTtl(int row, int number, int state);
+		void ttlVariableOn( UINT row, UINT column, timeType time, boolType ttlState );
 
 		std::pair<UINT, UINT> getTtlBoardSize();
 

@@ -1,7 +1,20 @@
 % Master-Script See the "?" for info on commands.
 def blowaway_pulse(blowaway_time):
   % insert commands here...
+   dac: bluetune bluetune_imag
+   dac: imagingPow .35
+  
    on: imagshut
-   on: blowawayttl
+   %on: blowawayttl
+   on: imag461
+   %on: rp707
+   %on: rp679
    t += blowaway_time
-   off: blowawayttl
+   %on: latticehold
+   %t += .001
+   %on: latblink
+   %t += .001
+   %off: latblink
+   %t += .001
+   %off: latticehold
+   off: blowawayttl

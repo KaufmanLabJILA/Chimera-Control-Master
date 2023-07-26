@@ -12,6 +12,7 @@ struct DioCommandForm
 	timeType time;
 	// the value to set it to. 
 	bool value;
+	//boolType value;
 };
 
 // no variables in this version. It's calculated each variation based on corresponding ComandForm structs.

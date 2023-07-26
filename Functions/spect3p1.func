@@ -10,16 +10,20 @@ def spect3p1():
  off: radial
  off: radial2
 
+ on: latticehold
  on: blowawayttl
  t += .005
  off: tweezerao
  off: axlatTTL
- off: lat813ao
+ %off: lat813ao
+ on: latblink
  t += .001
  on: tweezerao
  on: axlatTTL
- on: lat813ao
+ off: latblink
+ %on: lat813ao
  t += .001
  off: blowawayttl
- off: pi407
+ off: latticehold
+ %off: pi407
  %off: imagshut
