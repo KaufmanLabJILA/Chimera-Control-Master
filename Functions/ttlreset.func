@@ -45,3 +45,5 @@ on: metertrig %meter trigger on falling edge
 off: pi407
 off: uvttl
 off: clockttl
+
+off: bigzrsd

@@ -786,27 +786,27 @@ bool DioSystem::isValidTTLName( std::string name )
 void DioSystem::ttlOn(UINT row, UINT column, timeType time)
 {
 	// make sure it's either a variable or a number that can be used.
-	ttlCommandFormList.push_back({ {row, column}, time, true });
-	//boolType stateOn;
-	//stateOn.first.push_back(Expression("No Variable"));
-	//stateOn.second = true;
-	//ttlCommandFormList.push_back({ {row, column}, time, stateOn });
+	//ttlCommandFormList.push_back({ {row, column}, time, true });
+	boolType stateOn;
+	stateOn.first.push_back(Expression("No Variable"));
+	stateOn.second = true;
+	ttlCommandFormList.push_back({ {row, column}, time, stateOn });
 }
 
 
 void DioSystem::ttlOff(UINT row, UINT column, timeType time)
 {
 	// check to make sure either variable or actual value.
-	ttlCommandFormList.push_back({ {row, column}, time, false });
-	//boolType stateOn;
-	//stateOff.first.push_back(Expression("No Variable"));
-	//stateOff.second = false;
-	//ttlCommandFormList.push_back({ {row, column}, time, stateOff });
+	//ttlCommandFormList.push_back({ {row, column}, time, false });
+	boolType stateOff;
+	stateOff.first.push_back(Expression("No Variable"));
+	stateOff.second = false;
+	ttlCommandFormList.push_back({ {row, column}, time, stateOff });
 }
 
 void DioSystem::ttlVariableOn(UINT row, UINT column, timeType time, boolType ttlState)
 {
-	//ttlCommandFormList.push_back({ {row, column}, time, ttlState });
+	ttlCommandFormList.push_back({ {row, column}, time, ttlState });
 }
 
 
@@ -1172,16 +1172,14 @@ void DioSystem::interpretKey( std::vector<variableType>& variables )
 		{
 			DioCommand tempCommand;
 			tempCommand.line = ttlCommandFormList[commandInc].line;
-			tempCommand.value = ttlCommandFormList[commandInc].value;
-			// boolType ttlState = ttlCommandFormList[CommandInc].value;
-			//if (ttlState.first.front().expressionStr == "No Variable")
-			//{
-			//	tempCommand.value = ttlState.second;
-			//}
-			//else
-			//{
-			//	tempCommand.value = (int) round(ttlState.first.evaluate(variables, variationNum));
-			//}
+			//tempCommand.value = ttlCommandFormList[commandInc].value;
+			boolType ttlState = ttlCommandFormList[commandInc].value;
+			if (ttlState.first.front().expressionStr == "No Variable") {
+				tempCommand.value = ttlState.second;
+			}
+			else {
+				tempCommand.value = (int) round(ttlState.first.front().evaluate(variables, variationNum));
+			}
 			double variableTime = 0;
 			// add together current values for all variable times.
 			if (ttlCommandFormList[commandInc].time.first.size() != 0)

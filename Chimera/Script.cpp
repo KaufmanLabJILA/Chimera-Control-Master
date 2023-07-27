@@ -348,11 +348,11 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 	}
 	else if (editType == "Master")
 	{
-		if (word == "on:" || word == "off:" || word == "pulseon:" || word == "pulseoff:")
+		if (word == "on:" || word == "off:" || word == "pulseon:" || word == "pulseoff:" || word == "variableon:" )
 		{
 			return rgbs["theme purple"];
 		}
-		if (word == "dac:" || word == "dacarange:" || word == "daclinspace:" || word == "daccosspace:" || word == "dacexpspace:")
+		else if (word == "dac:" || word == "dacarange:" || word == "daclinspace:" || word == "daccosspace:" || word == "dacexpspace:")
 		{
 			return rgbs["theme yellow"];
 		}

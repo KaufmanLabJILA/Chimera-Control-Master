@@ -868,6 +868,16 @@ void MasterManager::analyzeFunction( std::string function, std::vector<std::stri
 			// should be good to go.
 			ttls->handleTtlScriptCommand( word, operationTime, name, pulseLength, ttlShades, vars );
 		}
+		else if (word == "variableon:")
+		{
+			// this is for setting a ttl to on or off based on a variable
+			std::string name;
+			Expression ttlState;
+			currentMasterScript >> name;
+			currentMasterScript >> ttlState;
+			ttlState.assertValid(vars);
+			ttls->handleTtlScriptCommand(word, operationTime, name, ttlState, ttlShades, vars);
+		}
 
 		/// deal with dac commands
 		else if (word == "dac:")
@@ -1233,7 +1243,7 @@ void MasterManager::analyzeMasterScript( DioSystem* ttls, DacSystem* dacs,
 			// should be good to go.
 			ttls->handleTtlScriptCommand( word, operationTime, name, pulseLength, ttlShades, vars );
 		}
-		else if (word == "variableon")
+		else if (word == "variableon:")
 		{
 			// this is for setting a ttl to on or off based on a variable
 			std::string name;
@@ -1503,7 +1513,7 @@ bool MasterManager::isValidWord( std::string word )
 {
 	if (word == "t" || word == "t++" || word == "t+=" || word == "t=" || word == "on:" || word == "off:"
 		 || word == "dac:" || word == "dacarange:" || word == "daclinspace:" || word == "daccosspace:" || word == "dacexpspace:" || word == "rsg:" || word == "call" 
-		 || word == "repeat:" || word == "end" || word == "pulseon:" || word == "pulseoff:" || word == "callcppcode")
+		 || word == "repeat:" || word == "end" || word == "pulseon:" || word == "pulseoff:" || word == "variableon:" || word == "callcppcode")
 	{
 		return true;
 	}

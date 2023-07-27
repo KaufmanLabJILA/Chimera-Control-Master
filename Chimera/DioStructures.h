@@ -11,8 +11,8 @@ struct DioCommandForm
 	// the time to make the change
 	timeType time;
 	// the value to set it to. 
-	bool value;
-	//boolType value;
+	//bool value;
+	boolType value;
 };
 
 // no variables in this version. It's calculated each variation based on corresponding ComandForm structs.

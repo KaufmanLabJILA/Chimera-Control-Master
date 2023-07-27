@@ -91,7 +91,7 @@ toggleclockdds2
 0
 uv2ttl
 0
-c14
+bigzrsd
 0
 c15
 0
@@ -244,10 +244,10 @@ narrowmottime 50
 tweezerattn_off 0.4
 spec3p0 16.16378826
 f_rad_813_imag 84.2
-fmby_813 0.617
-f_rad_813 0.115
-f_ax_813 0.055
+fmby_813 0.6185
+f_rad_813 0.11
+f_ax_813 0.045
 imagpow813 0.28
-c_3p1_813 79.965
+c_3p1_813 79.975
 fmbx_813 0.48
 75 375 1 100 400 1
