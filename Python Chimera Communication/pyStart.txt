@@ -1,2 +1,2 @@
-C:\Users\KLab\Desktop\Chimera-Control-Master\Configurations\210220_USETHESE\220305_tweezer_checks.Config
-A:\230519\Raw Data\data_59.h5
+C:\Users\KLab\Desktop\Chimera-Control-Master\Configurations\230707_813tweezers\220305_tweezer_checks.Config
+A:\230727\Raw Data\data_89.h5

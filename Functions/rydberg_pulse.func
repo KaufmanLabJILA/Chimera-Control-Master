@@ -11,6 +11,7 @@ def rydberg_pulse(ryd_time):
   t += ryd_time/1000
   t += .0003
   off: latblink 
-  t += .001
+  t += .002
   off: uvttl
-  off: latticehold
+  on: pi407
+  off: latticehold
