@@ -19,3 +19,4 @@ def blowaway_pulse(blowaway_time):
    %off: latticehold
    off: imag461
    off: blowawayttl
+   off: imagshut

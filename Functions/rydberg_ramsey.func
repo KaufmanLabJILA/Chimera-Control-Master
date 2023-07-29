@@ -10,9 +10,10 @@ def rydberg_ramsey(ryd_time):
   on: latblink
   t += 2*ryd_time/1000
   t += time407/1000
-  t += .25/1000
+  t += 40/1000
   t += .0003
   off: latblink 
   t += .001
   off: uvttl
   off: latticehold
+  on: pi407 
