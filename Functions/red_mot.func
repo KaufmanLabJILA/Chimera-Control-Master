@@ -2,7 +2,7 @@ def red_mot(loadTime):
   on: red3d
 
   dac: bigzcoil .15
-  dac: red3dpow .8 %.25 %.5
+  dac: red3dpow .4 %.8 %.25 %.5
   
   %dac: x1coil .01  %.005
   %dac: y1coil .013  %.018

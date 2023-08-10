@@ -2,7 +2,7 @@ def blue_mot(loadTime):
 
   dac: blue3dpow .3
   on: red3d
-  dac: red3dpow .25
+  dac: red3dpow .1
   on: blue3d
   on: slower
 

@@ -6,12 +6,12 @@ def rydberg_pulse(ryd_time):
   on: latticehold
   t += .001
   pulseon: awgtrig .0001
-  t += (.59+.08)/1000
+  t += (uvblinkdelay+1.08)/1000
   on: latblink
   t += ryd_time/1000
   t += .0003
   off: latblink 
-  t += .002
+  t += time407/1000
   off: uvttl
   on: pi407
   off: latticehold
