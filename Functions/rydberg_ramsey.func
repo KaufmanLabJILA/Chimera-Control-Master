@@ -6,12 +6,12 @@ def rydberg_ramsey(ryd_time):
   on: latticehold
   t += .001
   pulseon: awgtrig .0001
-  t += (uvblinkdelay+1.08)/1000
+  t += (awgblinkdelay+1.08)/1000
   on: latblink
   t += 2*ryd_time/1000
   %t += time407/1000
   t += ramseytime/1000
-  t += .0003
+  t += .0006
   off: latblink 
   t += .001
   off: uvttl
