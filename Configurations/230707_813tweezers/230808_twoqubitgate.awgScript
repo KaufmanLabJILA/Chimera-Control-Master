@@ -41,7 +41,15 @@ setsingle 0 1.080+0.222224 awgamp ryd_freq 0 a*cos(omega*0.222224-phi0)+delta0*0
 setsingle 0 1.080+0.228760 awgamp ryd_freq 0 a*cos(omega*0.228760-phi0)+delta0*0.228760+phase_offset_awg
 setsingle 0 1.080+0.235296 awgamp ryd_freq 0 a*cos(omega*0.235296-phi0)+delta0*0.235296+phase_offset_awg
 setsingle 0 1.080+0.241832 awgamp ryd_freq 0 a*cos(omega*0.241832-phi0)+delta0*0.241832+phase_offset_awg
-setsingle 0 1.080+0.248368 0 ryd_freq 0 0
+setsingle 0 1.080+0.248368 awgamp ryd_freq 0 a*cos(omega*0.248368-phi0)+delta0*0.248368+phase_offset_awg
+setsingle 0 1.080+0.254904 awgamp ryd_freq 0 a*cos(omega*0.254904-phi0)+delta0*0.254904+phase_offset_awg
+setsingle 0 1.080+0.261440 awgamp ryd_freq 0 a*cos(omega*0.261440-phi0)+delta0*0.261440+phase_offset_awg
+setsingle 0 1.080+0.267976 awgamp ryd_freq 0 a*cos(omega*0.267976-phi0)+delta0*0.267976+phase_offset_awg
+setsingle 0 1.080+0.274512 awgamp ryd_freq 0 a*cos(omega*0.274512-phi0)+delta0*0.274512+phase_offset_awg
+setsingle 0 1.080+0.281048 awgamp ryd_freq 0 a*cos(omega*0.281048-phi0)+delta0*0.281048+phase_offset_awg
+setsingle 0 1.080+0.287584 awgamp ryd_freq 0 a*cos(omega*0.287584-phi0)+delta0*0.287584+phase_offset_awg
+setsingle 0 1.080+0.294120 awgamp ryd_freq 0 a*cos(omega*0.294120-phi0)+delta0*0.294120+phase_offset_awg
+setsingle 0 1.080+0.300656 0 ryd_freq 0 0
 
 program 0
 
@@ -50,11 +58,3 @@ program 0
 setsingle 2 0 75 ryd_freq 1 0
 
 program 2
-
-%%Program 407
-
-setsingle 3 0 0 80 1 0
-setsingle 3 (1.080 + uvtime + uv407delay) 20 80 0 0
-setsingle 3 (1.080 + uvtime + uv407delay + time407) 0 80 0 0
-
-program 3
