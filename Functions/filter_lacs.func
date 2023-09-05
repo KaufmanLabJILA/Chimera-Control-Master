@@ -1,0 +1,25 @@
+% Master-Script See the "?" for info on commands.
+def filter_lacs(lactime):
+ dac: bluetune bluetune_imag
+ dac: imagingPow imagpow*0.7
+ %on: rp707
+
+ t += .1
+
+ on: rp707
+ on: rp679
+ on: imag461
+ %on: red3dnarrow
+ %on: radial2
+ on: radial
+ on: axial
+ t += lactime
+ off: radial2
+ off: axial
+ off: radial
+ off: red3dnarrow
+ off: imag461
+ off: shut707
+ off: shut679
+ off: rp707
+ off: rp679

@@ -12,7 +12,7 @@ def spect3p1():
 
  on: latticehold
  on: blowawayttl
- t += .005
+ t += 0.005
  off: tweezerao
  off: axlatTTL
  %off: lat813ao

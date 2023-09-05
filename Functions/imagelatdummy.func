@@ -2,7 +2,7 @@
 def imagelatdummy(imageTime):
  on: shut707
  on: shut679
- on: andorshut
+ %on: andorshut
  on: imagshut
  t += 4
  %on: andortrig

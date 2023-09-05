@@ -84,6 +84,6 @@ snapshot 9 reps 15000
 %freqs 80+pmodf-.045 c_3p0+spec3p0/1000 180 c_3p0+spec3p0/1000 spec3p1 spec3p1 spec3p1 spec3p1
 freqs 80+pmodf-.015 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 spec3p1+(__ts__-__t0__)*dr_3p1/86400 spec3p1+(__ts__-__t0__)*dr_3p1/86400 spec3p1+(__ts__-__t0__)*dr_3p1/86400 spec3p1+(__ts__-__t0__)*dr_3p1/86400
 %amps 15 0 35 100 0 8 4 5
-amps 30 75 90 90 0 8 4 5
+amps 50 75 90 90 0 8 4 5
 
 end

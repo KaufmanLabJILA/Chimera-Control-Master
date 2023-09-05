@@ -1,0 +1,14 @@
+% Master-Script See the "?" for info on commands.
+def sbcool_pulsed(timeperpulse):
+  % insert commands here...
+  repeat: 50
+   on: axial
+   t += timeperpulse
+   off: axial
+   on: radial2
+   t += timeperpulse
+   off: radial2
+   on: radial
+   t += timeperpulse
+   off: radial
+  end

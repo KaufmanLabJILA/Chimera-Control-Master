@@ -1,7 +1,7 @@
 % Master-Script See the "?" for info on commands.
 def rerng_filterarbscrunchy():
 
-%on: t515hold
+on: t515hold
 pulseon: gmload .0001
 t += .1
 pulseon: gmmove .0001
@@ -60,29 +60,49 @@ t += .1
 
 %on: imagshut
 
-on: radial2
-daclinspace: axialpow ax_lattice_pow ax_lattice_zero 1 15
+%on: radial2
+daclinspace: axialpow ax_lattice_pow ax_lattice_zero filterramptime 15
 t += 1
-%t += filterramptime
-daclinspace: latticepow lattice_pow lattice_zero 1 15
-t += 10
-%t += filtertime
+t += filterramptime
+daclinspace: latticepow lattice_pow lattice_zero filterramptime 15
+t += 1
+%t += 10
+t += filtertime
 
-%%% testing 230703
-%t += 5
-%on: imag461
-%t += 2
-%off: imag461
-%off: imagshut
-%t += 5
+%%% testing 230829
 
-off: radial2
-daclinspace: axialpow ax_lattice_zero ax_lattice_pow 1 15
+pulseon: resetdds .1
+t += .2
+repeat: 5
+ pulseon: stepdds 0.007
+ t += .1
+end
+t += .1
+
+%call magicfields515()
+%on: imagshut
+%t += 4
+on: latticehold
+t += 0.05
+on: latblink
+
+t += 5
+%call filter_lacs(5)  % This wants imaging snapshot
+
+off: latblink
+t += 0.05
+off: latticehold
+
+%call magicfieldsdual813()
+
+%off: radial2
 t += 1
-%t += filterramptime
-daclinspace: latticepow lattice_zero lattice_pow 1 15
+daclinspace: latticepow lattice_zero lattice_pow filterramptime 15
 t += 1
-%t += filterramptime
+t += filterramptime
+daclinspace: axialpow ax_lattice_zero ax_lattice_pow filterramptime 15
+t += 1
+t += filterramptime
 
 pulseon: resetdds .1
 t += .2
@@ -108,5 +128,5 @@ t += 5
 dac: tweezerpow tweezer_pow
 pulseon: gmload .0001
 t += 1
-%off: t515hold
+off: t515hold
 
