@@ -11,7 +11,7 @@ def rydberg_pulse(ryd_time):
   t += (awgblinkdelay+1.08)/1000
   on: latblink
   t += ryd_time/1000
-  t += .0006
+  t += .0002
   off: latblink 
   t += time407/1000
   %off: uvttl
