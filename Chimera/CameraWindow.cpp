@@ -14,6 +14,7 @@ CameraWindow::CameraWindow() : CDialog(),
 CameraSettings(&Andor),
 dataHandler(DATA_SAVE_LOCATION)
 {
+
 	/// test the plotter quickly
 	std::vector<double> data(100);
 	int count = 0;
@@ -1224,7 +1225,7 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 						}
 
 						catch (...) {
-							//TODO: work out why this is failing intermittently in debug mode.
+							//TODO: work                                                                                                                                                                                                                                                                                                                                                                                          out why this is failing intermittently in debug mode.
 						}
 					}
 				}

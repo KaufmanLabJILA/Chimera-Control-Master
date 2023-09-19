@@ -10,20 +10,19 @@ setsingle 0 clocktime 0  clockfreq 0 0
 program 0
 
 
-setsingle 1 0+0*0.08 clockampawg clockfreq 1 0
-setsingle 1 corpsetime1+0*0.08 0  clockfreq 0 0
-setsingle 1 corpsetime1+1*0.08 clockampawg clockfreq 0 180
-setsingle 1 corpsetime1+corpsetime2+1*0.08 0  clockfreq 0 0
-setsingle 1 corpsetime1+corpsetime2+2*0.08 clockampawg clockfreq 0 0
-setsingle 1 corpsetime1+corpsetime2+corpsetime3+2*0.08 0  clockfreq 0 0
-setsingle 1 corpsetime1+corpsetime2+corpsetime3+3*0.08 clockampawg clockfreq 0 0
-setsingle 1 2*corpsetime1+1*corpsetime2+1*corpsetime3+3*0.08 0  clockfreq 0 0
-setsingle 1 2*corpsetime1+1*corpsetime2+1*corpsetime3+4*0.08 clockampawg clockfreq 0 180
-setsingle 1 2*corpsetime1+2*corpsetime2+1*corpsetime3+4*0.08 0  clockfreq 0 0
-setsingle 1 2*corpsetime1+2*corpsetime2+1*corpsetime3+5*0.08 clockampawg clockfreq 0 0
-setsingle 1 2*corpsetime1+2*corpsetime2+2*corpsetime3+5*0.08 0  clockfreq 0 0
-
-
+setsingle 1 0+0*0.01 clockampawg clockfreq 0 0
+setsingle 1 corpsetime1+0*0.01 0  clockfreq 0 0
+setsingle 1 corpsetime1+1*0.01 clockampawg clockfreq 0 180
+setsingle 1 corpsetime1+corpsetime2+1*0.01 0  clockfreq 0 0
+setsingle 1 corpsetime1+corpsetime2+2*0.01 clockampawg clockfreq 0 0
+setsingle 1 corpsetime1+corpsetime2+corpsetime3+2*0.01 0  clockfreq 0 0
+setsingle 1 corpsetime1+corpsetime2+corpsetime3+3*0.01 clockampawg clockfreq 0 0
+setsingle 1 2*corpsetime1+1*corpsetime2+1*corpsetime3+3*0.01 0  clockfreq 0 0
+setsingle 1 2*corpsetime1+1*corpsetime2+1*corpsetime3+4*0.01 clockampawg clockfreq 0 180
+setsingle 1 2*corpsetime1+2*corpsetime2+1*corpsetime3+4*0.01 0  clockfreq 0 0
+setsingle 1 2*corpsetime1+2*corpsetime2+1*corpsetime3+5*0.01 clockampawg clockfreq 0 0
+setsingle 1 2*corpsetime1+2*corpsetime2+2*corpsetime3+5*0.01 0 clockfreq-clocklightshift 0 0
+%setsingle 1 500 5 clockfreq 0 0
 program 1
 
 
@@ -31,7 +30,7 @@ setsteps 2 rb2time/25 0 rb2time
 
 ampgauss 2 0 rb2time rb2time/2.5 1 0 rb2amp
 
-freqlin 2 0 rb2time rb2freq rb2freq  1 0
+freqlin 2 0 rb2time rb2freq rb2freq  0 0
 
 
 setsteps 2 rb2time/25 rb2time 2*rb2time
@@ -40,7 +39,6 @@ ampgauss 2 rb2time 2*rb2time rb2time/2.5 -1 rb2amp 0
 
 freqlin 2 rb2time 2*rb2time rb2freq rb2freq 0 0
 
-setsingle 2 2*rb2time 0 100 0 0 
 
 
 
@@ -51,7 +49,7 @@ setsteps 3 rb3time/25 0 rb3time
 
 ampgauss 3 0 rb3time rb3time/2.5 1 0 rb3amp 
 
-freqlin 3 0 rb3time rb3freq rb3freq  1 0
+freqlin 3 0 rb3time rb3freq rb3freq  0 0
 
 
 setsteps 3 rb3time/25 rb3time 2*rb3time
@@ -60,16 +58,16 @@ ampgauss 3 rb3time 2*rb3time rb3time/2.5 -1 rb3amp 0
 
 freqlin 3 rb3time 2*rb3time rb3freq rb3freq 0 0
 
-setsingle 3 2*rb3time 0 100 0 0 
+
 
 
 program 3
 
 
-setsingle 4 0 xamp 100 0 0
+setsingle 4 0 xamp 100 1 0
 setsingle 4 xrottime 0 100 0 0
-setsingle 4 xrottime+500 xamp 100 0 0
-setsingle 4 xrottime+xrottime2+500 0 100 0 0
+%setsingle 4 xrottime+time xamp 100 0 0
+%setsingle 4 xrottime+xrottime+time 0 100 0 0
  
 program 4
 setsingle 7 0 0 80 1 0 
@@ -79,12 +77,7 @@ setsingle 7 1*0.04+1*zpi2time+0*0.04+0*0.04+0*xpi2time+0*0.04 0 80 0 0
 %setsingle 7 2*0.04+2*zpi2time+1*0.04+0*0.04+0*xpi2time+0*0.04 0 80 0 0
 
 program 7
-setsingle 5 0 100 uvfreq 1 0
-setsingle 5 uvtime 0  uvfreq+2 0 0
-%setsingle 5 time+uvtime 100 uvfreq 0 0
-%setsingle 5 time+2*uvtime 0  uvfreq 0 0
 
-program 5
 
 
 
@@ -93,7 +86,7 @@ setsteps 6 rbtime/25 0 rbtime
 
 ampgauss 6  0 rbtime rbtime/2.5 1 0 rbamp
 
-freqlin 6  0 rbtime rbfreq rbfreq  1 0
+freqlin 6  0 rbtime rbfreq rbfreq  0 0
 
 
 setsteps 6 rbtime/25 rbtime 2*rbtime
@@ -106,3 +99,13 @@ setsingle 6 2*rbtime 0 100 0 0
 
 
 program 6
+
+setsingle 5 0 50 uvfreq-100  0 0
+setsingle 5 0.3 100 uvfreq  0 0
+setsingle 5 0.3+uvtime 0 uvfreq 0 0
+%setsingle 5 0.3+uvtime+0.05 90 uvfreq 0 uvphase
+%setsingle 5 0.3+2*uvtime+0.05 0 uvfreq  0 0
+
+
+
+program 5

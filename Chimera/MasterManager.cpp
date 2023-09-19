@@ -303,14 +303,14 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 					input->dacs->startDacs();
 					input->ttls->startDioFPGA(variationInc);
 					input->thisObj->sendZynqCommand(zynq_tcp, "trigger");
-					if (input->settings.saveMakoImages) {
-						input->comm->sendSetupMakoFrame();
-					}
+					//if (input->settings.saveMakoImages) {
+					//	input->comm->sendSetupMakoFrame();
+					//}
 					input->ttls->waitTillFinished(variationInc, skipOption);
 					input->dacs->stopDacs();
-					if (input->settings.saveMakoImages) {
-						input->comm->sendGrabMakoFrame();
-					}
+					//if (input->settings.saveMakoImages) {
+					//	input->comm->sendGrabMakoFrame();
+					//}
 
 				}
 			}
