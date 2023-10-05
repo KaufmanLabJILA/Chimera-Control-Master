@@ -302,7 +302,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 				{
 					input->dacs->startDacs();
 					input->ttls->startDioFPGA(variationInc);
-					input->thisObj->sendZynqCommand(zynq_tcp, "trigger");
+					input->thisObj->sendZynqCommand(zynq_tcp, "trigger"); //problematic part
 					//if (input->settings.saveMakoImages) {
 					//	input->comm->sendSetupMakoFrame();
 					//}
@@ -354,8 +354,8 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 		input->thisObj->sendZynqCommand(zynq_tcp, "lockPLL");
 		input->ddss->setDDSsAmpFreq();
 		input->dds->program_default();
-		//input->dacs->setDACsSeq();
-		input->dacs->zeroDACValues();
+		input->dacs->setDACsSeq();
+		//input->dacs->zeroDACValues();
 		input->thisObj->sendZynqCommand(zynq_tcp, "trigger");
 	}
 	catch (Error& exception)

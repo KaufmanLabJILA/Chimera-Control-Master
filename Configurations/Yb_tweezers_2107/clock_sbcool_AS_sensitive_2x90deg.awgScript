@@ -22,7 +22,7 @@ setsingle 1 2*corpsetime1+1*corpsetime2+1*corpsetime3+4*0.01 clockampawg clockfr
 setsingle 1 2*corpsetime1+2*corpsetime2+1*corpsetime3+4*0.01 0  clockfreq 0 0
 setsingle 1 2*corpsetime1+2*corpsetime2+1*corpsetime3+5*0.01 clockampawg clockfreq 0 0
 setsingle 1 2*corpsetime1+2*corpsetime2+2*corpsetime3+5*0.01 0 clockfreq-clocklightshift 0 0
-%setsingle 1 500 5 clockfreq 0 0
+%setsingle 1 500 3 clockfreq 0 0
 program 1
 
 
@@ -100,11 +100,20 @@ setsingle 6 2*rbtime 0 100 0 0
 
 program 6
 
-setsingle 5 0 50 uvfreq-100  0 0
+setsingle 5 0 0 uvfreq-100 0 0
 setsingle 5 0.3 100 uvfreq  0 0
-setsingle 5 0.3+uvtime 0 uvfreq 0 0
-%setsingle 5 0.3+uvtime+0.05 90 uvfreq 0 uvphase
-%setsingle 5 0.3+2*uvtime+0.05 0 uvfreq  0 0
+%setsingle 5 0.3+uvtime 0 uvfreq 0 0
+setsingle 5 0.3+1100 0 uvfreq-100 1 0
+setsingle 5 0.3+1164 100 uvfreq  0 0
+setsingle 5 0.3+1164+uvtime 0 uvfreq-100 0 0
+
+%setsingle 5 0.3+1164+uvtime+time 100 uvfreq  0 0
+%setsingle 5 0.3+1164+2*uvtime+time 0 uvfreq 0 0
+%setsingle 5 0.3+1164+0.03+2*uvtime+time 100 uvfreq  0 0
+%setsingle 5 0.3+1164+0.03+3*uvtime+time 0 uvfreq 0 0
+
+%setsingle 5 0.3+1164+0.03+3*uvtime+2*time 100 uvfreq  0 0
+%setsingle 5 0.3+1164+0.03+4*uvtime+2*time 0 uvfreq 0 0
 
 
 
