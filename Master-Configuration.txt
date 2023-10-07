@@ -166,7 +166,7 @@ uvpiezover
 uvintservo
 0 - 10
 0
-tweezerpow
+dac13
 -10 - 0
 0
 clockpow
@@ -214,7 +214,7 @@ metaxrotpiezover
 metazrotpiezohor
 -0 - 10
 0
-metazrotpiezover
+dac29
 -0 - 10
 0
 dac30

@@ -251,6 +251,28 @@ void fpgaAWG::freqGaussianRamp(unsigned long channel, float tStart, float tEnd, 
 	awgCommandList[iStart].phase_update = phase_update;
 }
 
+void fpgaAWG::freqtimeoptlukin(unsigned long channel, float tStart, float tEnd,  float freq, float A, float omega, float phi0, float delta0, bool phase_update, float phaseStart) {
+	int iStart = nPreviousStepSetting + ceil((tStart - startTimeStepSetting) / (stepSize * AWGMINSTEP));
+	int numSteps = ceil((tEnd - tStart) / (stepSize * AWGMINSTEP));
+
+	std::vector<awgCommand> & awgCommandList = selectCommandList(channel);
+
+	if (tEnd > awgCommandList.back().timeStampMicro + stepSize * AWGMINSTEP) {
+		thrower("Ramp too long for assigned steps.");
+	};
+
+	float t, phaseVal;
+	for (int i = 0; i < numSteps; i++) {
+		t = stepSize * AWGMINSTEP * i;
+		phaseVal = A * cos(omega * t - phi0);
+		awgCommandList[iStart + i].freqMHz = freq + delta0;
+		awgCommandList[iStart + i].phaseDegrees = phaseStart + phaseVal;
+		awgCommandList[iStart + i].phase_update = false;
+	};
+	
+	awgCommandList[iStart].phase_update = phase_update;
+}
+
 void fpgaAWG::writeCommandList(unsigned long channel, int AWGnum) {
 	std::vector<awgCommand> & awgCommandList = selectCommandList(channel);
 	int numSteps = awgCommandList.size();
@@ -424,6 +446,23 @@ void fpgaAWG::analyzeAWGScript(fpgaAWG* fpgaawg, std::vector<variableType>& vari
 			currentAWGScript >> phaseDegrees;
 
 			freqGaussianRamp(stoul(channel, nullptr, 0), tstart.evaluate(variables, variation), tstop.evaluate(variables, variation), tSigma.evaluate(variables, variation), direction.evaluate(variables, variation), fstart.evaluate(variables, variation), fstop.evaluate(variables, variation), phase_update.evaluate(variables, variation), phaseDegrees.evaluate(variables, variation));
+		}
+		else if (word == "freqtimeoptlukin") {
+
+			std::string channel;
+			Expression tstart, tstop, freq, A,  omega, phi0, delta0, phase_update, phaseDegrees;
+			currentAWGScript >> channel;
+			currentAWGScript >> tstart;
+			currentAWGScript >> tstop;
+			currentAWGScript >> freq;
+			currentAWGScript >> A;
+			currentAWGScript >> omega;
+			currentAWGScript >> phi0;
+			currentAWGScript >> delta0;
+			currentAWGScript >> phase_update;
+			currentAWGScript >> phaseDegrees;
+
+			freqtimeoptlukin(stoul(channel, nullptr, 0), tstart.evaluate(variables, variation), tstop.evaluate(variables, variation), freq.evaluate(variables, variation), A.evaluate(variables, variation),omega.evaluate(variables, variation), phi0.evaluate(variables, variation), delta0.evaluate(variables, variation), phase_update.evaluate(variables, variation), phaseDegrees.evaluate(variables, variation));
 		}
 		else if (word == "setsingle") {
 			std::string channel;
