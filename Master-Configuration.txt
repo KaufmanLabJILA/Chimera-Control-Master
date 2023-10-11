@@ -199,50 +199,50 @@ uvpm_h
 uvpm_v
 0 - 10
 0
-51
+54
 rmbx 0.0035
-rmby 0.0155
-rmbz 0.0236
+rmby 0.0165
+rmbz 0.023
 tune461 -0.2
 bluetuneval 0.25
 bluetune_imag 0.025
 tweezer_zero 0.013
 lattice_pow 1.85
-lattice_zero -0.01
+lattice_zero 0.012
 ax_lattice_pow 2.25
-ax_lattice_zero 0.03
-axial_phase_set 5.9
+ax_lattice_zero -0.012
+axial_phase_set 5.95
 xoff 0
 yoff 0
 xoff813 0
 yoff813 0
-f_rad 0.07
+f_rad 0.06
 f_rad2 0.102
 f_rmot_narrow 0.42
 swapmottime 50
-mirrorscanx 1.45
-mirrorscany 2.76
-f_rad_3d 0.175
+mirrorscanx 1.05
+mirrorscany 2.83
+f_rad_3d 0.155
 f_ax_3d 0.046
-f_ax_3d_imag 0.16
-imagpowlat 0.16
+f_ax_3d_imag 0.135
+imagpowlat 0.13
 moverate 511
 amprate 6000
 imagpow 0.12
-dmbz 0.4065
+dmbz 0.4
 by_lacs 0.025
 f_lac -1.64
-c_3p0 153.215282
-fcool 0.07
-c_3p1_lat 79.9984
+c_3p0 153.251282
+fcool 0.069
+c_3p1_lat 79.9988
 bluemottime 60
-uvpm_v_set 3.6
-__t0__ 1694533630
+uvpm_v_set 3
+__t0__ 1696955188
 dr_3p1 0.0039
-uvpm_h_set -2.1
-narrowmottime 50
+uvpm_h_set -2.9
+narrowmottime 100
 tweezerattn_off 0.4
-spec3p0 14.6841
+spec3p0 14.6039
 f_rad_813_imag 84.35
 fmby_813 0.619
 f_rad_813 0.11
@@ -251,4 +251,7 @@ imagpow813 0.28
 c_3p1_813 79.975
 fmbx_813 0.48
 f_rad_3d_cool 0.145
-75 375 1 100 400 1
+imagpowlat_fast 0.17
+f_rad_3d_fast 0.15
+f_ax_3d_imag_fast 0.13
+110 410 1 100 400 1

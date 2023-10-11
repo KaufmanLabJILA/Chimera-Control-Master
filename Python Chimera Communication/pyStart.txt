@@ -1,2 +1,2 @@
 C:\Users\KLab\Desktop\Chimera-Control-Master\Configurations\230126_Gate\230126_Gate.Config
-A:\230912\Raw Data\data_66.h5
+A:\231005\Raw Data\data_32.h5

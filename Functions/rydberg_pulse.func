@@ -17,3 +17,5 @@ def rydberg_pulse(ryd_time):
   %off: uvttl
   on: pi407
   off: latticehold
+  t += .001
+

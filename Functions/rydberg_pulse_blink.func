@@ -1,0 +1,19 @@
+def rydberg_pulse_blink(ryd_time):
+  % insert commands here...
+  on: uvttl
+  off: pi407
+  on: latticehold
+  pulseon: trigger .001
+  pulseon: tektronixtrig .001
+  t += .001
+  %pulseon: awgtrig .0001
+  t += (awgblinkdelay+1.08)/1000
+  on: latblink
+  t += ryd_time/1000
+  t += .0002
+  off: latblink 
+  t += time407/1000
+  %off: uvttl
+  on: pi407
+  off: latticehold
+  t += .001

@@ -4,7 +4,7 @@ def rerng_filterarbscrunchycompressx():
 %daclinspace: latticepow lattice_pow lattice_pow2 3 15
 %t += 10
 
-%on: t515hold
+on: t515hold
 t += 1
 pulseon: gmload .00011
 t += .1
@@ -31,10 +31,13 @@ repeat: 31
 % t += 100.1
 end
 
+
+
 %%%Filter reservoir atoms
 pulseon: gmmove .00011
 t += .8
 %t += 100.1
+
 pulseon: gmmove .00011
 t += .8
 %t += 100.1
@@ -52,6 +55,7 @@ off: axial
 %daclinspace: latticepow lattice_zero lattice_pow 3 15
 %t += 5
 
+
 pulseon: resetdds .1
 t += .2
 repeat: 2
@@ -61,43 +65,60 @@ end
 t += .1
 
 %on: radial2
-daclinspace: axialpow ax_lattice_pow ax_lattice_zero 3 30
-t += 4
-daclinspace: latticepow lattice_pow lattice_zero 3 30
-t += 10
+dacexpspace: axialpow ax_lattice_pow ax_lattice_zero 1 30
+%t += 6
+dacexpspace: latticepow lattice_pow lattice_zero 1 30
+t += 2
+
+%daccosspace: axialpow ax_lattice_pow ax_lattice_pow/20 1 50
+%daccosspace: latticepow lattice_pow lattice_pow/20 1 50
+%t += 2
+%dacexpspace: axialpow ax_lattice_pow/20 ax_lattice_zero 25 100
+%dacexpspace: latticepow lattice_pow/20 lattice_zero 25 100
+%t += 30
+
 
 %%% testing 230829
 
-pulseon: resetdds .1
-t += .2
-repeat: 5
- pulseon: stepdds 0.007
- t += .1
-end
-t += .1
+%pulseon: resetdds .1
+%t += .2
+%repeat: 4
+% pulseon: stepdds 0.007
+% t += .1
+%end
+%t += .1
 
-call magicfields515()
-on: imagshut
-t += 4
+%call magicfields515()
+%on: imagshut
+%t += 6
 on: latticehold
 t += 0.05
 on: latblink
 
-t += 5
+t += 15
 %call lacs(5)  % This wants imaging snapshot
 
 off: latblink
 t += 0.05
 off: latticehold
 
-call magicfieldsdual813()
+%call magicfieldsdual813()
 
 
 off: radial2
-daclinspace: axialpow ax_lattice_zero ax_lattice_pow 3 30
-t += 4
-daclinspace: latticepow lattice_zero lattice_pow 3 30
-t += 5
+dacexpspace: axialpow ax_lattice_zero ax_lattice_pow 1 30
+%t += 6
+dacexpspace: latticepow lattice_zero lattice_pow 1 30
+t += 2
+
+%dacexpspace: axialpow ax_lattice_zero ax_lattice_pow/20 25 100
+%dacexpspace: latticepow lattice_zero lattice_pow/20 25 100
+%t += 30
+%daccosspace: axialpow ax_lattice_pow/20 ax_lattice_pow 1 50
+%daccosspace: latticepow lattice_pow/20 lattice_pow 1 50
+%t += 2
+
+
 
 pulseon: resetdds .1
 t += .2
@@ -112,7 +133,7 @@ on: radial2
 pulseon: gmmove .0001
 t += .08
 
-%%%Compress
+%Compress
 repeat: 16
  pulseon: gmmove .00011
  t += .08
@@ -135,7 +156,9 @@ t += 5
 dac: tweezerpow tweezer_pow
 pulseon: gmload .0001
 t += 1
-%off: t515hold
+off: t515hold
 
 %daclinspace: latticepow lattice_pow2 lattice_pow 3 15
 %t += 10
+
+

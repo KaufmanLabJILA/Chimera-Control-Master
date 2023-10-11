@@ -1,5 +1,5 @@
 % Master-Script See the "?" for info on commands.
-def fieldbigz():
+def fieldbigz(fieldvalue):
   call fieldzero()
 
 %%% High field condition
@@ -8,16 +8,18 @@ def fieldbigz():
   t += 4
   off: bigzantihelm
   t += 1
-  dac: bigzcoil .7 %.14 %0.28 %0.7 %0.112  %2*0.08875 %1.775 %
+  %dac: bigzcoil .7 %.14 %0.28 %0.7 %0.112  %2*0.08875 %1.775 %
   %t += 3.82 %3.91 %7.4 
   %dac: bigzcoil 0.2 %0.5 %2
 
-  t += 3.91 %3.82 %7.4 
+  %t += 3.91 %3.82 %7.4 
   % gate conditions
   %dac: bigzcoil 0.5 %1 %0.2 %2 %1.0
 
   % squeezing paper conditions
-  dac: bigzcoil 1 %0.2 %2 %1.0
+  %dac: bigzcoil 1 %0.2 %2 %1.0
+  daccosspace: bigzcoil 0 fieldvalue 20 30
+  t += 20
 
 
 %%% Low field condition

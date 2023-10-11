@@ -61,33 +61,30 @@ t += .1
 %on: imagshut
 
 %on: radial2
-daclinspace: axialpow ax_lattice_pow ax_lattice_zero filterramptime 15
-t += 1
-t += filterramptime
-daclinspace: latticepow lattice_pow lattice_zero filterramptime 15
-t += 1
-%t += 10
-t += filtertime
+dacexpspace: axialpow ax_lattice_pow ax_lattice_zero 1 30
+%t += 6
+dacexpspace: latticepow lattice_pow lattice_zero 1 30
+t += 2
 
 %%% testing 230829
 
-pulseon: resetdds .1
-t += .2
-repeat: 5
- pulseon: stepdds 0.007
- t += .1
-end
-t += .1
+%pulseon: resetdds .1
+%t += .2
+%repeat: 4
+% pulseon: stepdds 0.007
+% t += .1
+%end
+%t += .1
 
 %call magicfields515()
 %on: imagshut
-%t += 4
+%t += 6
 on: latticehold
 t += 0.05
 on: latblink
 
-t += 5
-%call filter_lacs(5)  % This wants imaging snapshot
+t += 15
+%call lacs(5)  % This wants imaging snapshot
 
 off: latblink
 t += 0.05
@@ -95,14 +92,12 @@ off: latticehold
 
 %call magicfieldsdual813()
 
-%off: radial2
-t += 1
-daclinspace: latticepow lattice_zero lattice_pow filterramptime 15
-t += 1
-t += filterramptime
-daclinspace: axialpow ax_lattice_zero ax_lattice_pow filterramptime 15
-t += 1
-t += filterramptime
+
+off: radial2
+dacexpspace: axialpow ax_lattice_zero ax_lattice_pow 1 30
+%t += 6
+dacexpspace: latticepow lattice_zero lattice_pow 1 30
+t += 2
 
 pulseon: resetdds .1
 t += .2
@@ -129,4 +124,3 @@ dac: tweezerpow tweezer_pow
 pulseon: gmload .0001
 t += 1
 off: t515hold
-

@@ -2,7 +2,7 @@ reset
 
 %%Program gate%%
 
-setsingle 0 0 0 ryd_freq 1 0
+setsingle 0 0 0 ryd_freq 1 a*cos(omega*0.000000-phi0)+delta0*0.000000+phase_offset_awg
 setsingle 0 1.080+0.000000 awgamp ryd_freq 0 a*cos(omega*0.000000-phi0)+delta0*0.000000+phase_offset_awg
 setsingle 0 1.080+0.006510 awgamp ryd_freq 0 a*cos(omega*0.006510-phi0)+delta0*0.006510+phase_offset_awg
 setsingle 0 1.080+0.013021 awgamp ryd_freq 0 a*cos(omega*0.013021-phi0)+delta0*0.013021+phase_offset_awg
@@ -54,7 +54,9 @@ setsingle 0 1.080+0.305990 awgamp ryd_freq 0 a*cos(omega*0.305990-phi0)+delta0*0
 setsingle 0 1.080+0.312500 awgamp ryd_freq 0 a*cos(omega*0.312500-phi0)+delta0*0.312500+phase_offset_awg
 setsingle 0 1.080+0.319010 awgamp ryd_freq 0 a*cos(omega*0.319010-phi0)+delta0*0.319010+phase_offset_awg
 setsingle 0 1.080+0.325521 awgamp ryd_freq 0 a*cos(omega*0.325521-phi0)+delta0*0.325521+phase_offset_awg
-setsingle 0 1.080+0.332031 0 ryd_freq 0 0
+setsingle 0 1.080+0.332031 awgamp ryd_freq 0 a*cos(omega*0.332031-phi0)+delta0*0.332031+phase_offset_awg
+setsingle 0 1.080+0.338542 0 ryd_freq 0 a*cos(omega*0.332031-phi0)+delta0*0.332031+phase_offset_awg
+
 
 program 0
 
