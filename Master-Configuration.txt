@@ -121,9 +121,9 @@ xcor
 0
 awgtrigger2
 0
-metaxrot
-0
 metazrot
+0
+metaxrot
 0
 dio8.7
 0
