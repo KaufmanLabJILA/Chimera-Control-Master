@@ -22,12 +22,12 @@
 #ifdef DEEP_THOUGHT
 #define PYTHON_HOME L"C:\\Users\\klab\\Anaconda3\\"
 #define MOOG_SAFEMODE true
-#define AWG_SAFEMODE0 false
-#define AWG_SAFEMODE1 false
+#define AWG_SAFEMODE0 true
+#define AWG_SAFEMODE1 true
 #define GIGAMOOG_SAFEMODE false
 #define NIAWG_SAFEMODE true
-#define ANDOR_SAFEMODE false
-#define ATOMCRUNCHER_SAFEMODE false
+#define ANDOR_SAFEMODE true
+#define ATOMCRUNCHER_SAFEMODE true
 #define AUTOALIGN_SAFEMODE true
 #define MAKO_SAFEMODE true
 #define PYTHON_SAFEMODE true
@@ -38,7 +38,7 @@
 #define DDS_RUNTEST false
 #define DAQMX_SAFEMODE true
 #define RSG_SAFEMODE true
-#define ZYNQ_SAFEMODE false
+#define ZYNQ_SAFEMODE true
 #define ZYNQ_ADDRESS "10.10.0.2"
 #define ZYNQ_PORT "8080"
 #define ZYNQ_MAX_BUFF 64
