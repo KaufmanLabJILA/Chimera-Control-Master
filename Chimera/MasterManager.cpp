@@ -2,10 +2,18 @@
 #include "MasterManager.h" 
 #include "nidaqmx2.h" 
 #include <fstream> 
+#include <cstdio>
+#include <experimental/filesystem>
+#include <string>
+namespace fs = std::experimental::filesystem;
+#include "commonFunctions.h"
 #include "DioSystem.h" 
-#include "DacSystem.h" 
+// #include "C:/Users/klab/AppData/Local/Programs/Python/Python312/include/Python.h"
+#include "DacSystem.h"
+#include "EDacStructures.h" 
 //#include "NiawgWaiter.h" 
-#include "Expression.h" 
+#include "Expression.h"
+// #include "EmbeddedPythonHandler.h"
 
 
 MasterManager::MasterManager()
@@ -784,6 +792,34 @@ void MasterManager::analyzeFunction(std::string function, std::vector<std::strin
 			ttls->handleTtlScriptCommand(word, operationTime, name, pulseLength, ttlShades, vars);
 		}
 
+		/// deal with commands for electrode DAC 
+		/// Added on 10/30/2023 - invoked using literal identifier edac (e for electrode). 
+		/// pass arguments (channel (from 1-8) voltage (-10 10))
+		/// ramp feature can be adde later
+
+		else if (word == "edac:")
+		{
+			std::string edacChannelName, edacVoltageValue;
+			currentMasterScript >> edacChannelName;
+			currentMasterScript >> edacVoltageValue;
+
+			try
+			{
+				//runEDac("B:\Yb heap\Experiment_code_Yb\Chimera-Control-Master\Chimera\EDac.py", edacChannelName, edacVoltageValue);
+				commonFunctions::updateEDACFile(edacChannelName, edacVoltageValue);
+
+				
+			}
+			catch (Error& err)
+			{
+				/// Exception handling is not super polished as of now
+				thrower(err.whatStr() + "... in \"edac:\" command inside main script");
+			}
+
+		}
+
+		
+
 		/// deal with dac commands 
 		else if (word == "dac:")
 		{
@@ -1242,6 +1278,56 @@ void MasterManager::analyzeMasterScript(DioSystem* ttls, DacSystem* dacs, DDSSys
 			ttls->handleTtlScriptCommand(word, operationTime, name, pulseLength, ttlShades, vars);
 		}
 
+		/// deal with commands for electrode DAC 
+        /// Added on 10/30/2023 - invoked using literal identifier edac (e for electrode). 
+        /// pass arguments (channel (from 1-8) voltage (-10 10))
+        /// ramp feature can be adde later
+
+        else if (word == "edac:")
+        {
+			// EDacCommandForm command;
+			// std::string edacVoltageValue;
+            // currentMasterScript >> command.edacChannelName;
+            // currentMasterScript >> command.edacVoltageValue1;
+			// currentMasterScript >> command.edacVoltageValue2;
+			// currentMasterScript >> command.edacVoltageValue3;
+			// currentMasterScript >> command.edacVoltageValue4;
+			// currentMasterScript >> command.edacVoltageValue5;
+			// currentMasterScript >> command.edacVoltageValue6;
+			// currentMasterScript >> command.edacVoltageValue7;
+			// currentMasterScript >> command.edacVoltageValue8;
+
+			// command.edacVoltageValue1.assertValid(vars);
+			// command.edacVoltageValue2.assertValid(vars);
+			// command.edacVoltageValue3.assertValid(vars);
+			// command.edacVoltageValue4.assertValid(vars);
+			// command.edacVoltageValue5.assertValid(vars);
+			// command.edacVoltageValue6.assertValid(vars);
+			// command.edacVoltageValue7.assertValid(vars);
+			// command.edacVoltageValue8.assertValid(vars);
+
+			
+
+
+
+
+
+			// edacVoltageValue = command.edacVoltageValue1+","+command.edacVoltageValue2+","+command.edacVoltageValue3+","+command.edacVoltageValue4+","+command.edacVoltageValue5+","+command.edacVoltageValue6+","+command.edacVoltageValue7+","+command.edacVoltageValue8;
+
+            try
+            {
+				//runEDac("B:\Yb heap\Experiment_code_Yb\Chimera-Control-Master\Chimera\EDac.py", edacChannelName, edacVoltageValue);
+				// commonFunctions::updateEDACFile(command.edacChannelName, edacVoltageValue);
+				
+            }
+            catch (Error& err)
+            {
+                /// Exception handling is not super polished as of now
+                thrower(err.whatStr() + "... in \"edac:\" command inside main script");
+            }
+
+        }
+
 		/// deal with dac commands 
 		else if (word == "dac:")
 		{
@@ -1613,7 +1699,7 @@ bool MasterManager::isValidWord(std::string word)
 {
 	if (word == "t" || word == "t++" || word == "t+=" || word == "t=" || word == "on:" || word == "off:"
 		|| word == "dac:" || word == "dacarange:" || word == "daclinspace:" || word == "dacramp:" || word == "rsg:" || word == "call"
-		|| word == "repeat:" || word == "end" || word == "pulseon:" || word == "pulseoff:" || word == "callcppcode")
+		|| word == "repeat:" || word == "end" || word == "pulseon:" || word == "pulseoff:" || word == "callcppcode" || word == "edac")
 	{
 		return true;
 	}

@@ -11,8 +11,8 @@
 // build and debug other aspects of the program.
 
 //#define MASTER_COMPUTER
-#define DEEP_THOUGHT
-//#define SAMANTHA
+//#define DEEP_THOUGHT
+#define SAMANTHA
 //#define ADAMS_LAB
 // #define DESKTOP_COMPUTER
 //#define SALAMIS_TABLET
@@ -113,7 +113,7 @@ const std::string DDS_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAUL
 #ifdef SAMANTHA
 #define PYTHON_HOME L"C:\\Users\\klab\\Anaconda3\\"
 #define MOOG_SAFEMODE true
-#define AWG_SAFEMODE0 false
+#define AWG_SAFEMODE0 true
 #define AWG_SAFEMODE1 true
 #define GIGAMOOG_SAFEMODE true
 #define ATOMCRUNCHER_SAFEMODE true
@@ -177,6 +177,8 @@ const std::string SUBPIXELMASKS_FILE_LOCATION = PROJECT_LOCATION + "\\Image Proc
 const std::string SUBPIXELLUT_FILE_LOCATION = PROJECT_LOCATION + "\\Tweezer LUT\\" + "subpixelLUT.npy";
 const std::string TWEEZER_AMPLITUDE_LUT_FILE_LOCATION = PROJECT_LOCATION + "\\Tweezer LUT\\" + "ampLUT.npy";
 const std::string TWEEZER_FREQUENCY_LUT_FILE_LOCATION = PROJECT_LOCATION + "\\Tweezer LUT\\" + "freqLUT.npy";
+const std::string TWEEZER_AMPLITUDE_LUT_FILE_LOCATION2 = PROJECT_LOCATION + "\\Tweezer LUT\\" + "ampLUT2.npy";
+const std::string TWEEZER_FREQUENCY_LUT_FILE_LOCATION2 = PROJECT_LOCATION + "\\Tweezer LUT\\" + "freqLUT2.npy";
 // same as debug output location but with forward slashes for ease of use in python
 const std::string PYTHON_INPUT_LOCATION = "B:\\Yb heap\\Experiment_code_Yb\\Chimera-Control-Master\\Debug-Output";
 const std::string PLOT_FILES_SAVE_LOCATION = PROJECT_LOCATION + "Plotting";
@@ -197,6 +199,9 @@ const std::string MOOG_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAU
 const std::string AWG_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_AWG_SCRIPT.awgScript";
 const std::string GMOOG_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_GMOOG_SCRIPT.moogScript";
 const std::string DDS_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_DDS_SCRIPT.ddsScript";
+
+//File that updates for EDAC
+const std::string EDAC_START_FILE_LOCATION = PROJECT_LOCATION + "\\Chimera\\EDACFile.txt";
 #endif
 
 //Moog constants

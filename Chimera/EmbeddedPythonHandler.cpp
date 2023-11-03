@@ -2,7 +2,7 @@
 // main header.
 #ifdef _DEBUG
 #undef _DEBUG
-#include "python.h"
+#include "C:\Users\klab\anaconda3\include\Python.h"
 #define _DEBUG
 #else
 #include "python.h"
@@ -42,6 +42,46 @@ EmbeddedPythonHandler::EmbeddedPythonHandler( )
 	ERR_POP( run( "sys.path.append('" + PYTHON_CODE_LOCATION + "')" ) )
 	ERR_POP( run( "import plotDacs" ) );
 	ERR_POP( run( "import plotTtls" ) );
+}
+
+/// Added function to execute a python script for the edac along with some arguements passed to it
+
+void EmbeddedPythonHandler::runEDac(std::string filepath, std::string edacChannelName, std::string edacVoltageValue)
+{
+	if (PYTHON_SAFEMODE)
+	{
+		return;
+	}
+
+	Py_Initialize();
+
+	FILE* fp = fopen( filepath.c_str(), "rb" );
+
+	// long argv_list_create = {edacChannelName, edacVoltageValue};
+
+	/// Create a list of arguements to pass to the script. 
+	PyObject* sys = PyImport_AddModule("sys");
+	// PyObject* argv_list = PyList_New(2) //Hardcoded to only allow chanel and value atm
+	// PyObject* argv_list = argv_list_create;
+
+
+	//For now, all the eDac values have to be the same
+	// for (int i = 0; i < 8; i++) {
+	// 	PyList_SetItem(argv_list, i, PyUnicode_DecodeFSDefault(edacVoltageValue))
+	// }
+
+	//Set sys.argv to the created list
+	// PyObject_SetAttrString(sys, "argv", argv_list);
+
+	//Run the script
+	PyRun_SimpleFile(fp,filepath.c_str());
+
+	//Clean up
+	//Py_DECREF(argv_list);
+	Py_DECREF(sys);
+
+	Py_Finalize();
+
 }
 
 

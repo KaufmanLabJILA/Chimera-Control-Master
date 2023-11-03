@@ -3,9 +3,13 @@
 #include "stdafx.h"
 #include "resource.h"
 #include <array>
+#include <fstream> 
 #include "commonFunctions.h"
 #include "TextPromptDialog.h"
 //#include "NiawgController.h"
+#include <experimental/filesystem>
+#include <string>
+#include <cstdio>
 #include "experimentThreadInputStructure.h"
 //#include "scriptWriteHelpProc.h"
 #include "beginningSettingsDialogProc.h"
@@ -15,6 +19,13 @@
 #include "CameraWindow.h"
 #include "AuxiliaryWindow.h"
 #include <boost/filesystem.hpp>
+#include <cstring>
+#include <cstdlib>
+#include <ctime>
+#include <ws2tcpip.h>
+#include <Winsock2.h>
+#include <ws2spi.h>
+namespace fs = std::experimental::filesystem;
 
 // Functions called by all windows to do the same thing, mostly things that happen on menu presses.
 namespace commonFunctions
@@ -1084,4 +1095,73 @@ namespace commonFunctions
 	{
 
 	}
+
+	std::string arrayToString(const std::string arr[], int size) 
+	{
+		std::stringstream ss;
+		for (int i = 0; i < size; i++) {
+			ss << arr[i];
+			if (i < size - 1) {
+				ss << ',';  // Add a space between values
+			}
+		}
+    	return ss.str();
+	}
+
+	void updateEDACFile(std::string edacChannelName, std::string edacVoltageValue)
+	{
+		std::string tmpFile = EDAC_START_FILE_LOCATION + ".tmp";
+		int pyStarted = 1;
+		std::fstream pyStartFile(tmpFile, std::fstream::out);
+		std::string edacVoltageValues;
+		// edacVoltageValues = arrayToString(edacVoltageValue,8);
+		if (pyStartFile.is_open())
+		{
+			pyStartFile << edacVoltageValue + "\r\n";
+			pyStartFile.close();
+			std::string newEDAC_START_FILE_LOCATION;
+			fs::rename(tmpFile, EDAC_START_FILE_LOCATION);
+			pyStarted = 0;
+		}
+	}
+
+	void changeEDAC(std::string edacChannelName, std::string edacVoltageValue)
+	{
+		double timeout = 1.02;
+		int port = 804;
+		std::string host = "192.168.7.179";
+		const char* tosend = "DatatoSend"; // Replace with your actual data
+
+		sockaddr_in dest;
+		dest.sin_family = AF_INET;
+		dest.sin_port = htons(port);
+		if (inet_pton(AF_INET, host.c_str(), &dest.sin_addr) <= 0) {
+			std::cerr << "Invalid address" << std::endl;
+		}
+
+		int sock = socket(AF_INET, SOCK_DGRAM, 0);
+		if (sock < 0) {
+			std::cerr << "Failed to create socket" << std::endl;
+		}
+
+		struct timeval tv;
+		tv.tv_sec = static_cast<int>(timeout);
+		tv.tv_usec = static_cast<int>((timeout - static_cast<int>(timeout)) * 1e6);
+
+		if (setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, "SO_SNDTIMEO", sizeof(tv)) < 0) {
+			std::cerr << "Failed to set timeout" << std::endl;
+			_close(sock);
+		}
+
+		ssize_t sentBytes = sendto(sock, tosend, std::strlen(tosend), 0, (struct sockaddr*)&dest, sizeof(dest));
+
+		if (sentBytes < 0) {
+			std::cerr << "Failed to send data" << std::endl;
+		} else {
+			std::cout << "Data sent successfully" << std::endl;
+		}
+
+		_close(sock);
+	}
+
 };

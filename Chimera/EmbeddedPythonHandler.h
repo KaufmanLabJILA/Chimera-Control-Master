@@ -2,7 +2,7 @@
 
 #ifdef _DEBUG
 #undef _DEBUG
-#include "python.h"
+#include "C:\Users\klab\anaconda3\include\Python.h"
 #define _DEBUG
 #else
 #include "python.h"
@@ -27,8 +27,10 @@ class EmbeddedPythonHandler
 		// for a single python command.
 		std::string run(std::string cmd, bool flush = true);
 		void flush();
+		void runEDac(std::string filepath, std::string edacChannelName, std::string edacVoltageValue);
 		void runPlotDacs( );
 		void runPlotTtls( );
+		
 	private:
 		PyObject* autoAnalysisModule;
 		PyObject* atomAnalysisFunction;

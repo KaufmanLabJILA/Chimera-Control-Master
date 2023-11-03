@@ -27,6 +27,9 @@ namespace commonFunctions
 	void abortCamera( CameraWindow* camWin, MainWindow* mainWin );
 	void abortMaster(MainWindow* mainWin, AuxiliaryWindow* auxWin);
 	void exitProgram( ScriptingWindow* scriptWindow, MainWindow* mainWin, CameraWindow* camWin, AuxiliaryWindow* auxWin );
+	std::string arrayToString(const std::string arr[], int size);
+	void updateEDACFile(std::string edacChannelName, std::string edacVoltageValue);
+	void changeEDAC(std::string edacChannelName, std::string edacVoltageValue);
 	/// Scripting Menu
 	int saveProfile( ScriptingWindow* scriptWindow, MainWindow* mainWin );
 	//void reloadNIAWGDefaults( MainWindow* mainWin );

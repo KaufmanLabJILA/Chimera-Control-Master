@@ -810,6 +810,30 @@ void ExperimentManager::analyzeFunction( std::string function, std::vector<std::
 			ttls->handleTtlScriptCommand( word, operationTime, name, pulseLength, ttlShades );
 		}
 
+		/// deal with commands for electrode DAC 
+        /// Added on 10/30/2023 - invoked using literal identifier edac (e for electrode). 
+        /// pass arguments (channel (from 1-8) voltage (-10 10))
+        /// ramp feature can be adde later
+
+        else if (word == "edac:")
+        {
+            std:: string edacChannelName, edacVoltageValue;
+            currentMasterScript >> edacChannelName;
+            currentMasterScript >> edacVoltageValue;
+
+            try
+            {
+                // runEDac(".\Chimera\EDac\runEDac.py",edacChannelName,edacVoltageValue)
+				cout << "Entered here"
+            }
+            catch (Error& err)
+            {
+                /// Exception handling is not super polished as of now
+                thrower(err.whatStr() + "... in \"edac:\" command inside main script");
+            }
+
+        }
+
 		/// deal with dac commands
 		else if (word == "dac:")
 		{
@@ -1069,6 +1093,30 @@ void ExperimentManager::analyzeMasterScript(TtlSystem* ttls, DacSystem* dacs,
 			ttls->handleTtlScriptCommand( word, operationTime, name, pulseLength, ttlShades );
 		}
 
+		/// deal with commands for electrode DAC 
+        /// Added on 10/30/2023 - invoked using literal identifier edac (e for electrode). 
+        /// pass arguments (channel (from 1-8) voltage (-10 10))
+        /// ramp feature can be adde later
+
+        else if (word == "edac:")
+        {
+            std:: string edacChannelName, edacVoltageValue;
+            currentMasterScript >> edacChannelName;
+            currentMasterScript >> edacVoltageValue;
+
+            try
+            {
+                // runEDac(".\Chimera\EDac\runEDac.py",edacChannelName,edacVoltageValue)
+				cout << "Entered here"
+            }
+            catch (Error& err)
+            {
+                /// Exception handling is not super polished as of now
+                thrower(err.whatStr() + "... in \"edac:\" command inside main script");
+            }
+
+        }
+
 		/// deal with dac commands
 		else if (word == "dac:")
 		{
@@ -1283,7 +1331,7 @@ bool ExperimentManager::isValidWord( std::string word )
 {
 	if (word == "t" || word == "t++" || word == "t+=" || word == "t=" || word == "on:" || word == "off:"
 		 || word == "dac:" || word == "dacramp:" || word == "RSG:" || word == "raman:" || word == "call"
-		 || word == "repeat:" || word == "end" || word == "pulseon:" || word == "pulseoff:" || word == "callcppcode")
+		 || word == "repeat:" || word == "end" || word == "pulseon:" || word == "pulseoff:" || word == "callcppcode" || word == "edac:")
 	{
 		return true;
 	}

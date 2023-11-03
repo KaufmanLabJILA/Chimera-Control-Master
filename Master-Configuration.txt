@@ -353,4 +353,4 @@ radialpower2 27.5
 imagetime2 30
 img_depth2 -3
 clockdepth -0.1
-90 449 1 230 250 1
+70 255 1 220 245 1

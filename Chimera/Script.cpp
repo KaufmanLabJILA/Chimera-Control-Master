@@ -283,6 +283,10 @@ COLORREF Script::getSyntaxColor( std::string word, std::string editType, std::ve
 		{
 			return rgbs["theme yellow"];
 		}
+		if (word == "edac:")
+		{
+			return rgbs["theme yellow"];
+		}
 		if (word == "ddsamp:" || word == "ddsfreq:" || word == "ddslinspace:" || word == "ddsrampamp:" || word == "ddsrampfreq:")
 		{
 			return rgbs["theme orange"];
