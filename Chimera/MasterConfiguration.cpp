@@ -3,6 +3,7 @@
 #include <string>
 #include "DioSystem.h"
 #include "DacSystem.h"
+#include "EDacSystem.h"
 #include <fstream>
 #include <sys/stat.h>
 #include "AuxiliaryWindow.h"

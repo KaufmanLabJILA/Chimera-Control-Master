@@ -2,7 +2,9 @@
 
 #include "DioSystem.h"
 #include "DacSystem.h"
+#include "EDacSystem.h"
 #include "DDSSystem.h"
+#include "EDacSystem.h"
 #include "VariableSystem.h"
 #include "GpibFlume.h"
 #include "DebugOptionsControl.h"
@@ -40,6 +42,7 @@ struct MasterThreadInput
 	profileSettings profile;
 	DioSystem* ttls;
 	DacSystem* dacs;
+	EDacSystem* edacs;
 	DDSSystem* ddss;
 	DDS_SYNTH* dds;
 	UINT repetitionNumber;

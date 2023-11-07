@@ -4,6 +4,7 @@
 #include <fstream>
 #include "TtlSystem.h"
 #include "DacSystem.h"
+#include "EDacSystem.h"
 #include "constants.h"
 #include "MasterWindow.h"
 

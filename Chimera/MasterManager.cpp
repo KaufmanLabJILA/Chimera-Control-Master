@@ -10,7 +10,7 @@ namespace fs = std::experimental::filesystem;
 #include "DioSystem.h" 
 // #include "C:/Users/klab/AppData/Local/Programs/Python/Python312/include/Python.h"
 #include "DacSystem.h"
-#include "EDacStructures.h" 
+#include "EDacSystem.h" 
 //#include "NiawgWaiter.h" 
 #include "Expression.h"
 // #include "EmbeddedPythonHandler.h"
@@ -89,7 +89,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 		//input->rsg->clearFrequencies(); 
 		if (input->runMaster)
 		{
-			input->thisObj->analyzeMasterScript(input->ttls, input->dacs, input->ddss, ttlShadeLocs,
+			input->thisObj->analyzeMasterScript(input->ttls, input->dacs, input->edacs, input->ddss, ttlShadeLocs,
 				dacShadeLocs, ddsShadeLocs, input->variables);
 		}
 		/// prep Moog 
@@ -117,9 +117,10 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 		if (input->runMaster)
 		{
 			expUpdate("interpret TTLs\r\n", input->comm, input->quiet);
-			input->ttls->interpretKey(input->variables);
+			input->ttls->interpretKey(input->variables);organizedac:
 			expUpdate("interpret DACs\r\n", input->comm, input->quiet);
 			input->dacs->interpretKey(input->variables, warnings);
+			input->edacs->interpretKey(input->variables, warnings);
 			input->ddss->interpretKey(input->variables, warnings);
 		}
 		//input->rsg->interpretKey( input->variables ); 
@@ -144,6 +145,9 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 				input->dacs->organizeDacCommands(variationInc);
 				input->dacs->findLoadSkipSnapshots(currLoadSkipTime, input->variables, variationInc);
 				input->dacs->makeFinalDataFormat(variationInc);
+				// input->edacs->findLoadSkipSnapshots(currLoadSkipTime, input->variables, variationInc);
+				// input->edacs->makeFinalDataFormat(variationInc);
+				input->edacs->getEDacFinalData(variationInc);
 				input->ttls->organizeTtlCommands(variationInc);
 				input->ttls->findLoadSkipSnapshots(currLoadSkipTime, input->variables, variationInc);
 				input->ttls->convertToFinalFormat(variationInc);
@@ -154,6 +158,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 				input->ttls->checkNotTooManyTimes(variationInc);
 				input->ttls->checkFinalFormatTimes(variationInc);
 				input->dacs->checkTimingsWork(variationInc);
+				input->edacs->checkTimingsWork(variationInc);
 			}
 			//input->rsg->orderEvents( variationInc ); 
 		}
@@ -178,7 +183,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 				input->comm, input->quiet);
 		}
 		/// finish up 
-		handleDebugPlots(input->debugOptions, input->comm, input->ttls, input->dacs, input->quiet, input->python);
+		handleDebugPlots(input->debugOptions, input->comm, input->ttls, input->dacs, input->edacs, input->quiet, input->python);
 		input->comm->sendError(warnings);
 		// update the colors of the global variable control. 
 		input->globalControl->setUsages(input->variables);
@@ -282,6 +287,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 			input->dacs->stopDacs();
 			input->dacs->configureClocks(variationInc, skipOption);
 			input->dacs->writeDacs(variationInc, skipOption);
+			input->edacs->updateEDACFile(variationInc);
 			input->ddss->writeDDSs(variationInc, skipOption);
 			input->ttls->writeTtlDataToFPGA(variationInc, skipOption);
 			//input->dacs->startDacs(); 
@@ -429,7 +435,7 @@ double MasterManager::convertToTime(timeType time, std::vector<variableType> var
 }
 
 
-void MasterManager::handleDebugPlots(debugInfo debugOptions, Communicator* comm, DioSystem* ttls, DacSystem* dacs,
+void MasterManager::handleDebugPlots(debugInfo debugOptions, Communicator* comm, DioSystem* ttls, DacSystem* dacs, EDacSystem* edacs,
 	bool quiet, EmbeddedPythonHandler* python)
 {
 	if (debugOptions.showTtls)
@@ -698,7 +704,7 @@ void MasterManager::analyzeFunctionDefinition(std::string defLine, std::string& 
 
 
 void MasterManager::analyzeFunction(std::string function, std::vector<std::string> args, DioSystem* ttls,
-	DacSystem* dacs, DDSSystem* ddss, std::vector<std::pair<UINT, UINT>>& ttlShades,
+	DacSystem* dacs, EDacSystem* edacs, DDSSystem* ddss, std::vector<std::pair<UINT, UINT>>& ttlShades,
 	std::vector<UINT>& dacShades, std::vector<UINT>& ddsShades, std::vector<variableType>& vars)
 {
 	/// load the file 
@@ -1117,7 +1123,7 @@ void MasterManager::analyzeFunction(std::string function, std::vector<std::strin
 			}
 			try
 			{
-				analyzeFunction(functionName, newArgs, ttls, dacs, ddss, ttlShades, dacShades, ddsShades, vars);
+				analyzeFunction(functionName, newArgs, ttls, dacs, edacs, ddss, ttlShades, dacShades, ddsShades, vars);
 			}
 			catch (Error& err)
 			{
@@ -1221,7 +1227,7 @@ bool MasterManager::handleTimeCommands(std::string word, ScriptStream& stream, s
 	return true;
 }
 
-void MasterManager::analyzeMasterScript(DioSystem* ttls, DacSystem* dacs, DDSSystem* ddss,
+void MasterManager::analyzeMasterScript(DioSystem* ttls, DacSystem* dacs, EDacSystem* edacs, DDSSystem* ddss,
 	std::vector<std::pair<UINT, UINT>>& ttlShades, std::vector<UINT>& dacShades, std::vector<UINT>& ddsShades,
 	std::vector<variableType>& vars)
 {
@@ -1285,26 +1291,35 @@ void MasterManager::analyzeMasterScript(DioSystem* ttls, DacSystem* dacs, DDSSys
 
         else if (word == "edac:")
         {
-			// EDacCommandForm command;
-			// std::string edacVoltageValue;
-            // currentMasterScript >> command.edacChannelName;
-            // currentMasterScript >> command.edacVoltageValue1;
-			// currentMasterScript >> command.edacVoltageValue2;
-			// currentMasterScript >> command.edacVoltageValue3;
-			// currentMasterScript >> command.edacVoltageValue4;
-			// currentMasterScript >> command.edacVoltageValue5;
-			// currentMasterScript >> command.edacVoltageValue6;
-			// currentMasterScript >> command.edacVoltageValue7;
-			// currentMasterScript >> command.edacVoltageValue8;
+			EDacCommandForm command;
+            currentMasterScript >> command.edacVoltageValue1;
+			currentMasterScript >> command.edacVoltageValue2;
+			currentMasterScript >> command.edacVoltageValue3;
+			currentMasterScript >> command.edacVoltageValue4;
+			currentMasterScript >> command.edacVoltageValue5;
+			currentMasterScript >> command.edacVoltageValue6;
+			currentMasterScript >> command.edacVoltageValue7;
+			currentMasterScript >> command.edacVoltageValue8;
+			command.time = operationTime;
+			command.commandName = "edac:";
 
-			// command.edacVoltageValue1.assertValid(vars);
-			// command.edacVoltageValue2.assertValid(vars);
-			// command.edacVoltageValue3.assertValid(vars);
-			// command.edacVoltageValue4.assertValid(vars);
-			// command.edacVoltageValue5.assertValid(vars);
-			// command.edacVoltageValue6.assertValid(vars);
-			// command.edacVoltageValue7.assertValid(vars);
-			// command.edacVoltageValue8.assertValid(vars);
+			command.edacVoltageValue1.assertValid(vars);
+			command.edacVoltageValue2.assertValid(vars);
+			command.edacVoltageValue3.assertValid(vars);
+			command.edacVoltageValue4.assertValid(vars);
+			command.edacVoltageValue5.assertValid(vars);
+			command.edacVoltageValue6.assertValid(vars);
+			command.edacVoltageValue7.assertValid(vars);
+			command.edacVoltageValue8.assertValid(vars);
+
+			try
+			{
+				edacs->handleEDacScriptCommand(command, vars);
+			}
+			catch (Error& err)
+			{
+				thrower(err.whatStr() + "... in \"edac:\" command inside main script");
+			}
 
 			
 
@@ -1327,7 +1342,7 @@ void MasterManager::analyzeMasterScript(DioSystem* ttls, DacSystem* dacs, DDSSys
             }
 
         }
-		
+
 		/// deal with dac commands 
 		else if (word == "dac:")
 		{
@@ -1616,7 +1631,7 @@ void MasterManager::analyzeMasterScript(DioSystem* ttls, DacSystem* dacs, DDSSys
 			}
 			try
 			{
-				analyzeFunction(functionName, args, ttls, dacs, ddss, ttlShades, dacShades, ddsShades, vars);
+				analyzeFunction(functionName, args, ttls, dacs, edacs, ddss, ttlShades, dacShades, ddsShades, vars);
 			}
 			catch (Error& err)
 			{

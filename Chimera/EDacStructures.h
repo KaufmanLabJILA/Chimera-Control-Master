@@ -11,9 +11,8 @@ struct EDacCommandForm
 	std::string commandName;
 
 	unsigned short line;
-	//timeType time;
+	timeType time;
 
-	Expression edacChannelName;
 	Expression edacVoltageValue1;
 	Expression edacVoltageValue2;
 	Expression edacVoltageValue3;
@@ -26,15 +25,42 @@ struct EDacCommandForm
 
 struct EDacCommand
 {
+    double time;
 	unsigned short line;
-	std::string edacVoltageValue1;
-    std::string edacVoltageValue2;
-    std::string edacVoltageValue3;
-    std::string edacVoltageValue4;
-    std::string edacVoltageValue5;
-    std::string edacVoltageValue6;
-    std::string edacVoltageValue7;
-    std::string edacVoltageValue8;
+	double edacVoltageValue1;
+    double edacVoltageValue2;
+    double edacVoltageValue3;
+    double edacVoltageValue4;
+    double edacVoltageValue5;
+    double edacVoltageValue6;
+    double edacVoltageValue7;
+    double edacVoltageValue8;
+};
+
+struct EDacSnapshot
+{
+	double time;
+	double edacVoltageValue1;
+    double edacVoltageValue2;
+    double edacVoltageValue3;
+    double edacVoltageValue4;
+    double edacVoltageValue5;
+    double edacVoltageValue6;
+    double edacVoltageValue7;
+    double edacVoltageValue8;
+};
+
+struct EDacChannelSnapshot
+{
+	double time;
+	double edacVoltageValue1;
+    double edacVoltageValue2;
+    double edacVoltageValue3;
+    double edacVoltageValue4;
+    double edacVoltageValue5;
+    double edacVoltageValue6;
+    double edacVoltageValue7;
+    double edacVoltageValue8;
 };
 
 ///Copied from the DAC Struct class

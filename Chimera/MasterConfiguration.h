@@ -3,6 +3,7 @@
 #include <array>
 #include "DioSystem.h"
 #include "DacSystem.h"
+#include "EDacSystem.h"
 
 // This configuration system is different in style from the other configuration file system. This is designed to do more auto-saving and 
 // auto-load at the beginning of the experiment. There is only supposed to be one such configuration file

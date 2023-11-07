@@ -13,6 +13,7 @@ class AuxiliaryWindow;
 class Script;
 class AuxiliaryWindow;
 class DacSystem;
+class EDacSystem;
 class DioSystem;
 class DDSSystem;
 
@@ -25,7 +26,7 @@ class VariableSystem
 		void handleOpenConfig(std::ifstream& openFile, int versionMajor, int versionMinor );
 		void handleDraw(NMHDR* pNMHDR, LRESULT* pResult, rgbMap rgbs);
 		void updateVariableInfo( std::vector<Script*> scripts, MainWindow* mainWin, AuxiliaryWindow* auxWin,
-								 DioSystem* ttls, DacSystem* dacs, DDSSystem* ddss);
+								 DioSystem* ttls, DacSystem* dacs, EDacSystem* edacs, DDSSystem* ddss);
 		void deleteVariable();
 		void initialize( POINT& pos, cToolTips& toolTips, AuxiliaryWindow* master, int& id, std::string title,
 						 rgbMap rgbs, UINT listviewId );

@@ -5,6 +5,7 @@
 #include "DacSettingsDialog.h"
 #include "TextPromptDialog.h"
 #include "DioSystem.h"
+#include "EDacSystem.h"
 #include "commonFunctions.h"
 #include "openWithExplorer.h"
 #include "saveWithExplorer.h"
@@ -162,7 +163,7 @@ void AuxiliaryWindow::ConfigVarsDblClick(NMHDR * pNotifyStruct, LRESULT * result
 	try
 	{
 		mainWindowFriend->updateConfigurationSavedStatus(false);
-		configVariables.updateVariableInfo(scriptList, mainWindowFriend, this, &ttlBoard, &dacBoards, &ddsBoards);
+		configVariables.updateVariableInfo(scriptList, mainWindowFriend, this, &ttlBoard, &dacBoards, &edacBoards, &ddsBoards);
 	}
 	catch (Error& exception)
 	{
@@ -201,7 +202,7 @@ void AuxiliaryWindow::GlobalVarDblClick(NMHDR * pNotifyStruct, LRESULT * result)
 	try
 	{
 		mainWindowFriend->updateConfigurationSavedStatus(false);
-		globalVariables.updateVariableInfo(scriptList, mainWindowFriend, this, &ttlBoard, &dacBoards, &ddsBoards);
+		globalVariables.updateVariableInfo(scriptList, mainWindowFriend, this, &ttlBoard, &dacBoards, &edacBoards, &ddsBoards);
 	}
 	catch (Error& exception)
 	{
@@ -414,6 +415,7 @@ void AuxiliaryWindow::loadMotSettings(MasterThreadInput* input)
 		input->quiet = true;
 		input->ttls = &ttlBoard;
 		input->dacs = &dacBoards;
+		input->edacs = &edacBoards;
 		input->ddss = &ddsBoards;
 		input->globalControl = &globalVariables;
 		input->comm = mainWindowFriend->getComm();
@@ -449,6 +451,7 @@ void AuxiliaryWindow::fillMasterThreadInput(MasterThreadInput* input)
 {
 	input->ttls = &ttlBoard;
 	input->dacs = &dacBoards;
+	input->edacs = &edacBoards;
 	input->ddss = &ddsBoards;
 	input->globalControl = &globalVariables;
 

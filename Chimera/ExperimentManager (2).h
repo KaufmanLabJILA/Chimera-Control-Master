@@ -6,6 +6,7 @@
 #include <sstream>
 #include "TtlSystem.h"
 #include "DacSystem.h"
+#include "EDacSystem.h"
 #include <vector>
 #include "VariableSystem.h"
 #include "RichEditControl.h"
@@ -28,6 +29,7 @@ struct ExperimentThreadInput
 	bool quiet;
 	TtlSystem* ttls;											
 	DacSystem* dacs;
+	EDacSystem* edacs;
 	unsigned int repetitionNumber;
 	Repetitions* repControl;
 	std::vector<variable> vars;

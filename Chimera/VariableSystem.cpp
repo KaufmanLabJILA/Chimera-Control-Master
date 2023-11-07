@@ -623,7 +623,7 @@ void VariableSystem::handleDraw(NMHDR* pNMHDR, LRESULT* pResult, rgbMap rgbs)
 
 
 void VariableSystem::updateVariableInfo( std::vector<Script*> scripts, MainWindow* mainWin, AuxiliaryWindow* auxWin,
-										 DioSystem* ttls, DacSystem* dacs, DDSSystem* ddss)
+										 DioSystem* ttls, DacSystem* dacs, EDacSystem* edacs, DDSSystem* ddss)
 {
 	/// get the item and subitem
 	POINT cursorPos;

@@ -237,6 +237,9 @@
     <ClCompile Include="DacSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="EDacSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="TtlSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

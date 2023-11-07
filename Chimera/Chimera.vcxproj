@@ -206,6 +206,7 @@
     <ClInclude Include="commonTypes.h" />
     <ClInclude Include="Communicator.h" />
     <ClInclude Include="DacStructures.h" />
+    <ClInclude Include="EDacStructures.h" />
     <ClInclude Include="DdsState.h" />
     <ClInclude Include="DDSStructures.h" />
     <ClInclude Include="DDSSystem.h" />
@@ -223,6 +224,7 @@
     <ClInclude Include="ProfileSystem.h" />
     <ClInclude Include="DacSettingsDialog.h" />
     <ClInclude Include="DacSystem.h" />
+    <ClInclude Include="EDacSystem.h" />
     <ClInclude Include="DataLogger.h" />
     <ClInclude Include="PlotDataSet.h" />
     <ClInclude Include="EmbeddedPythonHandler.h" />
@@ -320,6 +322,7 @@
     <ClCompile Include="Control.cpp" />
     <ClCompile Include="DacSettingsDialog.cpp" />
     <ClCompile Include="DacSystem.cpp" />
+    <ClCompile Include="EDacSystem.cpp" />
     <ClCompile Include="DataLogger.cpp" />
     <ClCompile Include="PlotDataSet.cpp" />
     <ClCompile Include="EmbeddedPythonHandler.cpp" />

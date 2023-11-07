@@ -2,6 +2,7 @@
 
 #include "DioSystem.h"
 #include "DacSystem.h"
+#include "EDacSystem.h"
 #include "ZynqTCP.h"
 #include "VariableSystem.h"
 //#include "RhodeSchwarz.h"
@@ -40,7 +41,7 @@ class MasterManager
 		std::string getErrorMessage(int errorCode);
 		void loadMasterScript(std::string scriptAddress);
 
-		void analyzeMasterScript( DioSystem* ttls, DacSystem* dacs, DDSSystem* ddss, std::vector<std::pair<UINT, UINT>>& ttlShades,
+		void analyzeMasterScript( DioSystem* ttls, DacSystem* dacs, EDacSystem* edacs, DDSSystem* ddss, std::vector<std::pair<UINT, UINT>>& ttlShades,
 								  std::vector<UINT>& dacShades, std::vector<UINT>& ddsShades, std::vector<variableType>& vars);
 		// this function needs the master window in order to gather the relevant parameters for the experiment.
 		void startExperimentThread(MasterThreadInput* input);
@@ -54,7 +55,7 @@ class MasterManager
 		static void expUpdate(std::string text, Communicator* comm, bool quiet = false);
 		static void analyzeFunctionDefinition(std::string defLine, std::string& functionName, std::vector<std::string>& args);
 		static UINT determineVariationNumber(std::vector<variableType> vars);
-		static void handleDebugPlots( debugInfo debugOptions, Communicator* comm, DioSystem* ttls, DacSystem* dacs,
+		static void handleDebugPlots( debugInfo debugOptions, Communicator* comm, DioSystem* ttls, DacSystem* dacs, EDacSystem* edacs,
 									  bool quiet, EmbeddedPythonHandler* python );
 		static double convertToTime( timeType time, std::vector<variableType> variables, UINT variation );
 		void sendZynqCommand(ZynqTCP zynq_tcp, std::string command);
@@ -71,7 +72,7 @@ class MasterManager
 		ScriptStream currentMasterScript;
 		std::string functionsFolderLocation;
 		// called by analyzeMasterScript functions only.
-		void analyzeFunction( std::string function, std::vector<std::string> args, DioSystem* ttls, DacSystem* dacs, DDSSystem* ddss,
+		void analyzeFunction( std::string function, std::vector<std::string> args, DioSystem* ttls, DacSystem* dacs, EDacSystem* edacs, DDSSystem* ddss,
 							  std::vector<std::pair<UINT, UINT>>& ttlShades, std::vector<UINT>& dacShades, std::vector<UINT>& ddsShades, std::vector<variableType>& vars);
 		// 
 		timeType operationTime;

@@ -51,7 +51,11 @@ if __name__ == "__main__":
                     valueArray = []
 
                 for idx, val in enumerate(values.split(',')):
-                    valueArray.append(float(val))
+                    if idx == 0:
+                        pass
+                    else:
+                        valueArray.append(float(val))
+                print(valueArray)
 
                 
                 #Send Message - Voltage Values For All dacs, right now we are limited to setting all channels together
