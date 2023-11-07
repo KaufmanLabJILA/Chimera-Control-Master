@@ -11,8 +11,8 @@
 // build and debug other aspects of the program.
 
 //#define MASTER_COMPUTER
-//#define DEEP_THOUGHT
-#define SAMANTHA
+#define DEEP_THOUGHT
+//#define SAMANTHA
 //#define ADAMS_LAB
 // #define DESKTOP_COMPUTER
 //#define SALAMIS_TABLET
