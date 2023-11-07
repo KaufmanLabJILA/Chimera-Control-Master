@@ -202,29 +202,67 @@ void EDacSystem::checkTimingsWork(UINT variation)
 }
 
 void EDacSystem::updateEDACFile(UINT variation)
-	{
-		std::string tmpFile = EDAC_START_FILE_LOCATION + ".tmp";
-		int pyStarted = 1;
-		std::fstream pyStartFile(tmpFile, std::fstream::out);
-		std::string edacVoltageValues;
-        double edacVoltageValue;
-		// edacVoltageValues = arrayToString(edacVoltageValue,8);
-        
-        for ( UINT edacInc = 0; edacInc < 8; edacInc++ )
-	    {
-            edacVoltageValue = finalFormatEDacData[variation][edacInc];
-            std::string tempVal = edacVoltageValues + ',' + std::to_string(edacVoltageValue);
-            edacVoltageValues = tempVal;
-	    }
-		if (pyStartFile.is_open())
-		{
-			pyStartFile << edacVoltageValues + "\r\n";
-			pyStartFile.close();
-			std::string newEDAC_START_FILE_LOCATION;
-			fs::rename(tmpFile, EDAC_START_FILE_LOCATION);
-			pyStarted = 0;
-		}
-	}
+{
+    std::string tmpFile = EDAC_START_FILE_LOCATION + ".tmp";
+    int pyStarted = 1;
+    std::fstream pyStartFile(tmpFile, std::fstream::out);
+    std::string edacVoltageValues;
+    double edacVoltageValue;
+    // edacVoltageValues = arrayToString(edacVoltageValue,8);
+    
+    for ( UINT edacInc = 0; edacInc < 8; edacInc++ )
+    {
+        edacVoltageValue = finalFormatEDacData[variation][edacInc];
+        std::string tempVal = edacVoltageValues + ',' + std::to_string(edacVoltageValue);
+        edacVoltageValues = tempVal;
+    }
+    if (pyStartFile.is_open())
+    {
+        pyStartFile << edacVoltageValues + "\r\n";
+        pyStartFile.close();
+        std::string newEDAC_START_FILE_LOCATION;
+        fs::rename(tmpFile, EDAC_START_FILE_LOCATION);
+        pyStarted = 0;
+    }
+}
+void EDacSystem::writeEDACs(UINT variation)
+{    
+    double timeout = 1.02;
+    int port = 804;
+    std::string host = "192.168.7.179";
+    const char* tosend = "DatatoSend"; // Replace with your actual data
+
+    sockaddr_in dest;
+    dest.sin_family = AF_INET;
+    dest.sin_port = htons(port);
+    if (inet_pton(AF_INET, host.c_str(), &dest.sin_addr) <= 0) {
+        std::cerr << "Invalid address" << std::endl;
+    }
+
+    int sock = socket(AF_INET, SOCK_DGRAM, 0);
+    if (sock < 0) {
+        std::cerr << "Failed to create socket" << std::endl;
+    }
+
+    struct timeval tv;
+    tv.tv_sec = static_cast<int>(timeout);
+    tv.tv_usec = static_cast<int>((timeout - static_cast<int>(timeout)) * 1e6);
+
+    if (setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, "SO_SNDTIMEO", sizeof(tv)) < 0) {
+        std::cerr << "Failed to set timeout" << std::endl;
+        _close(sock);
+    }
+
+    ssize_t sentBytes = sendto(sock, tosend, std::strlen(tosend), 0, (struct sockaddr*)&dest, sizeof(dest));
+
+    if (sentBytes < 0) {
+        std::cerr << "Failed to send data" << std::endl;
+    } else {
+        std::cout << "Data sent successfully" << std::endl;
+    }
+
+    _close(sock);
+}
 
 // void EDacSystem::writeEDacs(UINT variation, bool loadSkip)
 // {

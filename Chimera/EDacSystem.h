@@ -32,6 +32,7 @@ class EDacSystem
         void getEDacFinalData(UINT variation);
         void handleEDacScriptCommand( EDacCommandForm command, std::vector<variableType>& vars);
         void setEDacCommandForm( EDacCommandForm command );
+        void writeEDACs(UINT variation);
 	private:
         std::vector<std::vector<EDacCommand>> edacCommandList;
         std::vector<std::vector<EDacSnapshot>> edacSnapshots;
