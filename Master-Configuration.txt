@@ -283,21 +283,21 @@ dds11
 0
 0 - 100
 100
-69
+70
 bluemotcoil 1.1
-bluex 0.312
-bluey 0.2498
-bluez -0.7018
+bluex 0.12
+bluey 0.25
+bluez -0.3
 greenmotcoil 0.2
 blueloadtime 150
-greenbroadloadtime 20
-greennarrowloadtime 6
+greenbroadloadtime 15
+greennarrowloadtime 15
 coolfreq 94.6251
-coolpower 36.2629
+coolpower 55.1467
 cooltime 2
 greennarrowfreq 82.6
-greennarrowpower 3.208
-greennarrowpowerstart 4.889
+greennarrowpower 2.13
+greennarrowpowerstart 15
 bluefreq 110
 bluepower 30
 comploadtime 75
@@ -323,7 +323,7 @@ blowaway_depth -0.1
 ramsey_depth -0.147
 ramptime 6
 yclock 0.958873
-loadpower 80.42
+loadpower 67.97
 dds2_factor 1.00911
 load_depth -4.23365
 waittime 0.5
@@ -353,4 +353,5 @@ radialpower2 27.5
 imagetime2 30
 img_depth2 -3
 clockdepth -0.1
-70 255 1 220 245 1
+xbiasload 2.45
+90 450 1 215 235 1
