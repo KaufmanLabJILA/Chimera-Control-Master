@@ -126,6 +126,7 @@ void VariableSystem::initialize( POINT& pos, cToolTips& toolTips, AuxiliaryWindo
 
 void VariableSystem::handleOpenConfig(std::ifstream& configFile, int versionMajor, int versionMinor )
 {
+	/// A map is a good choice because it automatically sorts its keys (variables in this case) in ascending order. - Modification to make the variables appear in alphabetical order.
 	ProfileSystem::checkDelimiterLine(configFile, "VARIABLES");
 	// handle variables
 	clearVariables();
@@ -143,6 +144,7 @@ void VariableSystem::handleOpenConfig(std::ifstream& configFile, int versionMajo
 		}
 	}
 int rangeNumber = 1;
+std::map<std::string, variableType> variableMap;
 for ( const UINT varInc : range( varNum ) )
 {
 	variableType tempVar;
@@ -204,8 +206,20 @@ for ( const UINT varInc : range( varNum ) )
 		// make sure it has at least one entry.
 		tempVar.ranges.push_back( { 0,0,1, false, true } );
 	}
-	addConfigVariable( tempVar, varInc );
+
+	variableMap[varName] = tempVar;
+	//addConfigVariable( tempVar, varInc );
 }
+std::map<std::string, variableType>::iterator it;
+UINT varIncrement;
+varIncrement = 0;
+for (it = variableMap.begin(); it != variableMap.end(); it++) {
+	addConfigVariable( it->second, varIncrement);
+	varIncrement++;
+       
+}
+
+
 
 for ( auto rangeInc : range( rangeNumber ) )
 {
