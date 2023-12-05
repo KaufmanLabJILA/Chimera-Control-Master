@@ -873,8 +873,8 @@ void MasterManager::analyzeFunction( std::string function, std::vector<std::stri
 			// this is for setting a ttl to on or off based on a variable
 			std::string name;
 			Expression ttlState;
-			currentMasterScript >> name;
-			currentMasterScript >> ttlState;
+			functionStream >> name;
+			functionStream >> ttlState;
 			ttlState.assertValid(vars);
 			ttls->handleTtlScriptCommand(word, operationTime, name, ttlState, ttlShades, vars);
 		}

@@ -10,7 +10,8 @@ pulseon: gmload .00011
 t += .1
 pulseon: gmmove .00011
 t += .1
-on: tweezershut
+%on: tweezershut
+variableon: tweezershut enable_rearrange
 t += 5
 
 %pulseon: trigger .1
@@ -65,6 +66,7 @@ end
 t += .1
 
 %on: radial2
+variableon: latticehold 1-enable_rearrange
 dacexpspace: axialpow ax_lattice_pow ax_lattice_zero 1 30
 %t += 6
 dacexpspace: latticepow lattice_pow lattice_zero 1 30
@@ -93,14 +95,15 @@ t += 2
 %t += 6
 on: latticehold
 t += 0.05
-on: latblink
+variableon: latblink enable_rearrange
+%pulseon: tektronixtrig .001
 
 t += 15
 %call lacs(5)  % This wants imaging snapshot
 
 off: latblink
 t += 0.05
-off: latticehold
+variableon: latticehold 1-enable_rearrange
 
 %call magicfieldsdual813()
 
@@ -110,6 +113,7 @@ dacexpspace: axialpow ax_lattice_zero ax_lattice_pow 1 30
 %t += 6
 dacexpspace: latticepow lattice_zero lattice_pow 1 30
 t += 2
+off: latticehold
 
 %dacexpspace: axialpow ax_lattice_zero ax_lattice_pow/20 25 100
 %dacexpspace: latticepow lattice_zero lattice_pow/20 25 100

@@ -7,7 +7,6 @@ def blue_mot(loadTime):
   on: slower
 
   dac: bigzcoil 1.8
-
   dac: x1coil -.075
   dac: y1coil .065
   dac: y2coil .065

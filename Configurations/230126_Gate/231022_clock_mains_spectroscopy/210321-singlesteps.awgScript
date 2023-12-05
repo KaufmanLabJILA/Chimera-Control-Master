@@ -1,0 +1,50 @@
+% start by resetting synthesizer
+reset
+
+%%% for fast pulses:
+
+%setsingle 0 ramptime 43 ryd_freq 1 0
+%setsingle 0 ramptime+uvtime 0 ryd_freq 0 0
+
+%setsingle 0 0 65 180 1 0
+%setsingle 0 2000 0 180 1 0
+
+%setsingle 0 6000 65 ryd_freq 1 0
+%setsingle 0 6000+uvtime 0 ryd_freq 0 0
+
+%setsingle 0 8000+970 65 ryd_freq 1 0
+%setsingle 0 8000+970+uvtime 0 ryd_freq 0 0
+
+%%% normal single step:
+setsingle 0 0 0 ryd_freq 1 0
+setsingle 0 1.08 awgamp ryd_freq 0 0
+setsingle 0 (uvtime + 1.08) 0 ryd_freq 0 0
+
+program 0
+
+%%% for monitoring:
+
+%setsingle 1 0 40 ryd_freq/10 1 0
+%setsingle 1 uvtime 0 ryd_freq/10 0 0
+%setsingle 1 10 0 ryd_freq/10 0 0
+
+%setsingle 1 0 awgamp ryd_freq/10 1 0
+%setsingle 1 uvtime 0 ryd_freq/10 0 0
+
+program 1
+
+%setsingle 2 0 75 ryd_freq 1 0 
+%setsingle 0 uvtime 0 ryd_freq 0 0
+
+program 2
+
+%setsingle 3 0 0 80 1 0
+%setsingle 3 (1.08 + uvtime + uv407delay) 20 80 0 0
+%setsingle 3 (1.08 + uvtime + uv407delay + time407) 0 80 0 0
+
+
+program 3
+
+% Software trigger for testing
+%trigger
+%trigger

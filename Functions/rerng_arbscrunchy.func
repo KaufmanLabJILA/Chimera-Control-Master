@@ -15,6 +15,8 @@ on: radial
 on: radial2
 %on: axial
 
+% change number of repeats according to number of initx columns (n)
+% number of repeats should be n * 2 - 1
 repeat: 31
  pulseon: gmmove .00011
  t += 0.08

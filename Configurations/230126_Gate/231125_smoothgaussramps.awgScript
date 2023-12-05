@@ -1,0 +1,77 @@
+reset
+
+%%Program gate%%
+
+setsingle 0 0 0 ryd_freq+ryd_det 1 0
+setsingle 0 1.080+0.000000 awgamp*(0.044) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+0.006510 awgamp*(0.054) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+0.013021 awgamp*(0.065) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+0.019531 awgamp*(0.079) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+0.026042 awgamp*(0.094) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+0.032552 awgamp*(0.112) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+0.039063 awgamp*(0.132) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+0.045573 awgamp*(0.155) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+0.052083 awgamp*(0.181) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+0.058594 awgamp*(0.210) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+0.065104 awgamp*(0.241) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+0.071615 awgamp*(0.276) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+0.078125 awgamp*(0.313) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+0.084635 awgamp*(0.354) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+0.091146 awgamp*(0.396) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+0.097656 awgamp*(0.441) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+0.104167 awgamp*(0.488) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+0.110677 awgamp*(0.536) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+0.117188 awgamp*(0.585) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+0.123698 awgamp*(0.635) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+0.130208 awgamp*(0.683) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+0.136719 awgamp*(0.731) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+0.143229 awgamp*(0.777) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+0.149740 awgamp*(0.821) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+0.156250 awgamp*(0.861) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+0.162760 awgamp*(0.897) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+0.169271 awgamp*(0.929) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+0.175781 awgamp*(0.955) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+0.182292 awgamp*(0.976) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+0.188802 awgamp*(0.990) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+0.195313 awgamp*(0.998) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+0.201823 awgamp ryd_freq+ryd_det 0 0
+setsingle 0 1.080+uvtime-0.200000+0.000000 awgamp*(1.000) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+uvtime-0.200000+0.006510 awgamp*(0.994) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+uvtime-0.200000+0.013021 awgamp*(0.974) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+uvtime-0.200000+0.019531 awgamp*(0.943) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+uvtime-0.200000+0.026042 awgamp*(0.901) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+uvtime-0.200000+0.032552 awgamp*(0.850) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+uvtime-0.200000+0.039063 awgamp*(0.792) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+uvtime-0.200000+0.045573 awgamp*(0.728) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+uvtime-0.200000+0.052083 awgamp*(0.660) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+uvtime-0.200000+0.058594 awgamp*(0.591) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+uvtime-0.200000+0.065104 awgamp*(0.523) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+uvtime-0.200000+0.071615 awgamp*(0.456) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+uvtime-0.200000+0.078125 awgamp*(0.393) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+uvtime-0.200000+0.084635 awgamp*(0.334) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+uvtime-0.200000+0.091146 awgamp*(0.280) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+uvtime-0.200000+0.097656 awgamp*(0.232) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+uvtime-0.200000+0.104167 awgamp*(0.190) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+uvtime-0.200000+0.110677 awgamp*(0.153) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+uvtime-0.200000+0.117188 awgamp*(0.122) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+uvtime-0.200000+0.123698 awgamp*(0.096) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+uvtime-0.200000+0.130208 awgamp*(0.075) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+uvtime-0.200000+0.136719 awgamp*(0.057) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+uvtime-0.200000+0.143229 awgamp*(0.043) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+uvtime-0.200000+0.149740 awgamp*(0.032) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+uvtime-0.200000+0.156250 awgamp*(0.024) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+uvtime-0.200000+0.162760 awgamp*(0.017) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+uvtime-0.200000+0.169271 awgamp*(0.012) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+uvtime-0.200000+0.175781 awgamp*(0.009) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+uvtime-0.200000+0.182292 awgamp*(0.006) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+uvtime-0.200000+0.188802 awgamp*(0.004) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+uvtime-0.200000+0.195313 awgamp*(0.003) ryd_freq+ryd_det 0 0
+setsingle 0 1.080+uvtime+0.200000+0.201823 0 ryd_freq+ryd_det 0 0
+
+program 0
+
+%%Program monitor%%
+
+setsingle 2 0 75 ryd_freq+ryd_det 1 phase_offset_awg
+
+program 2

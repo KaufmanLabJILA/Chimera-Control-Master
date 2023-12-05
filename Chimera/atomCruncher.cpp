@@ -746,6 +746,13 @@ moveSequence atomCruncher::getRearrangeMoves(std::string rearrangeType) {
 		filterReservoir(moveseq);
 		compressX(moveseq);
 	}
+	else if (rearrangeType == "filterarbscrunchycompressx2")
+	{
+		enoughY(moveseq, true);
+		scrunchYTarget(moveseq, true);
+		compressX(moveseq);
+		filterReservoir(moveseq);
+	}
 	else if (rearrangeType == "arbequalscrunchy")
 	{
 		int nPerColumn = equalizeY(moveseq);

@@ -1601,19 +1601,19 @@ void gigaMoog::updateXYOffsetAuto() {
 
 	if (xOffsetAuto > 1.3)
 	{
-		xOffsetAuto -= 1.92457761; //TODO: don't hard code this, just use LUT.
+		xOffsetAuto -= 1.9; //TODO: don't hard code this, just use LUT.
 	}
 	else if (xOffsetAuto < -1.3)
 	{
-		xOffsetAuto += 1.92457761;
+		xOffsetAuto += 1.9;
 	}
 	if (yOffsetAuto > 1.3)
 	{
-		yOffsetAuto -= 1.98202151;
+		yOffsetAuto -= 1.9;
 	}
 	else if (yOffsetAuto < -1.3)
 	{
-		yOffsetAuto += 1.98202151;
+		yOffsetAuto += 1.9;
 	}
 
 };

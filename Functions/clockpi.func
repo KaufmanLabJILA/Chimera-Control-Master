@@ -6,5 +6,5 @@ def clockpi(piquarters):
  on: clockttl
  t += piquarters
  off: clockttl
- t += .001
+ t += .004
  end

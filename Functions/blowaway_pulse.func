@@ -7,11 +7,11 @@ def blowaway_pulse(blowaway_time):
    on: imagshut
    on: blowawayttl
    on: imag461
-   dacexpspace: latticepow lattice_pow lattice_pow/10 .5 50
-   t += .6
+   dacexpspace: latticepow lattice_pow lattice_pow/20 .3 50
+   t += .35
    %on: rp707
    %on: rp679
-   t += blowaway_time-1.2
+   t += blowaway_time-0.7
    %on: latticehold
    %t += .001
    %on: latblink
@@ -24,5 +24,5 @@ def blowaway_pulse(blowaway_time):
    off: blowawayttl
    off: imagshut
    t += 4
-   dacexpspace: latticepow lattice_pow/10 lattice_pow .5 50
-   t += .6
+   dacexpspace: latticepow lattice_pow/20 lattice_pow .3 50
+   t += .35

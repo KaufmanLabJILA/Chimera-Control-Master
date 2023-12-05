@@ -4,6 +4,7 @@ def imageLat(imageTime):
  on: shut679
  on: andorshut
  on: imagshut
+ on: lampttl
  t += 4
  on: andortrig
  t += .2
@@ -30,4 +31,5 @@ def imageLat(imageTime):
  off: shut707
  off: shut679
  off: imagshut
+ off: lampttl
  t += .01

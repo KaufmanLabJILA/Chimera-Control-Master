@@ -1,8 +1,8 @@
 % Master-Script See the "?" for info on commands.
 def mako_image():
   %Image red MOT:
-  %on: blueshut %reminder that this needed to be on earlier
-  %t += 4  
+  on: blueshut %reminder that this needed to be on earlier
+  t += 4  
   %on: imag461
   %on: slower
   dac: blue3dpow 0.3

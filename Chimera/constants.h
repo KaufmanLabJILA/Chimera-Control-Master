@@ -881,6 +881,7 @@ const char MASTER_HELP[] = "This is a script for programming master timing for T
 "-      off: [ttlName]\n"
 "-      pulseon: [ttlName] [pulseLength]\n"
 "-      pulseoff: [ttlName] [pulseLength]\n"
+"       variableon: [ttlName] [ttlState]\n"
 "-      dac: [dacName] [voltage]\n"
 "-      dacarange: [dacName] [initValue] [finalValue] [rampTime] [rampInc]\n"
 "-      daclinspace: [dacName] [initValue] [finalValue] [rampTime] [numberOfSteps]\n"

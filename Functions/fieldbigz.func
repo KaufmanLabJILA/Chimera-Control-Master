@@ -1,13 +1,15 @@
 % Master-Script See the "?" for info on commands.
 def fieldbigz(fieldvalue):
-  call fieldzero()
+  %call fieldzero()
 
 %%% High field condition
-  t += 4
-  dac: bigzcoil 0
-  t += 4
+  dac: bigzcoil bz0-.0015
+  t += 30
   off: bigzantihelm
   t += 1
+  dac: bigzcoil bz0-.0011
+  %dac: bigzcoil bz0-.0015
+  %t += 200
   %dac: bigzcoil .7 %.14 %0.28 %0.7 %0.112  %2*0.08875 %1.775 %
   %t += 3.82 %3.91 %7.4 
   %dac: bigzcoil 0.2 %0.5 %2
@@ -18,9 +20,9 @@ def fieldbigz(fieldvalue):
 
   % squeezing paper conditions
   %dac: bigzcoil 1 %0.2 %2 %1.0
-  daccosspace: bigzcoil 0 fieldvalue 20 30
+  daccosspace: bigzcoil bz0-.0011 fieldvalue 20 30
+  %dac: bigzcoil fieldvalue
   t += 20
-
 
 %%% Low field condition
   %t += 4

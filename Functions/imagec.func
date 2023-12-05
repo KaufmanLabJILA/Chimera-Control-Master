@@ -1,4 +1,5 @@
 def imagec():
+
   dac: bluetune bluetune_imag
   dac: imagingPow imagpow
   off: radial2
@@ -6,6 +7,7 @@ def imagec():
   on: imagshut
   on: shut707
   on: shut679
+  on: lampttl
   t += 4
   on: andortrig
   t += .2
@@ -29,4 +31,5 @@ def imagec():
   off: andorshut   
   off: imag461
   off: imagshut
+  off: lampttl
   t += .01

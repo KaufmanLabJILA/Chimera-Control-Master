@@ -9,7 +9,7 @@ def imageshort():
 %  on: blowawayshutter
 
 %  on: blueshut
-  t += 4
+  %t += 4
 %  on: imag461
 %  t += .02
 %  off: imag461

@@ -2,12 +2,13 @@
 def rydberg_pulse(ryd_time):
   % insert commands here...
   on: uvttl
-  off: pi407
+  %off: pi407
   on: latticehold
   pulseon: trigger .001
   pulseon: tektronixtrig .001
   t += .001
   pulseon: awgtrig .0001
+  %off: awgtrig
   t += (awgblinkdelay+1.08)/1000
   on: latblink
   t += ryd_time/1000
@@ -15,7 +16,7 @@ def rydberg_pulse(ryd_time):
   off: latblink 
   t += time407/1000
   %off: uvttl
-  on: pi407
+  %on: pi407
   off: latticehold
   t += .001
 
