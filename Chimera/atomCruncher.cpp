@@ -590,6 +590,45 @@ void atomCruncher::compressX(moveSequence& moveseq) {
 	}
 }
 
+void atomCruncher::compressX2(moveSequence& moveseq) {
+	///Change the spacing between columns of target pattern by moving entire columns at a time.
+
+	std::vector<int> positionCoordinatesXtmp = positionCoordinatesX; //make a version of positionCoordinates that can be modified.
+	int iCenter = positionCoordinatesX.size() / 2; //central load column index
+	int coordXCenter = positionCoordinatesX[iCenter];
+
+	//iterate through columns, and move to adjacent column as needed.
+	int coordX = 0;
+	int coordXtarget = 0;
+	for (int i = 1; i < positionCoordinatesX.size(); i++) //iterate through all but central column
+	{
+		if (i + iCenter < positionCoordinatesX.size())
+		{
+			coordX = positionCoordinatesX[i + iCenter];
+		}
+		else
+		{
+			coordX = positionCoordinatesX[2 * iCenter - (i + 1)];
+		}
+		coordXtarget = coordXCenter + ((coordX - coordXCenter)*(gmoog->scrunchSpacing)) / 4;
+		moveSingle single;
+		for (int iy = 0; iy < positionsY.size(); iy++)
+		{
+			if ((*rearrangerAtomQueue)[0][coordX + (positionsX.size())*iy]
+				&& gmoog->targetPositions[coordX + (positionsX.size())*iy]) // tweezers on all atoms that occupy target sites in column
+			{
+				single.startAOY.push_back(iy); //select atoms in column to move
+				single.endAOY.push_back(iy);
+				(*rearrangerAtomQueue)[0][coordXtarget + (positionsX.size())*iy] = 1;
+				(*rearrangerAtomQueue)[0][coordX + (positionsX.size())*iy] = 0; //remove atom from pickup location and place in target
+			}
+		}
+		single.startAOX.push_back(coordX);
+		single.endAOX.push_back(coordXtarget); //move entire column
+		if (single.ny() > 0) { moveseq.moves.push_back(single); }
+	}
+}
+
 void  atomCruncher::filterReservoir(moveSequence& moveseq) {
 	///Place tweezers on all positions to be kept
 	moveSingle single;
@@ -732,6 +771,12 @@ moveSequence atomCruncher::getRearrangeMoves(std::string rearrangeType) {
 		enoughY(moveseq);
 		scrunchYTarget(moveseq);
 		compressX(moveseq);
+	}
+	else if (rearrangeType == "arbscrunchycompressx2")
+	{
+		enoughY(moveseq);
+		scrunchYTarget(moveseq);
+		compressX2(moveseq);
 	}
 	else if (rearrangeType == "filterarbscrunchy")
 	{

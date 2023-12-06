@@ -18,6 +18,7 @@ public:
 	moveSequence getRearrangeMoves(std::string rearrangeType);
 	void scrunchX(moveSequence& moveseq, bool centered);
 	void compressX(moveSequence& moveseq);
+	void compressX2(moveSequence& moveseq);
 	void filterReservoir(moveSequence& moveseq);
 	void scrunchY(moveSequence& moveseq, bool centered);
 	void scrunchYTarget(moveSequence& moveseq, bool constantMoves);

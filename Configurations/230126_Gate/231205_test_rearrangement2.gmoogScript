@@ -1,4 +1,4 @@
-rearrange arbscrunchycompressx 2 amprate moverate %max is ampstep 134217727(?may be 26 bit), freqstep 511
+rearrange arbscrunchycompressx2 2 amprate moverate %max is ampstep 134217727(?may be 26 bit), freqstep 511
 %rearrange arbscrunchycompressx 2 amprate moverate %max is ampstep 134217727(?may be 26 bit), freqstep 511
 %rearrange filterarbscrunchycompressx 2 amprate moverate %max is ampstep 134217727(?may be 26 bit), freqstep 511
 %filterarbscrunchy compressx
