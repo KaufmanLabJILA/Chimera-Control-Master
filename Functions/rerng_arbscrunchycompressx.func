@@ -27,6 +27,19 @@ repeat: 31
 % t += 100.1
 end
 
+%Compress
+repeat: 16
+ pulseon: gmmove .00011
+ t += .08
+% t += 100.1
+ pulseon: gmmove .00011
+ t += 1
+% t += 100.1
+ pulseon: gmmove .00011
+ t += .08
+% t += 100.1
+end
+
 off: radial
 off: radial2
 off: axial

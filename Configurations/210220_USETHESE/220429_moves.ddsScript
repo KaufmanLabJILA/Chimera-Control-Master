@@ -79,8 +79,11 @@ amps  0 75 90 90 8 20 0 20
 
 % IMAGE TWEEZERS
 snapshot 4 reps 2
-freqs 80 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p1+fcool+(__ts__-__t0__)*dr_3p1/86400 c_3p1+fcool+(__ts__-__t0__)*dr_3p1/86400 c_3p1+.14+(__ts__-__t0__)*dr_3p1/86400 c_3p1+fcool+(__ts__-__t0__)*dr_3p1/86400
-amps  0 75 90 90 16 14 9 4
+%freqs 80 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p1+fcool+(__ts__-__t0__)*dr_3p1/86400 c_3p1+fcool+(__ts__-__t0__)*dr_3p1/86400 c_3p1+.14+(__ts__-__t0__)*dr_3p1/86400 c_3p1+fcool+(__ts__-__t0__)*dr_3p1/86400
+%amps  0 75 90 90 16 14 9 4
+freqs 80 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p1+fcool+(__ts__-__t0__)*dr_3p1/86400 c_3p1+fcool+(__ts__-__t0__)*dr_3p1/86400 c_3p1+0.14+(__ts__-__t0__)*dr_3p1/86400 c_3p1+fcool+(__ts__-__t0__)*dr_3p1/86400
+%amps  0 75 90 90 16 14 11 4
+amps  0 0 36 100 16 14 9 4
 
 % SB COOL TWEEZER
 snapshot 5 reps 2

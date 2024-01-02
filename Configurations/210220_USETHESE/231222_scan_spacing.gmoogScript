@@ -1,0 +1,52 @@
+% DACs 2, 3 currently disabled.
+% set DAC, channel, amp, freq, phase
+% setmove snapshot ID, DAC, channel,
+% freq jump bool, phase jump bool, amp, amp incr, freq, freq incr, phase
+
+set DAC0 0 80 180-6*spacing 16.36363636
+set DAC0 1 80 180-5*spacing 65.45454545
+set DAC0 2 80 180-4*spacing 147.27272727
+set DAC0 3 80 180-3*spacing 261.81818182
+set DAC0 4 80 180-2*spacing 49.09090909
+set DAC0 5 80 180-1*spacing 229.09090909
+set DAC0 6 80 180-0*spacing  81.81818182
+set DAC0 7 80 180+1*spacing 327.27272727
+set DAC0 8 80 180+2*spacing 245.45454545
+set DAC0 9 80 180+3*spacing 196.36363636
+set DAC0 10 80 180+4*spacing 180.0
+
+set DAC1 0 100 180 0.0
+set DAC1 1 100 180 0.0
+
+setmove 0 DAC0 0  0 0 80 1 180-6*spacing2  moverate 16.36363636
+setmove 0 DAC0 1  0 0 80 1 180-5*spacing2  moverate 65.45454545
+setmove 0 DAC0 2  0 0 80 1 180-4*spacing2  moverate 147.27272727
+setmove 0 DAC0 3  0 0 80 1 180-3*spacing2  moverate 261.81818182
+setmove 0 DAC0 4  0 0 80 1 180-2*spacing2  moverate 49.09090909
+setmove 0 DAC0 5  0 0 80 1 180-1*spacing2  moverate 229.09090909
+% setmove 0 DAC0 6  0 0 80 1 180-0*spacing2 0 81.81818182
+setmove 0 DAC0 7  0 0 80 1 180+1*spacing2 -moverate 327.27272727
+setmove 0 DAC0 8  0 0 80 1 180+2*spacing2 -moverate 245.45454545
+setmove 0 DAC0 9  0 0 80 1 180+3*spacing2 -moverate 196.36363636
+setmove 0 DAC0 10 0 0 80 1 180+4*spacing2 -moverate 180.0
+
+setmove 0 DAC1 0  0 0 100 1 180 moverate 0.0
+setmove 0 DAC1 1  0 0 100 1 180 moverate 0.0
+
+setmove 1 DAC0 0  0 0 80 1 180-6*spacing -moverate 16.36363636
+setmove 1 DAC0 1  0 0 80 1 180-5*spacing -moverate 65.45454545
+setmove 1 DAC0 2  0 0 80 1 180-4*spacing -moverate 147.27272727
+setmove 1 DAC0 3  0 0 80 1 180-3*spacing -moverate 261.81818182
+setmove 1 DAC0 4  0 0 80 1 180-2*spacing -moverate 49.09090909
+setmove 1 DAC0 5  0 0 80 1 180-1*spacing -moverate 229.09090909
+% setmove 1 DAC0 6  0 0 80 1 180-0*spacing 0 81.81818182
+setmove 1 DAC0 7  0 0 80 1 180+1*spacing  moverate 327.27272727
+setmove 1 DAC0 8  0 0 80 1 180+2*spacing  moverate 245.45454545
+setmove 1 DAC0 9  0 0 80 1 180+3*spacing  moverate 196.36363636
+setmove 1 DAC0 10 0 0 80 1 180+4*spacing  moverate 180.0
+
+setmove 1 DAC1 0  0 0 100 1 180 moverate 0.0
+setmove 1 DAC1 1  0 0 100 1 180 moverate 0.0
+
+%test
+%hardreset

@@ -17,7 +17,8 @@ reset
 
 %%% normal single step:
 setsingle 0 0 0 (ryd_freq+ryd_det) 1 0
-setsingle 0 1.08 awgamp (ryd_freq+ryd_det) 0 0
+%setsingle 0 1.08 awgamp (ryd_freq+ryd_det) 0 0
+setsingle 0 1.08 awgamp*0.514 (ryd_freq+ryd_det) 0 0
 setsingle 0 (uvtime + 1.08) 0 (ryd_freq+ryd_det) 0 0
 
 %setsingle 0 (uvtime + ramseytime + 1.08) awgamp (ryd_freq+ryd_det) 0 0

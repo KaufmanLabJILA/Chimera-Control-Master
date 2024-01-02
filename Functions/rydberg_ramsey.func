@@ -11,8 +11,8 @@ def rydberg_ramsey(ryd_time):
   %off: awgtrig
   t += (awgblinkdelay+1.08)/1000
   on: latblink
-  %t += 2*ryd_time/1000
-  t += ryd_time/1000
+  t += 2*ryd_time/1000
+  %t += ramseytime/1000
   t += 5/1000
   t += .0002
   off: latblink 
