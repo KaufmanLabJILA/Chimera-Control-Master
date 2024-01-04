@@ -26,6 +26,7 @@
 #define AWG_SAFEMODE1 true
 #define GIGAMOOG_SAFEMODE false
 #define NIAWG_SAFEMODE true
+#define HAM_SAFEMODE true
 #define ANDOR_SAFEMODE true
 #define ATOMCRUNCHER_SAFEMODE true
 #define AUTOALIGN_SAFEMODE true
@@ -113,6 +114,7 @@ const std::string DDS_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAUL
 #ifdef SAMANTHA
 #define PYTHON_HOME L"C:\\Users\\klab\\Anaconda3\\"
 #define MOOG_SAFEMODE true
+#define HAM_SAFEMODE false
 #define AWG_SAFEMODE0 true
 #define AWG_SAFEMODE1 true
 #define GIGAMOOG_SAFEMODE true

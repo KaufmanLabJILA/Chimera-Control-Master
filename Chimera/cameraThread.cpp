@@ -27,7 +27,7 @@ unsigned __stdcall cameraThread(void* voidPtr)
 	{
 
 		// alternative to directly using events.
-		if (!ANDOR_SAFEMODE)
+		if (!HAM_SAFEMODE)
 		{
 			successWait = WaitForAcquisition();
 			GetStatus(&status);

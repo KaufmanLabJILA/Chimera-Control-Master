@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "PictureSettingsControl.h"
-#include "Andor.h"
+// #include "Andor.h"
+#include "qcmos.h"
 #include "CameraSettingsControl.h"
 #include "CameraWindow.h"
 #include "Commctrl.h"
@@ -229,7 +230,7 @@ void PictureSettingsControl::handleSaveConfig(std::ofstream& saveFile)
 }
 
 
-void PictureSettingsControl::handleOpenConfig(std::ifstream& openFile, int versionMajor, int versionMinor, AndorCamera* andor)
+void PictureSettingsControl::handleOpenConfig(std::ifstream& openFile, int versionMajor, int versionMinor, qcmosCamera* andor)
 {
 	ProfileSystem::checkDelimiterLine(openFile, "PICTURE_SETTINGS");
 	UINT picsPerRep;
@@ -406,7 +407,7 @@ UINT PictureSettingsControl::getPicsPerRepetition()
 }
 
 
-void PictureSettingsControl::setUnofficialPicsPerRep(UINT picNum, AndorCamera* andorObj)
+void PictureSettingsControl::setUnofficialPicsPerRep(UINT picNum, qcmosCamera* andorObj)
 {
 	if (picsPerRepManual) {
 		picsPerRepetitionUnofficial = getPicsPerRepetition();
@@ -417,7 +418,7 @@ void PictureSettingsControl::setUnofficialPicsPerRep(UINT picNum, AndorCamera* a
 		picsPerRepEdit.SetWindowTextA(cstr(picNum));
 	}
 	// not all settings are changed here, and some are used to recalculate totals.
-	AndorRunSettings settings = andorObj->getSettings();
+	qcmosRunSettings settings = andorObj->getSettings();
 	settings.picsPerRepetition = picsPerRepetitionUnofficial;
 	settings.totalPicsInVariation = settings.picsPerRepetition  * settings.repetitionsPerVariation;
 	if (settings.totalVariations * settings.totalPicsInVariation > INT_MAX)
@@ -448,7 +449,7 @@ void PictureSettingsControl::setUnofficialPicsPerRep(UINT picNum, AndorCamera* a
 }
 
 
-void PictureSettingsControl::handleOptionChange(int id, AndorCamera* andorObj)
+void PictureSettingsControl::handleOptionChange(int id, qcmosCamera* andorObj)
 {
 	setPicsPerRepManual();
 	if (id == picsPerRepToggle.GetDlgCtrlID()) {
@@ -473,13 +474,13 @@ void PictureSettingsControl::handleOptionChange(int id, AndorCamera* andorObj)
 }
 
 
-void PictureSettingsControl::setExposureTimes(AndorCamera* andorObj)
+void PictureSettingsControl::setExposureTimes(qcmosCamera* andorObj)
 {
 	setExposureTimes(exposureTimesUnofficial, andorObj);
 }
 
 
-void PictureSettingsControl::setExposureTimes(std::vector<float>& times, AndorCamera* andorObj)
+void PictureSettingsControl::setExposureTimes(std::vector<float>& times, qcmosCamera* andorObj)
 {
 	std::vector<float> exposuresToSet;
 	exposuresToSet = times;
@@ -489,7 +490,7 @@ void PictureSettingsControl::setExposureTimes(std::vector<float>& times, AndorCa
 	else {
 		exposuresToSet.resize(picsPerRepetitionUnofficial);
 	}
-	AndorRunSettings settings = andorObj->getSettings();
+	qcmosRunSettings settings = andorObj->getSettings();
 	settings.exposureTimes = exposuresToSet;
 	andorObj->setSettings(settings);
 	// try to set this time.
@@ -576,14 +577,14 @@ void PictureSettingsControl::setPicsPerRepManual() {
 	picsPerRepManual = picsPerRepToggle.GetCheck();
 }
 
-//void PictureSettingsControl::setPicturesPerExperiment(UINT pics, AndorCamera* andorObj)
+//void PictureSettingsControl::setPicturesPerExperiment(UINT pics, qcmosCamera* andorObj)
 //{
 //	if (pics > 4)
 //	{
 //		return;
 //	}
 //	picsPerRepetitionUnofficial = pics;
-//	AndorRunSettings settings = andorObj->getSettings();
+//	qcmosRunSettings settings = andorObj->getSettings();
 //	settings.picsPerRepetition = picsPerRepetitionUnofficial;
 //	settings.totalPicsInVariation = settings.picsPerRepetition  * settings.repetitionsPerVariation;
 //	if (settings.totalVariations * settings.totalPicsInVariation > INT_MAX)

@@ -81,8 +81,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\klab\AppData\Local\Programs\Python\Python312\include;B:\Yb heap\Experiment_code_Yb\Chimera-Control-Master\Chimera\Packages\64-Bit-Libs\Debug\HDF5-1.10.1-win64\include;B:\Yb heap\Experiment_code_Yb\Chimera-Control-Master\Chimera\Packages\64-Bit-Libs\boost_1_64_0;C:\Users\klab\anaconda3\include;C:\Users\klab\Documents\Chimera-Control-Master\Chimera\Packages\64-Bit-Libs\boost_1_64_0;$(IncludePath);C:\Users\klab\Documents\Chimera-Control-Master\Chimera\Packages\64-Bit-Libs\Debug\HDF5-1.10.1-win64\include;C:\Program Files\Andor SDK</IncludePath>
-    <LibraryPath>C:\Users\klab\AppData\Local\Programs\Python\Python312\libs;C:\Users\klab\AppData\Local\Programs\Python\Python312;C:\Users\klab\AppData\Local\Programs\Python\Python312\DLLs;B:\Yb heap\Experiment_code_Yb\Chimera-Control-Master\Chimera\Packages\64-Bit-Libs\Debug\HDF5-1.10.1-win64\lib;B:\Yb heap\Experiment_code_Yb\Chimera-Control-Master\Chimera\Packages\64-Bit-Libs\boost_1_64_0\lib-64bit;C:\Users\klab\Documents\Chimera-Control-Master\Chimera\Packages\64-Bit-Libs\boost_1_64_0\lib-64bit;C:\Users\klab\Documents\Chimera-Control-Master\Chimera\Packages\64-Bit-Libs\Debug\HDF5-1.10.1-win64\lib;$(ProjectDir)\Packages\64-Bit-Libs\Debug\Python;C:\Program Files\Andor SDK;$(LibraryPath);C:\Program Files (x86)\National Instruments\Shared\ExternalCompilerSupport\C\lib64\msvc;C:\Users\klab\anaconda3\libs</LibraryPath>
+    <IncludePath>C:\Program Files\dcamsdk4;C:\Users\klab\AppData\Local\Programs\Python\Python312\include;B:\Yb heap\Experiment_code_Yb\Chimera-Control-Master\Chimera\Packages\64-Bit-Libs\Debug\HDF5-1.10.1-win64\include;B:\Yb heap\Experiment_code_Yb\Chimera-Control-Master\Chimera\Packages\64-Bit-Libs\boost_1_64_0;C:\Users\klab\anaconda3\include;C:\Users\klab\Documents\Chimera-Control-Master\Chimera\Packages\64-Bit-Libs\boost_1_64_0;$(IncludePath);C:\Users\klab\Documents\Chimera-Control-Master\Chimera\Packages\64-Bit-Libs\Debug\HDF5-1.10.1-win64\include;C:\Program Files\Andor SDK</IncludePath>
+    <LibraryPath>C:\Program Files\dcamsdk4;C:\Users\klab\AppData\Local\Programs\Python\Python312\libs;C:\Users\klab\AppData\Local\Programs\Python\Python312;C:\Users\klab\AppData\Local\Programs\Python\Python312\DLLs;B:\Yb heap\Experiment_code_Yb\Chimera-Control-Master\Chimera\Packages\64-Bit-Libs\Debug\HDF5-1.10.1-win64\lib;B:\Yb heap\Experiment_code_Yb\Chimera-Control-Master\Chimera\Packages\64-Bit-Libs\boost_1_64_0\lib-64bit;C:\Users\klab\Documents\Chimera-Control-Master\Chimera\Packages\64-Bit-Libs\boost_1_64_0\lib-64bit;C:\Users\klab\Documents\Chimera-Control-Master\Chimera\Packages\64-Bit-Libs\Debug\HDF5-1.10.1-win64\lib;$(ProjectDir)\Packages\64-Bit-Libs\Debug\Python;C:\Program Files\Andor SDK;$(LibraryPath);C:\Program Files (x86)\National Instruments\Shared\ExternalCompilerSupport\C\lib64\msvc;C:\Users\klab\anaconda3\libs</LibraryPath>
     <ExecutablePath>$(VC_ExecutablePath_x64);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(FxCopDir);$(PATH)</ExecutablePath>
     <ExcludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(MSBuild_ExecutablePath);$(VC_LibraryPath_x64);</ExcludePath>
   </PropertyGroup>
@@ -93,9 +93,9 @@
     <LibraryPath>C:\Program Files\Andor SOLIS\Drivers;C:\Users\Mark\Documents\Quantum Gas Assembly Control\Chimera;C:\Program Files (x86)\National Instruments\NI-DAQ\DAQmx ANSI C Dev\lib\msvc;C:\Program Files (x86)\IVI Foundation\VISA\WinNT\lib\msc;C:\Program Files (x86)\IVI Foundation\IVI\Lib\msc;C:\Program Files (x86)\HDF_Group\HDF5\Release\HDF5-1.10.1-win32\lib;$(ProjectDir)\Packages\boost_1_64_0\lib-32bit;$(ProjectDir)\Packages\32-Bit-Libs\Release\HDF5-1.10.1-win32-Release\lib;$(ProjectDir)\Packages\32-Bit-Libs\Release\Python;$(ProjectDir)\Packages\32-Bit-Libs\DIO64;$(ProjectDir)\Packages\32-Bit-Libs\Release\Andor;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\Users\klab\anaconda3\include;C:\Users\klab\Documents\Chimera-Control-Master\Chimera\Packages\64-Bit-Libs\boost_1_64_0;$(IncludePath);C:\Users\klab\Documents\Chimera-Control-Master\Chimera\Packages\64-Bit-Libs\Release\HDF5-1.10.1-win64\include;C:\Program Files\Andor SDK</IncludePath>
+    <IncludePath>C:\Program Files\dcamsdk4;C:\Users\klab\anaconda3\include;C:\Users\klab\Documents\Chimera-Control-Master\Chimera\Packages\64-Bit-Libs\boost_1_64_0;$(IncludePath);C:\Users\klab\Documents\Chimera-Control-Master\Chimera\Packages\64-Bit-Libs\Release\HDF5-1.10.1-win64\include;C:\Program Files\Andor SDK</IncludePath>
     <LinkIncremental>false</LinkIncremental>
-    <LibraryPath>C:\Users\klab\Documents\Chimera-Control-Master\Chimera\Packages\64-Bit-Libs\boost_1_64_0\lib-64bit;C:\Users\klab\Documents\Chimera-Control-Master\Chimera\Packages\64-Bit-Libs\Release\HDF5-1.10.1-win64\lib;$(ProjectDir)\Packages\64-Bit-Libs\Release\Python;C:\Program Files\Andor SDK;$(LibraryPath);C:\Program Files (x86)\National Instruments\Shared\ExternalCompilerSupport\C\lib64\msvc;C:\Users\klab\anaconda3\libs</LibraryPath>
+    <LibraryPath>C:\Users\klab\Documents\Chimera-Control-Master\Chimera\Packages\64-Bit-Libs\boost_1_64_0\lib-64bit;C:\Users\klab\Documents\Chimera-Control-Master\Chimera\Packages\64-Bit-Libs\Release\HDF5-1.10.1-win64\lib;$(ProjectDir)\Packages\64-Bit-Libs\Release\Python;C:\Program Files\Andor SDK;C:\Program Files\dcamsdk4;$(LibraryPath);C:\Program Files (x86)\National Instruments\Shared\ExternalCompilerSupport\C\lib64\msvc;C:\Users\klab\anaconda3\libs</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -112,7 +112,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>atmcd32m.lib;legacy_stdio_definitions.lib;niFgen.lib;%(AdditionalDependencies);python36_d.lib;NIDAQmx.lib;dio64_32.lib;visa32.lib;libhdf5_cpp_D.lib;libhdf5_D.lib;libzlib_D.lib;libszip_D.lib</AdditionalDependencies>
+      <AdditionalDependencies>dcamapi.lib;atmcd32m.lib;legacy_stdio_definitions.lib;niFgen.lib;%(AdditionalDependencies);python36_d.lib;NIDAQmx.lib;dio64_32.lib;visa32.lib;libhdf5_cpp_D.lib;libhdf5_D.lib;libzlib_D.lib;libszip_D.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(NIIVIPATH)\Lib\msc;$(PXIPNPPATH)\winnt\Lib\msc;</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
     </Link>
@@ -134,9 +134,10 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Program Files\Andor SDK3</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Program Files\dcamsdk4</AdditionalLibraryDirectories>
       <TreatLinkerWarningAsErrors>
       </TreatLinkerWarningAsErrors>
-      <AdditionalDependencies>atmcd64m.lib;python36_d.lib;libhdf5_cpp_D.lib;libhdf5_D.lib;libzlib_D.lib;libszip_D.lib;NIDAQmx.lib;ftd2xx.lib</AdditionalDependencies>
+      <AdditionalDependencies>dcamapi.lib;atmcd64m.lib;python36_d.lib;libhdf5_cpp_D.lib;libhdf5_D.lib;libzlib_D.lib;libszip_D.lib;NIDAQmx.lib;ftd2xx.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -159,7 +160,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>C:\Program Files\boost\boost_1_58_0\stage\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>NIDAQmx.lib;dio64_32.lib;niFgen.lib;atmcd32m.lib;visa32.lib;legacy_stdio_definitions.lib;%(AdditionalDependencies);python36.lib;libzlib.lib;libszip.lib;libhdf5_cpp.lib;libhdf5.lib</AdditionalDependencies>
+      <AdditionalDependencies>NIDAQmx.lib;dio64_32.lib;niFgen.lib;dcamapi.lib;atmcd32m.lib;visa32.lib;legacy_stdio_definitions.lib;%(AdditionalDependencies);python36.lib;libzlib.lib;libszip.lib;libhdf5_cpp.lib;libhdf5.lib</AdditionalDependencies>
       <HeapReserveSize>1000000000</HeapReserveSize>
     </Link>
   </ItemDefinitionGroup>
@@ -173,23 +174,26 @@
       <PreprocessorDefinitions>WIN32; NO_WARN_MBCS_MFC_DEPRECATION;NDEBUG;_CONSOLE;_LIB;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <AdditionalIncludeDirectories>C:\Users\Public\Documents\Allied Vision\Vimba_4.2\VimbaCPP_Examples;C:\Program Files\Allied Vision\Vimba_4.2\ThirdParty\TinyXML\Include;C:\Program Files\Allied Vision\Vimba_4.2;C:\Program Files\Allied Vision\Vimba_4.2\VimbaCPP\Bin\Win64;C:\Program Files\Andor SDK3</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Public\Documents\Allied Vision\Vimba_4.2\VimbaCPP_Examples;C:\Program Files\Allied Vision\Vimba_4.2\ThirdParty\TinyXML\Include;C:\Program Files\Allied Vision\Vimba_4.2;C:\Program Files\Allied Vision\Vimba_4.2\VimbaCPP\Bin\Win64;C:\Program Files\Andor SDK3;C:\Program Files\dcamsdk4</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>C:\Program Files\Allied Vision\Vimba_4.2\VimbaCPP\Lib\Win64;C:\Program Files\Allied Vision\Vimba_4.2\ThirdParty\TinyXML\Lib\Win64;C:\Program Files\Allied Vision\Vimba_4.2\VimbaCPP\Bin\Win64;C:\Program Files\Andor SDK3;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>atmcd64m.lib;python36.lib;libhdf5_cpp.lib;libhdf5.lib;libzlib.lib;libszip.lib;NIDAQmx.lib;ftd2xx.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Program Files\Allied Vision\Vimba_4.2\VimbaCPP\Lib\Win64;C:\Program Files\Allied Vision\Vimba_4.2\ThirdParty\TinyXML\Lib\Win64;C:\Program Files\Allied Vision\Vimba_4.2\VimbaCPP\Bin\Win64;C:\Program Files\Andor SDK3;C:\Program Files\dcamsdk4;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>dcamapi.lib;atmcd64m.lib;python36.lib;libhdf5_cpp.lib;libhdf5.lib;libzlib.lib;libszip.lib;NIDAQmx.lib;ftd2xx.lib</AdditionalDependencies>
       <HeapReserveSize>
       </HeapReserveSize>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AlertSystem.h" />
-    <ClInclude Include="AndorRunSettings.h" />
+    <!-- <ClInclude Include="AndorRunSettings.h" /> -->
+    <ClInclude Include="qcmosRunSettings.h" />
     <ClInclude Include="ATMCD32D.H" />
+    <ClInclude Include="dcamapi4.h" />
+    <ClInclude Include="dcamprop.h" />
     <ClInclude Include="atomCruncher.h" />
     <ClInclude Include="atomGrid.h" />
     <ClInclude Include="awgCommand.h" />
@@ -234,7 +238,8 @@
     <ClInclude Include="imageParameters.h" />
     <ClInclude Include="longnam.h" />
     <ClInclude Include="MainOptionsControl.h" />
-    <ClInclude Include="Andor.h" />
+    <!-- <ClInclude Include="Andor.h" /> -->
+    <ClInclude Include="qcmos.h" />
     <ClInclude Include="MasterConfiguration.h" />
     <ClInclude Include="AuxiliaryWindow.h" />
     <ClInclude Include="MasterManager.h" />
@@ -331,7 +336,8 @@
     <ClCompile Include="Gnuplotter.cpp" />
     <ClCompile Include="MainOptionsControl.cpp" />
     <ClCompile Include="MainWindow.cpp" />
-    <ClCompile Include="Andor.cpp" />
+    <!-- <ClCompile Include="Andor.cpp" /> -->
+    <ClCompile Include="qcmos.cpp" />
     <ClCompile Include="MasterConfiguration.cpp" />
     <ClCompile Include="AuxiliaryWindow.cpp" />
     <ClCompile Include="MasterManager.cpp" />

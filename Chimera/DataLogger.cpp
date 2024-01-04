@@ -193,7 +193,7 @@ void DataLogger::initializeDataFiles()
 //	}
 //}
 
-void DataLogger::logAndorSettings(AndorRunSettings settings, bool on, int nMask)
+void DataLogger::logAndorSettings(qcmosRunSettings settings, bool on, int nMask)
 {
 	try
 	{

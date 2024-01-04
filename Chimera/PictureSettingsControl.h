@@ -5,7 +5,7 @@
 #include <vector>
 #include "cameraPositions.h"
 ;
-class AndorCamera;
+class qcmosCamera;
 class CameraSettingsControl;
 
 
@@ -20,24 +20,24 @@ public:
 	PictureSettingsControl(CameraSettingsControl* parentObj) { parentSettingsControl = parentObj; }
 	void handleNewConfig(std::ofstream& newFile);
 	void handleSaveConfig(std::ofstream& saveFile);
-	void handleOpenConfig(std::ifstream& openFile, int versionMajor, int versionMinor, AndorCamera* andor);
+	void handleOpenConfig(std::ifstream& openFile, int versionMajor, int versionMinor, qcmosCamera* andor);
 	void initialize(cameraPositions& pos, CWnd* parent, int& id);
-	void handleOptionChange(int id, AndorCamera* andorObj);
+	void handleOptionChange(int id, qcmosCamera* andorObj);
 	void disablePictureControls(int pic);
 	void enablePictureControls(int pic);
-	void setExposureTimes(std::vector<float>& times, AndorCamera* andorObj);
-	void setExposureTimes(AndorCamera* andorObj);
+	void setExposureTimes(std::vector<float>& times, qcmosCamera* andorObj);
+	void setExposureTimes(qcmosCamera* andorObj);
 	std::array<int, 4> getPictureColors();
 	std::vector<float> getUsedExposureTimes();
 	std::array<int, 4> getThresholds();
 	CBrush* colorControls(int idNumber, CDC* colorer, brushMap brushes, rgbMap rgbs);
 	void confirmAcquisitionTimings();
-	//void setPicturesPerExperiment(UINT pics, AndorCamera* andorObj);
+	//void setPicturesPerExperiment(UINT pics, qcmosCamera* andorObj);
 	void setThresholds(std::array<int, 4> thresholds);
 	void rearrange(std::string cameraMode, std::string triggerMode, int width, int height, fontMap fonts);
 	UINT getPicsPerRepetition();
 	void updateSettings();
-	void setUnofficialPicsPerRep(UINT picNum, AndorCamera* andorObj);
+	void setUnofficialPicsPerRep(UINT picNum, qcmosCamera* andorObj);
 	void setPicsPerRepManual();
 	BOOL picsPerRepManual;
 private:

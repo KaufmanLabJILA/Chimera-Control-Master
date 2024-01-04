@@ -3,7 +3,8 @@
 #include "Control.h"
 #include "PictureSettingsControl.h"
 #include "CameraImageDimensions.h"
-#include "Andor.h"
+// #include "Andor.h"
+#include "qcmos.h"
 
 struct cameraPositions;
 
@@ -17,7 +18,7 @@ struct cameraPositions;
 class CameraSettingsControl
 {
 public:
-	CameraSettingsControl(AndorCamera* friendInitializer);
+	CameraSettingsControl(qcmosCamera* friendInitializer);
 	void setVariationNumber(UINT varNumber);
 	void setRepsPerVariation(UINT repsPerVar);
 	void updateRunSettingsFromPicSettings();
@@ -27,9 +28,9 @@ public:
 	void checkTimings(float& kineticCycleTime, float& accumulationTime, std::vector<float>& exposureTimes);
 	imageParameters readImageParameters(CameraWindow* camWin);
 	void updateMinKineticCycleTime(double time);
-	void setEmGain(AndorCamera* andorObj);
+	void setEmGain(qcmosCamera* qcmosObj);
 	void rearrange(std::string cameraMode, std::string triggerMode, int width, int height, fontMap fonts);
-	void handlePictureSettings(UINT id, AndorCamera* andorObj);
+	void handlePictureSettings(UINT id, qcmosCamera* andorObj);
 	void handleTriggerControl(CameraWindow* cameraWindow);
 	std::array<int, 4> getPaletteNumbers();
 	void handleSetTemperatureOffPress();
@@ -38,11 +39,11 @@ public:
 	void checkIfReady();
 	void cameraIsOn(bool state);
 	void handleModeChange(CameraWindow* cameraWindow);
-	AndorRunSettings getSettings();
+	qcmosRunSettings getSettings();
 	void setImageParameters(imageParameters newSettings, CameraWindow* camWin);
 	std::array<int, 4> getThresholds();
 	void updatePassivelySetSettings();
-	void setRunSettings(AndorRunSettings inputSettings);
+	void setRunSettings(qcmosRunSettings inputSettings);
 
 	void handleOpenConfig(std::ifstream& configFile, int versionMajor, int versionMinor);
 	void handleNewConfig(std::ofstream& newFile);
@@ -50,7 +51,7 @@ public:
 	BOOL getPicsPerRepManual();
 
 private:
-	AndorCamera* andorFriend;
+	qcmosCamera* qcmosFriend;
 
 	Control<CStatic> header;
 	/// TODO
@@ -87,5 +88,5 @@ private:
 	PictureSettingsControl picSettingsObj;
 	// the currently selected settings, not necessarily those being used to run the current
 	// experiment.
-	AndorRunSettings runSettings;
+	qcmosRunSettings runSettings;
 };

@@ -7,11 +7,13 @@
 #include "realTimePlotterInput.h"
 #include "MasterThreadInput.h"
 #include "ATMCD32D.H"
+#include "dcamapi4.h"
+#include "dcamprop.h"
 #include <numeric>
 #include "cnpy.h"
 
 CameraWindow::CameraWindow() : CDialog(),
-CameraSettings(&Andor),
+CameraSettings(&qcmos),
 dataHandler(DATA_SAVE_LOCATION)
 {
 
@@ -76,10 +78,10 @@ std::string CameraWindow::getSystemStatusString()
 {
 	std::string statusStr;
 	statusStr = "\n\n>>> Andor Camera <<<\n";
-	if (!ANDOR_SAFEMODE)
+	if (!HAM_SAFEMODE)
 	{
 		statusStr += "Code System is Active!\n";
-		statusStr += Andor.getSystemInfo();
+		statusStr += qcmos.getSystemInfo();
 	}
 	else
 	{
@@ -187,19 +189,19 @@ void CameraWindow::passCameraMode()
 
 void CameraWindow::abortCameraRun()
 {
-	int status;
-	Andor.queryStatus(status);
+	int32 status;
+	qcmos.queryStatus(status);
 
-	if (ANDOR_SAFEMODE)
+	if (HAM_SAFEMODE)
 	{
 		// simulate as if you needed to abort.
 		status = DRV_ACQUIRING;
 	}
 	if (status == DRV_ACQUIRING)
 	{
-		Andor.abortAcquisition();
+		qcmos.abortAcquisition();
 		timer.setTimerDisplay("Aborted");
-		Andor.setIsRunningState(false);
+		qcmos.setIsRunningState(false);
 		// close the plotting thread.
 		plotThreadAborting = true;
 		plotThreadActive = false;
@@ -220,7 +222,7 @@ void CameraWindow::abortCameraRun()
 		if (!mainWindowFriend->masterIsRunning()) {
 
 		}
-		else if (Andor.getSettings().cameraMode != "Continuous Single Scans Mode")
+		else if (qcmos.getSettings().cameraMode != "Continuous Single Scans Mode")
 		{
 			int answer = promptBox("Acquisition Aborted. Delete Data file (data_" + str(dataHandler.getDataFileNumber())
 				+ ".h5) for this run?", MB_YESNO);
@@ -240,14 +242,14 @@ void CameraWindow::abortCameraRun()
 	}
 	else if (status == DRV_IDLE)
 	{
-		Andor.setIsRunningState(false);
+		qcmos.setIsRunningState(false);
 	}
 }
 
 
 bool CameraWindow::cameraIsRunning()
 {
-	return Andor.isRunning();
+	return qcmos.isRunning();
 }
 
 
@@ -277,18 +279,18 @@ LRESULT CameraWindow::onCameraProgress(WPARAM wParam, LPARAM lParam)
 		// ???
 		return NULL;
 	}
-	AndorRunSettings currentSettings = Andor.getSettings();
+	qcmosRunSettings currentSettings = qcmos.getSettings();
 	if (lParam == -1)
 	{
 		pictureNumber = currentSettings.totalPicsInExperiment;
 	}
 
 	// need to call this before acquireImageData().
-	Andor.updatePictureNumber(pictureNumber);
+	qcmos.updatePictureNumber(pictureNumber);
 	std::vector<std::vector<long>> picData;
 	try
 	{
-		picData = Andor.acquireImageData();
+		picData = qcmos.acquireImageData();
 	}
 	catch (Error& err)
 	{
@@ -460,7 +462,7 @@ void CameraWindow::handleAutoscaleSelection()
 LRESULT CameraWindow::onCameraFinish(WPARAM wParam, LPARAM lParam)
 {
 	// write all processed images - TODO: could do this in real time, but need to work out how to signal using events
-	AndorRunSettings currentSettings = Andor.getSettings();
+	qcmosRunSettings currentSettings = qcmos.getSettings();
 	if (lParam == -1)
 	{
 		UINT pictureNumber = currentSettings.totalPicsInExperiment;
@@ -496,8 +498,8 @@ LRESULT CameraWindow::onCameraFinish(WPARAM wParam, LPARAM lParam)
 	}
 
 	// notify the andor object that it is done.
-	Andor.onFinish();
-	Andor.pauseThread();
+	qcmos.onFinish();
+	qcmos.pauseThread();
 	if (alerts.soundIsToBePlayed())
 	{
 		alerts.playSound();
@@ -568,7 +570,7 @@ void CameraWindow::startCamera()
 	// I used to initialize the data logger here.
 	analysisHandler.updateDataSetNumberEdit(dataHandler.getNextFileNumber() - 1);
 	double minKineticTime;
-	Andor.armCamera(this, minKineticTime);
+	qcmos.armCamera(this, minKineticTime);
 	CameraSettings.updateMinKineticCycleTime(minKineticTime);
 	mainWindowFriend->getComm()->sendColorBox(Camera, 'G');
 }
@@ -576,7 +578,7 @@ void CameraWindow::startCamera()
 
 bool CameraWindow::getCameraStatus()
 {
-	return Andor.isRunning();
+	return qcmos.isRunning();
 }
 
 
@@ -697,7 +699,7 @@ void CameraWindow::passPictureSettings(UINT id)
 void CameraWindow::handlePictureSettings(UINT id)
 {
 	selectedPixel = { 0,0 };
-	CameraSettings.handlePictureSettings(id, &Andor);
+	CameraSettings.handlePictureSettings(id, &qcmos);
 	if (CameraSettings.getSettings().picsPerRepetition == 1 || CameraSettings.getPicsPerRepManual())
 	{
 		pics.setSinglePicture(this, CameraSettings.readImageParameters(this));
@@ -737,7 +739,7 @@ void CameraWindow::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* scrollbar)
 void CameraWindow::OnSize(UINT nType, int cx, int cy)
 {
 	SetRedraw(false);
-	AndorRunSettings settings = CameraSettings.getSettings();
+	qcmosRunSettings settings = CameraSettings.getSettings();
 	stats.rearrange(settings.cameraMode, settings.triggerMode, cx, cy, mainWindowFriend->getFonts());
 	CameraSettings.rearrange(settings.cameraMode, settings.triggerMode, cx, cy, mainWindowFriend->getFonts());
 	box.rearrange(cx, cy, mainWindowFriend->getFonts());
@@ -765,7 +767,7 @@ void CameraWindow::setEmGain()
 {
 	try
 	{
-		CameraSettings.setEmGain(&Andor);
+		CameraSettings.setEmGain(&qcmos);
 	}
 	catch (Error& exception)
 	{
@@ -824,7 +826,7 @@ DataLogger* CameraWindow::getLogger()
 
 void CameraWindow::prepareCamera(ExperimentInput& input)
 {
-	if (Andor.isRunning())
+	if (qcmos.isRunning())
 	{
 		thrower("Camera is already running! Please Abort to restart.\r\n");
 	}
@@ -835,15 +837,16 @@ void CameraWindow::prepareCamera(ExperimentInput& input)
 	// make sure it's idle.
 	try
 	{
-		Andor.queryStatus();
-		if (ANDOR_SAFEMODE)
+		int32 status;
+		qcmos.queryStatus(status);
+		if (HAM_SAFEMODE)
 		{
 			thrower("DRV_IDLE");
 		}
 	}
 	catch (Error& exception)
 	{
-		if (exception.whatBare() != "DRV_IDLE")
+		if (exception.whatBare() != str(DCAMCAP_STATUS_READY))
 		{
 			throw;
 		}
@@ -874,7 +877,7 @@ void CameraWindow::prepareCamera(ExperimentInput& input)
 	CameraSettings.checkIfReady();
 	input.camSettings = CameraSettings.getSettings();
 	/// start the camera.
-	Andor.setSettings(input.camSettings);
+	qcmos.setSettings(input.camSettings);
 
 	//get some info about andor settings
 	float vss;
@@ -884,14 +887,14 @@ void CameraWindow::prepareCamera(ExperimentInput& input)
 	float fkvss;
 	float fkexp;
 	// compare to the Andor et functions to see which indices you should read
-	Andor.getVSSpeed(ANDOR_VSS_INDEX, &vss);
-	Andor.getHSSpeed(0, 0, ANDOR_HSS_INDEX, &hss);
-	Andor.getPreAmpGain(ANDOR_PREAMP_INDEX, pgain);
-	Andor.getNumberHSSpeeds(0, 0, &numhspeeds);
-	Andor.getFKVShiftSpeedF(ANDOR_VSS_INDEX, &fkvss);
-	Andor.getFKExposureTime(&fkexp);
-	mainWindowFriend->getComm()->sendStatus("Vertical shift speed = " + str(vss) + " us\nHorizontal shift speed = " + str(hss) + " MHz\n"
-		"Pre-amp gain = " + str(pgain) + "\n Fast Kinetics vertical shift speed = " + str(fkvss) + "us \n Fast Kinetics exposure time = " + str(fkexp) + "s \n\r");
+// 	qcmos.getVSSpeed(ANDOR_VSS_INDEX, &vss);
+// 	qcmos.getHSSpeed(0, 0, ANDOR_HSS_INDEX, &hss);
+// 	qcmos.getPreAmpGain(ANDOR_PREAMP_INDEX, pgain);
+// 	qcmos.getNumberHSSpeeds(0, 0, &numhspeeds);
+// 	qcmos.getFKVShiftSpeedF(ANDOR_VSS_INDEX, &fkvss);
+// 	qcmos.getFKExposureTime(&fkexp);
+// 	mainWindowFriend->getComm()->sendStatus("Vertical shift speed = " + str(vss) + " us\nHorizontal shift speed = " + str(hss) + " MHz\n"
+// 		"Pre-amp gain = " + str(pgain) + "\n Fast Kinetics vertical shift speed = " + str(fkvss) + "us \n Fast Kinetics exposure time = " + str(fkexp) + "s \n\r");
 }
 
 
@@ -971,9 +974,9 @@ void CameraWindow::startPlotterThread(ExperimentInput& input)
 }
 
 
-AndorRunSettings CameraWindow::getRunSettings()
+qcmosRunSettings CameraWindow::getRunSettings()
 {
-	return Andor.getSettings();
+	return qcmos.getSettings();
 }
 
 
@@ -1457,7 +1460,7 @@ BOOL CameraWindow::OnInitDialog()
 {
 	// don't redraw until the first OnSize.
 	SetRedraw(false);
-	Andor.initializeClass(mainWindowFriend->getComm(), &imageTimes);
+	qcmos.initializeClass(mainWindowFriend->getComm(), &imageTimes);
 	cameraPositions positions;
 	// all of the initialization functions increment and use the id, so by the end it will be 3000 + # of controls.
 	int id = 3000;
@@ -1476,7 +1479,7 @@ BOOL CameraWindow::OnInitDialog()
 	pics.initialize(position, this, id, tooltips, mainWindowFriend->getBrushes()["Dark Green"]);
 	//
 	pics.setSinglePicture(this, CameraSettings.readImageParameters(this));
-	Andor.setSettings(CameraSettings.getSettings());
+	qcmos.setSettings(CameraSettings.getSettings());
 
 	// load the menu
 	menu.LoadMenu(IDR_MAIN_MENU);

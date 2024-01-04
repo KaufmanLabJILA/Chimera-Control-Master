@@ -82,7 +82,7 @@ public:
 	void handleAutoscaleSelection();
 	void assertOff();
 	void passPictureSettings(UINT id);
-	AndorRunSettings getRunSettings();
+	qcmosRunSettings getRunSettings();
 	void prepareAtomCruncher(ExperimentInput& input);
 	void preparePlotter(ExperimentInput& input);
 	static UINT __stdcall atomCruncherProcedure(void* input);
@@ -97,7 +97,7 @@ public:
 private:
 	DECLARE_MESSAGE_MAP();
 
-	AndorCamera Andor;
+	qcmosCamera qcmos;
 	CameraSettingsControl CameraSettings;
 	ColorBox box;
 	PictureStats stats;

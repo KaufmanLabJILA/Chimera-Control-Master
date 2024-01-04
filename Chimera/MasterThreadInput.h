@@ -79,7 +79,7 @@ struct ExperimentInput
 	MasterThreadInput* masterInput;
 	realTimePlotterInput* plotterInput;
 	atomCruncher* cruncherInput;
-	AndorRunSettings camSettings;
+	qcmosRunSettings camSettings;
 	bool includesCameraRun;
 	bool multipleExperiments;
 };

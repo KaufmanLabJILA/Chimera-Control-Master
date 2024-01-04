@@ -23,7 +23,7 @@ CameraConfigurationSystem::~CameraConfigurationSystem()
 }
 
 // the idea here is to input the current settings. any settings that are not part of the configuration therefore are not overwritten.
-AndorRunSettings CameraConfigurationSystem::openConfiguration(std::string configurationNameToOpen, AndorRunSettings settings)
+qcmosRunSettings CameraConfigurationSystem::openConfiguration(std::string configurationNameToOpen, qcmosRunSettings settings)
 {
 	if (configurationNameToOpen == "" || !CameraConfigurationSystem::fileExists(FILE_SYSTEM_PATH + configurationNameToOpen + ".cConfig"))
 	{
@@ -255,7 +255,7 @@ AndorRunSettings CameraConfigurationSystem::openConfiguration(std::string config
 	return settings;
 }
 
-void CameraConfigurationSystem::saveConfiguration(bool isFromSaveAs, AndorRunSettings settings )
+void CameraConfigurationSystem::saveConfiguration(bool isFromSaveAs, qcmosRunSettings settings )
 {
 	// check if file exists
 	if (configurationName == "" || (!CameraConfigurationSystem::fileExists(FILE_SYSTEM_PATH + configurationName + ".cConfig") && !isFromSaveAs))
@@ -339,7 +339,7 @@ void CameraConfigurationSystem::saveConfiguration(bool isFromSaveAs, AndorRunSet
 }
 
 
-void CameraConfigurationSystem::saveConfigurationAs(std::string newConfigurationName, AndorRunSettings settings )
+void CameraConfigurationSystem::saveConfigurationAs(std::string newConfigurationName, qcmosRunSettings settings )
 {
 	configurationName = newConfigurationName; 
 	if (configurationName == "")

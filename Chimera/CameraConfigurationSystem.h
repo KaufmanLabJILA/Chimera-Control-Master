@@ -4,7 +4,8 @@
 #include "Control.h"
 #include "Windows.h"
 #include <vector>
-#include "Andor.h"
+// #include "Andor.h"
+#include "qcmos.h"
 
 struct cameraPositions;
 
@@ -13,9 +14,9 @@ class CameraConfigurationSystem
 	public:
 		CameraConfigurationSystem(std::string fileSystemPath);
 		~CameraConfigurationSystem();
-		AndorRunSettings openConfiguration( std::string configurationNameToOpen, AndorRunSettings baseSettings );
-		void saveConfiguration(bool isFromSaveAs, AndorRunSettings settings );
-		void saveConfigurationAs(std::string newConfigurationName, AndorRunSettings settings );
+		qcmosRunSettings openConfiguration( std::string configurationNameToOpen, qcmosRunSettings baseSettings );
+		void saveConfiguration(bool isFromSaveAs, qcmosRunSettings settings );
+		void saveConfigurationAs(std::string newConfigurationName, qcmosRunSettings settings );
 		void renameConfiguration(std::string newConfigurationName );
 		void deleteConfiguration();
 		int checkSave();

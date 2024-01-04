@@ -187,7 +187,7 @@ namespace commonFunctions
 					mainWin->getComm( )->sendError( "Experiment is paused. Please unpause before aborting.\r\n" );
 					break;
 				}
-				bool andorAborted = false;
+				bool qcmosAborted = false;
 				masterAborted = false;
 
 				mainWin->stopRearranger( );
@@ -215,11 +215,11 @@ namespace commonFunctions
 
 				try
 				{
-					if ( camWin->Andor.isRunning( ) )
+					if ( camWin->qcmos.isRunning( ) )
 					{
-						status = "ANDOR";
+						status = "QCMOS";
 						commonFunctions::abortCamera( camWin, mainWin );
-						andorAborted = true;
+						qcmosAborted = true;
 					}
 					mainWin->getComm( )->sendColorBox( Camera, 'B' );
 				}
@@ -233,7 +233,7 @@ namespace commonFunctions
 				//
 				mainWin->waitForRearranger( );
 
-				if (!andorAborted && !masterAborted)
+				if (!qcmosAborted && !masterAborted)
 				{
 					mainWin->getComm()->sendError("Camera and Master were not running. Can't Abort.\r\n");
 				}
@@ -613,7 +613,7 @@ namespace commonFunctions
 			{
 				try
 				{
-					if (camWin->Andor.isRunning())
+					if (camWin->qcmos.isRunning())
 					{
 						commonFunctions::abortCamera(camWin, mainWin);
 					}
@@ -1081,7 +1081,7 @@ namespace commonFunctions
 	{
 		DataLogger* logger = camWin->getLogger();
 		logger->initializeDataFiles();
-		if (!ANDOR_SAFEMODE) {
+		if (!HAM_SAFEMODE) {
 			logger->logAndorSettings(input.camSettings, takeAndorPictures, input.cruncherInput->nMask);
 		}
 		logger->logMasterParameters( input.masterInput );

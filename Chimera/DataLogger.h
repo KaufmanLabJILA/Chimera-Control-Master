@@ -7,7 +7,8 @@
 
 #include "DataAnalysisHandler.h"					  
 #include "CameraImageDimensions.h"
-#include "AndorRunSettings.h"
+// #include "AndorRunSettings.h"
+#include "qcmosRunSettings.h"
 #include "MasterThreadInput.h"
 /*
  * Handles the writing of h5 files. Some parts of this are effectively HDF5 wrappers.
@@ -27,7 +28,7 @@ public:
 	void logTweezerOffsets(std::vector<double> xOffsetAuto, std::vector<double> yOffsetAuto);
 	//void logMoogParameters(MasterThreadInput* input);
 	void logMiscellaneous();
-	void logAndorSettings(AndorRunSettings settings, bool on, int nMask);
+	void logAndorSettings(qcmosRunSettings settings, bool on, int nMask);
 	//void logNiawgSettings( MasterThreadInput* input );
 	//void logAgilentSettings( const std::vector<Agilent*>& input );
 	void logVariables(const std::vector<variableType>& variables, H5::Group& group);

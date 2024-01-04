@@ -4,9 +4,9 @@
 #include "miscellaneousCommonFunctions.h"
 
 
-CameraSettingsControl::CameraSettingsControl(AndorCamera* friendInitializer) : picSettingsObj(this)
+CameraSettingsControl::CameraSettingsControl(qcmosCamera* friendInitializer) : picSettingsObj(this)
 {
-	andorFriend = friendInitializer;
+	qcmosFriend = friendInitializer;
 	// initialize settings. Most of these have been picked to match initial settings set in the "initialize" 
 	// function.
 
@@ -43,9 +43,9 @@ void CameraSettingsControl::initialize(cameraPositions& pos, int& id, CWnd* pare
 	cameraModeCombo.videoPos = { pos.videoPos.x, pos.videoPos.y, pos.videoPos.x + 480, pos.videoPos.y + 100 };
 	cameraModeCombo.Create(NORM_COMBO_OPTIONS, cameraModeCombo.seriesPos, parent, IDC_CAMERA_MODE_COMBO);
 	cameraModeCombo.AddString("Kinetic Series Mode");
-	cameraModeCombo.AddString("Accumulation Mode");
-	cameraModeCombo.AddString("Video Mode");
-	cameraModeCombo.AddString("Fast Kinetics Mode");
+	// cameraModeCombo.AddString("Accumulation Mode");
+	// cameraModeCombo.AddString("Video Mode");
+	// cameraModeCombo.AddString("Fast Kinetics Mode");
 	cameraModeCombo.SelectString(0, "Kinetic Series Mode");
 	runSettings.cameraMode = "Kinetic Series Mode";
 	pos.amPos.y += 25;
@@ -209,7 +209,7 @@ std::array<int, 4> CameraSettingsControl::getThresholds()
 	return picSettingsObj.getThresholds();
 }
 
-void CameraSettingsControl::setRunSettings(AndorRunSettings inputSettings)
+void CameraSettingsControl::setRunSettings(qcmosRunSettings inputSettings)
 {
 	if (inputSettings.emGainModeIsOn == false || inputSettings.emGainLevel < 0)
 	{
@@ -221,9 +221,9 @@ void CameraSettingsControl::setRunSettings(AndorRunSettings inputSettings)
 		emGainEdit.SetWindowTextA(cstr(inputSettings.emGainLevel));
 		emGainDisplay.SetWindowTextA(cstr("X" + str(inputSettings.emGainLevel)));
 	}
-	andorFriend->setGainMode();
+	qcmosFriend->setGainMode();
 	// try to set this time.
-	picSettingsObj.setExposureTimes(inputSettings.exposureTimes, andorFriend);
+	picSettingsObj.setExposureTimes(inputSettings.exposureTimes, qcmosFriend);
 	// now check actual times.
 	checkTimings(inputSettings.exposureTimes);
 	///
@@ -257,18 +257,17 @@ void CameraSettingsControl::setRunSettings(AndorRunSettings inputSettings)
 
 void CameraSettingsControl::handleSetTemperatureOffPress()
 {
-	andorFriend->changeTemperatureSetting(true);
+	qcmosFriend->changeTemperatureSetting(true);
 }
 
 void CameraSettingsControl::handleSetTemperaturePress()
 {
-	if (andorFriend->isRunning())
+	if (qcmosFriend->isRunning())
 	{
-		thrower("ERROR: the camera (thinks that it?) is running. You can't change temperature settings during camera "
-			"operation.");
+		thrower("ERROR: the camera (thinks that it?) is running. You can't change temperature settings during camera operation.");
 	}
 
-	//runSettings = andorFriend->getSettings();
+	//runSettings = qcmosFriend->getSettings();
 	CString text;
 	temperatureEdit.GetWindowTextA(text);
 	int temp;
@@ -281,9 +280,9 @@ void CameraSettingsControl::handleSetTemperaturePress()
 		thrower("Error: Couldn't convert temperature input to a double! Check for unusual characters.");
 	}
 	runSettings.temperatureSetting = temp;
-	andorFriend->setSettings(runSettings);
+	qcmosFriend->setSettings(runSettings);
 
-	andorFriend->setTemperature();
+	qcmosFriend->setTemperature();
 	//eCameraFileSystem.updateSaveStatus(false);
 }
 
@@ -303,7 +302,7 @@ void CameraSettingsControl::handleTriggerControl(CameraWindow* cameraWindow)
 	cameraWindow->OnSize(0, rect.right - rect.left, rect.bottom - rect.top);
 }
 
-AndorRunSettings CameraSettingsControl::getSettings()
+qcmosRunSettings CameraSettingsControl::getSettings()
 {
 	return runSettings;
 }
@@ -337,7 +336,7 @@ BOOL CameraSettingsControl::getPicsPerRepManual() {
 	return picSettingsObj.picsPerRepManual;
 }
 
-void CameraSettingsControl::setEmGain(AndorCamera* andorObj)
+void CameraSettingsControl::setEmGain(qcmosCamera* qcmosObj)
 {
 	CString emGainText;
 	emGainEdit.GetWindowTextA(emGainText);
@@ -364,12 +363,12 @@ void CameraSettingsControl::setEmGain(AndorCamera* andorObj)
 		emGainDisplay.SetWindowTextA(cstr("Gain: X" + str(runSettings.emGainLevel)));
 	}
 	// Change the andor settings.
-	AndorRunSettings settings = andorObj->getSettings();
+	qcmosRunSettings settings = qcmosObj->getSettings();
 	settings.emGainLevel = runSettings.emGainLevel;
 	settings.emGainModeIsOn = runSettings.emGainModeIsOn;
-	andorObj->setSettings(settings);
+	qcmosObj->setSettings(settings);
 	// and immediately change the EM gain mode.
-	andorObj->setGainMode();
+	qcmosObj->setGainMode();
 	emGainEdit.RedrawWindow();
 }
 
@@ -402,14 +401,14 @@ void CameraSettingsControl::handleTimer()
 	// This case displays the current temperature in the main window. When the temp stabilizes at the desired 
 	// level the appropriate message is displayed.
 	// initial value is only relevant for safemode.
-	int currentTemperature = INT_MAX;
-	int setTemperature = INT_MAX;
+	double currentTemperature;
+	double setTemperature;
 	try
 	{
 		// in this case you expect it to throw.
-		setTemperature = andorFriend->getSettings().temperatureSetting;
-		andorFriend->getTemperature(currentTemperature);
-		if (ANDOR_SAFEMODE) { thrower("SAFEMODE"); }
+		setTemperature = qcmosFriend->getSettings().temperatureSetting;
+		qcmosFriend->getTemperature(currentTemperature);
+		if (HAM_SAFEMODE) { thrower("SAFEMODE"); }
 	}
 	catch (Error& exception)
 	{
@@ -487,9 +486,9 @@ void CameraSettingsControl::updateRunSettingsFromPicSettings()
 }
 
 
-void CameraSettingsControl::handlePictureSettings(UINT id, AndorCamera* andorObj)
+void CameraSettingsControl::handlePictureSettings(UINT id, qcmosCamera* qcmosObj)
 {
-	picSettingsObj.handleOptionChange(id, andorObj);
+	picSettingsObj.handleOptionChange(id, qcmosObj);
 	updateRunSettingsFromPicSettings();
 }
 
@@ -552,7 +551,7 @@ std::array<int, 4> CameraSettingsControl::getPaletteNumbers()
 void CameraSettingsControl::handleOpenConfig(std::ifstream& configFile, int versionMajor, int versionMinor)
 {
 	ProfileSystem::checkDelimiterLine(configFile, "CAMERA_SETTINGS");
-	AndorRunSettings tempSettings;
+	qcmosRunSettings tempSettings;
 	configFile.get();
 	std::getline(configFile, tempSettings.triggerMode);
 	configFile >> tempSettings.emGainModeIsOn;
@@ -587,7 +586,7 @@ void CameraSettingsControl::handleOpenConfig(std::ifstream& configFile, int vers
 	configFile >> tempSettings.temperatureSetting;
 	setRunSettings(tempSettings);
 	ProfileSystem::checkDelimiterLine(configFile, "END_CAMERA_SETTINGS");
-	picSettingsObj.handleOpenConfig(configFile, versionMajor, versionMinor, andorFriend);
+	picSettingsObj.handleOpenConfig(configFile, versionMajor, versionMinor, qcmosFriend);
 	//setRunSettings(tempSettings);
 	updateRunSettingsFromPicSettings();
 	if ((versionMajor == 2 && versionMinor > 4) || versionMajor > 2)
@@ -680,7 +679,7 @@ void CameraSettingsControl::checkTimings(std::vector<float>& exposureTimes)
 
 void CameraSettingsControl::checkTimings(float& kineticCycleTime, float& accumulationTime, std::vector<float>& exposureTimes)
 {
-	andorFriend->checkAcquisitionTimings(kineticCycleTime, accumulationTime, exposureTimes);
+	qcmosFriend->checkAcquisitionTimings(kineticCycleTime, accumulationTime, exposureTimes);
 }
 
 

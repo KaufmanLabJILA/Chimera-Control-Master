@@ -121,6 +121,9 @@
     <ClCompile Include="Andor.cpp">
       <Filter>Camera Window</Filter>
     </ClCompile>
+    <ClCompile Include="qcmos.cpp">
+      <Filter>Camera Window</Filter>
+    </ClCompile>
     <ClCompile Include="AlertSystem.cpp">
       <Filter>Camera Window</Filter>
     </ClCompile>
@@ -347,7 +350,10 @@
     <ClInclude Include="ColorBox.h">
       <Filter>General Files</Filter>
     </ClInclude>
-    <ClInclude Include="Andor.h">
+    <!-- <ClInclude Include="Andor.h">
+      <Filter>Camera Window</Filter>
+    </ClInclude> -->
+    <ClInclude Include="qcmos.h">
       <Filter>Camera Window</Filter>
     </ClInclude>
     <ClInclude Include="beginningSettingsDialogProc.h">
@@ -365,7 +371,13 @@
     <ClInclude Include="CameraWindow.h">
       <Filter>Camera Window</Filter>
     </ClInclude>
+    <ClInclude Include="dcamapi4.h">
+      <Filter>Things I Don%27t Mess With %28Often%29</Filter>
+    </ClInclude>
     <ClInclude Include="ATMCD32D.H">
+      <Filter>Things I Don%27t Mess With %28Often%29</Filter>
+    </ClInclude>
+    <ClInclude Include="dcamprop.h">
       <Filter>Things I Don%27t Mess With %28Often%29</Filter>
     </ClInclude>
     <ClInclude Include="longnam.h">
@@ -410,7 +422,10 @@
     <ClInclude Include="PlotDataSet.h">
       <Filter>Camera Window</Filter>
     </ClInclude>
-    <ClInclude Include="AndorRunSettings.h">
+    <!-- <ClInclude Include="AndorRunSettings.h">
+      <Filter>Camera Window\Structures</Filter>
+    </ClInclude> -->
+    <ClInclude Include="qcmosRunSettings.h">
       <Filter>Camera Window\Structures</Filter>
     </ClInclude>
     <ClInclude Include="atomGrid.h">
