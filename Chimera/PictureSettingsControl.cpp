@@ -480,9 +480,9 @@ void PictureSettingsControl::setExposureTimes(qcmosCamera* andorObj)
 }
 
 
-void PictureSettingsControl::setExposureTimes(std::vector<float>& times, qcmosCamera* andorObj)
+void PictureSettingsControl::setExposureTimes(std::vector<double>& times, qcmosCamera* andorObj)
 {
-	std::vector<float> exposuresToSet;
+	std::vector<double> exposuresToSet;
 	exposuresToSet = times;
 	if (picsPerRepManual) {
 		exposuresToSet.resize(1);
@@ -519,10 +519,10 @@ void PictureSettingsControl::setExposureTimes(std::vector<float>& times, qcmosCa
 
 
 
-std::vector<float> PictureSettingsControl::getUsedExposureTimes()
+std::vector<double> PictureSettingsControl::getUsedExposureTimes()
 {
 	updateSettings();
-	std::vector<float> usedTimes;
+	std::vector<double> usedTimes;
 	usedTimes = exposureTimesUnofficial;
 
 	if (picsPerRepManual) {
@@ -540,7 +540,7 @@ std::vector<float> PictureSettingsControl::getUsedExposureTimes()
  */
 void PictureSettingsControl::confirmAcquisitionTimings()
 {
-	std::vector<float> usedExposures;
+	std::vector<double> usedExposures;
 	usedExposures = exposureTimesUnofficial;
 	usedExposures.resize(picsPerRepetitionUnofficial);
 	try

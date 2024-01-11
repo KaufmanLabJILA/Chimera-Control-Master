@@ -218,18 +218,24 @@ imageParameters ImageDimsControl::readImageParameters( CameraWindow* camWin )
 	vertBinningEdit.RedrawWindow();
 	updateWidthHeight( );
 
-	// Check Image parameters
+	// Check Image parameters - For the ORCA Quest, we also require that the horizontal and vertical offsets and 
+	//the extents are divisible by 4. Additionally, the grid is oriented from the top left.
 	if (currentImageParameters.left > currentImageParameters.right || currentImageParameters.bottom > currentImageParameters.top)
 	{
 		isReady = false;
 		thrower( "ERROR: Image start positions must not be greater than end positions\r\n" );
 	}
-	if (currentImageParameters.left < 1 || currentImageParameters.right > 2048)
+	// if (currentImageParameters.left > currentImageParameters.right || currentImageParameters.top > currentImageParameters.bottom)
+	// {
+	// 	isReady = false;
+	// 	thrower( "ERROR: Image start positions must not be greater than end positions\r\n" );
+	// }
+	if (currentImageParameters.left < 0 || currentImageParameters.right > 4096)
 	{
 		isReady = false;
 		thrower( "ERROR: Image horizontal borders must be greater than 0 and less than the detector width\r\n currentImageParameters.right = " + str(currentImageParameters.right) );
 	}
-	if (currentImageParameters.bottom < 1 || currentImageParameters.top > 2048)
+	if (currentImageParameters.top < 0 || currentImageParameters.bottom > 2304)
 	{
 		isReady = false;
 		thrower( "ERROR: Image verttical borders must be greater than 0 and less than the detector height\r\n" );
@@ -239,11 +245,21 @@ imageParameters ImageDimsControl::readImageParameters( CameraWindow* camWin )
 		isReady = false;
 		thrower( "ERROR: Image width must be a multiple of Horizontal Binning\r\n" );
 	}
-	if ((currentImageParameters.top - currentImageParameters.bottom + 1) % currentImageParameters.verticalBinning != 0)
+	if ((currentImageParameters.bottom - currentImageParameters.top + 1) % currentImageParameters.verticalBinning != 0)
 	{
 		isReady = false;
 		thrower( "ERROR: Image height must be a multiple of Vertical Binning\r\n" );
 	}
+	// if (currentImageParameters.bottom % 4 != 0 || currentImageParameters.top % 4 != 0)
+	// {
+	// 	isReady = false;
+	// 	thrower( "ERROR: Vertical offset and extent must be divisible by 4\r\n" );
+	// }
+	// if (currentImageParameters.left % 4 != 0 || currentImageParameters.right % 4 != 0)
+	// {
+	// 	isReady = false;
+	// 	thrower( "ERROR: Horizontal offset and extent must be divisible by 4\r\n" );
+	// }
 	// made it through successfully.
 	isReady = true;
 	return currentImageParameters;

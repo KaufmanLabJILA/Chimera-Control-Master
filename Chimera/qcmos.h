@@ -41,7 +41,7 @@ public:
 	HDCAMWAIT hwait;
 	DCAMWAIT_START waitstart;
 	qcmosCamera::qcmosCamera();
-
+	int currentFrameIndex;
 	/// Andor Wrappers, in alphabetical order. Versions that take no parameters just insert current settings into 
 	// the versions that take parameters. Note that my wrapper names don't always match the andor SDK names. If 
 	// looking for specific sdk functions, search in the cpp file.
@@ -59,7 +59,10 @@ public:
 	void queryStatus(int32& status);
 	void getTemperatureRange(int& min, int& max);
 	void getTemperature(double& temp);
+	void getTemperatureStatus(double& sensorStatus);
 	int getTemperatureCode();
+	void setFlag(int pictureNumber);
+	void setInitial(bool initial);
 
 	void setShutter(int typ, int mode, int closingtime, int openingtime);
 	void setAccumulationCycleTime();
@@ -74,7 +77,8 @@ public:
 	void setEmCcdGain(int gain);
 	void SetFastExternalTrigger(int mode);
 	void setEmGainSettingsAdvanced(int state);
-	void setFanMode(int mode);
+	void setFanMode();
+	void setCoolerMode();
 	void setFrameTransferMode();
 	void setFrameTransferMode(int mode);
 	void setHSSpeed(int type, int index);
@@ -95,7 +99,7 @@ public:
 	void setPreAmpGain(int index);
 	void setReadMode();
 	void setReadMode(int mode);
-	void setRingExposureTimes(int sizeOfTimesArray, float* arrayOfTimes);
+	void setRingExposureTimes(int sizeOfTimesArray, double* arrayOfTimes);
 	void setSingleExposure();
 	void setTemperature(int temp);
 	void setTriggerMode(int mode);
@@ -104,7 +108,7 @@ public:
 	void temperatureControlOn();
 	void temperatureControlOff();
 
-	void waitForAcquisition();
+	void waitForAcquisition(DCAMERR& err);
 
 	// void getCapabilities(An& caps);
 	// void getSerialNumber(int& num);
@@ -124,7 +128,7 @@ public:
 	void setImageParametersToCamera();
 	void setScanNumber();
 	double getMinKineticCycleTime();
-	void checkAcquisitionTimings(float& kinetic, float& accumulation, std::vector<float>& exposures);
+	void checkAcquisitionTimings(float& kinetic, float& accumulation, std::vector<double>& exposures);
 	void setNumberAccumulations(bool isKinetic);
 	void setCameraTriggerMode();
 	void onFinish();

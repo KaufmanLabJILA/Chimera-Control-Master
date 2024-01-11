@@ -48,6 +48,8 @@ public:
 	void passCommandsAndSettings(UINT id);
 	void passCommonCommand(UINT id);
 	void passTrigger();
+	void passCooler();
+	void passFan();
 	void passCameraMode();
 	void passSetTemperaturePress();
 	void passSetTemperatureOffPress();

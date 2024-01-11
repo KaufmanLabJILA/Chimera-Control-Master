@@ -61,6 +61,8 @@ BEGIN_MESSAGE_MAP(CameraWindow, CDialog)
 	ON_COMMAND(IDC_SET_GRID_CORNER, &CameraWindow::passSetGridCorner)
 
 	ON_CBN_SELENDOK(IDC_TRIGGER_COMBO, &CameraWindow::passTrigger)
+	ON_CBN_SELENDOK(IDC_COOLER_COMBO, &CameraWindow::passCooler)
+	ON_CBN_SELENDOK(IDC_FAN_COMBO, &CameraWindow::passFan)
 	ON_CBN_SELENDOK(IDC_CAMERA_MODE_COMBO, &CameraWindow::passCameraMode)
 
 	ON_REGISTERED_MESSAGE(eCameraFinishMessageID, &CameraWindow::onCameraFinish)
@@ -77,7 +79,7 @@ END_MESSAGE_MAP()
 std::string CameraWindow::getSystemStatusString()
 {
 	std::string statusStr;
-	statusStr = "\n\n>>> Andor Camera <<<\n";
+	statusStr = "\n\n>>> Hamamatsu Camera <<<\n";
 	if (!HAM_SAFEMODE)
 	{
 		statusStr += "Code System is Active!\n";
@@ -571,7 +573,7 @@ void CameraWindow::startCamera()
 	analysisHandler.updateDataSetNumberEdit(dataHandler.getNextFileNumber() - 1);
 	double minKineticTime;
 	qcmos.armCamera(this, minKineticTime);
-	CameraSettings.updateMinKineticCycleTime(minKineticTime);
+	// CameraSettings.updateMinKineticCycleTime(minKineticTime);
 	mainWindowFriend->getComm()->sendColorBox(Camera, 'G');
 }
 
@@ -686,6 +688,22 @@ void CameraWindow::passTrigger()
 {
 	CameraSettings.handleTriggerControl(this);
 	mainWindowFriend->updateConfigurationSavedStatus(false);
+}
+
+
+void CameraWindow::passCooler()
+{	
+	//This property is not added to the configuration settings
+	CameraSettings.handleCoolerControl(this);
+	//mainWindowFriend->updateConfigurationSavedStatus(false);
+}
+
+
+void CameraWindow::passFan()
+{
+	//This property is not added to the configuration settings
+	CameraSettings.handleFanControl(this);
+	// mainWindowFriend->updateConfigurationSavedStatus(false);
 }
 
 

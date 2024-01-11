@@ -12,12 +12,40 @@
 
 std::string qcmosCamera::getSystemInfo()
 {
-	std::string info;
-	info += "Camera Model: C15550-20UP";
-	int num;
+	DCAMERR err;
 	
-	info += "Camera Serial Number: ";
+	char	model[ 256 ];
+	char	cameraid[ 64 ];
+	DCAMDEV_STRING	param;
+	memset( &param, 0, sizeof(param) );
+	param.size		= sizeof(param);
+	param.text		= model;
+	param.textbytes	= sizeof(model);
+	param.iString	= DCAM_IDSTR_MODEL;
+	//Model name
+	err = dcamdev_getstring( hdcam, &param );
+	if (failed(err))
+	{
+		throw(err);
+	}
+
+	param.text		= cameraid;
+	param.textbytes	= sizeof(cameraid);
+	param.iString	= DCAM_IDSTR_CAMERAID;
+	//Serial Number
+	err = dcamdev_getstring( hdcam, &param );
+	if (failed(err))
+	{
+		throw(err);
+	}
+	std::string info;
+	info += "Camera Model: " + str(model) + "\n";
+
+	info += "Camera Serial Number: " + str(cameraid) + "\n";
 	return info;
+	
+	
+	
 }
 
 qcmosCamera::qcmosCamera()
@@ -28,23 +56,34 @@ qcmosCamera::qcmosCamera()
 		errorMessage = "QCMOS Camera is in SAFEMODE: Initialization Not attempted.";
 	}
 	// Initialize driver in current directory
+	// Initialize DCAM-API ver 4.0
+
 	try
 	{
-        // Initialize DCAM-API ver 4.0
-	    memset( &apiinit, 0, sizeof(apiinit) );
-	    apiinit.size	= sizeof(apiinit);
-	
-	    DCAMERR	err;
-	    err = dcamapi_init( &apiinit );
+		memset( &apiinit, 0, sizeof(apiinit) );
+		apiinit.size	= sizeof(apiinit);
 
-		// open specified camera
+		DCAMERR	err;
+		err = dcamapi_init( &apiinit );
+
+	
+	}
+	catch(Error& err)
+	{
+		errBox(err.what());
+	}
+	
+	
+
+	// open specified camera - Need to add exception handling here
+	try
+	{
+		DCAMERR err;
 		memset( &devopen, 0, sizeof(devopen) );
 		devopen.size	= sizeof(devopen);
 		devopen.index	= 0; //Always assume only one camera is connected
 		err = dcamdev_open( &devopen );
-
-        hdcam = devopen.hdcam;
-
+		hdcam = devopen.hdcam;
 		// open wait handle
 		memset( &waitopen, 0, sizeof(waitopen) );
 		waitopen.size	= sizeof(waitopen);
@@ -52,15 +91,18 @@ qcmosCamera::qcmosCamera()
 		err = dcamwait_open( &waitopen );
 		hwait = waitopen.hwait;
 
-		
+		//probably not the best place to set the capture mode
+		err = dcamprop_setvalue(hdcam, DCAM_IDPROP_CAPTUREMODE, DCAMPROP_CAPTUREMODE__NORMAL);
+		std::cout << "Hello";
 	}
-
-	catch (Error& err)
+	catch(Error& error)
 	{
-		errBox(err.what());
+		throw(error);
 	}
-
-    
+	
+	
+	
+	
 
 }
 
@@ -98,6 +140,16 @@ void qcmosCamera::onFinish()
 	cameraIsRunning = false;
 }
 
+// void qcmosCamera::setFlag(int pictureNumber)
+// {
+// 	flag = pictureNumber > 0;
+// }
+
+// void qcmosCamera::setInitial(bool initial)
+// {
+// 	initial = initial;
+// }
+
 /*
  * this thread watches the camera for pictures and when it sees a picture lets the main thread know via a message.
  * it gets initialized at the start of the program and is basically always running.
@@ -110,6 +162,7 @@ unsigned __stdcall qcmosCamera::cameraThread(void* voidPtr)
 	int safeModeCount = 0;
 	long pictureNumber = 0;
 	bool armed = false;
+	
 	while (!input->qcmos->cameraThreadExitIndicator)
 	{
 		/*
@@ -122,12 +175,14 @@ unsigned __stdcall qcmosCamera::cameraThread(void* voidPtr)
 		 * them.
 		 */
 		 // Also, anytime this gets locked, the count should be reset.
-		input->signaler.wait(lock, [input, &safeModeCount]() { return input->spuriousWakeupHandler; });
+		input->signaler.wait(lock, [input, &safeModeCount]() { return input->spuriousWakeupHandler;});
 		if (!HAM_SAFEMODE)
 		{
 			try
 			{
 				int32 status;
+				std::cout << "Hello";
+				DCAMERR err;
 				input->qcmos->queryStatus(status);
 				if (status == DCAMCAP_STATUS_READY && armed)
 				{
@@ -138,22 +193,40 @@ unsigned __stdcall qcmosCamera::cameraThread(void* voidPtr)
 				}
 				else
 				{
-					input->qcmos->waitForAcquisition();
+					DCAMERR err;
+					input->qcmos->waitForAcquisition(err);
+
+					
 					if (pictureNumber % 2 == 0)
 					{
 						(*input->imageTimes).push_back(std::chrono::high_resolution_clock::now());
 					}
 					armed = true;
-					try
+					
+					if (true)
 					{
-						input->qcmos->getAcquisitionProgress(pictureNumber);
-					}
-					catch (Error& exception)
-					{
-						input->comm->sendError(exception.what());
-					}
-
-					input->comm->sendCameraProgress(pictureNumber);
+						try
+						{
+							input->qcmos->getAcquisitionProgress(pictureNumber);
+							
+						}
+						catch (Error& exception)
+						{
+							input->comm->sendError(exception.what());
+						}
+						if (pictureNumber == input->qcmos->runSettings.totalPicsInExperiment) { pictureNumber = 0; }
+						
+						if (pictureNumber != 0)
+						{
+							input->comm->sendCameraProgress(pictureNumber);
+							
+						}
+						else if (pictureNumber == 0) 
+						{ 
+							input->comm->sendCameraProgress(pictureNumber); 
+						}
+						
+					}	
 				}
 			}
 			catch (Error&)
@@ -218,7 +291,7 @@ void qcmosCamera::setSettings(qcmosRunSettings settingsToSet)
 	* Large function which initializes a given camera image run.
 	*/
 void qcmosCamera::armCamera(CameraWindow* camWin, double& minKineticCycleTime)
-{
+{	
 	/// Set a bunch of parameters.
 	// Set to 1 MHz readout rate in both cases
 	
@@ -229,15 +302,19 @@ void qcmosCamera::armCamera(CameraWindow* camWin, double& minKineticCycleTime)
 	//Not implementing setting read mode as of now
 	//setReadMode();
 
+	
+
 
 	setImageParametersToCamera();
+	//probably not the best place to set the capture mode
+	
 	// Set Mode-Specific Parameters - Currently only set to mode 3. So if any other mode is called, 
 	// instead of crashing, we will just set the parameters for kinetic series mode
 	if (runSettings.acquisitionMode == 3)
 	{
 		setExposures();
 		setTemperature();
-		setFanMode(1); //Fan is on
+		//setFanMode(1); //Fan is on
 		// setFrameTransferMode(0);
 		// setKineticCycleTime();
 		//setScanNumber();
@@ -257,17 +334,27 @@ void qcmosCamera::armCamera(CameraWindow* camWin, double& minKineticCycleTime)
 	threadInput.spuriousWakeupHandler = true;
 	// notify the thread that the experiment has started..
 	threadInput.signaler.notify_all();
+	currentFrameIndex = 0;
 
 
-	//Allocate buffer space
+	//Allocate buffer space - since this is done every variation, see if there is buffer space first and release
+	// from the older variation
 	DCAMERR err;
 	try
 	{
-		err = dcambuf_alloc( hdcam, runSettings.totalPicsInVariation);
+		err = dcambuf_release(hdcam);
+		std::cout << "hello";
 	}
 	catch(Error& err)
 	{
 		errBox(err.what());
+	}
+	
+	//Was initially set to totalpicsinvariation, and so was causing problems
+	err = dcambuf_alloc( hdcam, runSettings.totalPicsInExperiment);
+	if (failed(err))
+	{
+		throw(err);
 	}
 	
 	
@@ -283,23 +370,30 @@ void qcmosCamera::armCamera(CameraWindow* camWin, double& minKineticCycleTime)
  */
 std::vector<std::vector<long>> qcmosCamera::acquireImageData()
 {
-	try
-	{
-		// Set the wait parameters - wait for a new image
-		DCAMWAIT_START waitstart;
-		memset( &waitstart, 0, sizeof(waitstart) );
-		waitstart.size		= sizeof(waitstart);
-		waitstart.eventmask	= DCAMWAIT_CAPEVENT_FRAMEREADY;
-		waitstart.timeout	= 1000;
 
-		// wait for image
-		DCAMERR err;
-		err = dcamwait_start( hwait, &waitstart );
-	}
-	catch (Error& err)
-	{
-		errBox(err.what());
-	}
+	 // Set the wait parameters - wait for a new image - checks if the frame is ready in the buffer
+	 DCAMWAIT_START waitstart;
+	 memset( &waitstart, 0, sizeof(waitstart) );
+	 waitstart.size		= sizeof(waitstart);
+	 waitstart.eventmask	= DCAMWAIT_CAPEVENT_FRAMEREADY;
+	 waitstart.timeout	= 100;
+
+	 // wait for image
+	 DCAMERR err;
+	 err = dcamwait_start( hwait, &waitstart );
+	 std::cout << "Hello!";
+
+	//// transferinfo param
+	//DCAMCAP_TRANSFERINFO captransferinfo;
+	//memset( &captransferinfo, 0, sizeof(captransferinfo));
+	//captransferinfo.size	= sizeof(captransferinfo);
+
+	//// get number of captured image
+	//DCAMERR err;
+	//err = dcamcap_transferinfo( hdcam, &captransferinfo);
+
+
+
 
 	int size;
 	// If there is no data the acquisition must have been aborted
@@ -344,10 +438,15 @@ std::vector<std::vector<long>> qcmosCamera::acquireImageData()
 		// immediately rotate
 		for (UINT imageVecInc = 0; imageVecInc < imagesOfExperiment[experimentPictureNumber].size(); imageVecInc++)
 		{
+			float a = ((imageVecInc
+				% runSettings.imageSettings.width) + 1) * runSettings.imageSettings.height
+				- imageVecInc / runSettings.imageSettings.width - 1;
 			imagesOfExperiment[experimentPictureNumber][imageVecInc] = tempImage[((imageVecInc
 				% runSettings.imageSettings.width) + 1) * runSettings.imageSettings.height
 				- imageVecInc / runSettings.imageSettings.width - 1];
 		}
+
+		std::cout << "Hello";
 	}
 	else
 	{
@@ -416,19 +515,22 @@ void qcmosCamera::setCameraTriggerMode()
 	std::string errMsg;
 	int trigType;
 	if (hdcam != NULL)
+	
 	{
+		DCAMERR err;
 		if (runSettings.triggerMode == "Internal Trigger")
 		{
-			dcamprop_setvalue( hdcam, DCAM_IDPROP_TRIGGERSOURCE, DCAMPROP_TRIGGERSOURCE__INTERNAL );
+			err = dcamprop_setvalue( hdcam, DCAM_IDPROP_TRIGGERSOURCE, DCAMPROP_TRIGGERSOURCE__INTERNAL );
 		}
 		else if (runSettings.triggerMode == "External Trigger")
 		{
-			dcamprop_setvalue( hdcam, DCAM_IDPROP_TRIGGERSOURCE, DCAMPROP_TRIGGERSOURCE__EXTERNAL );
+			err = dcamprop_setvalue( hdcam, DCAM_IDPROP_TRIGGERSOURCE, DCAMPROP_TRIGGERSOURCE__EXTERNAL );
+			std::cout << "Hello";
 		}
 		// Start on trigger is set to software trigger temporarily
 		else if (runSettings.triggerMode == "Start On Trigger")
 		{
-			dcamprop_setvalue( hdcam, DCAM_IDPROP_TRIGGERSOURCE, DCAMPROP_TRIGGERSOURCE__SOFTWARE );
+			err = dcamprop_setvalue( hdcam, DCAM_IDPROP_TRIGGERSOURCE, DCAMPROP_TRIGGERSOURCE__SOFTWARE );
 		}
 		
 	}
@@ -476,10 +578,12 @@ void qcmosCamera::changeTemperatureSetting(bool turnTemperatureControlOff)
 		if (turnTemperatureControlOff == false)
 		{
 			temperatureControlOn();
+			
 		}
 		else
 		{
 			temperatureControlOff();
+			
 		}
 	}
 
@@ -488,14 +592,15 @@ void qcmosCamera::changeTemperatureSetting(bool turnTemperatureControlOff)
 		try
 		{
 			DCAMERR err;
+			// err = dcamprop_setvalue( hdcam, DCAM_IDPROP_SENSORCOOLER, DCAMPROP_SENSORCOOLER__ON);
 			err = dcamprop_setvalue( hdcam, DCAM_IDPROP_SENSORTEMPERATURETARGET, runSettings.temperatureSetting);
 		}
 		catch(Error& err)
 		{
 			errBox(err.what());
 		}
-		
-	}
+
+	} 
 	else
 	{
 		thrower("Temperature Control has been turned off.\r\n");
@@ -509,8 +614,10 @@ void qcmosCamera::setExposures()
 {
 	if (runSettings.exposureTimes.size() > 0 && runSettings.exposureTimes.size() <= 16)
 	{
-		try {
-			setRingExposureTimes(runSettings.exposureTimes.size(), runSettings.exposureTimes.data());
+		try 
+		{
+			//setRingExposureTimes(runSettings.exposureTimes.size(), runSettings.exposureTimes.data());
+			setSingleExposure();
 		}
 		catch (Error& err)
 		{
@@ -523,20 +630,20 @@ void qcmosCamera::setExposures()
 	}
 }
 
-void qcmosCamera::setRingExposureTimes(int sizeOfTimesArray, float* arrayOfTimes)
+void qcmosCamera::setRingExposureTimes(int sizeOfTimesArray, double* arrayOfTimes)
 {
 	if (!HAM_SAFEMODE)
 	{
-		try
+		DCAMERR err;
+		err = dcamprop_setvalue( hdcam, DCAM_IDPROP_EXPOSURETIME_CONTROL, DCAMPROP_MODE__ON);
+		if (failed(err))
 		{
-			DCAMERR err;
-			err = dcamprop_setvalue( hdcam, DCAM_IDPROP_EXPOSURETIME_CONTROL, DCAMPROP_MODE__ON);
-			err = dcamprop_setvalue( hdcam, DCAM_IDPROP_EXPOSURETIME, arrayOfTimes[0]);
-	
+			throw(err);
 		}
-		catch(Error& err)
+		err = dcamprop_setvalue( hdcam, DCAM_IDPROP_EXPOSURETIME, arrayOfTimes[0]);
+		if (failed(err))
 		{
-			errBox(err.what());
+			throw(err);
 		}
 	}
 }
@@ -545,18 +652,37 @@ void qcmosCamera::setSingleExposure()
 {
 	if (!HAM_SAFEMODE)
 	{
+	
+		DCAMERR err;
 		try
 		{
-			DCAMERR err;
-			err = dcamprop_setvalue( hdcam, DCAM_IDPROP_EXPOSURETIME_CONTROL, DCAMPROP_MODE__ON);
-			err = dcamprop_setvalue( hdcam, DCAM_IDPROP_EXPOSURETIME, runSettings.exposureTimes[0]);
-	
+			err = dcamprop_setvalue(hdcam, DCAM_IDPROP_EXPOSURETIME_CONTROL, DCAMPROP_MODE__ON);
 		}
-		catch(Error& err)
+		catch (Error& err)
 		{
 			errBox(err.what());
 		}
+
+		try
+		{
+			double internalFrameRate;
+			double minTrigger;
+			err = dcamprop_setvalue(hdcam, DCAM_IDPROP_EXPOSURETIME, runSettings.exposureTimes[0]);
+			std::cout << "SET";
+			err = dcamprop_getvalue( hdcam, DCAM_IDPROP_INTERNALFRAMERATE, &internalFrameRate);
+			err = dcamprop_getvalue( hdcam, DCAM_IDPROP_TIMING_MINTRIGGERINTERVAL, &minTrigger);
+			// csc.minKineticCycleTimeLabel.SetWindowTextA(cstr(minTrigger))
+			
+		}
+		catch (Error& err)
+		{
+			errBox(err.what());
+		}
+
+
 	}
+		
+
 }
 
 void qcmosCamera::setImageParametersToCamera()
@@ -566,28 +692,80 @@ void qcmosCamera::setImageParametersToCamera()
 		runSettings.imageSettings.left, runSettings.imageSettings.right);
 }
 
-void qcmosCamera::setImage(int hBin, int vBin, int lBorder, int rBorder, int tBorder, int bBorder)
+void qcmosCamera::setImage(int vBin, int hBin, int bBorder, int tBorder, int lBorder, int rBorder)
 {
-	int vSize = abs(tBorder-lBorder);
-	int hSize = abs(lBorder-rBorder);
+	int32 vSize = abs(tBorder-bBorder);
+	int32 hSize = abs(lBorder-rBorder);
+	int32 lB = lBorder;
+	int32 vB = bBorder;
+
+	// vSize = 200;
+	// hSize = 200;
+	// lB = 10;
+	// vB = 10;
 	if (!HAM_SAFEMODE)
 	{
+		DCAMERR err;
+		
+		err = dcamprop_setvalue( hdcam, DCAM_IDPROP_BINNING_INDEPENDENT, DCAMPROP_MODE__ON);
+	
 		try
 		{
-			DCAMERR err;
-			err = dcamprop_setvalue( hdcam, DCAM_IDPROP_BINNING_INDEPENDENT, DCAMPROP_MODE__ON);
-			err = dcamprop_setvalue( hdcam, DCAM_IDPROP_SUBARRAYHPOS, DCAMPROP_MODE__ON);
-			err = dcamprop_setvalue( hdcam, DCAM_IDPROP_SUBARRAYVPOS, tBorder);
-			err = dcamprop_setvalue( hdcam, DCAM_IDPROP_SUBARRAYHSIZE, DCAMPROP_MODE__ON);
-			err = dcamprop_setvalue( hdcam, DCAM_IDPROP_SUBARRAYVSIZE, vSize);
-			err = dcamprop_setvalue( hdcam, DCAM_IDPROP_BINNING_HORZ, hBin);
-			err = dcamprop_setvalue( hdcam, DCAM_IDPROP_BINNING_VERT, vBin);
-	
+		err = dcamprop_setvalue(hdcam, DCAM_IDPROP_SUBARRAYMODE, DCAMPROP_MODE__OFF);
 		}
 		catch(Error& err)
 		{
-			errBox(err.what());
+		errBox(err.what());
 		}
+
+		try
+		{
+		err = dcamprop_setvalue(hdcam, DCAM_IDPROP_SUBARRAYMODE, DCAMPROP_MODE__OFF);
+		}
+		catch(Error& err)
+		{
+		errBox(err.what());
+		}
+		 
+		
+		
+		err = dcamprop_setvalue(hdcam, DCAM_IDPROP_SUBARRAYHSIZE, hSize);
+		if (failed(err))
+		{
+			throw(err);
+		}
+		err = dcamprop_setvalue( hdcam, DCAM_IDPROP_SUBARRAYHPOS, lBorder);
+		if (failed(err))
+		{
+			throw(err);
+		}
+		err = dcamprop_setvalue(hdcam, DCAM_IDPROP_SUBARRAYVSIZE, vSize);
+		if (failed(err))
+		{
+			throw(err);
+		}
+		err = dcamprop_setvalue( hdcam, DCAM_IDPROP_SUBARRAYVPOS, tBorder);
+		if (failed(err))
+		{
+			throw(err);
+		}
+		err = dcamprop_setvalue(hdcam, DCAM_IDPROP_SUBARRAYMODE, DCAMPROP_MODE__ON);
+		if (failed(err))
+		{
+			throw(err);
+		}
+		// err = dcamprop_setvalue( hdcam, DCAM_IDPROP_BINNING_HORZ, hBin);
+		// if (failed(err))
+		// {
+		// 	throw(err);
+		// }
+		// err = dcamprop_setvalue( hdcam, DCAM_IDPROP_BINNING_VERT, vBin);
+		// if (failed(err))
+		// {
+		// 	throw(err);
+		// }
+	
+		
 	}
 }
 
@@ -660,14 +838,14 @@ void qcmosCamera::setFastKineticsEx(int exposedRows, int seriesLength, float tim
 	}
 }
 
-void qcmosCamera::checkAcquisitionTimings(float& kinetic, float& accumulation, std::vector<float>& exposures)
+void qcmosCamera::checkAcquisitionTimings(float& kinetic, float& accumulation, std::vector<double>& exposures)
 {
 	//NOT IMPLEMENTED
 }
 
 ///DUMMY FUNCTIONS END - AS I WAS WRITING THIS, I REALISED ITS PROBABLY BEST TO NOT INCLUDE FUNCTIONS THAT ARE USELESS
 
-void qcmosCamera::setFanMode(int mode)
+void qcmosCamera::setFanMode()
 {
 
 	if (!HAM_SAFEMODE)
@@ -675,19 +853,54 @@ void qcmosCamera::setFanMode(int mode)
 		try
 		{
 			DCAMERR err;
-			if (mode < 2)
+			if (runSettings.fanMode == "Fan On")
 			{
 				err = dcamprop_setvalue( hdcam, DCAM_IDPROP_SENSORCOOLERFAN, DCAMPROP_MODE__ON);
 			}
 			else
 			{
 				err = dcamprop_setvalue( hdcam, DCAM_IDPROP_SENSORCOOLERFAN, DCAMPROP_MODE__OFF);
+				std::cout << "ehllo";
+
 			}
-			
 		}
 		catch(Error& err)
 		{
-			errBox(err.what());;
+			errBox(err.what());
+		}
+
+	}
+
+	
+}
+
+void qcmosCamera::setCoolerMode()
+{
+
+	if (!HAM_SAFEMODE)
+	{
+		try
+		{
+			DCAMERR err;
+			if (runSettings.coolerMode == "Sensor Cooler On")
+			{
+				err = dcamprop_setvalue( hdcam, DCAM_IDPROP_SENSORCOOLER, DCAMPROP_SENSORCOOLER__ON);
+			}
+			else if (runSettings.coolerMode == "Sensor Cooler Off")
+			{
+				err = dcamprop_setvalue( hdcam, DCAM_IDPROP_SENSORCOOLER, DCAMPROP_SENSORCOOLER__OFF);
+				
+			}
+			else if (runSettings.coolerMode == "Sensor Cooler Max")
+			{
+				err = dcamprop_setvalue( hdcam, DCAM_IDPROP_SENSORCOOLER, DCAMPROP_SENSORCOOLER__MAX);
+			}
+		
+		
+		}
+		catch(Error& err)
+		{
+			errBox(err.what());
 		}
 		
 		
@@ -700,16 +913,27 @@ void qcmosCamera::getTemperature(double& temp)
 {
 	if (!HAM_SAFEMODE)
 	{
-		try
+		DCAMERR err;
+		err = dcamprop_getvalue( hdcam, DCAM_IDPROP_SENSORTEMPERATURE, &temp);
+		if (failed(err))
 		{
-			DCAMERR err;
-			err = dcamprop_getvalue( hdcam, DCAM_IDPROP_SENSORTEMPERATURE, &temp);
+			throw(err);
 		}
-		catch(Error& err)
+
+	}
+}
+
+void qcmosCamera::getTemperatureStatus(double& sensorStatus)
+{
+	if (!HAM_SAFEMODE)
+	{
+		DCAMERR err;
+		err = dcamprop_getvalue( hdcam, DCAM_IDPROP_SENSORCOOLERSTATUS, &sensorStatus);
+		if (failed(err))
 		{
-			errBox(err.what());;
+			throw(err);
 		}
-		
+
 	}
 }
 
@@ -719,33 +943,31 @@ int qcmosCamera::getTemperatureCode()
 	int tempcode = MAXINT;
 	if (!HAM_SAFEMODE)
 	{
-		try
+		
+		DCAMERR err;
+		err = dcamprop_getvalue( hdcam, DCAM_IDPROP_SENSORTEMPERATURE, &temp);
+		if (failed(err))
 		{
-			DCAMERR err;
-			err = dcamprop_getvalue( hdcam, DCAM_IDPROP_SENSORTEMPERATURE, &temp);
-			tempcode = int(temp);
+			throw(err);
 		}
-		catch(Error& err)
-		{
-			errBox(err.what());;
-		}
+		tempcode = int(temp);
+		
 	}
-	else {
+	else 
+	{
 		return 0;
 	}
 }
 
 void qcmosCamera::getAdjustedRingExposureTimes(int size, double* timesArray)
 {
-	try
+	DCAMERR err;
+	err = dcamprop_getvalue( hdcam, DCAM_IDPROP_SENSORTEMPERATURE, &timesArray[0]);
+	if (failed(err))
 		{
-			DCAMERR err;
-			err = dcamprop_getvalue( hdcam, DCAM_IDPROP_SENSORTEMPERATURE, &timesArray[0]);
+			throw(err);
 		}
-		catch(Error& err)
-		{
-			errBox(err.what());;
-		}
+		
 }
 
 //Apparently here temperature control cannot be turned on and off
@@ -768,8 +990,77 @@ void qcmosCamera::temperatureControlOff()
 // So we are going to have to do it ourselves
 void qcmosCamera::getOldestImage(std::vector<long>& dataArray)
 {
+	//The function gets the oldest image - since with Andor, accessing an image would delete it from the buffer.
+	//In this camera, that does not happen. So we have a variable called currentFrameIndex that is reset in the function
+	//armCamera(). 
 	if (!HAM_SAFEMODE)
 	{
+		// prepare the frame parameter - buff because we are at CU
+		DCAMBUF_FRAME	bufframe;
+		memset( &bufframe, 0, sizeof(bufframe) );
+		bufframe.size		= sizeof(bufframe);
+		bufframe.iFrame		= currentFrameIndex;				// currentFrame
+		currentFrameIndex += 1;
+
+		//access image
+		DCAMERR err;
+		try
+		{
+			// access image
+			err = dcambuf_lockframe( hdcam, &bufframe );
+		}
+		catch(Error& err)
+		{
+			errBox(err.what());
+		}
+
+		////transfer image data to vector
+		//int32 width = bufframe.width;
+		//int32 height = bufframe.height;
+		//char* pSrc = (char*) bufframe.buf;
+		////create an empty pointer
+		//char* buf = new char[width*height];
+		//char* pDst = (char*) buf;
+
+		//int idx;
+		//for( idx = 0; idx < height; idx++ )
+		//{
+		//	memcpy_s( pDst, width, pSrc, width);
+
+		//	pSrc += bufframe.rowbytes;
+		//	pDst += width;
+		//}
+
+		//int size = sizeof(pDst[0]);
+
+		//std::vector<long> vec(pDst, pDst + size);
+		////now set dataArrat equal to this
+		//dataArray = vec;
+
+		int32 width = bufframe.width;
+		int32 height = bufframe.height;
+		uint8_t* pSrc = static_cast<uint8_t*>(bufframe.buf);
+
+		// Create a vector to store long values
+		std::vector<long> imageVector;
+
+
+		for (int idx = 0; idx <= height; idx++)
+		{
+			// Convert each 8-bit pixel to a long and insert into the vector
+			for (int i = 0; i <= width; i++)
+			{
+				imageVector.push_back(static_cast<long>(*pSrc));
+				pSrc++;
+			}
+		}
+
+		// Now, 'imageVector' contains the pixel data in a vector of long values
+
+		dataArray = imageVector;
+		std::cout << "Check";
+
+
 		
 	}
 }
@@ -783,14 +1074,14 @@ void qcmosCamera::queryStatus(int32& status)
 {
 	if (!HAM_SAFEMODE)
 	{
-		try
+		
+		DCAMERR err;
+		//probably not the best place to set the capture mode
+		err = dcamprop_setvalue(hdcam, DCAM_IDPROP_CAPTUREMODE, DCAMPROP_CAPTUREMODE__NORMAL);
+		err = dcamcap_status(hdcam, &status);
+		if (failed(err))
 		{
-			DCAMERR err;
-			err = dcamcap_status(hdcam, &status);
-		}
-		catch(Error& err)
-		{
-			errBox(err.what());
+			throw(err);
 		}
 		
 	}
@@ -804,15 +1095,13 @@ void qcmosCamera::startAcquisition()
 {
 	if (!HAM_SAFEMODE)
 	{
-		try
+		DCAMERR err;
+		err = dcamcap_start(hdcam, DCAMCAP_START_SNAP);
+		if (failed(err))
 		{
-			DCAMERR err;
-			err = dcamcap_start(hdcam, DCAMCAP_START_SNAP);
+			throw(err);
 		}
-		catch(Error& err)
-		{
-			errBox(err.what());
-		}
+		
 	}
 }
 
@@ -820,15 +1109,14 @@ void qcmosCamera::abortAcquisition()
 {
 	if (!HAM_SAFEMODE)
 	{
-		try
+		
+		DCAMERR err;
+		err = dcamcap_stop(hdcam);
+		if (failed(err))
 		{
-			DCAMERR err;
-			err = dcamcap_stop(hdcam);
+			throw(err);
 		}
-		catch(Error& err)
-		{
-			errBox(err.what());
-		}
+		
 	}
 }
 
@@ -848,6 +1136,7 @@ bool qcmosCamera::isRunning()
 	return cameraIsRunning;
 }
 
+//This does nothing as of now, but needs to be there so that Chimera does not break
 void qcmosCamera::setGainMode()
 {
 	
@@ -868,7 +1157,21 @@ void qcmosCamera::getAcquisitionProgress(long& seriesNumber)
 {
 	if (!HAM_SAFEMODE)
 	{
-		seriesNumber = 1.0;
+		// transferinfo param
+		DCAMCAP_TRANSFERINFO captransferinfo;
+		memset( &captransferinfo, 0, sizeof(captransferinfo) );
+		captransferinfo.size	= sizeof(captransferinfo);
+		DCAMERR err;
+		
+		// get number of captured image
+		err = dcamcap_transferinfo( hdcam, &captransferinfo );
+		if (failed(err))
+		{
+			throw(err);
+		}
+		seriesNumber = captransferinfo.nFrameCount;
+		std::cout << "helloo";
+
 	}
 }
 
@@ -879,15 +1182,39 @@ void qcmosCamera::getAcquisitionProgress(long& accumulationNumber, long& seriesN
 {
 	if (!HAM_SAFEMODE)
 	{
-		seriesNumber = 1.0;
-		accumulationNumber = 1.0;
+		// transferinfo param
+		DCAMCAP_TRANSFERINFO captransferinfo;
+		memset( &captransferinfo, 0, sizeof(captransferinfo) );
+		captransferinfo.size	= sizeof(captransferinfo);
+		DCAMERR err;
+
+		// get number of captured image
+		err = dcamcap_transferinfo( hdcam, &captransferinfo );
+		if (failed(err))
+		{
+			throw(err);
+		}
+		seriesNumber = captransferinfo.nFrameCount;
+		accumulationNumber = 1; //Always set this to 1 since we dont really do many accumulations per capture
+
 	}
 }
 
-void qcmosCamera::waitForAcquisition()
+void qcmosCamera::waitForAcquisition(DCAMERR& err)
 {
 	if (!HAM_SAFEMODE)
 	{
+
+		// Set the wait parameters - wait for a new image - checks if the acqusition has finished
+		DCAMWAIT_START waitstart;
+		memset(&waitstart, 0, sizeof(waitstart));
+		waitstart.size = sizeof(waitstart);
+		waitstart.eventmask = DCAMWAIT_CAPEVENT_FRAMEREADY;
+		waitstart.timeout = 100;
+
+		// wait for image
+		err = dcamwait_start(hwait, &waitstart);
+		std::cout << "Hello";
 	}
 }
 

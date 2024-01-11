@@ -25,10 +25,10 @@ public:
 	void handleOptionChange(int id, qcmosCamera* andorObj);
 	void disablePictureControls(int pic);
 	void enablePictureControls(int pic);
-	void setExposureTimes(std::vector<float>& times, qcmosCamera* andorObj);
+	void setExposureTimes(std::vector<double>& times, qcmosCamera* andorObj);
 	void setExposureTimes(qcmosCamera* andorObj);
 	std::array<int, 4> getPictureColors();
-	std::vector<float> getUsedExposureTimes();
+	std::vector<double> getUsedExposureTimes();
 	std::array<int, 4> getThresholds();
 	CBrush* colorControls(int idNumber, CDC* colorer, brushMap brushes, rgbMap rgbs);
 	void confirmAcquisitionTimings();
@@ -43,7 +43,7 @@ public:
 private:
 	CameraSettingsControl* parentSettingsControl;
 	std::array<int, 4> colors;
-	std::vector<float> exposureTimesUnofficial;
+	std::vector<double> exposureTimesUnofficial;
 	std::array<int, 4> thresholds;
 	// This variable is used by this control and communicated to the andor object, but is not directly accessed
 	// while the main camera control needs to figure out how many pictures per repetition there are.

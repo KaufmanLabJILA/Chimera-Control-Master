@@ -15,13 +15,15 @@ struct qcmosRunSettings
 	int acquisitionMode;
 	int frameTransferMode;
 	std::string triggerMode;
+	std::string coolerMode;
+	std::string fanMode;
 	std::string cameraMode;
 	bool showPicsInRealTime;
 	//
 	float kineticCycleTime;
 	float accumulationTime;
 	int accumulationNumber;
-	std::vector<float> exposureTimes;
+	std::vector<double> exposureTimes;
 	//
 	UINT picsPerRepetition;
 	ULONGLONG repetitionsPerVariation;
@@ -32,6 +34,6 @@ struct qcmosRunSettings
 	// 
 	int temperatureSetting;
 	//
-	int fanMode;
+	//int fanMode;
 	int VSSpeed;
 };
