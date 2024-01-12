@@ -33,6 +33,11 @@ void Communicator::sendNormalFinish( )
 	mainWin->PostMessageA( eNormalFinishMessageID );
 }
 
+void Communicator::sendCameraWindowError(std::string errorMessage)
+{
+	mainWin->getComm()->sendError(errorMessage);
+}
+
 void Communicator::sendCameraProgress(long progress)
 {
 	camWin->PostMessageA( eCameraProgressMessageID, 0, (LPARAM)progress );

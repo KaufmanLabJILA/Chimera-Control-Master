@@ -192,6 +192,11 @@ unsigned __stdcall qcmosCamera::cameraThread(void* voidPtr)
 					input->comm->sendCameraFin();
 					armed = false;
 					input->qcmos->flagChecker = false;
+
+					if (pictureNumber == 0)
+					{
+						input->qcmos->cameraThreadExitIndicator = true;
+					}
 				}
 				else
 				{
@@ -219,6 +224,16 @@ unsigned __stdcall qcmosCamera::cameraThread(void* voidPtr)
 						}
 						if (input->qcmos->currentFrameAccessedIndex + 1 <= pictureNumber && input->qcmos->currentFrameAccessedIndex > -1)
 						{
+							//if the inequality is met, it means that the camera has been triggered multiple times before the loop could
+							//run even once - throw an error to tell people that something is off with the timing in the experiment
+							
+							//TODO
+							if (input->qcmos->currentFrameAccessedIndex + 1 < pictureNumber)
+							{
+								input->comm->sendCameraWindowError("Camera is being triggered faster than experiment cycle! Check timings.\r\n");
+							}
+
+
 							// input->qcmos->currentFrameAccessedIndex += 1;
 							if (pictureNumber == input->qcmos->runSettings.totalPicsInExperiment) 
 							{ 
@@ -234,7 +249,7 @@ unsigned __stdcall qcmosCamera::cameraThread(void* voidPtr)
 							}
 							else if (pictureNumber == 0 && !input->qcmos->initialChecker) 
 							{ 
-								input->comm->sendCameraProgress(pictureNumber); 
+								input->comm->sendCameraProgress(pictureNumber);
 							}
 						}
 						/*else
@@ -371,22 +386,14 @@ void qcmosCamera::armCamera(CameraWindow* camWin, double& minKineticCycleTime)
 	// notify the thread that the experiment has started..
 	threadInput.signaler.notify_all();
 	currentFrameIndex = 0;
-
-
 	//Allocate buffer space - since this is done every variation, see if there is buffer space first and release
 	// from the older variation
-	
 	//Was initially set to totalpicsinvariation, and so was causing problems
 	err = dcambuf_alloc( hdcam, runSettings.totalPicsInExperiment);
 	if (failed(err))
 	{
 		throw(err);
 	}
-	
-	
-
-
-
 	startAcquisition();
 }
 
@@ -402,6 +409,7 @@ std::vector<std::vector<long>> qcmosCamera::acquireImageData()
 	{
 		return imagesOfExperiment;
 		currentFrameAccessedIndex = -1;
+		cameraThreadExitIndicator = true;
 	}
 	 // Set the wait parameters - wait for a new image - checks if the frame is ready in the buffer
 	 DCAMWAIT_START waitstart;

@@ -197,9 +197,9 @@ void CameraWindow::abortCameraRun()
 	if (HAM_SAFEMODE)
 	{
 		// simulate as if you needed to abort.
-		status = DRV_ACQUIRING;
+		status = DCAMCAP_STATUS_BUSY;
 	}
-	if (status == DRV_ACQUIRING)
+	if (status == DCAMCAP_STATUS_BUSY)
 	{
 		qcmos.abortAcquisition();
 		timer.setTimerDisplay("Aborted");
@@ -242,7 +242,7 @@ void CameraWindow::abortCameraRun()
 		}
 		plotThreadAborting = false;
 	}
-	else if (status == DRV_IDLE)
+	else if (status == DCAMCAP_STATUS_READY)
 	{
 		qcmos.setIsRunningState(false);
 	}

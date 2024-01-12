@@ -31,6 +31,7 @@ class Communicator
 		void sendColorBox( System sys, char code ); 
 		void sendColorBox( systemInfo<char> colors );
 		void sendCameraFin();
+		void sendCameraWindowError(std::string errorMessage);
 		void sendCameraProgress( long prog );
 		void sendGrabMakoFrame();
 		void sendSetupMakoFrame();
