@@ -306,9 +306,24 @@ void qcmosCamera::setSettings(qcmosRunSettings settingsToSet)
 	* Large function which initializes a given camera image run.
 	*/
 void qcmosCamera::armCamera(CameraWindow* camWin, double& minKineticCycleTime)
+
+
 {	
 	/// Set a bunch of parameters.
 	// Set to 1 MHz readout rate in both cases
+
+	// deallocate any existing buffer because this can create problems
+	
+	DCAMERR err;
+	try
+	{
+		err = dcambuf_release(hdcam);
+		std::cout << "hello";
+	}
+	catch(Error& err)
+	{
+		errBox(err.what());
+	}
 	
 	
 
@@ -321,6 +336,9 @@ void qcmosCamera::armCamera(CameraWindow* camWin, double& minKineticCycleTime)
 	flagChecker = false;
 	initialChecker = true;
 	currentFrameAccessedIndex = 0;
+
+	int32 status;
+	queryStatus(status);
 
 
 	setImageParametersToCamera();
@@ -341,8 +359,8 @@ void qcmosCamera::armCamera(CameraWindow* camWin, double& minKineticCycleTime)
 	}
 	// setGainMode();
 	setCameraTriggerMode();
-	int32 status;
-	queryStatus(status);
+	// int32 status;
+	// queryStatus(status);
 	
 	//For the qcmos here we get DCAM_IDPROP_TIMING_MINTRIGGERBLANKING
 	//minKineticCycleTime = getMinKineticCycleTime();
@@ -357,16 +375,6 @@ void qcmosCamera::armCamera(CameraWindow* camWin, double& minKineticCycleTime)
 
 	//Allocate buffer space - since this is done every variation, see if there is buffer space first and release
 	// from the older variation
-	DCAMERR err;
-	try
-	{
-		err = dcambuf_release(hdcam);
-		std::cout << "hello";
-	}
-	catch(Error& err)
-	{
-		errBox(err.what());
-	}
 	
 	//Was initially set to totalpicsinvariation, and so was causing problems
 	err = dcambuf_alloc( hdcam, runSettings.totalPicsInExperiment);
@@ -1142,6 +1150,7 @@ void qcmosCamera::abortAcquisition()
 		{
 			throw(err);
 		}
+		
 		
 	}
 }
