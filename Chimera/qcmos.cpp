@@ -180,21 +180,24 @@ unsigned __stdcall qcmosCamera::cameraThread(void* voidPtr)
 		{
 			try
 			{
+				
 				int32 status;
 				std::cout << "Hello";
 				DCAMERR err;
 				input->qcmos->queryStatus(status);
-				if (status == DCAMCAP_STATUS_READY && armed)
+				if (status == DCAMCAP_STATUS_READY && armed && (input->qcmos->flagChecker))
 				{
 					// signal the end to the main thread.
 					input->comm->sendCameraProgress(-1);
 					input->comm->sendCameraFin();
 					armed = false;
+					input->qcmos->flagChecker = false;
 				}
 				else
 				{
 					DCAMERR err;
 					input->qcmos->waitForAcquisition(err);
+					//instead of waiting for acquisition, check if new frames have been added using currentFrameAccessedIndex
 
 					
 					if (pictureNumber % 2 == 0)
@@ -214,18 +217,30 @@ unsigned __stdcall qcmosCamera::cameraThread(void* voidPtr)
 						{
 							input->comm->sendError(exception.what());
 						}
-						if (pictureNumber == input->qcmos->runSettings.totalPicsInExperiment) { pictureNumber = 0; }
+						if (input->qcmos->currentFrameAccessedIndex + 1 == pictureNumber)
+						{
+							// input->qcmos->currentFrameAccessedIndex += 1;
+							if (pictureNumber == input->qcmos->runSettings.totalPicsInExperiment) 
+							{ 
+								pictureNumber = 0; 
+								input->qcmos->flagChecker = true;
+								input->qcmos->initialChecker = false;
+							}
 						
-						if (pictureNumber != 0)
+							if (pictureNumber != 0)
+							{
+								input->comm->sendCameraProgress(pictureNumber);
+							
+							}
+							else if (pictureNumber == 0 && !input->qcmos->initialChecker) 
+							{ 
+								input->comm->sendCameraProgress(pictureNumber); 
+							}
+						}
+						/*else
 						{
 							input->comm->sendCameraProgress(pictureNumber);
-							
-						}
-						else if (pictureNumber == 0) 
-						{ 
-							input->comm->sendCameraProgress(pictureNumber); 
-						}
-						
+						}*/
 					}	
 				}
 			}
@@ -302,7 +317,10 @@ void qcmosCamera::armCamera(CameraWindow* camWin, double& minKineticCycleTime)
 	//Not implementing setting read mode as of now
 	//setReadMode();
 
-	
+	//set initialCheck and flagCheck variables
+	flagChecker = false;
+	initialChecker = true;
+	currentFrameAccessedIndex = 0;
 
 
 	setImageParametersToCamera();
@@ -371,6 +389,11 @@ void qcmosCamera::armCamera(CameraWindow* camWin, double& minKineticCycleTime)
 std::vector<std::vector<long>> qcmosCamera::acquireImageData()
 {
 
+	currentFrameAccessedIndex += 1;
+	if(currentFrameAccessedIndex > runSettings.totalPicsInExperiment)
+	{
+		return imagesOfExperiment;
+	}
 	 // Set the wait parameters - wait for a new image - checks if the frame is ready in the buffer
 	 DCAMWAIT_START waitstart;
 	 memset( &waitstart, 0, sizeof(waitstart) );
@@ -382,6 +405,8 @@ std::vector<std::vector<long>> qcmosCamera::acquireImageData()
 	 DCAMERR err;
 	 err = dcamwait_start( hwait, &waitstart );
 	 std::cout << "Hello!";
+
+	 
 
 	//// transferinfo param
 	//DCAMCAP_TRANSFERINFO captransferinfo;

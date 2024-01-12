@@ -41,6 +41,12 @@ public:
 	HDCAMWAIT hwait;
 	DCAMWAIT_START waitstart;
 	qcmosCamera::qcmosCamera();
+
+	//define initial, flag and current frame accessed index
+	int currentFrameAccessedIndex;
+	bool flagChecker;
+	bool initialChecker;
+
 	int currentFrameIndex;
 	/// Andor Wrappers, in alphabetical order. Versions that take no parameters just insert current settings into 
 	// the versions that take parameters. Note that my wrapper names don't always match the andor SDK names. If 
