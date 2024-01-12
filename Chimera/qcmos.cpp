@@ -185,7 +185,7 @@ unsigned __stdcall qcmosCamera::cameraThread(void* voidPtr)
 				std::cout << "Hello";
 				DCAMERR err;
 				input->qcmos->queryStatus(status);
-				if (status == DCAMCAP_STATUS_READY && armed && (input->qcmos->flagChecker))
+				if (status == DCAMCAP_STATUS_READY && armed && (input->qcmos->flagChecker) && input->qcmos->currentFrameAccessedIndex > -1)
 				{
 					// signal the end to the main thread.
 					input->comm->sendCameraProgress(-1);
@@ -217,7 +217,7 @@ unsigned __stdcall qcmosCamera::cameraThread(void* voidPtr)
 						{
 							input->comm->sendError(exception.what());
 						}
-						if (input->qcmos->currentFrameAccessedIndex + 1 == pictureNumber)
+						if (input->qcmos->currentFrameAccessedIndex + 1 <= pictureNumber && input->qcmos->currentFrameAccessedIndex > -1)
 						{
 							// input->qcmos->currentFrameAccessedIndex += 1;
 							if (pictureNumber == input->qcmos->runSettings.totalPicsInExperiment) 
@@ -393,6 +393,7 @@ std::vector<std::vector<long>> qcmosCamera::acquireImageData()
 	if(currentFrameAccessedIndex > runSettings.totalPicsInExperiment)
 	{
 		return imagesOfExperiment;
+		currentFrameAccessedIndex = -1;
 	}
 	 // Set the wait parameters - wait for a new image - checks if the frame is ready in the buffer
 	 DCAMWAIT_START waitstart;

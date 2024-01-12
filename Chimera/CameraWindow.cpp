@@ -555,6 +555,8 @@ LRESULT CameraWindow::onCameraFinish(WPARAM wParam, LPARAM lParam)
 	//Sleep( 5000 );
 	mainWindowFriend->stopRearranger();
 	wakeRearranger();
+	//abort camera here
+	qcmos.abortAcquisition();
 	return 0;
 }
 
