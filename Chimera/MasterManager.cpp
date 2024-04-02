@@ -394,7 +394,8 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 					//input->dacs->writeDacs(variationInc, skipOption);
 					input->dacs->startDacs();
 					input->ttls->startDioFPGA(variationInc);
-					input->ttls->waitTillFinished( variationInc, skipOption );
+					//input->ttls->waitTillFinished( variationInc, skipOption );
+					input->ttls->wait(100);
 					
 					input->dacs->stopDacs();
 				}
@@ -1207,6 +1208,7 @@ void MasterManager::analyzeMasterScript( DioSystem* ttls, DacSystem* dacs,
 	currentMasterScript >> word;
 	std::vector<UINT> totalRepeatNum, currentRepeatNum;
 	std::vector<std::streamoff> repeatPos;
+	std::string debugout;
 	// the analysis loop.
 	while (!(currentMasterScript.peek() == EOF) || word != "__end__")
 	{
@@ -1472,12 +1474,21 @@ void MasterManager::analyzeMasterScript( DioSystem* ttls, DacSystem* dacs,
 				totalRepeatNum.pop_back();
 			}
 		}
+		else if (word == "debug:")
+		{
+			std::string tmp = currentMasterScript.getline('\r');
+			debugout += tmp + "\n";
+		}
 		else
 		{
 			thrower("ERROR: unrecognized master script command: \"" + word + "\"");
 		}
 		word = "";
 		currentMasterScript >> word;
+	}
+	if (!debugout.empty())
+	{
+		thrower("DEBUG: \n " + debugout);
 	}
 }
 
@@ -1514,6 +1525,10 @@ bool MasterManager::isValidWord( std::string word )
 	if (word == "t" || word == "t++" || word == "t+=" || word == "t=" || word == "on:" || word == "off:"
 		 || word == "dac:" || word == "dacarange:" || word == "daclinspace:" || word == "daccosspace:" || word == "dacexpspace:" || word == "rsg:" || word == "call" 
 		 || word == "repeat:" || word == "end" || word == "pulseon:" || word == "pulseoff:" || word == "variableon:" || word == "callcppcode")
+	{
+		return true;
+	}
+	if (word == "debug:")
 	{
 		return true;
 	}

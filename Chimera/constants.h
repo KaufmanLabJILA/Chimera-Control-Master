@@ -12,11 +12,11 @@
 
 //#define MASTER_COMPUTER
 //#define SPECTRE_LAPTOP
-#define GLADOS
+//#define GLADOS
 // #define DESKTOP_COMPUTER
 //#define SALAMIS_TABLET
 //#define PAL9000
-//#define ALEC_LAPTOP
+#define ALEC_LAPTOP
 /// File Locations
 
 #ifdef GLADOS
@@ -137,11 +137,11 @@
 	#define UWAVE_SAFEMODE true
 	#define UWAVE_AGILENT_USB_ADDRESS ""
 
-	const std::string PROJECT_LOCATION = "C:\\Users\\alecj\\Kaufman_Lab\\chimera\\Chimera-Control-Master\\";
-	const std::string DATABASE_LOCATION = "C:\\Users\\alecj\\Kaufman_Lab\\dummy_data\\";
-	const std::string PYTHON_CODE_LOCATION = "C:/Users/alecj/Kaufman_Lab/chimera/Chimera-Control-Master/";
+	const std::string PROJECT_LOCATION = "C:\\Users\\alecj\\Chimera-Control-Master\\";
+	const std::string DATABASE_LOCATION = "C:\\Users\\alecj\\dummy_data\\";
+	const std::string PYTHON_CODE_LOCATION = "C:/Users/alecj/Chimera-Control-Master/";
 	// same as debug output location but with forward slashes for ease of use in python
-	const std::string PYTHON_INPUT_LOCATION = "C:/Users/alecj/Kaufman_Lab/chimera/Chimera-Control-Master/Debug-Output";
+	const std::string PYTHON_INPUT_LOCATION = "C:/Users/KLab/Desktop/Chimera-Control-Master/Debug-Output";
 	const std::string MASKS_FILE_LOCATION = PROJECT_LOCATION + "\\Image Processing\\" + "masks.npy";
 	const std::string MASKS_CROP_FILE_LOCATION = PROJECT_LOCATION + "\\Image Processing\\" + "maskPtsCrop.npy";
 	const std::string BG_IMAGE_FILE_LOCATION = PROJECT_LOCATION + "\\Image Processing\\" + "bgImg.npy";
@@ -150,6 +150,7 @@
 	const std::string TWEEZER_AMPLITUDE_LUT_FILE_LOCATION = PROJECT_LOCATION + "\\Tweezer LUT\\" + "ampLUT.npy";
 	const std::string TWEEZER_FREQUENCY_LUT_FILE_LOCATION = PROJECT_LOCATION + "\\Tweezer LUT\\" + "freqLUT.npy";
 	const std::string TWEEZER_PAINT_AMPLITUDE_LUT_FILE_LOCATION = PROJECT_LOCATION + "\\Tweezer LUT\\" + "paintAmpLUT.npy";
+	const std::string TWEEZER_PAINT_MASK_LUT_FILE_LOCATION = PROJECT_LOCATION + "\\Tweezer LUT\\" + "paintMaskLUT.npy";
 	const std::string PLOT_FILES_SAVE_LOCATION = PROJECT_LOCATION + "\\Plotting\\";
 	const std::string LIB_PATH = PROJECT_LOCATION + "Waveforms-Library\\dummyLib\\";
 	const std::string DEFAULT_SCRIPT_FOLDER_PATH = PROJECT_LOCATION + "Default Scripts\\";
@@ -167,6 +168,10 @@
 	const std::string PYTHON_ANALYSIS_LOCATION = PROJECT_LOCATION + "\\Python Chimera Communication\\";
 	const std::string PYTHON_ANALYSIS_START_FILE_LOCATION = PYTHON_ANALYSIS_LOCATION + "pyStart.txt";
 	const std::string PYTHON_ANALYSIS_FINISH_FILE_LOCATION = PYTHON_ANALYSIS_LOCATION + "pyFinish.txt";
+	const std::string EXPORT_VARIABLE_TMP_FILE_LOCATION = PYTHON_ANALYSIS_LOCATION + "currentVariables.txt.tmp";
+	const std::string EXPORT_VARIABLE_FILE_LOCATION = PYTHON_ANALYSIS_LOCATION + "currentVariables.txt";
+	const std::string EXPORT_PAINT_TMP_FILE_LOCATION = PROJECT_LOCATION + "\\Tweezer LUT\\" + "paintParams.txt.tmp";
+	const std::string EXPORT_PAINT_FILE_LOCATION = PROJECT_LOCATION + "\\Tweezer LUT\\" + "paintParams.txt";
 
 	//Test file for moog
 	const std::string MOOG_TEST_ADDRESS = PROJECT_LOCATION + "Default Scripts\\DEFAULT_MOOG_SCRIPT.moogScript";
