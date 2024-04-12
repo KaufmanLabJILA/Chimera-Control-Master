@@ -60,113 +60,59 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 		UINT variations = determineVariationNumber(input->variables);
 		// finishing sentence from before start I think...
 		expUpdate( "Done.\r\n", input->comm, input->quiet );
-		/// Prep agilents
-		expUpdate( "Loading Agilent Info...", input->comm, input->quiet );
-		//for (auto agilent : input->agilents)
-		//{
-		//	RunInfo dum;
-		//	agilent->handleInput( input->profile.categoryPath, dum );
-		//}
-		/// prep master systems
-		expUpdate( "Analyzing Master Script...", input->comm, input->quiet );
-		input->dacs->resetDacEvents();
-		input->ttls->resetTtlEvents();
-		//input->rsg->clearFrequencies();
-		if (input->runMaster)
-		{
-			input->thisObj->analyzeMasterScript( input->ttls, input->dacs, ttlShadeLocs, dacShadeLocs,
-												 input->variables );
-		}
-		// prep gmoog
-		//if (input->runAWG) {
-		//	input->moog->analyzeMoogScript(input->moog, input->variables, 0);
-		//}
-		/// prep NIAWG
-		//if (input->runNiawg)
-		//{
-		//	input->niawg->prepareNiawg(  input, output, niawgFiles, warnings, userScriptSubmit, foundRearrangement, 
-		//									input->rearrangeInfo, input->variables );
-		//	input->niawg->writeStaticNiawg( output, input->debugOptions, input->constants );
 
-		//}
-		//if ( input->thisObj->isAborting )
-		//{
-		//	thrower( abortString );
-		//}
-		/// update ttl and dac looks & interaction based on which ones are used in the experiment.
-		if (input->runMaster)
-		{
-			input->ttls->shadeTTLs( ttlShadeLocs );
-			input->dacs->shadeDacs( dacShadeLocs );
-
-			//input->ttls->connectDioFPGA(); //This generates addresses that the "interpretKey" step uses, and so much be run first.
-		}
 		// go ahead and check if abort was pressed real fast...
 		if (input->thisObj->isAborting)
 		{
 			thrower( abortString );
 		}
-		/// The Key Interpretation step.
-		// at this point, all scripts have been analyzed, and each system takes the key and generates all of the data
-		// it needs for each variation of the experiment. All these calculations happen at this step.
+		
+		
 		expUpdate( "Programming All Variation Data...\r\n", input->comm, input->quiet );
 		std::chrono::time_point<chronoClock> varProgramStartTime( chronoClock::now( ) );
 		input->thisObj->loadSkipTimes.resize( variations );
+		
+
 		if (input->runMaster)
 		{
-			input->ttls->interpretKey( input->variables );
-			input->dacs->interpretKey( input->variables, warnings );
-		}
-		//input->rsg->interpretKey( input->variables );
-		//input->topBottomTek->interpretKey( input->variables );
-		//input->eoAxialTek->interpretKey( input->variables );
-		/// organize commands, prepping final forms of the data for each repetition.
-		// This must be done after the "interpret key" step, as before that commands don't have hard times attached to 
-		// them.
-		for (UINT variationInc = 0; variationInc < variations; variationInc++)
-		{
-			// reading these variables should be safe.
-			if (input->thisObj->isAborting)
+			/// analyzes the master script and calculates the ttl and dac command lists for all variations
+			input->thisObj->calculateVariations(input->ttls, input->dacs, ttlShadeLocs, dacShadeLocs,
+				input->variables, input->comm, input->quiet);
+
+			/// organize commands, prepping final forms of the data for each repetition.
+			// This must be done after the "interpret key" step, as before that commands don't have hard times attached to 
+			// them.
+			for (UINT variationInc = 0; variationInc < variations; variationInc++)
 			{
-				thrower( abortString );
-			}
-			if (input->runMaster)
-			{
+				// reading these variables should be safe.
+				if (input->thisObj->isAborting)
+				{
+					thrower(abortString);
+				}
 				double& currLoadSkipTime = input->thisObj->loadSkipTimes[variationInc];
-				currLoadSkipTime = MasterManager::convertToTime( input->thisObj->loadSkipTime, input->variables,
-																 variationInc );
+				currLoadSkipTime = MasterManager::convertToTime(input->thisObj->loadSkipTime, input->variables,
+					variationInc);
 				// organize & format the ttl and dac commands
-				input->dacs->organizeDacCommands( variationInc );
-				input->dacs->setDacTriggerEvents( input->ttls, variationInc );
-				input->dacs->findLoadSkipSnapshots( currLoadSkipTime, input->variables, variationInc );
-				input->dacs->makeFinalDataFormat( variationInc );
-				input->ttls->organizeTtlCommands( variationInc );
-				input->ttls->findLoadSkipSnapshots( currLoadSkipTime, input->variables, variationInc );
-				input->ttls->convertToFinalFormat( variationInc );
+				input->dacs->organizeDacCommands(variationInc);
+				input->dacs->setDacTriggerEvents(input->ttls, variationInc);
+				input->dacs->findLoadSkipSnapshots(currLoadSkipTime, input->variables, variationInc);
+				input->dacs->makeFinalDataFormat(variationInc);
+				input->ttls->organizeTtlCommands(variationInc);
+				input->ttls->findLoadSkipSnapshots(currLoadSkipTime, input->variables, variationInc);
+				input->ttls->convertToFinalFormat(variationInc);
 				input->ttls->formatForFPGA(variationInc); //FPGA FORMATTING from TTLSNAPSHOTS
 				//input->ttls->connectDioFPGA(variationInc); //open connection at each variation
 				// run a couple checks.
-				input->ttls->checkNotTooManyTimes( variationInc );
-				input->ttls->checkFinalFormatTimes( variationInc );
-				if (input->ttls->countDacTriggers( variationInc ) != input->dacs->getNumberSnapshots( variationInc ))
+				input->ttls->checkNotTooManyTimes(variationInc);
+				input->ttls->checkFinalFormatTimes(variationInc);
+				if (input->ttls->countDacTriggers(variationInc) != input->dacs->getNumberSnapshots(variationInc))
 				{
-					thrower( "ERROR: number of dac triggers from the ttl system does not match the number of dac snapshots!"
-							 " Number of dac triggers was " + str( input->ttls->countDacTriggers( variationInc ) ) + " while number of dac "
-							 "snapshots was " + str( input->dacs->getNumberSnapshots( variationInc ) ) );
+					thrower("ERROR: number of dac triggers from the ttl system does not match the number of dac snapshots!"
+						" Number of dac triggers was " + str(input->ttls->countDacTriggers(variationInc)) + " while number of dac "
+						"snapshots was " + str(input->dacs->getNumberSnapshots(variationInc)));
 				}
-				input->dacs->checkTimingsWork( variationInc );
-				/*if ( input->runNiawg )
-				{
-					if ( input->ttls->countTriggers( input->niawg->getTrigLines( ).first,
-													 input->niawg->getTrigLines( ).second, variationInc ) !=
-						 input->niawg->getNumberTrigsInScript( ) )
-					{
-						warnings += "WARNING: NIAWG is not getting triggered by the ttl system the same number of times a"
-							" trigger command appears in the NIAWG script.";
-					}
-				}*/
+				input->dacs->checkTimingsWork(variationInc);
 			}
-			//input->rsg->orderEvents( variationInc );
 		}
 		/// output some timing information
 		std::chrono::time_point<chronoClock> varProgramEndTime( chronoClock::now( ) );
@@ -775,8 +721,8 @@ void MasterManager::analyzeFunctionDefinition(std::string defLine, std::string& 
 }
 
 
-void MasterManager::analyzeFunction( std::string function, std::vector<std::string> args, DioSystem* ttls,
-									 DacSystem* dacs, std::vector<std::pair<UINT, UINT>>& ttlShades,
+void MasterManager::analyzeFunction( std::string function, std::vector<std::string> args, repeatManager& repeatMgr,
+									 DioSystem* ttls, DacSystem* dacs, std::vector<std::pair<UINT, UINT>>& ttlShades,
 									 std::vector<UINT>& dacShades, std::vector<variableType>& vars)
 {
 	/// load the file
@@ -838,308 +784,37 @@ void MasterManager::analyzeFunction( std::string function, std::vector<std::stri
 	}
 	functionStream.loadReplacements( replacements );
 	currentFunctionText = functionStream.str();
+	unsigned repeatInitID = repeatMgr.getCurrentActiveID().repeatIdentifier;
 	//
 	functionStream >> word;
 	while (!(functionStream.peek() == EOF) || word != "__end__")
 	{
-		if ( handleTimeCommands( word, functionStream, vars ))
-		{
-			// got handled
-		}
-		/// callcppcode command
-		else if (word == "callcppcode")
-		{
-			// and that's it... 
-			callCppCodeFunction();
-		}
+		if (handleTimeCommands(word, functionStream, vars, repeatMgr)) {}
+		/// callcppcode function
+		else if (word == "callcppcode") { callCppCodeFunction(); }
 		/// deal with ttl commands
-		else if (word == "on:" || word == "off:")
-		{
-			std::string name;
-			functionStream >> name;
-			ttls->handleTtlScriptCommand( word, operationTime, name, ttlShades, vars );
-		}
-		else if (word == "pulseon:" || word == "pulseoff:")
-		{
-			// this requires handling time as it is handled above.
-			std::string name;
-			Expression pulseLength;
-			functionStream >> name;
-			functionStream >> pulseLength;
-			// should be good to go.
-			ttls->handleTtlScriptCommand( word, operationTime, name, pulseLength, ttlShades, vars );
-		}
-		else if (word == "variableon:")
-		{
-			// this is for setting a ttl to on or off based on a variable
-			std::string name;
-			Expression ttlState;
-			currentMasterScript >> name;
-			currentMasterScript >> ttlState;
-			ttlState.assertValid(vars);
-			ttls->handleTtlScriptCommand(word, operationTime, name, ttlState, ttlShades, vars);
-		}
-
-		/// deal with dac commands
-		else if (word == "dac:")
-		{
-			DacCommandForm command;
-			std::string name;
-			functionStream >> name;
-			functionStream >> command.finalVal;
-			command.finalVal.assertValid( vars );
-			command.time = operationTime;
-			command.commandName = "dac:";
-			command.initVal.expressionStr = "__NONE__";
-			command.numSteps.expressionStr = "__NONE__";
-			command.rampInc.expressionStr = "__NONE__";
-			command.rampTime.expressionStr = "__NONE__";
-			try
-			{
-				dacs->handleDacScriptCommand(command,  name, dacShades, vars, ttls);
-			}
-			catch (Error& err)
-			{
-				thrower(err.whatStr() + "... in \"dac:\" command inside function " + function);
-			}
-		}
-		else if ( word == "daclinspace:" )
-		{
-			DacCommandForm command;
-			std::string name;
-			// get dac name
-			functionStream >> name;
-			// get ramp initial value
-			functionStream >> command.initVal;
-			command.initVal.assertValid( vars );
-			// get ramp final value
-			functionStream >> command.finalVal;
-			command.finalVal.assertValid( vars );
-			// get total ramp time;
-			functionStream >> command.rampTime;
-			command.rampTime.assertValid( vars );
-			// get ramp point increment.
-			functionStream >> command.numSteps;
-			command.numSteps.assertValid( vars );
-			command.time = operationTime;
-			command.commandName = "daclinspace:";
-			// not used here.
-			command.rampInc.expressionStr = "__NONE__";
-			//
-			try
-			{
-				dacs->handleDacScriptCommand( command, name, dacShades, vars, ttls );
-			}
-			catch ( Error& err )
-			{
-				thrower( err.whatStr( ) + "... in \"dacLinSpace:\" command inside function " + function );
-			}
-		}
-		else if (word == "daccosspace:")
-		{
-			DacCommandForm command;
-			std::string name;
-			// get dac name
-			functionStream >> name;
-			// get ramp initial value
-			functionStream >> command.initVal;
-			command.initVal.assertValid(vars);
-			// get ramp final value
-			functionStream >> command.finalVal;
-			command.finalVal.assertValid(vars);
-			// get total ramp time;
-			functionStream >> command.rampTime;
-			command.rampTime.assertValid(vars);
-			// get ramp point increment.
-			functionStream >> command.numSteps;
-			command.numSteps.assertValid(vars);
-			command.time = operationTime;
-			command.commandName = "daccosspace:";
-			// not used here.
-			command.rampInc.expressionStr = "__NONE__";
-			//
-			try
-			{
-				dacs->handleDacScriptCommand(command, name, dacShades, vars, ttls);
-			}
-			catch (Error &err)
-			{
-				thrower(err.whatStr() + "... in \"dacCosSpace:\" command inside function " + function);
-			}
-		}
-		else if (word == "dacexpspace:")
-		{
-			DacCommandForm command;
-			std::string name;
-			// get dac name
-			functionStream >> name;
-			// get ramp initial value
-			functionStream >> command.initVal;
-			command.initVal.assertValid(vars);
-			// get ramp final value
-			functionStream >> command.finalVal;
-			command.finalVal.assertValid(vars);
-			// get total ramp time;
-			functionStream >> command.rampTime;
-			command.rampTime.assertValid(vars);
-			// get ramp point increment.
-			functionStream >> command.numSteps;
-			command.numSteps.assertValid(vars);
-			command.time = operationTime;
-			command.commandName = "daccosspace:";
-			// not used here.
-			command.rampInc.expressionStr = "__NONE__";
-			//
-			try
-			{
-				dacs->handleDacScriptCommand(command, name, dacShades, vars, ttls);
-			}
-			catch (Error &err)
-			{
-				thrower(err.whatStr() + "... in \"dacCosSpace:\" command inside function " + function);
-			}
-		}
-		else if (word == "dacarange:")
-		{
-			DacCommandForm command;
-			std::string name;
-			// get dac name
-			functionStream >> name;
-			// get ramp initial value
-			functionStream >> command.initVal;
-			command.initVal.assertValid( vars );
-			// get ramp final value
-			functionStream >> command.finalVal;
-			command.finalVal.assertValid( vars );
-			// get total ramp time;
-			functionStream >> command.rampTime;
-			command.rampTime.assertValid( vars );
-			// get ramp point increment.
-			functionStream >> command.rampInc;
-			command.rampInc.assertValid( vars );
-			command.time = operationTime;
-			command.commandName = "dacarange:";
-			// not used here.
-			command.numSteps.expressionStr = "__NONE__";
-			//
-			try
-			{
-				dacs->handleDacScriptCommand(command, name, dacShades, vars, ttls);
-			}
-			catch (Error& err)
-			{
-				thrower(err.whatStr() + "... in \"dacArange:\" command inside function " + function);
-			}
-		}
-		/// Handle RSG calls.
-		//else if (word == "rsg:")
-		//{
-		//	rsgEventForm info;
-		//	functionStream >> info.frequency;
-		//	info.frequency.assertValid( vars );
-		//	functionStream >> info.power;
-		//	info.power.assertValid( vars );
-		//	// test frequency
-		//	info.time = operationTime;
-		//	rsg->addFrequency( info );
-		//}
-		/// deal with function calls.
-		else if (word == "call")
-		{
-			// calling a user-defined function. Get the name and the arguments to pass to the function handler.
-			std::string functionCall, functionName, functionInputArgs;
-			functionCall = functionStream.getline( '\r' );
-			int pos = functionCall.find_first_of("(") + 1;
-			int finalpos2 = functionCall.find_last_of(")");
-			int finalpos = functionCall.find_last_of(")");
-			functionName = functionCall.substr(0, pos - 1);
-			functionInputArgs = functionCall.substr(pos, finalpos - pos);
-			std::string arg;
-			std::vector<std::string> newArgs;
-			while (true)
-			{
-				pos = functionInputArgs.find_first_of(',');
-				if (pos == std::string::npos)
-				{
-					arg = functionInputArgs.substr(0, functionInputArgs.size());
-					if (arg != "")
-					{
-						newArgs.push_back(arg);
-					}
-					break;
-				}
-				arg = functionInputArgs.substr(0, pos);
-				if (arg != "")
-				{
-					newArgs.push_back(arg);
-				}
-				// cut out that argument off the string.
-				functionInputArgs = functionInputArgs.substr(pos, functionInputArgs.size());
-			}
-			if (functionName == function)
-			{
-				thrower( "ERROR: Recursive function call detected! " + function + " called itself! This is not allowed." );
-			}
-			try
-			{
-				analyzeFunction(functionName, newArgs, ttls, dacs, ttlShades, dacShades, vars);
-			}
-			catch (Error& err)
-			{
-				// the fact that each function call will re-throw with this will end up putting the whole function call
-				// stack onto the error message.
-				thrower(err.whatStr() + "... In function call to function " + functionName + "\r\n");
-			}
-		}
-		else if ( word == "repeat:" )
-		{
-			//std::string repeatStr;
-			Expression repeatStr;
-			functionStream >> repeatStr;
-			try
-			{
-				//totalRepeatNum.push_back( std::stoi( repeatStr ) );
-				totalRepeatNum.push_back( repeatStr.evaluate() );
-			}
-			catch ( std::invalid_argument& )
-			{
-				thrower( "ERROR: the repeat number failed to convert to an integer! Note that the repeat number can not"
-						 " currently be a variable." );
-			}
-			repeatPos.push_back( functionStream.tellg() );
-			currentRepeatNum.push_back(1);
-		}
-		else if ( word == "end" )
-		{
-			if (currentRepeatNum.size() == 0)
-			{
-				thrower( "ERROR: mismatched \"end\" command for repeat loop! there were more \"end\" commands than \"repeat\" commands." );
-			}
-			if ( currentRepeatNum.back() < totalRepeatNum.back() )
-			{
-				functionStream.seekg( repeatPos.back() );
-				currentRepeatNum.back()++;
-			}
-			else
-			{
-				// remove the entries corresponding to this repeat loop.
-				currentRepeatNum.pop_back();
-				repeatPos.pop_back();
-				totalRepeatNum.pop_back();				
-				// and continue (no seekg)
-			}
-		}
+		else if (handleDioCommands(word, functionStream, vars, repeatMgr, ttls, ttlShades)) {}
+		else if (handleDacCommands(word, functionStream, vars, repeatMgr, ttls, dacs, dacShades)) {}
+		else if (handleFunctionCalls(word, functionStream, vars, repeatMgr, ttls, dacs, ttlShades, dacShades)) {}
+		else if (handleRepeats(word, functionStream, vars, repeatMgr, ttls, dacs)) {}
 		else
 		{
 			thrower("ERROR: unrecognized master script command: " + word);
 		}
 		functionStream >> word;
 	}
+	unsigned repeatFinalID = repeatMgr.getCurrentActiveID().repeatIdentifier;
+	if (repeatInitID != repeatFinalID)
+	{
+		thrower("ERROR: Finished analysis of function " + function + " in a different part of the repeat tree. A repeat block is missing an end.");
+	}
 }
 
 // if it handled it, returns true, else returns false.
-bool MasterManager::handleTimeCommands( std::string word, ScriptStream& stream, std::vector<variableType>& vars )
+bool MasterManager::handleTimeCommands( std::string word, ScriptStream& stream, std::vector<variableType>& vars, repeatManager& repeatMgr )
 {
+	bool repeating = repeatMgr.isRepeating();
+
 	if ( word == "t" )
 	{
 		std::string command;
@@ -1150,6 +825,9 @@ bool MasterManager::handleTimeCommands( std::string word, ScriptStream& stream, 
 	if ( word == "t++" )
 	{
 		operationTime.second++;
+		if (repeating) {
+			repeatMgr.getCurrentActiveItem()->data().repeatAddedTime.second++;
+		}
 	}
 	else if ( word == "t+=" )
 	{
@@ -1158,15 +836,30 @@ bool MasterManager::handleTimeCommands( std::string word, ScriptStream& stream, 
 		try
 		{
 			operationTime.second += time.evaluate( );
+			if (repeating) {
+				repeatMgr.getCurrentActiveItem()->data().repeatAddedTime.second += time.evaluate();
+			}
 		}
 		catch ( Error& )
 		{
 			time.assertValid( vars );
 			operationTime.first.push_back( time );
+			if (repeating) {
+				repeatMgr.getCurrentActiveItem()->data().repeatAddedTime.first.push_back(time);
+			}
 		}
 	}
 	else if ( word == "t=" )
 	{
+		if (repeating) {
+			thrower("Can not use \"t=\" syntax inside a repeat. Use incremental syntax instead. This would cause the sequence time to be reset during repeat,"
+				"which may be what you want but I am pretty sure there are other way to achieve the same result without using \"t=\" inside repeat.");
+		}
+		if (repeatMgr.repeatHappend()) {
+			thrower("Can not use \"t=\" syntax after a repeat. Use incremental syntax instead. This would cause the sequence time to be reset after repeat,"
+				"and will definitively get affected by the repeat. A possible fix is to break the time command according to \"t=\", so that "
+				"each block of time can be analyzed separately. But this would require to change all Do,Ao,Dds,Ol's CommandFormList to vec of vec for different time commnad segment. ");
+		}
 		Expression time;
 		stream >> time;
 		try
@@ -1188,9 +881,253 @@ bool MasterManager::handleTimeCommands( std::string word, ScriptStream& stream, 
 	return true;
 }
 
+bool MasterManager::handleDacCommands( std::string word, ScriptStream& stream, std::vector<variableType>& vars,
+									   repeatManager& repeatMgr, DioSystem* ttls, DacSystem* dacs, std::vector<UINT>& dacShades)
+{
+	repeatInfoId repeatId = repeatMgr.getCurrentActiveID();
+
+	/// deal with dac commands
+	if (word == "dac:")
+	{
+		DacCommandForm command;
+		std::string name;
+		stream >> name;
+		std::string value;
+		currentMasterScript >> command.finalVal;
+		command.finalVal.assertValid(vars);
+		command.time = operationTime;
+		command.commandName = "dac:";
+		command.initVal.expressionStr = "__NONE__";
+		command.numSteps.expressionStr = "__NONE__";
+		command.rampInc.expressionStr = "__NONE__";
+		command.rampTime.expressionStr = "__NONE__";
+		command.repeatId = repeatId;
+		try
+		{
+			dacs->handleDacScriptCommand(command, name, dacShades, vars, ttls);
+		}
+		catch (Error& err)
+		{
+			thrower(err.whatStr() + "... in \"dacArange:\" command inside main script");
+		}
+	}
+	else if (word == "daclinspace:" || word == "daccosspace" || word == "dacexpspace")
+	{
+		DacCommandForm command;
+		std::string name;
+		stream >> name;
+		stream >> command.initVal;
+		command.initVal.assertValid(vars);
+		stream >> command.finalVal;
+		command.finalVal.assertValid(vars);
+		stream >> command.rampTime;
+		command.rampTime.assertValid(vars);
+		stream >> command.numSteps;
+		command.numSteps.assertValid(vars);
+		command.time = operationTime;
+		command.repeatId = repeatId;
+		if (word == "daclinspace:")
+		{
+			command.commandName = "daclinspace:";
+		}
+		else if(word == "daccosspace:")
+		{
+			command.commandName = "daccosspace:";
+		}
+		else if (word == "dacexpspace:")
+		{
+			command.commandName = "dacexpspace:";
+		}
+		// not used here.
+		command.rampInc.expressionStr = "__NONE__";
+		//
+		try
+		{
+			dacs->handleDacScriptCommand(command, name, dacShades, vars, ttls);
+		}
+		catch (Error& err)
+		{
+			if (word == "daclinspace:")
+			{
+				thrower(err.whatStr() + "... in \"dacLinSpace:\" command inside main script.\r\n");
+			}
+			else if (word == "daccosspace:")
+			{
+				thrower(err.whatStr() + "... in \"dacCosSpace:\" command inside main script.\r\n");
+			}
+			if (word == "dacexpspace:")
+			{
+				thrower(err.whatStr() + "... in \"dacExpSpace:\" command inside main script.\r\n");
+			}
+		}
+	}
+	else if (word == "dacarange:")
+	{
+		DacCommandForm command;
+		std::string name;
+		stream >> name;
+		stream >> command.initVal;
+		command.initVal.assertValid(vars);
+		stream >> command.finalVal;
+		command.finalVal.assertValid(vars);
+		stream >> command.rampTime;
+		command.rampTime.assertValid(vars);
+		stream >> command.rampInc;
+		command.rampInc.assertValid(vars);
+		command.time = operationTime;
+		command.commandName = "dacarange:";
+		command.repeatId = repeatId;
+		// not used here.
+		command.numSteps.expressionStr = "__NONE__";
+		try
+		{
+			dacs->handleDacScriptCommand(command, name, dacShades, vars, ttls);
+		}
+		catch (Error& err)
+		{
+			thrower(err.whatStr() + "... in \"dacArange:\" command inside main script");
+		}
+	}
+	else
+	{
+		return false;
+	}
+	return true;
+}
+
+
+
+bool MasterManager::handleDioCommands( std::string word, ScriptStream& stream, std::vector<variableType>& vars,
+									   repeatManager& repeatMgr, DioSystem* ttls, std::vector<std::pair<UINT, UINT>>& ttlShades )
+{
+	repeatInfoId repeatId = repeatMgr.getCurrentActiveID();
+
+	if (word == "on:" || word == "off:")
+	{
+		std::string name;
+		stream >> name;
+		ttls->handleTtlScriptCommand( word, operationTime, name, ttlShades, vars, repeatId );
+	}
+	else if (word == "pulseon:" || word == "pulseoff:")
+	{
+		// this requires handling time as it is handled above.
+		std::string name;
+		Expression pulseLength;
+		stream >> name;
+		stream >> pulseLength;
+		pulseLength.assertValid(vars);
+		// should be good to go.
+		ttls->handleTtlScriptCommand(word, operationTime, name, pulseLength, ttlShades, vars, repeatId );
+	}
+	else if (word == "variableon:")
+	{
+		// this is for setting a ttl to on or off based on a variable
+		std::string name;
+		Expression ttlState;
+		stream >> name;
+		stream >> ttlState;
+		ttlState.assertValid(vars);
+		ttls->handleTtlScriptCommand(word, operationTime, name, ttlState, ttlShades, vars, repeatId );
+	}
+	else
+	{
+		return false;
+	}
+	return true;
+}
+
+
+bool MasterManager::handleFunctionCalls( std::string word, ScriptStream& stream, std::vector<variableType>& vars,
+						  repeatManager& repeatMgr, DioSystem* ttls, DacSystem* dacs,
+						  std::vector<std::pair<UINT, UINT>>& ttlShades, std::vector<UINT>& dacShades ) 
+{
+	if (word == "call")
+	{
+		// calling a user-defined function. Get the name and the arguments to pass to the function handler.
+		std::string functionCall, functionName, functionArgs;
+		functionCall = stream.getline('\r');
+		int pos = functionCall.find_first_of("(") + 1;
+		int finalpos2 = functionCall.find_last_of(")");
+		int finalpos = functionCall.find_last_of(")");
+
+		functionName = functionCall.substr(0, pos - 1);
+		functionArgs = functionCall.substr(pos, finalpos - pos);
+		std::string arg;
+		std::vector<std::string> args;
+		while (true)
+		{
+			pos = functionArgs.find_first_of(',');
+			if (pos == std::string::npos)
+			{
+				arg = functionArgs.substr(0, functionArgs.size());
+				if (arg != "")
+				{
+					args.push_back(arg);
+				}
+				break;
+			}
+			arg = functionArgs.substr(0, pos);
+			args.push_back(arg);
+			// cut oinputut that argument off the string.
+			functionArgs = functionArgs.substr(pos + 1, functionArgs.size());
+		}
+		try
+		{
+			analyzeFunction(functionName, args, repeatMgr, ttls, dacs, ttlShades, dacShades, vars);
+		}
+		catch (Error& err)
+		{
+			thrower(err.whatStr() + "... In Function call to function " + functionName);
+		}
+	}
+	else
+	{
+		return false;
+	}
+	return true;
+}
+
+
+
+bool MasterManager::handleRepeats( std::string word, ScriptStream& stream, std::vector<variableType>& vars,
+								   repeatManager& repeatMgr, DioSystem* ttls, DacSystem* dacs)
+{
+	if (word == "repeat:") 
+	{
+		// handle start of repeat
+		auto* child = repeatMgr.addNewRepeat();
+
+		Expression repeatNum;
+		stream >> repeatNum;
+		repeatNum.assertValid( vars );
+		child->data().repeatNum = repeatNum;
+		child->data().repeatAddedTime = timeType(std::vector<Expression>(), 0.0);
+	}
+	else if (word == "end") 
+	{
+		repeatInfoId repeatId = repeatMgr.getCurrentActiveID();
+		//TreeItem<repeatInfo>* repeatInfo = repeatMgr.getCurrentActiveItem();
+		//auto& descendant = repeatInfo->getAllDescendant();
+		if (!ttls->repeatsExistInCommandForm(repeatId)) {
+			ttls->addPlaceholderRepeatCommand(repeatId);
+		}
+		if (!dacs->repeatsExistInCommandForm(repeatId)) {
+			dacs->addPlaceholderRepeatCommand(repeatId);
+		}
+		// handle end of repeat
+		repeatMgr.fininshCurrentRepeat();
+	}
+	else {
+		return false;
+	}
+	return true;
+}
+
+
+
 void MasterManager::analyzeMasterScript( DioSystem* ttls, DacSystem* dacs,
 										 std::vector<std::pair<UINT, UINT>>& ttlShades, std::vector<UINT>& dacShades, 
-										 std::vector<variableType>& vars)
+										 std::vector<variableType>& vars, repeatManager& repeatMgr)
 {
 	// reset some things.
 	loadSkipTime.first.clear( );
@@ -1213,272 +1150,15 @@ void MasterManager::analyzeMasterScript( DioSystem* ttls, DacSystem* dacs,
 	while (!(currentMasterScript.peek() == EOF) || word != "__end__")
 	{
 		//std::stringstream individualCommandStream;
-		if (handleTimeCommands(word, currentMasterScript, vars ) )
-		{
-			// got handled.
-		}
+		if ( handleTimeCommands(word, currentMasterScript, vars, repeatMgr ) ) {}
 		/// callcppcode function
-		else if (word == "callcppcode")
-		{			
-			// and that's it... 
-			callCppCodeFunction();
-		}
+		else if ( word == "callcppcode" ) { callCppCodeFunction(); }
 		/// deal with ttl commands
-		else if ( word == "loadskipentrypoint!" )
-		{
-			loadSkipTime = operationTime;
-		}
-		else if (word == "on:" || word == "off:")
-		{
-			std::string name;
-			currentMasterScript >> name;
-			ttls->handleTtlScriptCommand( word, operationTime, name, ttlShades, vars );
-		}
-		else if (word == "pulseon:" || word == "pulseoff:")
-		{
-			// this requires handling time as it is handled above.
-			std::string name;
-			Expression pulseLength;
-			currentMasterScript >> name;
-			currentMasterScript >> pulseLength;
-			pulseLength.assertValid( vars );
-			// should be good to go.
-			ttls->handleTtlScriptCommand( word, operationTime, name, pulseLength, ttlShades, vars );
-		}
-		else if (word == "variableon:")
-		{
-			// this is for setting a ttl to on or off based on a variable
-			std::string name;
-			Expression ttlState;
-			currentMasterScript >> name;
-			currentMasterScript >> ttlState;
-			ttlState.assertValid(vars);
-			ttls->handleTtlScriptCommand(word, operationTime, name, ttlState, ttlShades, vars);
-		}
-
-		/// deal with dac commands
-		else if (word == "dac:")
-		{
-			DacCommandForm command;
-			std::string name;
-			currentMasterScript >> name;
-			std::string value;
-			currentMasterScript >> command.finalVal;
-			command.finalVal.assertValid( vars );
-			command.time = operationTime;
-			command.commandName = "dac:";
-			command.initVal.expressionStr = "__NONE__";
-			command.numSteps.expressionStr = "__NONE__";
-			command.rampInc.expressionStr = "__NONE__";
-			command.rampTime.expressionStr = "__NONE__";
-			try
-			{
-				dacs->handleDacScriptCommand(command, name, dacShades, vars, ttls);
-			}
-			catch (Error& err)
-			{
-				thrower(err.whatStr() + "... in \"dacArange:\" command inside main script");
-			}
-		}
-		else if ( word == "daclinspace:" )
-		{
-			DacCommandForm command;
-			std::string name;
-			currentMasterScript >> name;
-			currentMasterScript >> command.initVal;
-			command.initVal.assertValid( vars );
-			currentMasterScript >> command.finalVal;
-			command.finalVal.assertValid( vars );
-			currentMasterScript >> command.rampTime;
-			command.rampTime.assertValid( vars );
-			currentMasterScript >> command.numSteps;
-			command.numSteps.assertValid( vars );
-			command.time = operationTime;
-			command.commandName = "daclinspace:";
-			// not used here.
-			command.rampInc.expressionStr = "__NONE__";
-			//
-			try
-			{
-				dacs->handleDacScriptCommand( command, name, dacShades, vars, ttls );
-			}
-			catch ( Error& err )
-			{
-				thrower( err.whatStr( ) + "... in \"dacLinSpace:\" command inside main script.\r\n" );
-			}
-		}
-		else if (word == "daccosspace:")
-		{
-			DacCommandForm command;
-			std::string name;
-			currentMasterScript >> name;
-			currentMasterScript >> command.initVal;
-			command.initVal.assertValid(vars);
-			currentMasterScript >> command.finalVal;
-			command.finalVal.assertValid(vars);
-			currentMasterScript >> command.rampTime;
-			command.rampTime.assertValid(vars);
-			currentMasterScript >> command.numSteps;
-			command.numSteps.assertValid(vars);
-			command.time = operationTime;
-			command.commandName = "daccosspace:";
-			// not used here.
-			command.rampInc.expressionStr = "__NONE__";
-			//
-			try
-			{
-				dacs->handleDacScriptCommand(command, name, dacShades, vars, ttls);
-			}
-			catch (Error &err)
-			{
-				thrower(err.whatStr() + "... in \"dacCosSpace:\" command inside main script.\r\n");
-			}
-		}
-		else if (word == "dacexpspace:")
-		{
-			DacCommandForm command;
-			std::string name;
-			currentMasterScript >> name;
-			currentMasterScript >> command.initVal;
-			command.initVal.assertValid(vars);
-			currentMasterScript >> command.finalVal;
-			command.finalVal.assertValid(vars);
-			currentMasterScript >> command.rampTime;
-			command.rampTime.assertValid(vars);
-			currentMasterScript >> command.numSteps;
-			command.numSteps.assertValid(vars);
-			command.time = operationTime;
-			command.commandName = "dacexpspace:";
-			// not used here.
-			command.rampInc.expressionStr = "__NONE__";
-			//
-			try
-			{
-				dacs->handleDacScriptCommand(command, name, dacShades, vars, ttls);
-			}
-			catch (Error &err)
-			{
-				thrower(err.whatStr() + "... in \"dacExpSpace:\" command inside main script.\r\n");
-			}
-		}
-		else if (word == "dacarange:")
-		{
-			DacCommandForm command;
-			std::string name;
-			currentMasterScript >> name;
-			currentMasterScript >> command.initVal;
-			command.initVal.assertValid( vars );
-			currentMasterScript >> command.finalVal;
-			command.finalVal.assertValid( vars );
-			currentMasterScript >> command.rampTime;
-			command.rampTime.assertValid( vars );
-			currentMasterScript >> command.rampInc;
-			command.rampInc.assertValid( vars );
-			command.time = operationTime;
-			command.commandName = "dacarange:";
-			// not used here.
-			command.numSteps.expressionStr = "__NONE__";
-			try
-			{
-				dacs->handleDacScriptCommand( command, name, dacShades, vars, ttls );
-			}
-			catch (Error& err)
-			{
-				thrower(err.whatStr() + "... in \"dacArange:\" command inside main script");
-			}
-		}
-		/// Deal with RSG calls
-		/*else if (word == "rsg:")
-		{
-			rsgEventForm info;
-			currentMasterScript >> info.frequency;
-			info.frequency.assertValid( vars );
-			currentMasterScript >> info.power;
-			info.power.assertValid( vars );
-			info.time = operationTime;
-			rsg->addFrequency( info );
-		}*/
-		/// deal with raman beam calls (setting raman frequency).
-		/// deal with function calls.
-		else if (word == "call")
-		{
-			// calling a user-defined function. Get the name and the arguments to pass to the function handler.
-			std::string functionCall, functionName, functionArgs;
-			functionCall = currentMasterScript.getline( '\r' );
-			int pos = functionCall.find_first_of("(") + 1;
-			int finalpos2 = functionCall.find_last_of(")");
-			int finalpos = functionCall.find_last_of(")");
-			
-			functionName = functionCall.substr(0, pos - 1);
-			functionArgs = functionCall.substr(pos, finalpos - pos);
-			std::string arg;
-			std::vector<std::string> args;
-			while (true)
-			{
-				pos = functionArgs.find_first_of(',');
-				if (pos == std::string::npos)
-				{
-					arg = functionArgs.substr(0, functionArgs.size());
-					if ( arg != "" )
-					{
-						args.push_back( arg );
-					}
-					break;
-				}
-				arg = functionArgs.substr(0, pos);
-				args.push_back(arg);
-				// cut oinputut that argument off the string.
-				functionArgs = functionArgs.substr(pos + 1, functionArgs.size());
-			}
-			try
-			{
-				analyzeFunction(functionName, args, ttls, dacs, ttlShades, dacShades, vars);
-			}
-			catch (Error& err)
-			{
-				thrower(err.whatStr() + "... In Function call to function " + functionName);
-			}
-		}
-		else if (word == "repeat:")
-		{
-			Expression repeatStr;
-			currentMasterScript >> repeatStr;
-			try
-			{
-				totalRepeatNum.push_back(  repeatStr.evaluate( ) );
-			}
-			catch (Error&)
-			{
-				thrower("ERROR: the repeat number failed to convert to an integer! Note that the repeat number can not"
-						 " currently be a variable.");
-			}
-			repeatPos.push_back( currentMasterScript.tellg() );
-			currentRepeatNum.push_back(1);
-		}
-		// (look for end of repeat)
-		else if (word == "end")
-		{
-			if (currentRepeatNum.size() == 0)
-			{
-				thrower("ERROR! Tried to end repeat, but you weren't repeating!");
-			}
-			if (currentRepeatNum.back() < totalRepeatNum.back())
-			{
-				currentMasterScript.seekg(repeatPos.back());
-				currentRepeatNum.back()++;
-			}
-			else
-			{
-				currentRepeatNum.pop_back();
-				repeatPos.pop_back();
-				totalRepeatNum.pop_back();
-			}
-		}
-		else if (word == "debug:")
-		{
-			std::string tmp = currentMasterScript.getline('\r');
-			debugout += tmp + "\n";
-		}
+		else if ( word == "loadskipentrypoint!" ) { loadSkipTime = operationTime; }
+		else if ( handleDioCommands( word, currentMasterScript, vars, repeatMgr, ttls, ttlShades ) ) {}
+		else if ( handleDacCommands(word, currentMasterScript, vars, repeatMgr, ttls, dacs, dacShades) ) {}
+		else if ( handleFunctionCalls( word, currentMasterScript, vars, repeatMgr, ttls, dacs, ttlShades, dacShades ) ) {}
+		else if ( handleRepeats ( word, currentMasterScript, vars, repeatMgr, ttls, dacs ) ) {}
 		else
 		{
 			thrower("ERROR: unrecognized master script command: \"" + word + "\"");
@@ -1486,9 +1166,9 @@ void MasterManager::analyzeMasterScript( DioSystem* ttls, DacSystem* dacs,
 		word = "";
 		currentMasterScript >> word;
 	}
-	if (!debugout.empty())
+	if (repeatMgr.getCurrentActiveID().repeatIdentifier != 0)
 	{
-		thrower("DEBUG: \n " + debugout);
+		thrower("ERROR: Master script analysis finished while still in a repeat block. A repeat block is missing an end.");
 	}
 }
 
@@ -1528,10 +1208,6 @@ bool MasterManager::isValidWord( std::string word )
 	{
 		return true;
 	}
-	if (word == "debug:")
-	{
-		return true;
-	}
 	return false;
 }
 
@@ -1560,4 +1236,44 @@ UINT MasterManager::determineVariationNumber( std::vector<variableType> variable
 		}
 	}
 	return variationNumber;
+}
+
+
+void MasterManager::calculateVariations(DioSystem* ttls, DacSystem* dacs,
+										   std::vector<std::pair<UINT, UINT>>& ttlShades, std::vector<UINT>& dacShades, 
+										   std::vector<variableType>& vars, Communicator* comm, bool quiet )
+{
+	// get total number of variations
+	UINT variations = determineVariationNumber(vars);
+	std::string warnings;
+	repeatManager repeatMgr;
+
+	// reset systems
+	ttls->resetTtlEvents();
+	dacs->resetDacEvents();
+
+	// shade 
+	ttls->shadeTTLs( ttlShades );
+	dacs->shadeDacs( dacShades );
+
+	// parse the Master script 
+	expUpdate("Analyzing Master Script...", comm, quiet);
+	analyzeMasterScript( ttls, dacs, ttlShades, dacShades, vars, repeatMgr );
+
+	// calculate added time of each repeat for all variations
+	expUpdate("Calculating time of each repeat for all variations...", comm, quiet);
+	repeatMgr.calculateVariations( vars, variations );
+
+	// initialize command lists assuming all repeats set to 1 for all variations
+	expUpdate("Initializing TTL command list without repeats for all variations...", comm, quiet);
+	ttls->interpretKey( vars, variations );
+	expUpdate("Initializing DAC command list without repeats for all variations...", comm, quiet);
+	dacs->interpretKey( vars, warnings, variations );
+
+	// update command lists taking into account all repeats for all variations
+	expUpdate("Recalculating TTL command list taking into account repeats for all variations...", comm, quiet);
+	ttls->constructRepeats( repeatMgr );
+	expUpdate("Recalculating TTL command list taking into account repeats for all variations...", comm, quiet);
+	dacs->constructRepeats( repeatMgr );
+
 }

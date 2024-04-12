@@ -187,6 +187,7 @@
     <ClCompile Include="cnpy.cpp" />
     <ClCompile Include="atomCruncher.cpp" />
     <ClCompile Include="BoostUDP.cpp" />
+    <ClCompile Include="repeatManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -443,6 +444,8 @@
       <Filter>Camera Window\Structures</Filter>
     </ClInclude>
     <ClInclude Include="BoostUDP.h" />
+    <ClInclude Include="repeatManager.h" />
+    <ClInclude Include="TreeItem.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Icon2.ico">

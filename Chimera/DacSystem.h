@@ -11,6 +11,8 @@
 #include "nidaqmx2.h"
 #include "DacStructures.h"
 
+#include "TreeItem.h"
+
 /**
  * The DacSystem is meant to be a constant class but it currently doesn't actually prevent the user from making 
  * multiple copies of the object. This class is based off of the DAC.bas module in the original VB6 code, of course 
@@ -34,7 +36,10 @@ class DacSystem
 		void prepareDacForceChange(int line, double voltage, DioSystem* ttls);
 		void stopDacs();
 		void setDacTriggerEvents( DioSystem* ttls, UINT variation );
-		void interpretKey( std::vector<variableType>& variables, std::string& warnings );
+		void interpretKey( std::vector<variableType>& variables, std::string& warnings, UINT variations );
+		void constructRepeats( repeatManager& repeatMgr );
+		bool repeatsExistInCommandForm(repeatInfoId repeatId);//, std::vector<TreeItem<repeatInfo>*>& descendant);
+		void addPlaceholderRepeatCommand(repeatInfoId repeatId);
 		void organizeDacCommands(UINT variation);
 		void makeFinalDataFormat(UINT variation );
 		void writeDacs( UINT variation, bool loadSkip );

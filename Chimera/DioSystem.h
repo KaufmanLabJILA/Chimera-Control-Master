@@ -6,6 +6,8 @@
 #include <array>
 #include <sstream>
 #include <unordered_map>
+#include "repeatManager.h"
+#include "TreeItem.h"
 
 //Below are for the FPGA
 //#include "stdafx.h"
@@ -51,12 +53,12 @@ class DioSystem
 
 		void rearrange(UINT width, UINT height, fontMap fonts);
 
-		void ttlOn(UINT row, UINT column, timeType time);
+		void ttlOn(UINT row, UINT column, timeType time, repeatInfoId repeadId );
 		void ttlOnDirect( UINT row, UINT column, double time, UINT variation );
-		void ttlOff(UINT row, UINT column, timeType time);
+		void ttlOff(UINT row, UINT column, timeType time, repeatInfoId repeadId );
 		void ttlOffDirect( UINT row, UINT column, double time, UINT variation );
 		void forceTtl(int row, int number, int state);
-		void ttlVariableOn( UINT row, UINT column, timeType time, boolType ttlState );
+		void ttlVariableOn( UINT row, UINT column, timeType time, boolType ttlState, repeatInfoId repeatId );
 
 		std::pair<UINT, UINT> getTtlBoardSize();
 
@@ -69,11 +71,14 @@ class DioSystem
 		std::string getErrorMessage(int errorCode);
 		void handleTtlScriptCommand( std::string command, timeType time, std::string name,
 									 std::vector<std::pair<UINT, UINT>>& ttlShadeLocations, 
-									 std::vector<variableType>& vars );
+									 std::vector<variableType>& vars, repeatInfoId repeatId );
 		void handleTtlScriptCommand( std::string command, timeType time, std::string name,
 									 Expression pulseLength, std::vector<std::pair<UINT, UINT>>& ttlShadeLocations,
-									 std::vector<variableType>& vars );
-		void interpretKey( std::vector<variableType>& variables );
+									 std::vector<variableType>& vars, repeatInfoId repeatId );
+		void interpretKey( std::vector<variableType>& variables, UINT variations );
+		void constructRepeats( repeatManager& repeatMgr );
+		bool repeatsExistInCommandForm(repeatInfoId repeatId);//, std::vector<TreeItem<repeatInfo>*>& descendant );
+		void addPlaceholderRepeatCommand( repeatInfoId repeatId);
 		void organizeTtlCommands(UINT variation );
 		void formatForFPGA(UINT variation);
 		void convertToFinalFormat(UINT variation );
@@ -98,7 +103,6 @@ class DioSystem
 		bool getDefaultTtl(UINT row, UINT column);
 		void findLoadSkipSnapshots( double time, std::vector<variableType>& variables, UINT variation );
 		std::pair<USHORT, USHORT> calcDoubleShortTime( double time );
-
 		
 	private:		
 		// one control for each TTL

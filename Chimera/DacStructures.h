@@ -3,6 +3,7 @@
 #include "Expression.h"
 #include "commonTypes.h"
 #include <array>
+#include "repeatManager.h"
 
 struct DacCommandForm
 {
@@ -17,6 +18,9 @@ struct DacCommandForm
 	Expression rampTime;
 	Expression rampInc;
 	Expression numSteps;
+
+	// stores whether this command is subject to repeats and which repeat it correpsonds to in the tree if so
+	repeatInfoId repeatId = { 0, {0,0}, false };
 };
 
 struct DacCommand
@@ -24,6 +28,9 @@ struct DacCommand
 	unsigned short line;
 	double time;
 	double value;
+
+	// same as DACCommandForm, this will be used for repeat generation, i.e. copy and extend the std::vector<AoCommand>
+	repeatInfoId repeatId = { 0, {0,0}, false };
 };
 
 
