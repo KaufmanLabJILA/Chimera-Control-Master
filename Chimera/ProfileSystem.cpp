@@ -348,7 +348,7 @@ void ProfileSystem::saveConfigurationAs(ScriptingWindow* scriptWindow, MainWindo
 		configurationSaveFile << info.ranges.front().initialValue << "\n";
 	}
 	std::string notes = mainWin->getNotes();
-	configurationSaveFile << notes + "\n";
+	// configurationSaveFile << notes + "\n";
 	configurationSaveFile << "END CONFIGURATION NOTES" << "\n";
 	configurationSaveFile.close();
 	updateConfigurationSavedStatus(true);

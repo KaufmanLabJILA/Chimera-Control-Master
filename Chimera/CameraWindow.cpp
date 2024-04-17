@@ -826,7 +826,7 @@ void CameraWindow::handleMasterConfigOpen(std::stringstream& configStream, doubl
 		configStream >> tempStr;
 		settings.verticalBinning = std::stol(tempStr);
 		settings.width = (settings.right - settings.left + 1) / settings.horizontalBinning;
-		settings.height = (settings.top - settings.bottom + 1) / settings.verticalBinning;
+		settings.height = (settings.bottom - settings.top + 1) / settings.verticalBinning;
 
 		CameraSettings.setImageParameters(settings, this);
 		pics.setParameters(settings);

@@ -24,10 +24,15 @@ public:
 	void setSingle(unsigned long channel, float time, float amp, float freq, bool phase_update, float phase);
 	void freqLinearRamp(unsigned long channel, float tStart, float tEnd, float fStart, float fEnd, bool phase_update, float phaseStart);
 	void freqGaussianRamp(unsigned long channel, float tStart, float tEnd, float tSigma, int direction, float fStart, float fStop, bool phase_update, float phaseStart);
+	void freqGHZRamp(unsigned long channel, float tStart, float tEnd, float omega, bool phase_update, float phaseStart, int N, int omm);
 	void freqtimeoptlukin(unsigned long channel, float tStart, float tEnd, float freq, float A, float omega, float phi0, float delta0, bool phase_update, float phaseStart);
 	void writeCommandList(unsigned long channel, int AWGnum);
 	void ampLinearRamp(unsigned long channel, float tStart, float tEnd, float aStart, float aEnd);
 	void ampGaussianRamp(unsigned long channel, float tStart, float tEnd, float tSigma, int direction, float aStart, float aStop);
+	void ampGHZRamp(unsigned long channel, float tStart, float tEnd, float ampMax, float power, float omega, float norm, float offset, int N, int omm);
+	double evaluatePolynomial(const std::vector<double>& coeffs, double x);
+	std::vector<double> readCoefficients(const std::string& filename);
+
 
 	static unsigned long int getFTW(double freqMHz) {
 		//36-bit DDS

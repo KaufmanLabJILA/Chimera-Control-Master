@@ -35,13 +35,13 @@ void ImageDimsControl::initialize( cameraPositions& pos, CWnd* parent, bool isTr
 	leftEdit.amPos = { pos.amPos.x, pos.amPos.y, pos.amPos.x + 160, pos.amPos.y + 25 };
 	leftEdit.videoPos = { pos.videoPos.x, pos.videoPos.y, pos.videoPos.x + 160, pos.videoPos.y + 25 };
 	leftEdit.Create( NORM_EDIT_OPTIONS | ES_CENTER, leftEdit.seriesPos, parent, id++);
-	leftEdit.SetWindowTextA( "1" );
+	leftEdit.SetWindowTextA( "4" );
 	//
 	rightEdit.seriesPos = { pos.seriesPos.x + 160, pos.seriesPos.y, pos.seriesPos.x + 320, pos.seriesPos.y + 25 };
 	rightEdit.amPos = { pos.amPos.x + 160, pos.amPos.y, pos.amPos.x + 320, pos.amPos.y + 25 };
 	rightEdit.videoPos = { pos.videoPos.x + 160, pos.videoPos.y, pos.videoPos.x + 320, pos.videoPos.y + 25 };
 	rightEdit.Create( NORM_EDIT_OPTIONS | ES_CENTER, rightEdit.seriesPos, parent, id++);
-	rightEdit.SetWindowTextA( "50" );
+	rightEdit.SetWindowTextA( "60" );
 	//
 	horBinningEdit.seriesPos = { pos.seriesPos.x + 320, pos.seriesPos.y, pos.seriesPos.x + 480, pos.seriesPos.y += 25 };
 	horBinningEdit.amPos = { pos.amPos.x + 320, pos.amPos.y, pos.amPos.x + 480, pos.amPos.y += 25 };
@@ -69,13 +69,13 @@ void ImageDimsControl::initialize( cameraPositions& pos, CWnd* parent, bool isTr
 	bottomEdit.amPos = { pos.amPos.x, pos.amPos.y, pos.amPos.x + 160, pos.amPos.y + 25 };
 	bottomEdit.videoPos = { pos.videoPos.x, pos.videoPos.y, pos.videoPos.x + 160, pos.videoPos.y + 25 };
 	bottomEdit.Create( NORM_EDIT_OPTIONS | ES_CENTER, bottomEdit.seriesPos, parent, id++);
-	bottomEdit.SetWindowTextA( "1" );
+	bottomEdit.SetWindowTextA( "60" );
 	//
 	topEdit.seriesPos = { pos.seriesPos.x + 160, pos.seriesPos.y, pos.seriesPos.x + 320, pos.seriesPos.y + 25 };
 	topEdit.amPos = { pos.amPos.x + 160, pos.amPos.y, pos.amPos.x + 320, pos.amPos.y + 25 };
 	topEdit.videoPos = { pos.videoPos.x + 160, pos.videoPos.y, pos.videoPos.x + 320, pos.videoPos.y + 25 };
 	topEdit.Create( NORM_EDIT_OPTIONS | ES_CENTER, topEdit.seriesPos, parent, id++);
-	topEdit.SetWindowTextA( "50" );
+	topEdit.SetWindowTextA( "4" );
 	//
 	vertBinningEdit.seriesPos = { pos.seriesPos.x + 320, pos.seriesPos.y, pos.seriesPos.x + 480, pos.seriesPos.y += 25 };
 	vertBinningEdit.amPos = { pos.amPos.x + 320, pos.amPos.y, pos.amPos.x + 480, pos.amPos.y += 25 };
@@ -220,16 +220,16 @@ imageParameters ImageDimsControl::readImageParameters( CameraWindow* camWin )
 
 	// Check Image parameters - For the ORCA Quest, we also require that the horizontal and vertical offsets and 
 	//the extents are divisible by 4. Additionally, the grid is oriented from the top left.
-	if (currentImageParameters.left > currentImageParameters.right || currentImageParameters.bottom > currentImageParameters.top)
-	{
-		isReady = false;
-		thrower( "ERROR: Image start positions must not be greater than end positions\r\n" );
-	}
-	// if (currentImageParameters.left > currentImageParameters.right || currentImageParameters.top > currentImageParameters.bottom)
+	// if (currentImageParameters.left > currentImageParameters.right || currentImageParameters.bottom > currentImageParameters.top)
 	// {
 	// 	isReady = false;
 	// 	thrower( "ERROR: Image start positions must not be greater than end positions\r\n" );
 	// }
+	if (currentImageParameters.left > currentImageParameters.right || currentImageParameters.top > currentImageParameters.bottom)
+	{
+		isReady = false;
+		thrower( "ERROR: Image start positions must not be greater than end positions\r\n" );
+	}
 	if (currentImageParameters.left < 0 || currentImageParameters.right > 4096)
 	{
 		isReady = false;
@@ -250,16 +250,16 @@ imageParameters ImageDimsControl::readImageParameters( CameraWindow* camWin )
 		isReady = false;
 		thrower( "ERROR: Image height must be a multiple of Vertical Binning\r\n" );
 	}
-	// if (currentImageParameters.bottom % 4 != 0 || currentImageParameters.top % 4 != 0)
-	// {
-	// 	isReady = false;
-	// 	thrower( "ERROR: Vertical offset and extent must be divisible by 4\r\n" );
-	// }
-	// if (currentImageParameters.left % 4 != 0 || currentImageParameters.right % 4 != 0)
-	// {
-	// 	isReady = false;
-	// 	thrower( "ERROR: Horizontal offset and extent must be divisible by 4\r\n" );
-	// }
+	if (currentImageParameters.bottom % 4 != 0 || currentImageParameters.top % 4 != 0)
+	{
+		isReady = false;
+		thrower( "ERROR: Vertical offset and extent must be divisible by 4\r\n" );
+	}
+	if (currentImageParameters.left % 4 != 0 || currentImageParameters.right % 4 != 0)
+	{
+		isReady = false;
+		thrower( "ERROR: Horizontal offset and extent must be divisible by 4\r\n" );
+	}
 	// made it through successfully.
 	isReady = true;
 	return currentImageParameters;
@@ -270,7 +270,7 @@ imageParameters ImageDimsControl::readImageParameters( CameraWindow* camWin )
 void ImageDimsControl::updateWidthHeight( )
 {
 	currentImageParameters.width = (currentImageParameters.right - currentImageParameters.left + 1) / currentImageParameters.horizontalBinning;
-	currentImageParameters.height = (currentImageParameters.top - currentImageParameters.bottom + 1) / currentImageParameters.verticalBinning;
+	currentImageParameters.height = (currentImageParameters.bottom - currentImageParameters.top + 1) / currentImageParameters.verticalBinning;
 }
 
 /*
@@ -299,7 +299,7 @@ void ImageDimsControl::setImageParametersFromInput( imageParameters param, Camer
 	updateWidthHeight( );
 
 	// Check Image parameters
-	if (currentImageParameters.left > currentImageParameters.right || currentImageParameters.bottom > currentImageParameters.top)
+	if (currentImageParameters.left > currentImageParameters.right || currentImageParameters.top > currentImageParameters.bottom)
 	{
 		isReady = false;
 		thrower( "ERROR: Image start positions must not be greater than end positions\r\n" );

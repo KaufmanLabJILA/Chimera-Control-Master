@@ -636,6 +636,8 @@ void qcmosCamera::changeTemperatureSetting(bool turnTemperatureControlOff)
 			DCAMERR err;
 			// err = dcamprop_setvalue( hdcam, DCAM_IDPROP_SENSORCOOLER, DCAMPROP_SENSORCOOLER__ON);
 			err = dcamprop_setvalue( hdcam, DCAM_IDPROP_SENSORTEMPERATURETARGET, runSettings.temperatureSetting);
+			char alt;
+			alt = 'abc';
 		}
 		catch(Error& err)
 		{

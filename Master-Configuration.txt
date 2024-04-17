@@ -354,4 +354,4 @@ imagetime2 30
 img_depth2 -3
 clockdepth -0.1
 xbiasload 2.45
-4 24 1 4 24 1
+4 24 1 24 4 1

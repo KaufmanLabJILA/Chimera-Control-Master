@@ -22,7 +22,7 @@ void NoteSystem::handleNewConfig( std::ofstream& saveFile )
 void NoteSystem::handleSaveConfig(std::ofstream& saveFile)
 {
 	saveFile << "CONFIGURATION_NOTES\n";
-	saveFile << getConfigurationNotes();
+	// saveFile << getConfigurationNotes();
 	saveFile << "\nEND_CONFIGURATION_NOTES\n";
 }
 

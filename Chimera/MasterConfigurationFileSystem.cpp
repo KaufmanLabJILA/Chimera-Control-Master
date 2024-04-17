@@ -492,7 +492,7 @@ void ConfigurationFileSystem::openConfiguration(std::string configurationNameToO
 	{
 		while (configurationFile && tempNote != "END CONFIGURATION NOTES")
 		{
-			notes += tempNote + "\r\n";
+			// notes += tempNote + "\r\n";
 			std::getline(configurationFile, tempNote);
 		}
 		if (notes.size() > 2)
@@ -767,7 +767,7 @@ void ConfigurationFileSystem::saveConfiguration( MasterWindow* Master )
 
 	configurationSaveFile << "NOTES:\n";
 	std::string notes = Master->notes.getConfigurationNotes();
-	configurationSaveFile << notes + "\n";
+	// configurationSaveFile << notes + "\n";
 	configurationSaveFile << "END CONFIGURATION NOTES" << "\n";
 
 	configurationSaveFile << "TEKTRONICS1:\n";
@@ -972,7 +972,7 @@ void ConfigurationFileSystem::saveConfigurationAs(MasterWindow* Master)
 
 	configurationSaveFile << "NOTES:\n";
 	std::string notes = Master->notes.getConfigurationNotes();
-	configurationSaveFile << notes + "\n";
+	// configurationSaveFile << notes + "\n";
 	configurationSaveFile << "END CONFIGURATION NOTES" << "\n";
 
 	configurationSaveFile.close();

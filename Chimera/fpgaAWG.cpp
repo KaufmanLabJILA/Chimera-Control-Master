@@ -1,5 +1,11 @@
 #include "stdafx.h"
 #include "fpgaAWG.h"
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+#include <sstream>
+#include <cmath>
 
 fpgaAWG::fpgaAWG(std::string portID, int baudrate, bool AWG_SAFEMODE) : fpga(portID, AWG_SAFEMODE ? -1 : baudrate) {
 	//using ternary operators to change which fpga constructor is called.
@@ -214,6 +220,103 @@ void fpgaAWG::ampGaussianRamp(unsigned long channel, float tStart, float tEnd, f
 		thrower("Direction must be +1 or -1.");
 	}
 }
+
+//// FOR OPTIMAL GHZ ////
+
+///Read Polynomaial from File ///
+std::vector<double> fpgaAWG::readCoefficients(const std::string& filename){
+	std::vector<double> coefficients;
+	std::ifstream file(filename);
+	std::string line;
+
+	while (std::getline(file, line)){
+		std::stringstream ss(line);
+		double coeff;
+		ss >> coeff;
+		coefficients.push_back(coeff);
+	}
+
+	return coefficients;
+}
+
+double fpgaAWG::evaluatePolynomial(const std::vector<double>& coeffs, double x){
+	double result = 0.0;
+	for (int i = coeffs.size()-1; i>=0; --i){
+		int n = coeffs.size() - 1;
+		result = result + coeffs[i] * pow(x, n - i);
+	}
+
+	return result;
+}
+
+void fpgaAWG::freqGHZRamp(unsigned long channel, float tStart, float tEnd, float omega, bool phase_update, float phaseStart, int N, int omm) {
+	int iStart = nPreviousStepSetting + ceil((tStart - startTimeStepSetting) / (stepSize * AWGMINSTEP));
+	int numSteps = ceil((tEnd - tStart) / (stepSize * AWGMINSTEP));
+
+	std::vector<awgCommand> & awgCommandList = selectCommandList(channel);
+
+	char filePath[200];
+
+	sprintf(filePath, "B:\Yb heap\Experiment_code_Yb\Chimera-Control-Master\Waveforms\ampl%i_N=%i.txt", N, omm);
+	std::vector<double> coefficients = readCoefficients(filePath);
+
+	if (tEnd > awgCommandList.back().timeStampMicro + stepSize * AWGMINSTEP) {
+		thrower("Ramp too long for assigned steps.");
+	};
+
+	float t, aVal, fVal;
+
+	for (int i = 0; i < numSteps; i++) {
+		t = stepSize * AWGMINSTEP * i + tStart;
+		fVal = omega*evaluatePolynomial(coefficients,t);
+		awgCommandList[iStart + i].freqMHz = fVal;
+		awgCommandList[iStart + i].phaseDegrees = phaseStart;
+		awgCommandList[iStart + i].phase_update = false;
+	};
+
+	awgCommandList[iStart].phase_update = phase_update;
+	
+}
+
+void fpgaAWG::ampGHZRamp(unsigned long channel, float tStart, float tEnd, float ampMax, float power, float omega, float norm, float offset, int N, int omm) {
+	int iStart = nPreviousStepSetting + ceil((tStart - startTimeStepSetting) / (stepSize * AWGMINSTEP));
+	int numSteps = ceil((tEnd - tStart) / (stepSize * AWGMINSTEP));
+
+	char filePath[200];
+
+	sprintf(filePath, "B:\Yb heap\Experiment_code_Yb\Chimera-Control-Master\Waveforms\ampl%i_N=%i.txt", N, omm);
+	std::vector<double> coefficients = readCoefficients(filePath);
+
+	std::vector<awgCommand> & awgCommandList = selectCommandList(channel);
+
+	if (tEnd > awgCommandList.back().timeStampMicro + stepSize * AWGMINSTEP) {
+		thrower("Ramp too long for assigned steps.");
+	};
+
+	float t, fVal, aVal;
+	if (omm == 1){
+		for (int i = 0; i < numSteps; i++) {
+			t = stepSize * AWGMINSTEP * i + tStart;
+			fVal = omega*evaluatePolynomial(coefficients,t);
+			aVal = ampMax - ampMax*pow(fabs(cos(3.14156 *(t-tStart)/(tEnd-tStart))),2*power);
+			awgCommandList[iStart + i].ampPercent = aVal;
+		}
+	}
+
+	else {
+		for (int i = 0; i < numSteps; i++) {
+			t = stepSize * AWGMINSTEP * i + tStart;
+			fVal = omega*evaluatePolynomial(coefficients,t);
+			aVal = ampMax*pow(pow(sin(3.14156/2+sin(3.14156 *(t-tStart)/(tEnd-tStart))),2*power),2);
+			awgCommandList[iStart + i].ampPercent = aVal;
+		}
+	}
+	
+}
+
+
+//// END OPTIMAL GHZ STUFF ////
+
 
 void fpgaAWG::freqGaussianRamp(unsigned long channel, float tStart, float tEnd, float tSigma, int direction, float fStart, float fStop, bool phase_update, float phaseStart) {
 	int iStart = nPreviousStepSetting + ceil((tStart - startTimeStepSetting) / (stepSize * AWGMINSTEP));
@@ -494,6 +597,43 @@ void fpgaAWG::analyzeAWGScript(fpgaAWG* fpgaawg, std::vector<variableType>& vari
 			Sleep(100);
 			trigger();
 		}
+		/// GHZ RAMPS ///
+
+		else if (word == "freqghzramp") {
+
+			std::string channel;
+			Expression tstart, tstop, omega, phase_update, phaseDegrees, N, omm;
+			currentAWGScript >> channel;
+			currentAWGScript >> tstart;
+			currentAWGScript >> tstop;
+			currentAWGScript >> omega;
+			currentAWGScript >> phase_update;
+			currentAWGScript >> phaseDegrees;
+			currentAWGScript >> N;
+			currentAWGScript >> omm;
+
+			freqGHZRamp(stoul(channel, nullptr, 0), tstart.evaluate(variables, variation), tstop.evaluate(variables, variation), omega.evaluate(variables, variation), phase_update.evaluate(variables, variation), phaseDegrees.evaluate(variables, variation), N.evaluate(variables, variation), omm.evaluate(variables, variation));
+		}
+
+		else if (word == "ampghzramp") {
+
+			std::string channel;
+			Expression tstart, tstop, ampMax, power, omega, norm, offset, N, omm;
+			currentAWGScript >> channel;
+			currentAWGScript >> tstart;
+			currentAWGScript >> tstop;
+			currentAWGScript >> ampMax;
+			currentAWGScript >> power;
+			currentAWGScript >> omega;
+			currentAWGScript >> norm;
+			currentAWGScript >> offset;
+			currentAWGScript >> N;
+			currentAWGScript >> omm;
+
+			ampGHZRamp(stoul(channel, nullptr, 0), tstart.evaluate(variables, variation), tstop.evaluate(variables, variation), ampMax.evaluate(variables, variation), power.evaluate(variables, variation), omega.evaluate(variables, variation), norm.evaluate(variables, variation), offset.evaluate(variables, variation),N.evaluate(variables, variation), omm.evaluate(variables, variation));
+		}
+
+		/// END GHZ RAMPS ///
 		else
 		{
 			thrower("ERROR: unrecognized AWG script command: \"" + word + "\"");

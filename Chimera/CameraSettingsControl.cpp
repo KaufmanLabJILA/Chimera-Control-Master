@@ -51,30 +51,30 @@ void CameraSettingsControl::initialize(cameraPositions& pos, int& id, CWnd* pare
 	pos.amPos.y += 25;
 	pos.videoPos.y += 25;
 	pos.seriesPos.y += 25;
-	/// EM Gain
-	emGainButton.seriesPos = { pos.seriesPos.x, pos.seriesPos.y, pos.seriesPos.x + 120, pos.seriesPos.y + 20 };
-	emGainButton.videoPos = { pos.videoPos.x, pos.videoPos.y, pos.videoPos.x + 120, pos.videoPos.y + 20 };
-	emGainButton.amPos = { pos.amPos.x, pos.amPos.y, pos.amPos.x + 120, pos.amPos.y + 20 };
-	emGainButton.Create("Set Gain", NORM_PUSH_OPTIONS, emGainButton.seriesPos, parent, IDC_SET_EM_GAIN_BUTTON);
-	emGainButton.setToolTip("Set the gain of the of the camera. The program will immediately change the state of the camera after pressing this button.",
-		tooltips, parent);
-	//
-	emGainEdit.seriesPos = { pos.seriesPos.x + 120, pos.seriesPos.y, pos.seriesPos.x + 300, pos.seriesPos.y + 20 };
-	emGainEdit.amPos = { pos.amPos.x + 120, pos.amPos.y, pos.amPos.x + 300, pos.amPos.y + 20 };
-	emGainEdit.videoPos = { pos.videoPos.x + 120, pos.videoPos.y, pos.videoPos.x + 300, pos.videoPos.y + 20 };
-	emGainEdit.Create(NORM_EDIT_OPTIONS, emGainEdit.seriesPos, parent, id++);
-	//
-	emGainDisplay.seriesPos = { pos.seriesPos.x + 300, pos.seriesPos.y, pos.seriesPos.x + 480, pos.seriesPos.y + 20 };
-	emGainDisplay.videoPos = { pos.videoPos.x + 300, pos.videoPos.y, pos.videoPos.x + 480, pos.videoPos.y + 20 };
-	emGainDisplay.amPos = { pos.amPos.x + 300, pos.amPos.y, pos.amPos.x + 480, pos.amPos.y + 20 };
-	emGainDisplay.Create("OFF", NORM_STATIC_OPTIONS, emGainDisplay.seriesPos, parent, id++);
-	// initialize settings.
-	runSettings.emGainLevel = 0;
-	runSettings.emGainModeIsOn = true;
-	//
-	pos.seriesPos.y += 20;
-	pos.amPos.y += 20;
-	pos.videoPos.y += 20;
+	// /// EM Gain
+	// emGainButton.seriesPos = { pos.seriesPos.x, pos.seriesPos.y, pos.seriesPos.x + 120, pos.seriesPos.y + 20 };
+	// emGainButton.videoPos = { pos.videoPos.x, pos.videoPos.y, pos.videoPos.x + 120, pos.videoPos.y + 20 };
+	// emGainButton.amPos = { pos.amPos.x, pos.amPos.y, pos.amPos.x + 120, pos.amPos.y + 20 };
+	// emGainButton.Create("Set Gain", NORM_PUSH_OPTIONS, emGainButton.seriesPos, parent, IDC_SET_EM_GAIN_BUTTON);
+	// emGainButton.setToolTip("Set the gain of the of the camera. The program will immediately change the state of the camera after pressing this button.",
+	// 	tooltips, parent);
+	// //
+	// emGainEdit.seriesPos = { pos.seriesPos.x + 120, pos.seriesPos.y, pos.seriesPos.x + 300, pos.seriesPos.y + 20 };
+	// emGainEdit.amPos = { pos.amPos.x + 120, pos.amPos.y, pos.amPos.x + 300, pos.amPos.y + 20 };
+	// emGainEdit.videoPos = { pos.videoPos.x + 120, pos.videoPos.y, pos.videoPos.x + 300, pos.videoPos.y + 20 };
+	// emGainEdit.Create(NORM_EDIT_OPTIONS, emGainEdit.seriesPos, parent, id++);
+	// //
+	// emGainDisplay.seriesPos = { pos.seriesPos.x + 300, pos.seriesPos.y, pos.seriesPos.x + 480, pos.seriesPos.y + 20 };
+	// emGainDisplay.videoPos = { pos.videoPos.x + 300, pos.videoPos.y, pos.videoPos.x + 480, pos.videoPos.y + 20 };
+	// emGainDisplay.amPos = { pos.amPos.x + 300, pos.amPos.y, pos.amPos.x + 480, pos.amPos.y + 20 };
+	// emGainDisplay.Create("OFF", NORM_STATIC_OPTIONS, emGainDisplay.seriesPos, parent, id++);
+	// // initialize settings.
+	// runSettings.emGainLevel = 0;
+	// runSettings.emGainModeIsOn = true;
+	// //
+	// pos.seriesPos.y += 20;
+	// pos.amPos.y += 20;
+	// pos.videoPos.y += 20;
 
 	// trigger combo
 	triggerCombo.seriesPos = { pos.seriesPos.x, pos.seriesPos.y, pos.seriesPos.x + 480, pos.seriesPos.y + 800 };
@@ -91,31 +91,31 @@ void CameraSettingsControl::initialize(cameraPositions& pos, int& id, CWnd* pare
 	pos.amPos.y += 25;
 	pos.videoPos.y += 25;
 	runSettings.triggerMode = "External Trigger";
-	// Set temperature Button
-	setTemperatureButton.seriesPos = { pos.seriesPos.x, pos.seriesPos.y, pos.seriesPos.x + 270, pos.seriesPos.y + 25 };
-	setTemperatureButton.videoPos = { pos.videoPos.x, pos.videoPos.y, pos.videoPos.x + 270, pos.videoPos.y + 25 };
-	setTemperatureButton.amPos = { pos.amPos.x, pos.amPos.y, pos.amPos.x + 270, pos.amPos.y + 25 };
-	setTemperatureButton.Create("Set Camera Temperature (C)", NORM_PUSH_OPTIONS, setTemperatureButton.seriesPos,
-		parent, IDC_SET_TEMPERATURE_BUTTON);
-	// Temperature Edit
-	temperatureEdit.seriesPos = { pos.seriesPos.x + 270, pos.seriesPos.y, pos.seriesPos.x + 350, pos.seriesPos.y + 25 };
-	temperatureEdit.videoPos = { pos.videoPos.x + 270, pos.videoPos.y, pos.videoPos.x + 350, pos.videoPos.y + 25 };
-	temperatureEdit.amPos = { pos.amPos.x + 270, pos.amPos.y, pos.amPos.x + 350, pos.amPos.y + 25 };
-	temperatureEdit.Create(NORM_EDIT_OPTIONS, temperatureEdit.seriesPos, parent, id++);
-	temperatureEdit.SetWindowTextA("0");
-	// Temperature Setting Display
-	temperatureDisplay.seriesPos = { pos.seriesPos.x + 350, pos.seriesPos.y, pos.seriesPos.x + 430, pos.seriesPos.y + 25 };
-	temperatureDisplay.videoPos = { pos.videoPos.x + 350, pos.videoPos.y, pos.videoPos.x + 430, pos.videoPos.y + 25 };
-	temperatureDisplay.amPos = { pos.amPos.x + 350, pos.amPos.y, pos.amPos.x + 430, pos.amPos.y + 25 };
-	temperatureDisplay.Create("", NORM_STATIC_OPTIONS, temperatureDisplay.seriesPos, parent, id++);
-	// Temperature Control Off Button
-	temperatureOffButton.seriesPos = { pos.seriesPos.x + 430, pos.seriesPos.y, pos.seriesPos.x + 480, pos.seriesPos.y + 25 };
-	temperatureOffButton.videoPos = { pos.videoPos.x + 430, pos.videoPos.y, pos.videoPos.x + 480, pos.videoPos.y + 25 };
-	temperatureOffButton.amPos = { pos.amPos.x + 430, pos.amPos.y, pos.amPos.x + 480, pos.amPos.y + 25 };
-	temperatureOffButton.Create("OFF", NORM_PUSH_OPTIONS, temperatureOffButton.seriesPos, parent, IDC_SET_TEMPERATURE_OFF_BUTTON);
-	pos.seriesPos.y += 25;
-	pos.amPos.y += 25;
-	pos.videoPos.y += 25;
+	// // Set temperature Button
+	// setTemperatureButton.seriesPos = { pos.seriesPos.x, pos.seriesPos.y, pos.seriesPos.x + 270, pos.seriesPos.y + 25 };
+	// setTemperatureButton.videoPos = { pos.videoPos.x, pos.videoPos.y, pos.videoPos.x + 270, pos.videoPos.y + 25 };
+	// setTemperatureButton.amPos = { pos.amPos.x, pos.amPos.y, pos.amPos.x + 270, pos.amPos.y + 25 };
+	// setTemperatureButton.Create("Set Camera Temperature (C)", NORM_PUSH_OPTIONS, setTemperatureButton.seriesPos,
+	// 	parent, IDC_SET_TEMPERATURE_BUTTON);
+	// // Temperature Edit
+	// temperatureEdit.seriesPos = { pos.seriesPos.x + 270, pos.seriesPos.y, pos.seriesPos.x + 350, pos.seriesPos.y + 25 };
+	// temperatureEdit.videoPos = { pos.videoPos.x + 270, pos.videoPos.y, pos.videoPos.x + 350, pos.videoPos.y + 25 };
+	// temperatureEdit.amPos = { pos.amPos.x + 270, pos.amPos.y, pos.amPos.x + 350, pos.amPos.y + 25 };
+	// temperatureEdit.Create(NORM_EDIT_OPTIONS, temperatureEdit.seriesPos, parent, id++);
+	// temperatureEdit.SetWindowTextA("0");
+	// // Temperature Setting Display
+	// temperatureDisplay.seriesPos = { pos.seriesPos.x + 350, pos.seriesPos.y, pos.seriesPos.x + 430, pos.seriesPos.y + 25 };
+	// temperatureDisplay.videoPos = { pos.videoPos.x + 350, pos.videoPos.y, pos.videoPos.x + 430, pos.videoPos.y + 25 };
+	// temperatureDisplay.amPos = { pos.amPos.x + 350, pos.amPos.y, pos.amPos.x + 430, pos.amPos.y + 25 };
+	// temperatureDisplay.Create("", NORM_STATIC_OPTIONS, temperatureDisplay.seriesPos, parent, id++);
+	// // Temperature Control Off Button
+	// temperatureOffButton.seriesPos = { pos.seriesPos.x + 430, pos.seriesPos.y, pos.seriesPos.x + 480, pos.seriesPos.y + 25 };
+	// temperatureOffButton.videoPos = { pos.videoPos.x + 430, pos.videoPos.y, pos.videoPos.x + 480, pos.videoPos.y + 25 };
+	// temperatureOffButton.amPos = { pos.amPos.x + 430, pos.amPos.y, pos.amPos.x + 480, pos.amPos.y + 25 };
+	// temperatureOffButton.Create("OFF", NORM_PUSH_OPTIONS, temperatureOffButton.seriesPos, parent, IDC_SET_TEMPERATURE_OFF_BUTTON);
+	// pos.seriesPos.y += 25;
+	// pos.amPos.y += 25;
+	// pos.videoPos.y += 25;
 	// Temperature Message Display
 	temperatureMsg.seriesPos = { pos.seriesPos.x, pos.seriesPos.y, pos.seriesPos.x + 480, pos.seriesPos.y + 50 };
 	temperatureMsg.videoPos = { pos.videoPos.x, pos.videoPos.y, pos.videoPos.x + 480, pos.videoPos.y + 50 };
@@ -282,13 +282,13 @@ void CameraSettingsControl::setRunSettings(qcmosRunSettings inputSettings)
 {
 	if (inputSettings.emGainModeIsOn == false || inputSettings.emGainLevel < 0)
 	{
-		emGainEdit.SetWindowTextA("-1");
-		emGainDisplay.SetWindowTextA("OFF");
+		// emGainEdit.SetWindowTextA("-1");
+		// emGainDisplay.SetWindowTextA("OFF");
 	}
 	else
 	{
-		emGainEdit.SetWindowTextA(cstr(inputSettings.emGainLevel));
-		emGainDisplay.SetWindowTextA(cstr("X" + str(inputSettings.emGainLevel)));
+		// emGainEdit.SetWindowTextA(cstr(inputSettings.emGainLevel));
+		// emGainDisplay.SetWindowTextA(cstr("X" + str(inputSettings.emGainLevel)));
 	}
 	qcmosFriend->setGainMode();
 	// try to set this time.
@@ -320,7 +320,7 @@ void CameraSettingsControl::setRunSettings(qcmosRunSettings inputSettings)
 	// kineticCycleTimeEdit.SetWindowTextA(cstr(inputSettings.kineticCycleTime));
 	// accumulationCycleTimeEdit.SetWindowTextA(cstr(inputSettings.accumulationTime * 1000.0));
 	accumulationNumberEdit.SetWindowTextA(cstr(inputSettings.accumulationNumber));
-	temperatureEdit.SetWindowTextA(cstr(inputSettings.temperatureSetting));
+	// temperatureEdit.SetWindowTextA(cstr(inputSettings.temperatureSetting));
 }
 
 
@@ -338,7 +338,7 @@ void CameraSettingsControl::handleSetTemperaturePress()
 
 	//runSettings = qcmosFriend->getSettings();
 	CString text;
-	temperatureEdit.GetWindowTextA(text);
+	// temperatureEdit.GetWindowTextA(text);
 	int temp;
 	try
 	{
@@ -455,7 +455,7 @@ BOOL CameraSettingsControl::getPicsPerRepManual() {
 void CameraSettingsControl::setEmGain(qcmosCamera* qcmosObj)
 {
 	CString emGainText;
-	emGainEdit.GetWindowTextA(emGainText);
+	// emGainEdit.GetWindowTextA(emGainText);
 	int emGain;
 	try
 	{
@@ -485,7 +485,7 @@ void CameraSettingsControl::setEmGain(qcmosCamera* qcmosObj)
 	qcmosObj->setSettings(settings);
 	// and immediately change the EM gain mode.
 	qcmosObj->setGainMode();
-	emGainEdit.RedrawWindow();
+	// emGainEdit.RedrawWindow();
 }
 
 
@@ -530,18 +530,26 @@ void CameraSettingsControl::handleTimer()
 		qcmosFriend->getTemperatureStatus(sensorStatus);
 
 		// if not stable this won't get changed.
-		if (sensorStatus == DCAMPROP_SENSORCOOLERSTATUS__READY)
+		if (sensorStatus == 2)
 		{
 			currentControlColor = "Green";
-			temperatureDisplay.SetWindowTextA(cstr(setTemperature));
+			// temperatureDisplay.SetWindowTextA(cstr(setTemperature));
 			temperatureMsg.SetWindowTextA(cstr("Temperature has stabilized at " + str(currentTemperature)
+				+ " (C)\r\n"));
+		}
+
+		else if (sensorStatus == DCAMPROP_SENSORCOOLERSTATUS__ALWAYS)
+		{
+			currentControlColor = "Green";
+			// temperatureDisplay.SetWindowTextA(cstr(setTemperature));
+			temperatureMsg.SetWindowTextA(cstr("Sensor Cooler is Working Hard. Current Temperature is " + str(currentTemperature)
 				+ " (C)\r\n"));
 		}
 
 		else if (sensorStatus == DCAMPROP_SENSORCOOLERSTATUS__BUSY)
 		{
 			currentControlColor = "Red";
-			temperatureDisplay.SetWindowTextA(cstr(setTemperature));
+			// temperatureDisplay.SetWindowTextA(cstr(setTemperature));
 			temperatureMsg.SetWindowTextA(cstr("Set temperature not yet reached. Current temperature is "
 				+ str(currentTemperature) + " (C)\r\n"));
 		}
@@ -562,7 +570,7 @@ void CameraSettingsControl::handleTimer()
 		else if (sensorStatus == DCAMPROP_SENSORCOOLERSTATUS__OFF)
 		{
 			currentControlColor = "Red";
-			temperatureDisplay.SetWindowTextA(cstr(setTemperature));
+			// temperatureDisplay.SetWindowTextA(cstr(setTemperature));
 			temperatureMsg.SetWindowTextA(cstr("Temperature control is off. Temperature: " + str(currentTemperature)));
 		}
 		// else if (exception.whatBare() == "DRV_ACQUIRING")
@@ -576,13 +584,13 @@ void CameraSettingsControl::handleTimer()
 		else if (HAM_SAFEMODE)
 		{
 			currentControlColor = "Red";
-			temperatureDisplay.SetWindowTextA(cstr(setTemperature));
+			// temperatureDisplay.SetWindowTextA(cstr(setTemperature));
 			temperatureMsg.SetWindowTextA("Application is running in Safemode... No Real Temperature Data is available.");
 		}
 		else
 		{
 			currentControlColor = "Red";
-			temperatureDisplay.SetWindowTextA(cstr(currentTemperature));
+			// temperatureDisplay.SetWindowTextA(cstr(currentTemperature));
 			temperatureMsg.SetWindowTextA(cstr("Invalid Code. Temperature: "+ str(currentTemperature)));
 		}
 

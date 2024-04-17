@@ -246,7 +246,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 				input->dds->programDDS(input->dds, input->variables, variationInc);
 			}
 
-			if (input->runAWG && !AWG_SAFEMODE0) {
+			if (input->runAWG && AWG_SAFEMODE0) {
 				//input->moog->loadMoogScript(input->moogScriptAddress);
 				//input->moog->analyzeMoogScript(input->moog, input->variables, variationInc);
 				input->awg0->loadAWGScript(input->awgScriptAddress);
@@ -254,7 +254,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 
 
 			}
-			if (input->runAWG && !AWG_SAFEMODE1) {
+			if (input->runAWG && AWG_SAFEMODE1) {
 				//input->moog->loadMoogScript(input->moogScriptAddress);
 				//input->moog->analyzeMoogScript(input->moog, input->variables, variationInc);
 

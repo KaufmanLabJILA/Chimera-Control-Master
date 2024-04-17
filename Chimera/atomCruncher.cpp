@@ -5,6 +5,7 @@ void atomCruncher::getTweezerOffset(int* xOffPixels, int* yOffPixels, int* index
 	///modifies input pointers to pass newly computed offset values in units of pixels and subpixel mask offset. Also updates masksCrop appropriately.
 
 	//First find brightest pixel There is probably a more efficient way of doing this.
+	//shift masks w.r.t. image and see at which shifts the summed pixel*mask value is maximized (shift +- 2 pixels)
 
 	std::vector<int> macroSignals;
 
