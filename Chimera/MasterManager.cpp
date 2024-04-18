@@ -27,6 +27,380 @@ bool MasterManager::getAbortStatus()
 	return isAborting;
 }
 
+/// The workhorse of running an idle sequence
+
+UINT __cdecl MasterManager::idlerThreadProcedure(void* voidInput)
+{
+	/// initialize various structures 
+	// convert the input to the correct structure. 
+	MasterThreadInput* input = (MasterThreadInput*)voidInput;
+	// change the status of the parent object to reflect that the thread is running.
+	input->thisObj->experimentIsRunning = false;
+	input->thisObj->idlerIsRunning = true;
+
+	std::vector<std::pair<UINT, UINT>> ttlShadeLocs;
+	std::vector<UINT> dacShadeLocs;
+	std::vector<UINT> ddsShadeLocs;
+	bool foundRearrangement = false;
+	// warnings will be passed by reference to a series of function calls which can append warnings to the string.
+	// at a certain point the string will get outputted to the error console. Remember, errors themselves are handled
+	// by thrower() calls. 
+	std::string warnings;
+	std::string abortString = "\r\nABORTED!\r\n";
+	std::chrono::time_point<chronoClock> startTime(chronoClock::now());
+	std::vector<long> variedMixedSize;
+	//niawgPair<std::vector<std::fstream>> niawgFiles; 
+	//NiawgOutput output; 
+	//std::vector<ViChar> userScriptSubmit; 
+	//output.isDefault = false; 
+	// initialize to 2 because of default waveforms. This can probably be changed to 1, since only one default waveform 
+	// now, but might cause temporary breakages. 
+	//output.waves.resize( 2 ); 
+
+
+	ZynqTCP zynq_tcp;
+
+	/// //////////////////////////// 
+	/// start analysis & experiment 
+	try
+	{
+
+		// We dont want to execute variations, so always setting variations to 1 (will handle this later and not here, changed my mind)
+		UINT variations = determineVariationNumber(input->variables);
+		// finishing sentence from before start I think... 
+		expUpdate("Done.\r\n", input->comm, input->quiet);
+		/// Prep agilents 
+		expUpdate("Loading Agilent Info...", input->comm, input->quiet);
+		//for (auto agilent : input->agilents) 
+		//{ 
+		//	RunInfo dum; 
+		//	agilent->handleInput( input->profile.categoryPath, dum ); 
+		//} 
+		/// prep master systems 
+		expUpdate("Analyzing Master Script...", input->comm, input->quiet);
+		input->dacs->resetDacEvents();
+		input->ttls->resetTtlEvents();
+		input->ddss->resetDDSEvents();
+
+		//initialize devices
+		input->thisObj->sendZynqCommand(zynq_tcp, "initExp");
+
+		//input->rsg->clearFrequencies(); 
+		if (input->runMaster)
+		{
+			input->thisObj->analyzeMasterScript(input->ttls, input->dacs, input->edacs, input->ddss, ttlShadeLocs,
+				dacShadeLocs, ddsShadeLocs, input->variables);
+		}
+		/// prep Moog 
+		//if (input->runAWG) {
+		//	input->moog->analyzeMoogScript(input->moog, input->variables, 0);
+		//}
+		// We want to be able to alter DACS and TTLS
+
+		// go ahead and check if abort was pressed real fast... 
+		if (input->thisObj->isAborting)
+		{
+			thrower(abortString);
+		}
+		/// The Key Interpretation step. 
+		// at this point, all scripts have been analyzed, and each system takes the key and generates all of the data 
+		// it needs for each variation of the experiment. All these calculations happen at this step. 
+		expUpdate("Programming Idler Sequence Data...\r\n", input->comm, input->quiet);
+		std::chrono::time_point<chronoClock> varProgramStartTime(chronoClock::now());
+		input->thisObj->loadSkipTimes.resize(variations);
+		if (input->runMaster)
+		{
+			expUpdate("interpret TTLs\r\n", input->comm, input->quiet);
+			input->ttls->interpretKey(input->variables);organizedac:
+			expUpdate("interpret DACs\r\n", input->comm, input->quiet);
+			input->dacs->interpretKey(input->variables, warnings);
+			input->edacs->interpretKey(input->variables, warnings);
+			input->ddss->interpretKey(input->variables, warnings);
+		}
+		//input->rsg->interpretKey( input->variables ); 
+		//input->topBottomTek->interpretKey( input->variables ); 
+		//input->eoAxialTek->interpretKey( input->variables ); 
+		/// organize commands, prepping final forms of the data for each repetition. 
+		// This must be done after the "interpret key" step, as before that commands don't have hard times attached to  
+		// them. 
+		//Handled the variation thing here. Will only taker the first variation and keep running.
+		for (UINT variationInc = 0; variationInc < 1; variationInc++)
+		{
+			// reading these variables should be safe. 
+			if (input->thisObj->isAborting)
+			{
+				thrower(abortString);
+			}
+			if (input->runMaster)
+			{
+				double& currLoadSkipTime = input->thisObj->loadSkipTimes[variationInc];
+				currLoadSkipTime = MasterManager::convertToTime(input->thisObj->loadSkipTime, input->variables,
+					variationInc);
+				// organize & format the ttl and dac commands 
+				input->dacs->organizeDacCommands(variationInc);
+				input->dacs->findLoadSkipSnapshots(currLoadSkipTime, input->variables, variationInc);
+				input->dacs->makeFinalDataFormat(variationInc);
+				// input->edacs->findLoadSkipSnapshots(currLoadSkipTime, input->variables, variationInc);
+				// input->edacs->makeFinalDataFormat(variationInc);
+				input->edacs->getEDacFinalData(variationInc);
+				input->ttls->organizeTtlCommands(variationInc);
+				input->ttls->findLoadSkipSnapshots(currLoadSkipTime, input->variables, variationInc);
+				input->ttls->convertToFinalFormat(variationInc);
+				input->ttls->formatForFPGA(variationInc); //FPGA FORMATTING from TTLSNAPSHOTS 
+				input->ddss->organizeDDSCommands(variationInc);
+				input->ddss->makeFinalDataFormat(variationInc);
+				// run a couple checks. 
+				input->ttls->checkNotTooManyTimes(variationInc);
+				input->ttls->checkFinalFormatTimes(variationInc);
+				input->dacs->checkTimingsWork(variationInc);
+				input->edacs->checkTimingsWork(variationInc);
+			}
+			//input->rsg->orderEvents( variationInc ); 
+		}
+		/// output some timing information 
+		std::chrono::time_point<chronoClock> varProgramEndTime(chronoClock::now());
+		expUpdate("Programming took "
+			+ str(std::chrono::duration<double>((varProgramEndTime - varProgramStartTime)).count() / 1000.0)
+			+ " seconds.\r\n", input->comm, input->quiet);
+		// if (input->runMaster)
+		// {
+		// 	expUpdate("Programmed time per repetition: " + str(input->ttls->getTotalTime(0)) + "\r\n",
+		// 		input->comm, input->quiet);
+		// 	ULONGLONG totalTime = 0;
+		// 	for (USHORT variationNumber = 0; variationNumber < variations; variationNumber++)
+		// 	{
+		// 		totalTime += ULONGLONG(input->ttls->getTotalTime(variationNumber) * input->repetitionNumber);
+		// 	}
+		// 	expUpdate("Programmed Total Experiment time: " + str(totalTime) + "\r\n", input->comm, input->quiet);
+		// 	expUpdate("Number of TTL Events in experiment: " + str(input->ttls->getNumberEvents(0)) + "\r\n",
+		// 		input->comm, input->quiet);
+		// 	expUpdate("Number of DAC Events in experiment: " + str(input->dacs->getNumberEvents(0)) + "\r\n",
+		// 		input->comm, input->quiet);
+		// }
+		/// finish up 
+		handleDebugPlots(input->debugOptions, input->comm, input->ttls, input->dacs, input->edacs, input->quiet, input->python);
+		input->comm->sendError(warnings);
+		// update the colors of the global variable control. 
+		input->globalControl->setUsages(input->variables);
+		/// ///////////////////////////// 
+		/// Begin experiment loop 
+		/// ////////// 
+		// TODO: Handle randomizing repetitions. The thread will need to split into separate if/else statements here. 
+		if (input->runMaster)
+		{
+			input->comm->sendColorBox(Master, 'Y');
+		}
+		// loop for variations 
+
+		if (input->runSingle)
+		{
+			variations = 1;
+			input->repetitionNumber = 1;
+
+		}
+
+		variations = 1;
+
+		//We are going to forcibly set repition Number to be high
+		// input->repetitionNumber = 10000;
+
+		// added by WFM 220106. Due 10 "fake" runs at the beginning of the sequence, to allow things to thermalize.
+		//for (int warmupinc=1; warmupinc<11; warmupinc++)
+		//{
+		//	expUpdate("Warmup #" + str(warmupinc) + " out of 10" + "\r\n", input->comm,input->quiet);
+		//	input->dacs->setTweezerServo();
+		//	//input->ttls->forceTtl(1, 0, 1);
+		//	Sleep(1);
+		//	//input->ttls->forceTtl(1, 0, 0);
+
+		//}
+		// end of WFM's addition
+
+		for (const UINT& variationInc : range(variations))
+		{
+			// expUpdate("Variation #" + str(variationInc + 1) + "\r\n", input->comm, input->quiet);
+			Sleep(input->debugOptions.sleepTime);
+			// Write experiment variable values to GUI
+			for (auto tempVariable : input->variables)
+			{
+				// if varies... 
+				if (tempVariable.valuesVary)
+				{
+					if (tempVariable.keyValues.size() == 0)
+					{
+						thrower("ERROR: Variable " + tempVariable.name + " varies, but has no values assigned to it!");
+					}
+					expUpdate(tempVariable.name + ": " + str(tempVariable.keyValues[variationInc], 12) + "\r\n",
+						input->comm, input->quiet);
+				}
+			}
+			expUpdate("Programming Moog, DDS...\r\n", input->comm, input->quiet);
+
+			if (!GIGAMOOG_SAFEMODE) {
+				input->gmoog->loadMoogScript(input->gmoogScriptAddress);
+				input->gmoog->analyzeMoogScript(input->gmoog, input->variables, variationInc);
+			}
+
+			if (!DDS_SAFEMODE) {
+				input->dds->loadDDSScript(input->ddsScriptAddress);
+				input->dds->programDDS(input->dds, input->variables, variationInc);
+			}
+
+			if (input->runAWG && AWG_SAFEMODE0) {
+				//input->moog->loadMoogScript(input->moogScriptAddress);
+				//input->moog->analyzeMoogScript(input->moog, input->variables, variationInc);
+				input->awg0->loadAWGScript(input->awgScriptAddress);
+				input->awg0->analyzeAWGScript(input->awg0, input->variables, variationInc, 0);
+
+
+			}
+			if (input->runAWG && AWG_SAFEMODE1) {
+				//input->moog->loadMoogScript(input->moogScriptAddress);
+				//input->moog->analyzeMoogScript(input->moog, input->variables, variationInc);
+
+				input->awg1->loadAWGScript(input->awgScriptAddress);
+				input->awg1->analyzeAWGScript(input->awg1, input->variables, variationInc, 1);
+			}
+
+			input->comm->sendError(warnings);
+			//input->topBottomTek->programMachine( variationInc ); 
+			//input->eoAxialTek->programMachine( variationInc ); 
+			// 
+			input->comm->sendRepProgress(0);
+			expUpdate("Running Idle Sequence. Uncheck menu to stop.\r\n", input->comm, input->quiet);
+
+			//These were moved out of the repetition loop for speed. Can put back in if necessay. 
+
+			//input->dacs->stopDacs(); 
+			// it's important to grab the skipoption from input->skipNext only once because in principle 
+			// if the cruncher thread was running behind, it could change between writing and configuring the  
+			// dacs and configuring the TTLs; 
+			bool skipOption = false;
+			/*if (input->skipNext == NULL)
+			{
+				skipOption = false;
+			}
+			else
+			{
+				skipOption = input->skipNext->load();
+			}*/
+			input->dacs->stopDacs();
+			input->dacs->configureClocks(variationInc, skipOption);
+			input->dacs->writeDacs(variationInc, skipOption);
+			input->edacs->updateEDACFile(variationInc);
+			input->ddss->writeDDSs(variationInc, skipOption);
+			input->ttls->writeTtlDataToFPGA(variationInc, skipOption);
+			//input->dacs->startDacs(); 
+			Sleep(100);
+			//If thou has cometh this far, might as well make the idler run
+			input->idler->killIdler = false;
+			input->idler->idleSequenceRunning = true;
+			while (!input->idler->killIdler && input->idler->idleSequenceActive)
+			{
+				if (input->thisObj->isAborting)
+				{
+					thrower(abortString);
+				}
+				else if (input->thisObj->isPaused)
+				{
+					expUpdate("Paused\r\n!", input->comm, input->quiet);
+					// wait... 
+					while (input->thisObj->isPaused)
+					{
+						// this could be changed to be a bit smarter using a std::condition_variable 
+						Sleep(100);
+					}
+					expUpdate("Un-Paused!\r\n", input->comm, input->quiet);
+				}
+				// this was re-written each time from looking at the VB6 code. 
+				if (input->runMaster)
+				{
+					input->dacs->startDacs();
+					input->ttls->startDioFPGA(variationInc);
+					input->thisObj->sendZynqCommand(zynq_tcp, "trigger"); //problematic part
+					//if (input->settings.saveMakoImages) {
+					//	input->comm->sendSetupMakoFrame();
+					//}
+					input->ttls->waitTillFinished(variationInc, skipOption);
+					input->dacs->stopDacs();
+					//if (input->settings.saveMakoImages) {
+					//	input->comm->sendGrabMakoFrame();
+					//}
+
+				}
+			}
+			input->idler->idleSequenceRunning = false;
+			//input->comm->sendGrabMakoFrame();
+			// expUpdate("\r\n", input->comm, input->quiet);
+		}
+		if (input->runMaster)
+		{
+			// stop is necessary; Else the dac system will still be "running" and won't allow updates through normal  
+			// means. 
+			input->dacs->stopDacs();
+		}
+		if (input->runMaster)
+		{
+			try
+			{
+				// make sure the display accurately displays the state that the experiment finished at. 
+				input->dacs->setDacStatusNoForceOut(input->dacs->getFinalSnapshot());
+				input->ttls->setTtlStatusNoForceOut(input->ttls->getFinalSnapshot());
+			}
+			catch (Error&) { /* this gets thrown if no dac events. just continue.*/ }
+		}
+		/// conclude. 
+		expUpdate("\r\nIdle Sequence Stopped.\r\n", input->comm, input->quiet);
+		input->comm->sendColorBox(Master, 'B');
+
+		input->thisObj->sendZynqCommand(zynq_tcp, "disableSeq");
+		input->thisObj->sendZynqCommand(zynq_tcp, "lockPLL");
+		input->ddss->setDDSsAmpFreq();
+		input->dds->program_default();
+		//input->dacs->setDACsSeq();
+		//input->dacs->zeroDACValues();
+		input->thisObj->sendZynqCommand(zynq_tcp, "trigger");
+	}
+	catch (Error& exception)
+	{
+		//Nothing here except emptiness for now, will handle at some other point
+		input->thisObj->idlerIsRunning = false;
+		{
+			std::lock_guard<std::mutex> locker(input->thisObj->abortLock);
+			//input->thisObj->isAborting = false;
+		}
+		if (input->thisObj->isAborting)
+		{
+			expUpdate(abortString, input->comm, input->quiet);
+			input->comm->sendColorBox(Master, 'B');
+			input->thisObj->isAborting = false;
+		}
+		else
+		{
+			// No quiet option for a bad exit. 
+			input->comm->sendColorBox(Master, 'R');
+			input->comm->sendStatus("Bad Exit!\r\n");
+			std::string exceptionTxt = exception.what();
+			input->comm->sendError(exception.what());
+			input->comm->sendFatalError("Exited main experiment thread abnormally.");
+		}
+		//input->thisObj->sendZynqCommand(zynq_tcp, "initExp");
+		input->thisObj->sendZynqCommand(zynq_tcp, "disableSeq");
+		input->thisObj->sendZynqCommand(zynq_tcp, "lockPLL");
+		input->ddss->setDDSsAmpFreq();
+		//input->dacs->setDACsSeq();
+		input->dds->program_default();
+		input->thisObj->sendZynqCommand(zynq_tcp, "trigger");
+		if (input->settings.saveMakoImages) {
+			input->comm->sendCloseMako();
+		}
+	}
+
+
+	return false;
+}
+
+
 
 /*
  * The workhorse of actually running experiments. This thread procedure analyzes all of the GUI settings and current
@@ -39,6 +413,9 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 	/// initialize various structures 
 	// convert the input to the correct structure. 
 	MasterThreadInput* input = (MasterThreadInput*)voidInput;
+
+	//Check if the idler is running, if not do nothing, if it is, set some flag to false
+	input->idler->killIdler = true;
 	// change the status of the parent object to reflect that the thread is running.
 	input->thisObj->experimentIsRunning = true;
 	// warnings will be passed by reference to a series of function calls which can append warnings to the string.
@@ -62,6 +439,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 
 	ZynqTCP zynq_tcp;
 
+	
 	/// //////////////////////////// 
 	/// start analysis & experiment 
 	try
@@ -415,7 +793,13 @@ UINT __cdecl MasterManager::experimentThreadProcedure(void* voidInput)
 	expUpdate("Experiment took " + str(std::chrono::duration<double>((endTime - startTime)).count())
 		+ " seconds.\r\n", input->comm, input->quiet);
 	input->thisObj->experimentIsRunning = false;
-	delete input;
+	//copy input and delete it
+	MasterThreadInput* inputIdler(input);
+	if (inputIdler->idler->idleSequenceActive)
+	{
+		input->thisObj->startIdlerThread(inputIdler);
+	}
+	
 	return false;
 }
 
@@ -501,6 +885,36 @@ void MasterManager::loadMotSettings(MasterThreadInput* input)
 	VariableSystem::generateKey(input->variables, false);
 	// start thread. 
 	runningThread = AfxBeginThread(experimentThreadProcedure, input);
+}
+
+void MasterManager::startIdlerThread(MasterThreadInput* input)
+{
+	if (!input)
+	{
+		thrower("ERROR: Input to start experiment thread was null?!?!?");
+	}
+	if (experimentIsRunning)
+	{
+		delete input;
+		thrower("Experiment is already Running!  You can only run one experiment at a time! Please abort before "
+			"running again.");
+	}
+	input->thisObj = this;
+	if (input->runMaster)
+	{
+		// for the master script we use a fixed file called idler.mscript. Change this when you migrate to samatha
+		input->idlerScriptAddress = "B:\\Yb heap\\Experiment_code_Yb\\Chimera-Control-Master\\Configurations\\Yb_tests\\Idler.mScript";
+		loadMasterScript(input->idlerScriptAddress);
+		input->gmoog->loadMoogScript(input->gmoogScriptAddress);
+	}
+	if (input->runAWG)
+	{
+		//input->moog->loadMoogScript(input->moogScriptAddress);
+		input->awg0->loadAWGScript(input->awgScriptAddress);
+		input->awg1->loadAWGScript(input->awgScriptAddress);
+	}
+	// start thread. 
+	runningThread = AfxBeginThread(idlerThreadProcedure, input, THREAD_PRIORITY_HIGHEST);
 }
 
 
@@ -804,25 +1218,58 @@ void MasterManager::analyzeFunction(std::string function, std::vector<std::strin
 		/// ramp feature can be adde later
 
 		else if (word == "edac:")
-		{
-			std::string edacChannelName, edacVoltageValue;
-			currentMasterScript >> edacChannelName;
-			currentMasterScript >> edacVoltageValue;
+        {
+			EDacCommandForm command;
+            currentMasterScript >> command.edacVoltageValue1;
+			currentMasterScript >> command.edacVoltageValue2;
+			currentMasterScript >> command.edacVoltageValue3;
+			currentMasterScript >> command.edacVoltageValue4;
+			currentMasterScript >> command.edacVoltageValue5;
+			currentMasterScript >> command.edacVoltageValue6;
+			currentMasterScript >> command.edacVoltageValue7;
+			currentMasterScript >> command.edacVoltageValue8;
+			command.time = operationTime;
+			command.commandName = "edac:";
+
+			command.edacVoltageValue1.assertValid(vars);
+			command.edacVoltageValue2.assertValid(vars);
+			command.edacVoltageValue3.assertValid(vars);
+			command.edacVoltageValue4.assertValid(vars);
+			command.edacVoltageValue5.assertValid(vars);
+			command.edacVoltageValue6.assertValid(vars);
+			command.edacVoltageValue7.assertValid(vars);
+			command.edacVoltageValue8.assertValid(vars);
 
 			try
 			{
-				//runEDac("B:\Yb heap\Experiment_code_Yb\Chimera-Control-Master\Chimera\EDac.py", edacChannelName, edacVoltageValue);
-				commonFunctions::updateEDACFile(edacChannelName, edacVoltageValue);
-
-				
+				edacs->handleEDacScriptCommand(command, vars);
 			}
 			catch (Error& err)
 			{
-				/// Exception handling is not super polished as of now
 				thrower(err.whatStr() + "... in \"edac:\" command inside main script");
 			}
 
-		}
+			
+
+
+
+
+
+			// edacVoltageValue = command.edacVoltageValue1+","+command.edacVoltageValue2+","+command.edacVoltageValue3+","+command.edacVoltageValue4+","+command.edacVoltageValue5+","+command.edacVoltageValue6+","+command.edacVoltageValue7+","+command.edacVoltageValue8;
+
+            try
+            {
+				//runEDac("B:\Yb heap\Experiment_code_Yb\Chimera-Control-Master\Chimera\EDac.py", edacChannelName, edacVoltageValue);
+				// commonFunctions::updateEDACFile(command.edacChannelName, edacVoltageValue);
+				
+            }
+            catch (Error& err)
+            {
+                /// Exception handling is not super polished as of now
+                thrower(err.whatStr() + "... in \"edac:\" command inside main script");
+            }
+
+        }
 
 		
 

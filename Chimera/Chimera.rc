@@ -305,6 +305,10 @@ BEGIN
 	MENUITEM "Rearranger active", ID_GIGAMOOG_REARRANGERACTIVE
 	MENUITEM "Auto tweezer align active", ID_GIGAMOOG_AUTOTWEEZERALIGNACTIVE
 	END
+    POPUP "&Idle Sequence"
+	BEGIN
+	MENUITEM "Idle Sequence Active", ID_IDLE_SEQUENCE
+	END
     POPUP "Andor"
     BEGIN
         MENUITEM "Show Pictures in Real Time",  ID_PICTURES_SHOWPICTURESINREALTIME

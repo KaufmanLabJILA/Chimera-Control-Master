@@ -257,6 +257,7 @@
     <ClInclude Include="Control.h" />
     <ClInclude Include="externals.h" />
     <ClInclude Include="MainWindow.h" />
+    <ClInclude Include="IdleSequence.h" />
     <ClInclude Include="realTimePlotterInput.h" />
     <ClInclude Include="rearrangementStructures.h" />
     <ClInclude Include="rearrangementThreadInput.h" />
@@ -336,6 +337,7 @@
     <ClCompile Include="Gnuplotter.cpp" />
     <ClCompile Include="MainOptionsControl.cpp" />
     <ClCompile Include="MainWindow.cpp" />
+    <ClCompile Include="IdleSequence.cpp" />
     <!-- <ClCompile Include="Andor.cpp" /> -->
     <ClCompile Include="qcmos.cpp" />
     <ClCompile Include="MasterConfiguration.cpp" />

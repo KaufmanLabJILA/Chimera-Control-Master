@@ -11,7 +11,7 @@
 MainWindow::MainWindow(UINT id, CDialog* splash) : CDialog(id), profile(PROFILES_PATH),
 masterConfig(MASTER_CONFIGURATION_FILE_ADDRESS),
 appSplash(splash), dds(DDS_FPGA_PORT, 115200),
-gmoog(GIGAMOOG_IPADDRESS, GIGAMOOG_PORT), awg0(AWG_PORT0, AWG_BAUD, AWG_SAFEMODE0), awg1(AWG_PORT1, AWG_BAUD, AWG_SAFEMODE1), zynq_tcp() //115200
+gmoog(GIGAMOOG_IPADDRESS, GIGAMOOG_PORT), awg0(AWG_PORT0, AWG_BAUD, AWG_SAFEMODE0), awg1(AWG_PORT1, AWG_BAUD, AWG_SAFEMODE1), zynq_tcp(), idler() //115200
 {
 	// create all the main rgbs and brushes. I want to make sure this happens before other windows are created.
 	mainRGBs["Light Green"] = RGB(163, 190, 140);
@@ -216,6 +216,20 @@ void MainWindow::passGmoogIsOnPress()
 	{
 		gmoog.rearrangerActive = true;
 		menu.CheckMenuItem(ID_GIGAMOOG_REARRANGERACTIVE, MF_CHECKED);
+	}
+}
+
+void MainWindow::passIdleSequenceIsOnPress()
+{
+	if (idler.idleSequenceActive)
+	{
+		idler.idleSequenceActive = false;
+		menu.CheckMenuItem(ID_IDLE_SEQUENCE, MF_UNCHECKED);
+	}
+	else
+	{
+		idler.idleSequenceActive = true;
+		menu.CheckMenuItem(ID_IDLE_SEQUENCE, MF_CHECKED);
 	}
 }
 
@@ -756,6 +770,7 @@ void MainWindow::fillMasterThreadInput(MasterThreadInput* input)
 	input->awg1 = &awg1;
 	input->gmoog = &gmoog;
 	input->dds = &dds;
+	input->idler = &idler;
 
 	VariableSystem::generateKey(input->variables, input->settings.randomizeVariations);
 	// it's important to do this after the key is generated so that the constants have their values.

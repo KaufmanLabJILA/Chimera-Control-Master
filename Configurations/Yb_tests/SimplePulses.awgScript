@@ -1,4 +1,4 @@
-reset
+%reset
 
 %setsingle 1 0    power freq  1 0
 %setsingle 1 1    power freq  0 -180
@@ -9,9 +9,9 @@ reset
 
 %setsingle 1 6000 0     freq 0 0
 
-setsteps 1 10/100 0 10
-ampghzramp 1 0 10 100 3.91 3.2 1 1 40 1
-freqghzramp 1 0 10 3.1 0 0 40 1
+%setsteps 1 10/100 0 10
+%ampghzramp 1 0 10 100 3.91 3.2 1 1 40 1
+%freqghzramp 1 0 10 3.1 0 0 40 1
 
-program 1
+%program 1
 

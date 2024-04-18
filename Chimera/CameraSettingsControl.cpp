@@ -267,9 +267,12 @@ void CameraSettingsControl::initialize(cameraPositions& pos, int& id, CWnd* pare
 void CameraSettingsControl::cameraIsOn(bool state)
 {
 	// Can't change em gain mode or camera settings once started.
-	emGainButton.EnableWindow(!state);
-	setTemperatureButton.EnableWindow(!state);
-	temperatureOffButton.EnableWindow(!state);
+	if (!HAM_SAFEMODE)
+	{
+		emGainButton.EnableWindow(!state);
+		setTemperatureButton.EnableWindow(!state);
+		temperatureOffButton.EnableWindow(!state);
+	}
 }
 
 

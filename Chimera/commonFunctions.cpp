@@ -138,6 +138,33 @@ namespace commonFunctions
 			case ID_ACCELERATOR_F5:
 			case ID_FILE_MY_WRITE_WAVEFORMS:
 			{
+				if (mainWin->idler.idleSequenceRunning)
+				{
+					bool qcmosAborted = false;
+					masterAborted = false;
+
+					mainWin->stopRearranger();
+					camWin->wakeRearranger();
+
+					try
+					{
+						//
+						if (mainWin->masterThreadManager.runningStatus())
+						{
+							commonFunctions::abortMaster(mainWin, auxWin);
+							masterAborted = true;
+						}
+						mainWin->getComm()->sendColorBox(Master, 'B');
+					}
+					catch (Error& err)
+					{
+						mainWin->getComm()->sendError("Abort Master thread exited with Error! Error Message: " + err.whatStr());
+						mainWin->getComm()->sendColorBox(Master, 'R');
+						mainWin->getComm()->sendStatus("Abort Master thread exited with Error!\r\n");
+						mainWin->getComm()->sendTimer("ERROR!");
+					}
+
+				}
 				ExperimentInput input;
 				camWin->redrawPictures(false);
 
@@ -181,6 +208,11 @@ namespace commonFunctions
 			case ID_ACCELERATOR_ESC:
 			case ID_FILE_ABORT_GENERATION:
 			{
+				//Need to add functionality here to handle pressing of escape key during an idle sequence running -Mybe not. Pressing escape should not do anythig ideally and thats what is happening rn.
+				if (mainWin->idler.idleSequenceRunning)
+				{
+					break;
+				}
 				std::string status;
 				if ( mainWin->experimentIsPaused( ) )
 				{
@@ -342,6 +374,33 @@ namespace commonFunctions
 			case ID_ACCELERATOR_F4:
 			case ID_RUNMENU_RUNMASTER:
 			{
+				if (mainWin->idler.idleSequenceRunning)
+				{
+					bool qcmosAborted = false;
+					masterAborted = false;
+
+					mainWin->stopRearranger( );
+					camWin->wakeRearranger( );
+
+					try
+					{
+						//
+						if ( mainWin->masterThreadManager.runningStatus( ) )
+						{
+							commonFunctions::abortMaster( mainWin, auxWin );
+							masterAborted = true;
+						}
+						mainWin->getComm( )->sendColorBox( Master, 'B' );
+					}
+					catch ( Error& err )
+					{
+						mainWin->getComm( )->sendError( "Abort Master thread exited with Error! Error Message: " + err.whatStr( ) );
+						mainWin->getComm( )->sendColorBox( Master, 'R' );
+						mainWin->getComm( )->sendStatus( "Abort Master thread exited with Error!\r\n" );
+						mainWin->getComm( )->sendTimer( "ERROR!" );
+					}
+
+				}
 				ExperimentInput input;  
 				try
 				{
@@ -609,6 +668,14 @@ namespace commonFunctions
 				mainWin->passAutoAlignIsOnPress();
 				break;
 			}
+			/// FOR IDLE SEQUENCE
+			case ID_IDLE_SEQUENCE:
+			{
+				mainWin->passIdleSequenceIsOnPress();
+				break;
+			}
+
+			/// END FOR IDLE SEQUENCE
 			case ID_RUNMENU_ABORTCAMERA:
 			{
 				try

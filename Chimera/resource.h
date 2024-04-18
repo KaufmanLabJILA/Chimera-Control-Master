@@ -165,8 +165,9 @@
 #define ID_FILE_MY_AWG_SAVEAS           40150
 #define ID_FILE_MY_AWG_NEW              40151
 #define ID_GIGAMOOG_AUTOTWEEZERALIGNACTIVE 40153
+#define ID_IDLE_SEQUENCE                40154
 
-#define MENU_ID_RANGE_END               40153
+#define MENU_ID_RANGE_END               40154
 
 // Next default values for new objects
 // 

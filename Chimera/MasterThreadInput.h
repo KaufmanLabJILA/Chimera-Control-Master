@@ -18,6 +18,7 @@
 #include "DDS_SYNTH.h"
 #include "GigaMoog.h"
 #include "fpgaAWG.h"
+#include "IdleSequence.h"
 
 #include "rerngParams.h"
 
@@ -50,6 +51,7 @@ struct MasterThreadInput
 	std::vector<variableType> constants;
 	MasterManager* thisObj;
 	std::string masterScriptAddress;
+	std::string idlerScriptAddress;
 	Communicator* comm;
 	debugInfo debugOptions;
 	VariableSystem* globalControl;
@@ -69,6 +71,7 @@ struct MasterThreadInput
 	rerngOptions rearrangeInfo;
 	std::atomic<bool>* skipNext;
 	bool multipleExperiments;
+	idleSequence *idler;
 };
 
 

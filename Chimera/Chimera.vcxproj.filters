@@ -70,6 +70,9 @@
     <ClCompile Include="MainWindow.cpp">
       <Filter>Main Window</Filter>
     </ClCompile>
+    <ClCompile Include="IdleSequence.cpp">
+      <Filter>Main Window</Filter>
+    </ClCompile>
     <ClCompile Include="MainOptionsControl.cpp">
       <Filter>Main Window</Filter>
     </ClCompile>
@@ -303,6 +306,9 @@
       <Filter>Main Window</Filter>
     </ClInclude>
     <ClInclude Include="MainWindow.h">
+      <Filter>Main Window</Filter>
+    </ClInclude>
+    <ClInclude Include="IdleSequence.h">
       <Filter>Main Window</Filter>
     </ClInclude>
     <ClInclude Include="MainOptionsControl.h">

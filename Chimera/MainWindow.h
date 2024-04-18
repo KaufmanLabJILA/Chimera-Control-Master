@@ -11,6 +11,7 @@
 #include "EmbeddedPythonHandler.h"
 #include "MasterConfiguration.h"
 #include "Repetitions.h"
+#include "idleSequence.h"
 #include "MasterManager.h"
 #include "commonFunctions.h"
 #include "DataLogger.h"
@@ -41,6 +42,7 @@ public:
 	// overrides
 	void passGmoogIsOnPress();
 	void passAutoAlignIsOnPress();
+	void passIdleSequenceIsOnPress();
 	MainWindow(UINT id, CDialog*);
 	BOOL OnInitDialog() override;
 	HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
@@ -139,6 +141,9 @@ private:
 	fpgaAWG awg1;
 	gigaMoog gmoog;
 	DDS_SYNTH dds;
+
+	//Idle Sequence obj
+	idleSequence idler;
 
 	ColorBox boxes;
 	// auxiliary members

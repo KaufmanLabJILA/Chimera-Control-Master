@@ -713,6 +713,11 @@ void Script::changeView(std::string viewName, bool isFunction, std::string categ
 		// load parent
 		loadFile(categoryPath + scriptName + extension);
 	}
+	else if (viewName == "Idler Script")
+	{
+		// load idler
+		loadFile(categoryPath + "Idler" + extension);
+	}
 	else if (isFunction)
 	{
 		loadFile(FUNCTIONS_FOLDER_LOCATION + viewName + "." + FUNCTION_EXTENSION);
@@ -731,6 +736,17 @@ void Script::changeView(std::string viewName, bool isFunction, std::string categ
 //
 void Script::saveScript(std::string categoryPath, RunInfo info)
 {
+	int sel = availableFunctionsCombo.GetCurSel();
+	CString textSel;
+	CString textStream;
+	if (sel != -1)
+	{
+		availableFunctionsCombo.GetLBText( sel, textSel );
+	}
+	else
+	{
+		textSel = "";
+	}
 	if (categoryPath == "")
 	{
 		thrower("ERROR: Please select a category before trying to save a script!\r\n");
@@ -740,17 +756,36 @@ void Script::saveScript(std::string categoryPath, RunInfo info)
 		// shouldn't need to do anything
 		return;
 	}
-	int sel = availableFunctionsCombo.GetCurSel();
-	CString text;
-	if (sel != -1)
+	if (textSel  == "Idler Script")
 	{
-		availableFunctionsCombo.GetLBText( sel, text );
+		edit.GetWindowTextA(textStream);
+		std::string path = categoryPath + "Idler" + extension;
+		std::fstream idlerFile(path, std::fstream::out);
+		idlerFile << textStream;
+		idlerFile.close();
+		updateSavedStatus(true);
+		return;
 	}
-	else
+	// int sel = availableFunctionsCombo.GetCurSel();
+	// CString text;
+	// if (sel != -1)
+	// {
+	// 	availableFunctionsCombo.GetLBText( sel, text );
+	// }
+	// else
+	// {
+	// 	text = "";
+	// }
+	if (textSel == "Idler Script")
 	{
-		text = "";
+		int answer = promptBox("WARNING: The current view is not the parent view. This will save the "
+								"current text in the edit under the name \"Idler\" and overwrite any existing files. Are you sure you wish to proceed?", MB_OKCANCEL );
+		if (answer == IDCANCEL)
+		{
+			return;
+		}
 	}
-	if (text != "Parent Script")
+	else if (textSel != "Parent Script")
 	{
 		int answer = promptBox("WARNING: The current view is not the parent view. This will save the "
 								"current text in the edit under the name \"" + scriptName 
@@ -784,14 +819,14 @@ void Script::saveScript(std::string categoryPath, RunInfo info)
 			}
 		}
 	}
-	edit.GetWindowTextA(text);
+	edit.GetWindowTextA(textStream);
 	std::fstream saveFile(categoryPath + scriptName + extension, std::fstream::out);
 	if (!saveFile.is_open())
 	{
 		thrower("ERROR: Failed to open script file: " + categoryPath + scriptName 
 				+ extension);
 	}
-	saveFile << text;
+	saveFile << textStream;
 	saveFile.close();
 	scriptFullAddress = categoryPath + scriptName + extension;
 	scriptPath = categoryPath;
@@ -1321,4 +1356,5 @@ void Script::loadFunctions()
 	ProfileSystem::reloadCombo( availableFunctionsCombo.GetSafeHwnd( ), functionLocation, str("*.") 
 								+ FUNCTION_EXTENSION, "__NONE__" );
 	availableFunctionsCombo.InsertString( 0, "Parent Script" );
+	availableFunctionsCombo.InsertString( 1, "Idler Script" );
 }

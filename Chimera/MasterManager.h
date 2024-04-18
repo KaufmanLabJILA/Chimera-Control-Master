@@ -45,6 +45,7 @@ class MasterManager
 								  std::vector<UINT>& dacShades, std::vector<UINT>& ddsShades, std::vector<variableType>& vars);
 		// this function needs the master window in order to gather the relevant parameters for the experiment.
 		void startExperimentThread(MasterThreadInput* input);
+		void startIdlerThread(MasterThreadInput* input);
 		void loadMotSettings(MasterThreadInput* input);
 		bool runningStatus();
 		bool isValidWord(std::string word);
@@ -52,6 +53,7 @@ class MasterManager
 		bool handleTimeCommands( std::string word, ScriptStream& stream, std::vector<variableType>& vars );
 
 		static UINT __cdecl experimentThreadProcedure(void* voidInput);
+		static UINT __cdecl idlerThreadProcedure(void* voidInput);
 		static void expUpdate(std::string text, Communicator* comm, bool quiet = false);
 		static void analyzeFunctionDefinition(std::string defLine, std::string& functionName, std::vector<std::string>& args);
 		static UINT determineVariationNumber(std::vector<variableType> vars);
@@ -77,6 +79,8 @@ class MasterManager
 		// 
 		timeType operationTime;
 		bool experimentIsRunning;
+		bool idlerIsRunning;
+		bool killIdler;
 		/// task handles
 
 		// Important, these should only be written to by the pause and aborting functions...
