@@ -12,11 +12,11 @@
 
 //#define MASTER_COMPUTER
 //#define SPECTRE_LAPTOP
-//#define GLADOS
+#define GLADOS
 // #define DESKTOP_COMPUTER
 //#define SALAMIS_TABLET
 //#define PAL9000
-#define ALEC_LAPTOP
+//#define ALEC_LAPTOP
 /// File Locations
 
 #ifdef GLADOS

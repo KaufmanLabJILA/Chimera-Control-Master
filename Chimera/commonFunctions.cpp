@@ -43,16 +43,16 @@ namespace commonFunctions
 				camWin->redrawPictures(false);
 				try
 				{
-					//prepareCamera( mainWin, camWin, input, false );
+					prepareCamera( mainWin, camWin, input, false );
 					prepareMasterThread( msgID, scriptWin, mainWin, camWin, auxWin, input, false, true, true, false );
-					//camWin->preparePlotter(input);
-					//camWin->prepareAtomCruncher(input);
+					camWin->preparePlotter(input);
+					camWin->prepareAtomCruncher(input);
 
-					//logParameters( input, camWin, true );
+					logParameters( input, camWin, true );
 
-					//camWin->startAtomCruncher(input);
-					//camWin->startPlotterThread(input);
-					//camWin->startCamera();
+					camWin->startAtomCruncher(input);
+					camWin->startPlotterThread(input);
+					camWin->startCamera();
 					startMaster( mainWin, input, false );
 				}
 				catch (Error& err)

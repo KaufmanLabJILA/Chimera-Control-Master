@@ -361,8 +361,8 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 					//input->dacs->writeDacs(variationInc, skipOption);
 					input->dacs->startDacs();
 					input->ttls->startDioFPGA(variationInc);
-					//input->ttls->waitTillFinished( variationInc, skipOption );
-					input->ttls->wait(100);
+					input->ttls->waitTillFinished( variationInc, skipOption );
+					//input->ttls->wait(100);
 					
 					input->dacs->stopDacs();
 				}
@@ -732,8 +732,8 @@ UINT __cdecl MasterManager::idlerThreadProcedure(void* voidInput)
 					//input->dacs->writeDacs(variationInc, skipOption);
 					input->dacs->startDacs();
 					input->ttls->startDioFPGA(variationInc);
-					//input->ttls->waitTillFinished( variationInc, skipOption );
-					input->ttls->wait(100);
+					input->ttls->waitTillFinished( variationInc, skipOption );
+					//input->ttls->wait(100);
 
 					input->dacs->stopDacs();
 				}
