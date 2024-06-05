@@ -2,6 +2,7 @@
 #include <array>
 #include "windows.h"
 #include "commonTypes.h"
+#include "repeatManager.h"
 
 // this struct keeps variable names.
 struct DioCommandForm
@@ -13,6 +14,8 @@ struct DioCommandForm
 	// the value to set it to. 
 	//bool value;
 	boolType value;
+	// stores whether this command is subject to repeats and which repeat it correpsonds to in the tree if so
+	repeatInfoId repeatId = { 0, {0,0}, false };
 };
 
 // no variables in this version. It's calculated each variation based on corresponding ComandForm structs.
@@ -24,6 +27,8 @@ struct DioCommand
 	double time;
 	// the value to set it to. 
 	bool value;
+	// same as DoCommandForm, this will be used for repeat generation, i.e. copy and extend the std::vector<DoCommand>
+	repeatInfoId repeatId = { 0, {0,0}, false };
 };
 
 // an object constructed for having all info the ttls for a single time

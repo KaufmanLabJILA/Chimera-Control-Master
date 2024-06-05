@@ -4,6 +4,11 @@
 // for other ni stuff
 #include "nidaqmx2.h"
 
+//temporary for debugging repeats
+#include <fstream>
+#include <experimental/filesystem>
+namespace fs = std::experimental::filesystem;
+
 
 DacSystem::DacSystem() : dacResolution(10.0 / pow(2, 16))
 {
@@ -628,14 +633,8 @@ void DacSystem::prepareForce()
 }
 
 
-void DacSystem::interpretKey( std::vector<variableType>& variables, std::string& warnings )
+void DacSystem::interpretKey( std::vector<variableType>& variables, std::string& warnings, UINT variations )
 {
-	UINT variations;
-	variations = variables.front( ).keyValues.size( );
-	if (variations == 0)
-	{
-		variations = 1;
-	}
 	/// imporantly, this sizes the relevant structures.
 	dacCommandList = std::vector<std::vector<DacCommand>>( variations );
 	dacSnapshots = std::vector<std::vector<DacSnapshot>>( variations );
@@ -650,6 +649,7 @@ void DacSystem::interpretKey( std::vector<variableType>& variables, std::string&
 		{
 			DacCommand tempEvent;
 			tempEvent.line = dacCommandFormList[eventInc].line;
+			tempEvent.repeatId = dacCommandFormList[eventInc].repeatId;
 			// Deal with time.
 			if (dacCommandFormList[eventInc].time.first.size() == 0)
 			{
@@ -870,6 +870,211 @@ void DacSystem::interpretKey( std::vector<variableType>& variables, std::string&
 			}
 		}
 	}
+}
+
+
+void DacSystem::constructRepeats( repeatManager& repeatMgr )
+{
+	typedef DacCommand Command;
+	/* this is to be done after ttlCommandList is filled with all variations. */
+	if (dacCommandFormList.size() == 0 || dacCommandList.size() == 0) {
+		thrower("No TTL Commands???");
+	}
+
+	unsigned variations = dacCommandList.size();
+	repeatMgr.saveCalculationResults(); // repeatAddedTime is changed during construction, need to save and reset it before and after the construction body
+	auto* repeatRoot = repeatMgr.getRepeatRoot();
+	auto allDescendant = repeatRoot->getAllDescendant();
+	if (allDescendant.empty()) {
+		return; // no repeats need to handle.
+	}
+
+	std::string out;
+
+	// iterate through all variations
+	for (auto varInc : range(variations)) {
+		auto& cmds = dacCommandList[varInc];
+
+		out += "Variation " + std::to_string(varInc) + ":\n\n";
+
+		// Recursively add these repeat for always starting with maxDepth repeat. And also update the already constructed one to its parent layer
+		// The loop will end when all commands is not associated with repeat, i.e. the maxDepth command's repeatId.repeatTreeMap is root
+		while (true) {
+			/*find the max depth repeated command*/
+			auto maxDepthIter = std::max_element(cmds.begin(), cmds.end(), [&](const Command& a, const Command& b) {
+				return (a.repeatId.repeatTreeMap.first < b.repeatId.repeatTreeMap.first); });
+			Command maxDepth = *maxDepthIter;
+
+			/*check if all command is with zero repeat. If so, exit the loop*/
+			if (maxDepth.repeatId.repeatTreeMap == repeatInfoId::root) {
+				break;
+			}
+
+			/*find the repeat num and the repeat added time with the unique identifier*/
+			auto repeatIIter = std::find_if(allDescendant.begin(), allDescendant.end(), [&](TreeItem<repeatInfo>* a) {
+				return (maxDepth.repeatId.repeatIdentifier == a->data().identifier); });
+			if (repeatIIter == allDescendant.end()) {
+				thrower("Can not find the ID for the repeat in the DoCommand with max depth of the tree. This is a low level bug.");
+			}
+			TreeItem<repeatInfo>* repeatI = *repeatIIter;
+			unsigned repeatNum = repeatI->data().repeatNums[varInc];
+			double repeatAddedTime = repeatI->data().repeatAddedTimes[varInc];
+			/*find the parent of this repeat and record its repeatInfoId for updating the repeated ones*/
+			TreeItem<repeatInfo>* repeatIParent = repeatI->parentItem();
+			repeatInfoId repeatIdParent{ repeatIParent->data().identifier, repeatIParent->itemID() };
+			/*collect command that need to be repeated*/
+			std::vector<Command> cmdToRepeat;
+			std::copy_if(cmds.begin(), cmds.end(), std::back_inserter(cmdToRepeat), [&](Command doc) {
+				return (doc.repeatId.repeatIdentifier == maxDepth.repeatId.repeatIdentifier); });
+			/*check if the repeated command is continuous in the cmds vector, it should be as the cmds is representing the script's order at this stage*/
+			auto cmdToRepeatStart = std::search(cmds.begin(), cmds.end(), cmdToRepeat.begin(), cmdToRepeat.end(),
+				[&](const Command& a, const Command& b) {
+				return (a.repeatId.repeatIdentifier == b.repeatId.repeatIdentifier);
+			});
+			if (cmdToRepeatStart == cmds.end()) {
+				thrower("The repeated command is not contiguous inside the CommandList, which is not suppose to happen.");
+			}
+			int cmdToRepeatStartPos = std::distance(cmds.begin(), cmdToRepeatStart);
+			auto cmdToRepeatEnd = cmdToRepeatStart + cmdToRepeat.size(); // this will point to first cmd that is after those repeated one in CommandList
+			/*if repeatNum is zero, delete the repeated command and reduce the time for those comand comes after the repeated commands and that is all*/
+			if (repeatNum == 0) {
+				cmds.erase(std::remove_if(cmds.begin(), cmds.end(), [&](Command doc) {
+					return (doc.repeatId.repeatIdentifier == maxDepth.repeatId.repeatIdentifier); }), cmds.end());
+				/*de-advance the time of thoses command that is later in CommandList than the repeat block*/
+				cmdToRepeatEnd = cmds.begin() + cmdToRepeatStartPos; // this will point to first cmd that is after those repeated one in CommandList, since the repeated is removed, should equal to cmdToRepeatStart
+				std::for_each(cmdToRepeatEnd, cmds.end(), [&](Command& doc) {
+					doc.time -= repeatAddedTime; });
+				continue;
+			}
+			// could also use this: std::transform(cmds.cbegin(), cmds.cend(), cmds.begin(), [&](Command doc) { with a return
+			std::for_each(cmds.begin(), cmds.end(), [&](Command& doc) {
+				if (doc.repeatId.repeatIdentifier == maxDepth.repeatId.repeatIdentifier) {
+					if (doc.repeatId.placeholder) {
+						doc.repeatId = repeatIdParent;
+						doc.repeatId.placeholder = true; // doesn't really matter, since this will be deleted anyway.
+					}
+					else { doc.repeatId = repeatIdParent; }
+				} });
+
+			/*determine whether this cmdToRepeat is just a placeholder*/
+			bool noPlaceholder = std::none_of(cmdToRepeat.begin(), cmdToRepeat.end(), [&](Command doc) {
+				return doc.repeatId.placeholder; });
+			int insertedCmdSize = 0;
+			if (noPlaceholder) {
+				/*start to insert the repeated 'cmdToRpeat' to end of the repeat block, after insertion, 'cmdToRepeatEnd' can not be used*/
+				std::vector<Command> cmdToInsert;
+				cmdToInsert.clear();
+				for (unsigned repeatInc : range(repeatNum - 1)) {
+					// if only repeat for once, below will be ignored, since the first repeat is already in the list
+					/*transform the repeating commandlist to its parent repeatInfoId and also increment its time so that it can be repeated in its parents level*/
+					std::for_each(cmdToRepeat.begin(), cmdToRepeat.end(), [&](Command& doc) {
+						doc.repeatId = repeatIdParent;
+						doc.time += repeatAddedTime; });
+					cmdToInsert.insert(cmdToInsert.end(), cmdToRepeat.begin(), cmdToRepeat.end());
+				}
+				cmds.insert(cmdToRepeatEnd, cmdToInsert.begin(), cmdToInsert.end());
+				insertedCmdSize = cmdToInsert.size();
+
+			}
+			else {
+				/*with placeholder, check if this is the only placeholder, as it should be in most cases*/
+				if (cmdToRepeat.size() > 1) {
+					bool allPlaceholder = std::all_of(cmdToRepeat.begin(), cmdToRepeat.end(), [&](Command doc) {
+						return doc.repeatId.placeholder; });
+					if (allPlaceholder) {
+						thrower("The command-to-repeat contains more than one placeholder. This shouldn't happen "
+							"as Chimera will only insert one placeholder if there is no command in this repeat. "
+							"This shouldn't come from nested repeat either, since Chimera will add placeholder for each level of repeats "
+							"if the there is no command. And the inferior level repeat placeholder should already be deleted after previous loop"
+							"A low level bug.");
+					}
+					else {
+						/*thrower("The command-to-repeat contains placeholder but also other commands that is not meant for placeholding. "
+							"This shouldn't happen as Chimera will only insert placeholder if there is no command in this repeat. "
+							"This shouldn't come from nested repeat either, inferior level repeat placeholder should already be deleted after previous loop. "
+							"A low level bug.");*/
+						cmds.erase(std::remove_if(cmdToRepeatStart, cmdToRepeatEnd + insertedCmdSize, [&](Command doc) {
+							return doc.repeatId.placeholder; }), cmdToRepeatEnd + insertedCmdSize);
+						cmdToRepeat.erase(std::remove_if(cmdToRepeat.begin(), cmdToRepeat.end(), [&](Command doc) {
+							return doc.repeatId.placeholder; }), cmdToRepeat.end());
+						cmdToRepeatEnd = cmdToRepeatStart + cmdToRepeat.size();;
+						/*start to insert the repeated 'cmdToRpeat' to end of the repeat block, after insertion, 'cmdToRepeatEnd' can not be used*/
+						std::vector<Command> cmdToInsert;
+						cmdToInsert.clear();
+						for (unsigned repeatInc : range(repeatNum - 1)) {
+							// if only repeat for once, below will be ignored, since the first repeat is already in the list
+							//transform the repeating commandlist to its parent repeatInfoId and also increment its time so that it can be repeated in its parents level
+							std::for_each(cmdToRepeat.begin(), cmdToRepeat.end(), [&](Command& doc) {
+								doc.repeatId = repeatIdParent;
+								doc.time += repeatAddedTime; });
+							cmdToInsert.insert(cmdToInsert.end(), cmdToRepeat.begin(), cmdToRepeat.end());
+						}
+						cmds.insert(cmdToRepeatEnd, cmdToInsert.begin(), cmdToInsert.end());
+						insertedCmdSize = cmdToInsert.size();
+					}
+				}
+				else {
+					/*remove the placeholder for this level of repeat. Other level would have their own placeholder inserted already if needed.*/
+					cmds.erase(cmds.begin() + cmdToRepeatStartPos);
+					insertedCmdSize = -1; // same as '-cmdToRepeat.size()'
+				}
+			}
+			//advance the time of thoses command that is later in CommandList than the repeat block
+			cmdToRepeatEnd = cmds.begin() + cmdToRepeatStartPos + cmdToRepeat.size() + insertedCmdSize;
+			std::for_each(cmdToRepeatEnd, cmds.end(), [&](Command& doc) {
+				doc.time += repeatAddedTime * (repeatNum - 1); });
+			//advance the time of the parent repeat, if the parent is not root
+			if (repeatIParent != repeatRoot) {
+				repeatIParent->data().repeatAddedTimes[varInc] += repeatAddedTime * repeatNum;
+			}
+		}
+		double time_c = 0;
+		for (auto& cmd : cmds)
+		{
+			out += "t += " + std::to_string(cmd.time - time_c) + "\n";
+			time_c = cmd.time;
+			out += "(" + std::to_string(cmd.line) + "): " + std::to_string(cmd.value);
+			//out += "<" + std::to_string(cmd.repeatId.repeatTreeMap.first) + "," + std::to_string(cmd.repeatId.repeatTreeMap.second) + ">";
+			out += "\n";
+		}
+		out += "\nEnd Variation\n\n\n";
+	}
+
+	// create temporary file
+	std::ofstream tmpFile(EXPORT_DACSCRIPT_TMP_FILE_LOCATION);
+	tmpFile << out;
+	tmpFile.close();
+
+	// move file (atomic operation)
+	fs::rename(EXPORT_DACSCRIPT_TMP_FILE_LOCATION, EXPORT_DACSCRIPT_FILE_LOCATION);
+
+	repeatMgr.loadCalculationResults();
+}
+
+
+bool DacSystem::repeatsExistInCommandForm(repeatInfoId repeatId)
+{
+	typedef DacCommandForm CommandForm;
+	auto& cmdFormList = dacCommandFormList;
+	auto cmdFormRepeated = std::find_if(cmdFormList.begin(), cmdFormList.end(),
+		[&](const CommandForm& a) {
+			return (a.repeatId.repeatIdentifier == repeatId.repeatIdentifier);
+		});
+	return (cmdFormRepeated != cmdFormList.end());
+}
+
+
+
+void DacSystem::addPlaceholderRepeatCommand(repeatInfoId repeatId)
+{
+	typedef DacCommandForm CommandForm;
+	auto& cmdFormList = dacCommandFormList;
+	repeatId.placeholder = true;
+	CommandForm cmdForm;
+	cmdForm.commandName = "dac:";
+	cmdForm.finalVal = Expression("0.0");
+	cmdForm.repeatId = repeatId;
+	cmdFormList.push_back(cmdForm); // should be an alert for all other commands, and it will be cleansed after advancing the time
 }
 
 

@@ -18,6 +18,7 @@
 #include "DDS_SYNTH.h"
 #include "GigaMoog.h"
 #include "fpgaAWG.h"
+#include "idleSequence.h"
 
 #include "rerngParams.h"
 
@@ -36,6 +37,8 @@ struct MasterThreadInput
 	std::string gmoogScriptAddress;
 	DDS_SYNTH* dds;
 	std::string ddsScriptAddress;
+
+	idleSequence* idler;
 
 	EmbeddedPythonHandler* python;
 	DataLogger* logger;

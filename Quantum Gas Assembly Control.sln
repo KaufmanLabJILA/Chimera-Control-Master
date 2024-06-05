@@ -10,8 +10,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		ReadMe.md = ReadMe.md
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Ethernet test", "Ethernet test\Ethernet test.vcxproj", "{FCFF45CA-BE19-4313-927B-A110BD21DD12}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -34,16 +32,6 @@ Global
 		{BDB7E898-2F81-4410-90C7-0BD4D3212AF8}.Release|x64.Build.0 = Release|x64
 		{BDB7E898-2F81-4410-90C7-0BD4D3212AF8}.Release|x86.ActiveCfg = Release|Win32
 		{BDB7E898-2F81-4410-90C7-0BD4D3212AF8}.Release|x86.Build.0 = Release|Win32
-		{FCFF45CA-BE19-4313-927B-A110BD21DD12}.Debug|Win32.ActiveCfg = Debug|Win32
-		{FCFF45CA-BE19-4313-927B-A110BD21DD12}.Debug|Win32.Build.0 = Debug|Win32
-		{FCFF45CA-BE19-4313-927B-A110BD21DD12}.Debug|x64.ActiveCfg = Debug|x64
-		{FCFF45CA-BE19-4313-927B-A110BD21DD12}.Debug|x86.ActiveCfg = Debug|Win32
-		{FCFF45CA-BE19-4313-927B-A110BD21DD12}.Debug|x86.Build.0 = Debug|Win32
-		{FCFF45CA-BE19-4313-927B-A110BD21DD12}.Release|Win32.ActiveCfg = Release|Win32
-		{FCFF45CA-BE19-4313-927B-A110BD21DD12}.Release|Win32.Build.0 = Release|Win32
-		{FCFF45CA-BE19-4313-927B-A110BD21DD12}.Release|x64.ActiveCfg = Release|x64
-		{FCFF45CA-BE19-4313-927B-A110BD21DD12}.Release|x86.ActiveCfg = Release|Win32
-		{FCFF45CA-BE19-4313-927B-A110BD21DD12}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

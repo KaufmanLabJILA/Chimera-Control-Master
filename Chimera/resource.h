@@ -172,7 +172,9 @@
 #define ID_EXPORTVARIABLES				40157
 #define ID_GIGAMOOG_EXPORTPAINT         40158
 #define ID_GIGAMOOG_PAINTSTATIC         40159
-#define MENU_ID_RANGE_END               40159
+#define ID_IDLE_SEQUENCE                40160
+#define ID_IDLE_FIRSTVAR                40161
+#define MENU_ID_RANGE_END               40161
 
 // Next default values for new objects
 // 

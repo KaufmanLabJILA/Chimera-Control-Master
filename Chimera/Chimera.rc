@@ -203,6 +203,11 @@ BEGIN
         MENUITEM "&Pause\tF2",                  ID_RUNMENU_PAUSE
 		MENUITEM "Export Variables",            ID_EXPORTVARIABLES
     END
+	POPUP "&Idle Menu"
+	BEGIN
+		MENUITEM "Idle Sequence Active"         ID_IDLE_SEQUENCE
+		MENUITEM "Idle First Variation"         ID_IDLE_FIRSTVAR
+	END
     POPUP "Profil&e"
     BEGIN
         POPUP "Master Configuration"

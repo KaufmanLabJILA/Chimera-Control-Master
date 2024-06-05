@@ -15,7 +15,7 @@ namespace commonFunctions
 	void prepareMasterThread( int msgID, ScriptingWindow* scriptWin, MainWindow* mainWin, CameraWindow* camWin,
 							  AuxiliaryWindow* auxWin, ExperimentInput& input, bool single, bool runAWG, bool runTtls, bool isSequence);
 	void abortRearrangement( MainWindow* mainWin, CameraWindow* camWin );
-	void startMaster(MainWindow* mainWin, ExperimentInput& input, bool waitTillFinished = false);
+	void startMaster(MainWindow* mainWin, ExperimentInput& input, bool waitTillFinished = false, bool isIdleSequence = false);
 	UINT __cdecl multipleExperimentThreadProcedure(void* voidInput);
 
 	std::string logParameters( ExperimentInput& input, CameraWindow* camWin, bool takeAndorPictures );

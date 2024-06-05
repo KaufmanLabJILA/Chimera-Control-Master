@@ -16,6 +16,7 @@
 #include "DataLogger.h"
 #include "NoteSystem.h"
 #include "profileSettings.h"
+#include "idleSequence.h"
 //#include "NiawgController.h"
 //#include "rerngControl.h"
 
@@ -44,6 +45,8 @@ class MainWindow : public CDialog
 		void passExportArrayIsOnPress();
 		void passExportPaintIsOnPress();
 		void passExportVariableIsOnPress();
+		void passIdleSequenceIsOnPress();
+		void passIdleFirstVariationPress();
 		bool checkGmoogState();
 		bool checkAutoAlignState();
 		bool checkPainterState();
@@ -83,7 +86,7 @@ class MainWindow : public CDialog
 		void setNiawgDefaults();
 		void fillMasterThreadInput( MasterThreadInput* input );
 		void fillMotInput( MasterThreadInput* input);
-		void startMaster( MasterThreadInput* input, bool isTurnOnMot , bool waitTillFinished = false);
+		void startMaster(MasterThreadInput* input, bool isTurnOnMot, bool waitTillFinished = false, bool isIdleSequence = false);
 		std::string getNotes( );
 		brushMap getBrushes();
 		rgbMap getRgbs();
@@ -155,6 +158,8 @@ class MainWindow : public CDialog
 		fpgaAWG awg;
 		gigaMoog gmoog;
 		DDS_SYNTH dds;
+
+		idleSequence idler;
 
 		ColorBox boxes;
 		// auxiliary members

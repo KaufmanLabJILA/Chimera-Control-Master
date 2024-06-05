@@ -44,9 +44,9 @@ BoostAsyncSerial::BoostAsyncSerial(
 	read();
 }
 
-//BoostAsyncSerial::BoostAsyncSerial() {
-//
-//}
+BoostAsyncSerial::BoostAsyncSerial() {
+
+}
 
 BoostAsyncSerial::~BoostAsyncSerial()
 {

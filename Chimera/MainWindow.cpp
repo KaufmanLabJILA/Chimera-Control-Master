@@ -10,7 +10,7 @@
 
 MainWindow::MainWindow(UINT id, CDialog* splash) : CDialog(id), profile(PROFILES_PATH), 
     masterConfig( MASTER_CONFIGURATION_FILE_ADDRESS ), 
-	appSplash( splash ), dds(DDS_FPGA_ADDRESS), gmoog(GIGAMOOG_IPADDRESS, GIGAMOOG_PORT), awg(AWG_PORT, AWG_BAUD)
+	appSplash( splash ), dds(DDS_FPGA_ADDRESS), gmoog(GIGAMOOG_IPADDRESS, GIGAMOOG_PORT), awg(AWG_PORT, AWG_BAUD), idler()
 {
 	// create all the main rgbs and brushes. I want to make sure this happens before other windows are created.
 	mainRGBs["Light Green"]			= RGB( 163,	190, 140);
@@ -347,6 +347,36 @@ void MainWindow::passExportVariableIsOnPress()
 		menu.CheckMenuItem(ID_EXPORTVARIABLES, MF_CHECKED);
 	}
 }
+
+void MainWindow::passIdleSequenceIsOnPress()
+{
+	if (idler.idleSequenceActive)
+	{
+		idler.idleSequenceActive = false;
+		menu.CheckMenuItem(ID_IDLE_SEQUENCE, MF_UNCHECKED);
+	}
+	else
+	{
+		idler.idleSequenceActive = true;
+		menu.CheckMenuItem(ID_IDLE_SEQUENCE, MF_CHECKED);
+	}
+}
+
+void MainWindow::passIdleFirstVariationPress()
+{
+	if (idler.varInd = -1)
+	{
+		idler.varInd = 0;
+		menu.CheckMenuItem(ID_IDLE_FIRSTVAR, MF_CHECKED);
+	}
+	else if (idler.varInd = 0)
+	{
+		idler.varInd = 1;
+		menu.CheckMenuItem(ID_IDLE_FIRSTVAR, MF_UNCHECKED);
+	}
+
+}
+
 
 bool MainWindow::checkGmoogState()
 {
@@ -824,9 +854,9 @@ void MainWindow::passCommonCommand(UINT id)
 }
 
 
-void MainWindow::startMaster( MasterThreadInput* input, bool isTurnOnMot , bool waitTillFinished)
+void MainWindow::startMaster( MasterThreadInput* input, bool isTurnOnMot , bool waitTillFinished, bool isIdleSequence)
 {
-	masterThreadManager.startExperimentThread(input, waitTillFinished);
+	masterThreadManager.startExperimentThread(input, waitTillFinished, isIdleSequence);
 }
 
 
@@ -869,6 +899,7 @@ void MainWindow::fillMasterThreadInput(MasterThreadInput* input)
 	input->gmoog = &gmoog;
 	input->dds = &dds;
 	input->exportVariables = exportVariables;
+	input->idler = &idler;
 
 	VariableSystem::generateKey( input->variables, input->settings.randomizeVariations, input->settings.interleaveVariations );
 	// it's important to do this after the key is generated so that the constants have their values.

@@ -14,6 +14,11 @@
 #include <windows.h>
 #include <sstream>
 
+//temporary for debugging repeats
+#include <fstream>
+#include <experimental/filesystem>
+namespace fs = std::experimental::filesystem;
+
 // I don't use this because I manually import dll functions.
 // #include "Dio64.h"
 
@@ -515,16 +520,16 @@ void DioSystem::initialize( POINT& loc, cToolTips& toolTips, AuxiliaryWindow* ma
 
 void DioSystem::handleTtlScriptCommand( std::string command, timeType time, std::string name,
 										std::vector<std::pair<UINT, UINT>>& ttlShadeLocations, 
-										std::vector<variableType>& vars )
+										std::vector<variableType>& vars, repeatInfoId repeatId )
 {
 	// use an empty expression.
-	handleTtlScriptCommand( command, time, name, Expression(), ttlShadeLocations, vars );
+	handleTtlScriptCommand( command, time, name, Expression(), ttlShadeLocations, vars, repeatId );
 }
 
 
 void DioSystem::handleTtlScriptCommand(std::string command, timeType time, std::string name, Expression expression, 
 									   std::vector<std::pair<UINT, UINT>>& ttlShadeLocations, 
-										std::vector<variableType>& vars )
+										std::vector<variableType>& vars, repeatInfoId repeatId )
 {
 	if (!isValidTTLName(name))
 	{
@@ -536,18 +541,18 @@ void DioSystem::handleTtlScriptCommand(std::string command, timeType time, std::
 	ttlShadeLocations.push_back({ row, collumn });
 	if (command == "on:")
 	{
-		ttlOn(row, collumn, time);
+		ttlOn(row, collumn, time, repeatId );
 	}
 	else if (command == "off:")
 	{
-		ttlOff(row, collumn, time);
+		ttlOff(row, collumn, time, repeatId );
 	}
 	else if (command == "variableon:")
 	{
 		boolType variableTtl;
 		Expression ttlState = expression;
 		variableTtl.first.push_back(ttlState);
-		ttlVariableOn(row, collumn, time, variableTtl);
+		ttlVariableOn(row, collumn, time, variableTtl, repeatId );
 	}
 	else if (command == "pulseon:" || command == "pulseoff:")
 	{
@@ -563,13 +568,13 @@ void DioSystem::handleTtlScriptCommand(std::string command, timeType time, std::
 		}
 		if (command == "pulseon:")
 		{
-			ttlOn( row, collumn, time );
-			ttlOff( row, collumn, pulseEndTime );
+			ttlOn( row, collumn, time, repeatId );
+			ttlOff( row, collumn, pulseEndTime, repeatId );
 		}
 		if (command == "pulseoff:")
 		{
-			ttlOff( row, collumn, time );
-			ttlOn( row, collumn, pulseEndTime );
+			ttlOff( row, collumn, time, repeatId );
+			ttlOn( row, collumn, pulseEndTime, repeatId );
 		}
 	}
 }
@@ -783,30 +788,30 @@ bool DioSystem::isValidTTLName( std::string name )
 }
 
 
-void DioSystem::ttlOn(UINT row, UINT column, timeType time)
+void DioSystem::ttlOn(UINT row, UINT column, timeType time, repeatInfoId repeatId )
 {
 	// make sure it's either a variable or a number that can be used.
 	//ttlCommandFormList.push_back({ {row, column}, time, true });
 	boolType stateOn;
 	stateOn.first.push_back(Expression("No Variable"));
 	stateOn.second = true;
-	ttlCommandFormList.push_back({ {row, column}, time, stateOn });
+	ttlCommandFormList.push_back({ {row, column}, time, stateOn, repeatId });
 }
 
 
-void DioSystem::ttlOff(UINT row, UINT column, timeType time)
+void DioSystem::ttlOff(UINT row, UINT column, timeType time, repeatInfoId repeatId )
 {
 	// check to make sure either variable or actual value.
 	//ttlCommandFormList.push_back({ {row, column}, time, false });
 	boolType stateOff;
 	stateOff.first.push_back(Expression("No Variable"));
 	stateOff.second = false;
-	ttlCommandFormList.push_back({ {row, column}, time, stateOff });
+	ttlCommandFormList.push_back({ {row, column}, time, stateOff, repeatId });
 }
 
-void DioSystem::ttlVariableOn(UINT row, UINT column, timeType time, boolType ttlState)
+void DioSystem::ttlVariableOn(UINT row, UINT column, timeType time, boolType ttlState, repeatInfoId repeatId )
 {
-	ttlCommandFormList.push_back({ {row, column}, time, ttlState });
+	ttlCommandFormList.push_back({ {row, column}, time, ttlState, repeatId });
 }
 
 
@@ -1147,13 +1152,8 @@ double DioSystem::getTotalTime(UINT variation)
 }
 
 
-void DioSystem::interpretKey( std::vector<variableType>& variables )
+void DioSystem::interpretKey( std::vector<variableType>& variables, UINT variations )
 {
-	UINT variations = variables.front( ).keyValues.size( );
-	if (variations == 0)
-	{
-		variations = 1; 
-	}
 	/// imporantly, this sizes the relevant structures.
 	ttlCommandList = std::vector<std::vector<DioCommand>>( variations );
 	ttlSnapshots = std::vector<std::vector<DioSnapshot>>( variations );
@@ -1190,9 +1190,215 @@ void DioSystem::interpretKey( std::vector<variableType>& variables )
 				}
 			}
 			tempCommand.time = variableTime + ttlCommandFormList[commandInc].time.second;
+			tempCommand.repeatId = ttlCommandFormList[commandInc].repeatId;
 			ttlCommandList[variationNum].push_back(tempCommand);
 		}
 	}
+}
+
+
+void DioSystem::constructRepeats( repeatManager& repeatMgr )
+{
+	typedef DioCommand Command;
+	/* this is to be done after ttlCommandList is filled with all variations. */
+	if (ttlCommandFormList.size() == 0 || ttlCommandList.size() == 0) {
+		thrower("No TTL Commands???");
+	}
+
+	unsigned variations = ttlCommandList.size();
+	repeatMgr.saveCalculationResults(); // repeatAddedTime is changed during construction, need to save and reset it before and after the construction body
+	auto* repeatRoot = repeatMgr.getRepeatRoot();
+	auto allDescendant = repeatRoot->getAllDescendant();
+	if (allDescendant.empty()) {
+		return; // no repeats need to handle.
+	}
+
+	std::string out;
+
+	// iterate through all variations
+	for (auto varInc : range(variations)) {
+		auto& cmds = ttlCommandList[varInc];
+
+		out += "Variation " + std::to_string(varInc) + ":\n\n";
+
+		// Recursively add these repeat for always starting with maxDepth repeat. And also update the already constructed one to its parent layer
+		// The loop will end when all commands is not associated with repeat, i.e. the maxDepth command's repeatId.repeatTreeMap is root
+		while (true) {
+			/*find the max depth repeated command*/
+			auto maxDepthIter = std::max_element(cmds.begin(), cmds.end(), [&](const Command& a, const Command& b) {
+				return (a.repeatId.repeatTreeMap.first < b.repeatId.repeatTreeMap.first); });
+			Command maxDepth = *maxDepthIter;
+
+			/*check if all command is with zero repeat. If so, exit the loop*/
+			if (maxDepth.repeatId.repeatTreeMap == repeatInfoId::root) {
+				break;
+			}
+
+			/*find the repeat num and the repeat added time with the unique identifier*/
+			auto repeatIIter = std::find_if(allDescendant.begin(), allDescendant.end(), [&](TreeItem<repeatInfo>* a) {
+				return (maxDepth.repeatId.repeatIdentifier == a->data().identifier); });
+			if (repeatIIter == allDescendant.end()) {
+				thrower("Can not find the ID for the repeat in the DoCommand with max depth of the tree. This is a low level bug.");
+			}
+			TreeItem<repeatInfo>* repeatI = *repeatIIter;
+			unsigned repeatNum = repeatI->data().repeatNums[varInc];
+			double repeatAddedTime = repeatI->data().repeatAddedTimes[varInc];
+			/*find the parent of this repeat and record its repeatInfoId for updating the repeated ones*/
+			TreeItem<repeatInfo>* repeatIParent = repeatI->parentItem();
+			repeatInfoId repeatIdParent{ repeatIParent->data().identifier, repeatIParent->itemID() };
+			/*collect command that need to be repeated*/
+			std::vector<Command> cmdToRepeat;
+			std::copy_if(cmds.begin(), cmds.end(), std::back_inserter(cmdToRepeat), [&](Command doc) {
+				return (doc.repeatId.repeatIdentifier == maxDepth.repeatId.repeatIdentifier); });
+			/*check if the repeated command is continuous in the cmds vector, it should be as the cmds is representing the script's order at this stage*/
+			auto cmdToRepeatStart = std::search(cmds.begin(), cmds.end(), cmdToRepeat.begin(), cmdToRepeat.end(),
+				[&](const Command& a, const Command& b) {
+				return (a.repeatId.repeatIdentifier == b.repeatId.repeatIdentifier);
+			});
+			if (cmdToRepeatStart == cmds.end()) {
+				thrower("The repeated command is not contiguous inside the CommandList, which is not suppose to happen.");
+			}
+			int cmdToRepeatStartPos = std::distance(cmds.begin(), cmdToRepeatStart);
+			auto cmdToRepeatEnd = cmdToRepeatStart + cmdToRepeat.size(); // this will point to first cmd that is after those repeated one in CommandList
+			/*if repeatNum is zero, delete the repeated command and reduce the time for those comand comes after the repeated commands and that is all*/
+			if (repeatNum == 0) {
+				cmds.erase(std::remove_if(cmds.begin(), cmds.end(), [&](Command doc) {
+					return (doc.repeatId.repeatIdentifier == maxDepth.repeatId.repeatIdentifier); }), cmds.end());
+				/*de-advance the time of thoses command that is later in CommandList than the repeat block*/
+				cmdToRepeatEnd = cmds.begin() + cmdToRepeatStartPos; // this will point to first cmd that is after those repeated one in CommandList, since the repeated is removed, should equal to cmdToRepeatStart
+				std::for_each(cmdToRepeatEnd, cmds.end(), [&](Command& doc) {
+					doc.time -= repeatAddedTime; });
+				continue;
+			}
+			/*transform the repeating commandlist to its parent repeatInfoId so that it can be repeated in its parents level*/
+			// could also use this: std::transform(cmds.cbegin(), cmds.cend(), cmds.begin(), [&](Command doc) { with a return
+			std::for_each(cmds.begin(), cmds.end(), [&](Command& doc) {
+				if (doc.repeatId.repeatIdentifier == maxDepth.repeatId.repeatIdentifier) {
+					if (doc.repeatId.placeholder) {
+						doc.repeatId = repeatIdParent;
+						doc.repeatId.placeholder = true; // doesn't really matter, since this will be deleted anyway.
+					}
+					else { doc.repeatId = repeatIdParent; }
+				}
+			});
+			/*determine whether this cmdToRepeat is just a placeholder*/
+			bool noPlaceholder = std::none_of(cmdToRepeat.begin(), cmdToRepeat.end(), [&](Command doc) {
+				return doc.repeatId.placeholder; });
+			int insertedCmdSize = 0;
+			if (noPlaceholder) {
+				/*start to insert the repeated 'cmdToRpeat' to end of the repeat block, after insertion, 'cmdToRepeatEnd' can not be used*/
+				std::vector<Command> cmdToInsert;
+				cmdToInsert.clear();
+				for (unsigned repeatInc : range(repeatNum - 1)) {
+					// if only repeat for once, below will be ignored, since the first repeat is already in the list
+					/*transform the repeating commandlist to its parent repeatInfoId and also increment its time so that it can be repeated in its parents level*/
+					std::for_each(cmdToRepeat.begin(), cmdToRepeat.end(), [&](Command& doc) {
+						doc.repeatId = repeatIdParent;
+						doc.time += repeatAddedTime; });
+					cmdToInsert.insert(cmdToInsert.end(), cmdToRepeat.begin(), cmdToRepeat.end());
+				}
+				cmds.insert(cmdToRepeatEnd, cmdToInsert.begin(), cmdToInsert.end());
+				insertedCmdSize = cmdToInsert.size();
+
+			}
+			else {
+				/*with placeholder, check if this is the only placeholder, as it should be in most cases*/
+				if (cmdToRepeat.size() > 1) {
+					bool allPlaceholder = std::all_of(cmdToRepeat.begin(), cmdToRepeat.end(), [&](Command doc) {
+						return doc.repeatId.placeholder; });
+					if (allPlaceholder) {
+						thrower("The command-to-repeat contains more than one placeholder. This shouldn't happen "
+							"as Chimera will only insert one placeholder if there is no command in this repeat. "
+							"This shouldn't come from nested repeat either, since Chimera will add placeholder for each level of repeats "
+							"if the there is no command. And the inferior level repeat placeholder should already be deleted after previous loop"
+							"A low level bug.");
+					}
+					else {
+						/*thrower("The command-to-repeat contains placeholder but also other commands that is not meant for placeholding. "
+							"This shouldn't happen as Chimera will only insert placeholder if there is no command in this repeat. "
+							"This shouldn't come from nested repeat either, inferior level repeat placeholder should already be deleted after previous loop. "
+							"A low level bug.");*/
+						cmds.erase(std::remove_if(cmdToRepeatStart, cmdToRepeatEnd, [&](Command doc) {
+							return doc.repeatId.placeholder; }), cmds.end());
+						cmdToRepeat.erase(std::remove_if(cmdToRepeat.begin(), cmdToRepeat.end(), [&](Command doc) {
+							return doc.repeatId.placeholder; }), cmdToRepeat.end());
+						/*start to insert the repeated 'cmdToRpeat' to end of the repeat block, after insertion, 'cmdToRepeatEnd' can not be used*/
+						std::vector<Command> cmdToInsert;
+						cmdToInsert.clear();
+						for (unsigned repeatInc : range(repeatNum - 1)) {
+							// if only repeat for once, below will be ignored, since the first repeat is already in the list
+							/*transform the repeating commandlist to its parent repeatInfoId and also increment its time so that it can be repeated in its parents level*/
+							std::for_each(cmdToRepeat.begin(), cmdToRepeat.end(), [&](Command& doc) {
+								doc.repeatId = repeatIdParent;
+								doc.time += repeatAddedTime; });
+							cmdToInsert.insert(cmdToInsert.end(), cmdToRepeat.begin(), cmdToRepeat.end());
+						}
+						cmds.insert(cmdToRepeatEnd, cmdToInsert.begin(), cmdToInsert.end());
+						insertedCmdSize = cmdToInsert.size();
+					}
+				}
+				else {
+					/*remove the placeholder for this level of repeat. Other level would have their own placeholder inserted already if needed.*/
+					cmds.erase(cmds.begin() + cmdToRepeatStartPos);
+					insertedCmdSize = -1; // same as '-cmdToRepeat.size()'
+				}
+			}
+			//advance the time of thoses command that is later in CommandList than the repeat block
+			cmdToRepeatEnd = cmds.begin() + cmdToRepeatStartPos + cmdToRepeat.size() + insertedCmdSize;
+			std::for_each(cmdToRepeatEnd, cmds.end(), [&](Command& doc) {
+				doc.time += repeatAddedTime * (repeatNum - 1); });
+			//advance the time of the parent repeat, if the parent is not root
+			if (repeatIParent != repeatRoot) {
+				repeatIParent->data().repeatAddedTimes[varInc] += repeatAddedTime * repeatNum;
+			}
+		}
+		double time_c = 0;
+		for (auto& cmd : cmds)
+		{
+			out += "t += " + std::to_string(cmd.time - time_c) + "\n";
+			time_c = cmd.time;
+			out += "(" + std::to_string(cmd.line.first) + "," + std::to_string(cmd.line.second) + ")";
+			if (cmd.value) { out += " On "; }
+			else { out += " Off "; }
+			out += "<" + std::to_string(cmd.repeatId.repeatTreeMap.first) + "," + std::to_string(cmd.repeatId.repeatTreeMap.second) + ">";
+			out += "\n";
+		}
+		out += "\nEnd Variation\n\n\n";
+	
+	}
+
+	// create temporary file
+	std::ofstream tmpFile(EXPORT_DIOSCRIPT_TMP_FILE_LOCATION);
+	tmpFile << out;
+	tmpFile.close();
+
+	// move file (atomic operation)
+	fs::rename(EXPORT_DIOSCRIPT_TMP_FILE_LOCATION, EXPORT_DIOSCRIPT_FILE_LOCATION);
+
+	repeatMgr.loadCalculationResults();
+}
+
+
+bool DioSystem::repeatsExistInCommandForm(repeatInfoId repeatId)
+{
+	typedef DioCommandForm CommandForm;
+	auto& cmdFormList = ttlCommandFormList;
+	auto cmdFormRepeated = std::find_if(cmdFormList.begin(), cmdFormList.end(), 
+		[&](const CommandForm& a) {
+			return (a.repeatId.repeatIdentifier == repeatId.repeatIdentifier);
+		});
+	return (cmdFormRepeated != cmdFormList.end());
+}
+
+void DioSystem::addPlaceholderRepeatCommand(repeatInfoId repeatId)
+{
+	typedef DioCommandForm CommandForm;
+	auto& cmdFormList = ttlCommandFormList;
+	repeatId.placeholder = true;
+	boolType stateTmp;
+	stateTmp.first.push_back(Expression("No Variable"));
+	stateTmp.second = true;
+	cmdFormList.push_back({ {0, 0}, timeType({},-1.0), stateTmp, repeatId }); // should be an alert for all other commands, and it will be cleansed after advancing the time
 }
 
 

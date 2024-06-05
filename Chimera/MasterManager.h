@@ -24,6 +24,8 @@
 #include <vector>
 #include <sstream>
 #include <mutex>
+#include "repeatManager.h"
+
 
 
 class MasterManager;
@@ -39,18 +41,32 @@ class MasterManager
 		std::string getErrorMessage(int errorCode);
 		void loadMasterScript(std::string scriptAddress);
 
-		void analyzeMasterScript( DioSystem* ttls, DacSystem* dacs, 
-								  std::vector<std::pair<UINT, UINT>>& ttlShades, std::vector<UINT>& dacShades, std::vector<variableType>& vars);
+		void analyzeMasterScript( DioSystem* ttls, DacSystem* dacs, std::vector<std::pair<UINT, UINT>>& ttlShades, std::vector<UINT>& dacShades,
+								  std::vector<variableType>& vars, repeatManager& repeatMgr);
 
 		// this function needs the master window in order to gather the relevant parameters for the experiment.
-		void startExperimentThread(MasterThreadInput* input, bool waitTillFinished = false);
+		void startExperimentThread(MasterThreadInput* input, bool waitTillFinished = false, bool isIdleSequence = false);
 		void loadMotSettings(MasterThreadInput* input);
 		bool runningStatus();
 		bool isValidWord(std::string word);
 		bool getAbortStatus();
-		bool handleTimeCommands( std::string word, ScriptStream& stream, std::vector<variableType>& vars );
+		bool handleTimeCommands( std::string word, ScriptStream& stream, std::vector<variableType>& vars, repeatManager& repeatMgr );
+		bool handleDacCommands( std::string word, ScriptStream& stream, std::vector<variableType>& vars,
+								repeatManager& repeatMgr, DioSystem* ttls, DacSystem* dacs, std::vector<UINT>& dacShades);
+		bool handleDioCommands( std::string word, ScriptStream& stream, std::vector<variableType>& vars,
+								repeatManager& repeatMgr, DioSystem* ttls, std::vector<std::pair<UINT, UINT>>& ttlShades );
+		bool handleFunctionCalls( std::string word, ScriptStream& stream, std::vector<variableType>& vars,
+								  repeatManager& repeatMgr, DioSystem* ttls, DacSystem* dacs,
+								  std::vector<std::pair<UINT, UINT>>& ttlShades, std::vector<UINT>& dacShades );
+		bool handleRepeats( std::string word, ScriptStream& stream, std::vector<variableType>& vars, 
+							repeatManager& repeatMgr, DioSystem* ttls, DacSystem* dacs );
+
+		void calculateVariations(DioSystem* ttls, DacSystem* dacs,
+									std::vector<std::pair<UINT, UINT>>& ttlShades, std::vector<UINT>& dacShades, 
+									std::vector<variableType>& vars, Communicator* comm, bool quiet );
 
 		static UINT __cdecl experimentThreadProcedure(void* voidInput);
+		static UINT __cdecl idlerThreadProcedure(void* voidInput);
 		static void expUpdate(std::string text, Communicator* comm, bool quiet = false);
 		static void analyzeFunctionDefinition(std::string defLine, std::string& functionName, std::vector<std::string>& args);
 		static UINT determineVariationNumber(std::vector<variableType> vars);
@@ -68,8 +84,9 @@ class MasterManager
 		ScriptStream currentMasterScript;
 		std::string functionsFolderLocation;
 		// called by analyzeMasterScript functions only.
-		void analyzeFunction( std::string function, std::vector<std::string> args, DioSystem* ttls, DacSystem* dacs,
-							  std::vector<std::pair<UINT, UINT>>& ttlShades, std::vector<UINT>& dacShades, std::vector<variableType>& vars);
+		void analyzeFunction( std::string function, std::vector<std::string> args, repeatManager& repeatMgr,
+							  DioSystem* ttls, DacSystem* dacs, std::vector<std::pair<UINT, UINT>>& ttlShades,
+							  std::vector<UINT>& dacShades, std::vector<variableType>& vars);
 		// 
 		timeType operationTime;
 		bool experimentIsRunning;

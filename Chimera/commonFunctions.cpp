@@ -43,16 +43,16 @@ namespace commonFunctions
 				camWin->redrawPictures(false);
 				try
 				{
-					prepareCamera( mainWin, camWin, input, false );
+					//prepareCamera( mainWin, camWin, input, false );
 					prepareMasterThread( msgID, scriptWin, mainWin, camWin, auxWin, input, false, true, true, false );
-					camWin->preparePlotter(input);
-					camWin->prepareAtomCruncher(input);
+					//camWin->preparePlotter(input);
+					//camWin->prepareAtomCruncher(input);
 
-					logParameters( input, camWin, true );
+					//logParameters( input, camWin, true );
 
-					camWin->startAtomCruncher(input);
-					camWin->startPlotterThread(input);
-					camWin->startCamera();
+					//camWin->startAtomCruncher(input);
+					//camWin->startPlotterThread(input);
+					//camWin->startCamera();
 					startMaster( mainWin, input, false );
 				}
 				catch (Error& err)
@@ -92,6 +92,12 @@ namespace commonFunctions
 			case ID_ACCELERATOR_ESC:
 			case ID_FILE_ABORT_GENERATION:
 			{
+				//Need to add functionality here to handle pressing of escape key during an idle sequence running -Mybe not. 
+				//Pressing escape should not do anythig ideally and thats what is happening rn.
+				if (mainWin->idler.idleSequenceActive && mainWin->idler.idleSequenceRunning)
+				{
+					break;
+				}
 				std::string status;
 				if ( mainWin->experimentIsPaused( ) )
 				{
@@ -144,6 +150,11 @@ namespace commonFunctions
 				//
 				mainWin->waitForRearranger( );
 
+				if (mainWin->idler.idleSequenceActive && !mainWin->idler.idleSequenceRunning)
+				{
+					mainWin->getComm()->sendStatus("Idle sequence still active. Continue idling.");
+				}
+
 				//try
 				//{
 				//	if ( mainWin->niawg.niawgIsRunning( ) )
@@ -168,6 +179,35 @@ namespace commonFunctions
 				{
 					mainWin->getComm()->sendError("Camera and Master were not running. Can't Abort.\r\n");
 				}
+				break;
+			}
+			case ID_IDLE_SEQUENCE:
+			{
+				mainWin->passIdleSequenceIsOnPress();
+				if (!mainWin->idler.idleSequenceRunning && !mainWin->masterIsRunning())
+				{
+					ExperimentInput input;
+					try
+					{
+						prepareMasterThread(msgID, scriptWin, mainWin, camWin, auxWin, input, false, true, true, false);
+						startMaster(mainWin, input, false, true);
+					}
+					catch (Error& err)
+					{
+						if (err.whatBare() == "Canceled!")
+						{
+							break;
+						}
+						mainWin->getComm()->sendColorBox(Master, 'R');
+						mainWin->getComm()->sendError("EXITED WITH ERROR! " + err.whatStr());
+						mainWin->getComm()->sendStatus("EXITED WITH ERROR!\r\n");
+					}
+				}
+				break;
+			}
+			case ID_IDLE_FIRSTVAR:
+			{
+				mainWin->passIdleFirstVariationPress();
 				break;
 			}
 			case ID_RUNMENU_RUNCAMERA:
@@ -1315,12 +1355,12 @@ namespace commonFunctions
 		}
 	}
 
-	void startMaster(MainWindow* mainWin, ExperimentInput& input, bool waitTillFinished)
+	void startMaster(MainWindow* mainWin, ExperimentInput& input, bool waitTillFinished, bool isIdleSequence)
 	{
 		mainWin->addTimebar( "main" );
 		mainWin->addTimebar( "error" );
 		mainWin->addTimebar( "debug" );
-		mainWin->startMaster( input.masterInput, false , waitTillFinished);
+		mainWin->startMaster( input.masterInput, false , waitTillFinished, isIdleSequence);
 	}
 
 	void abortCamera( CameraWindow* camWin, MainWindow* mainWin )
