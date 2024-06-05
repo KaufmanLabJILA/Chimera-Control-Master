@@ -31,9 +31,23 @@ bool MasterManager::getAbortStatus()
  */
 UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 {
+
 	/// initialize various structures
 	// convert the input to the correct structure.
 	MasterThreadInput* input = (MasterThreadInput*)voidInput;
+
+	// stop idle sequence
+	if (input->idler->idleSequenceRunning)
+	{
+		input->idler->killIdler = true;
+		while (input->idler->idleSequenceRunning)
+		{
+			Sleep(100);
+		}
+		input->idler->killIdler = false;
+	}
+
+
 	// change the status of the parent object to reflect that the thread is running.
 	input->thisObj->experimentIsRunning = true;
 	// warnings will be passed by reference to a series of function calls which can append warnings to the string.
@@ -415,7 +429,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 		input->thisObj->experimentIsRunning = false;
 		{
 			std::lock_guard<std::mutex> locker( input->thisObj->abortLock );
-			input->thisObj->isAborting = false;
+			//input->thisObj->isAborting = false;
 		}
 		if (input->runMaster)
 		{
@@ -427,6 +441,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 		{
 			expUpdate( abortString, input->comm, input->quiet );
 			input->comm->sendColorBox( Master, 'B' );
+			input->thisObj->isAborting = false;
 		}
 		else
 		{
@@ -436,15 +451,367 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 			std::string exceptionTxt = exception.what( );
 			input->comm->sendError( exception.what( ) );
 			input->comm->sendFatalError( "Exited main experiment thread abnormally." );
-		}	
+		}
 	}
 	std::chrono::time_point<chronoClock> endTime( chronoClock::now( ) );
 	expUpdate( "Experiment took " + str( std::chrono::duration<double>( (endTime - startTime) ).count( ) ) 
 			   + " seconds.\r\n", input->comm, input->quiet );
 	input->thisObj->experimentIsRunning = false;
+	if (input->idler->idleSequenceActive)
+	{
+		MasterThreadInput* inputIdler(input);
+		inputIdler->thisObj->startExperimentThread(inputIdler, false, true);
+	}
+	else {
+		delete input;
+	}
+
+	return false;
+}
+
+
+
+// The workhorse of the idle sequence.
+UINT __cdecl MasterManager::idlerThreadProcedure(void* voidInput)
+{
+	/// initialize various structures
+	// convert the input to the correct structure.
+	MasterThreadInput* input = (MasterThreadInput*)voidInput;
+	// change the status of the parent object to reflect that the thread is running.
+	input->idler->idleSequenceRunning = true;
+	// warnings will be passed by reference to a series of function calls which can append warnings to the string.
+	// at a certain point the string will get outputted to the error console. Remember, errors themselves are handled 
+	// by thrower() calls.
+	std::string warnings;
+	std::string abortString = "\r\nABORTED!\r\n";
+	std::chrono::time_point<chronoClock> startTime(chronoClock::now());
+	std::vector<long> variedMixedSize;
+	std::vector<std::pair<UINT, UINT>> ttlShadeLocs;
+	std::vector<UINT> dacShadeLocs;
+	bool foundRearrangement = false;
+	/// ////////////////////////////
+	/// start analysis & experiment
+	try
+	{
+		UINT variations = determineVariationNumber(input->variables);
+		int varInd = input->idler->varInd;
+		if (varInd == -1)
+		{
+			varInd = variations - 1;
+		}
+
+		// go ahead and check if abort was pressed real fast...
+		if (input->thisObj->isAborting)
+		{
+			thrower(abortString);
+		}
+
+
+		//expUpdate("Programming All Variation Data...\r\n", input->comm, input->quiet);
+		std::chrono::time_point<chronoClock> varProgramStartTime(chronoClock::now());
+		input->thisObj->loadSkipTimes.resize(variations);
+
+
+		if (input->runMaster)
+		{
+			/// analyzes the master script and calculates the ttl and dac command lists for all variations
+			input->thisObj->calculateVariations(input->ttls, input->dacs, ttlShadeLocs, dacShadeLocs,
+				input->variables, input->comm, input->quiet);
+
+			/// organize commands, prepping final forms of the data for each repetition.
+			// This must be done after the "interpret key" step, as before that commands don't have hard times attached to 
+			// them.
+			for (UINT variationInc = varInd; variationInc < varInd+1; variationInc++)
+			{
+				// reading these variables should be safe.
+				if (input->thisObj->isAborting)
+				{
+					thrower(abortString);
+				}
+				double& currLoadSkipTime = input->thisObj->loadSkipTimes[variationInc];
+				currLoadSkipTime = MasterManager::convertToTime(input->thisObj->loadSkipTime, input->variables,
+					variationInc);
+				// organize & format the ttl and dac commands
+				input->dacs->organizeDacCommands(variationInc);
+				input->dacs->setDacTriggerEvents(input->ttls, variationInc);
+				input->dacs->findLoadSkipSnapshots(currLoadSkipTime, input->variables, variationInc);
+				input->dacs->makeFinalDataFormat(variationInc);
+				input->ttls->organizeTtlCommands(variationInc);
+				input->ttls->findLoadSkipSnapshots(currLoadSkipTime, input->variables, variationInc);
+				input->ttls->convertToFinalFormat(variationInc);
+				input->ttls->formatForFPGA(variationInc); //FPGA FORMATTING from TTLSNAPSHOTS
+				//input->ttls->connectDioFPGA(variationInc); //open connection at each variation
+				// run a couple checks.
+				input->ttls->checkNotTooManyTimes(variationInc);
+				input->ttls->checkFinalFormatTimes(variationInc);
+				if (input->ttls->countDacTriggers(variationInc) != input->dacs->getNumberSnapshots(variationInc))
+				{
+					thrower("ERROR: number of dac triggers from the ttl system does not match the number of dac snapshots!"
+						" Number of dac triggers was " + str(input->ttls->countDacTriggers(variationInc)) + " while number of dac "
+						"snapshots was " + str(input->dacs->getNumberSnapshots(variationInc)));
+				}
+				input->dacs->checkTimingsWork(variationInc);
+			}
+		}
+		/// output some timing information
+		std::chrono::time_point<chronoClock> varProgramEndTime(chronoClock::now());
+		expUpdate("Programming took "
+			+ str(std::chrono::duration<double>((varProgramEndTime - varProgramStartTime)).count() / 1000.0)
+			+ " seconds.\r\n", input->comm, input->quiet);
+		if (input->runMaster)
+		{
+			//expUpdate("Programmed time per repetition: " + str(input->ttls->getTotalTime(0)) + "\r\n",
+			//	input->comm, input->quiet);
+			ULONGLONG totalTime = 0;
+			for (USHORT variationNumber = varInd; variationNumber < varInd+1; variationNumber++)
+			{
+				totalTime += ULONGLONG(input->ttls->getTotalTime(variationNumber) * input->repetitionNumber);
+			}
+			//expUpdate("Programmed Total Experiment time: " + str(totalTime) + "\r\n", input->comm, input->quiet);
+			//expUpdate("Number of TTL Events in experiment: " + str(input->ttls->getNumberEvents(0)) + "\r\n",
+			//	input->comm, input->quiet);
+			//expUpdate("Number of DAC Events in experiment: " + str(input->dacs->getNumberEvents(0)) + "\r\n",
+			//	input->comm, input->quiet);
+		}
+		/// finish up
+		handleDebugPlots(input->debugOptions, input->comm, input->ttls, input->dacs, input->quiet, input->python);
+		input->comm->sendError(warnings);
+		// update the colors of the global variable control.
+		input->globalControl->setUsages(input->variables);
+		/// /////////////////////////////
+		/// Begin experiment loop
+		/// //////////
+		// TODO: Handle randomizing repetitions. The thread will need to split into separate if/else statements here.
+		if (input->runMaster)
+		{
+			input->comm->sendColorBox(Master, 'G');
+		}
+		// loop for variations
+
+
+		//for (const UINT& variationInc : range(variations))
+		for (UINT variationInc = varInd; variationInc < varInd + 1; variationInc++)
+		{
+			expUpdate("Variation #" + str(variationInc + 1) + "\r\n", input->comm, input->quiet);
+			Sleep(input->debugOptions.sleepTime);
+			std::string varOutput;
+			for (auto tempVariable : input->variables)
+			{
+				// if varies...
+				if (tempVariable.valuesVary)
+				{
+					if (tempVariable.keyValues.size() == 0)
+					{
+						thrower("ERROR: Variable " + tempVariable.name + " varies, but has no values assigned to it!");
+					}
+					expUpdate(tempVariable.name + ": " + str(tempVariable.keyValues[variationInc], 12) + "\r\n",
+						input->comm, input->quiet);
+				}
+
+				if (input->exportVariables)
+				{
+					if (tempVariable.valuesVary)
+					{
+						varOutput += "VARIABLE\n";
+					}
+					else
+					{
+						varOutput += "CONSTANT\n";
+					}
+					varOutput += tempVariable.name + "\n";
+					varOutput += str(tempVariable.keyValues[variationInc], 12) + "\n";
+				}
+
+			}
+			if (input->exportVariables)
+			{
+				// export variables to text file
+				std::ofstream tmpFile(EXPORT_VARIABLE_TMP_FILE_LOCATION);
+				tmpFile << varOutput;
+				tmpFile.close();
+				fs::rename(EXPORT_VARIABLE_TMP_FILE_LOCATION, EXPORT_VARIABLE_FILE_LOCATION);
+			}
+
+			if (!DDS_SAFEMODE) {
+				// determine seconds since the epoch
+				time_t ts = time(0);
+				double ts_double = double(ts);
+
+				// create "magic" timestamp variable
+				variableType timestampVar;
+				timestampVar.name = "__ts__";
+				timestampVar.constant = true;
+				//timestampVar.ranges.push_back({ ts_double, 0, 1, false, true });
+				for (const UINT& i : range(variations)) {
+					timestampVar.keyValues.push_back(ts_double);
+				}
+
+				// inject timestamp variable
+				input->variables.push_back(timestampVar);
+
+				//expUpdate("Timestamp __ts__: " + str(ts_double) + "\r\n", input->comm, input->quiet);
+
+				// parse dds script and program dds
+				input->dds->loadDDSScript(input->ddsScriptAddress);
+				input->dds->programDDS(input->dds, input->variables, variationInc);
+
+				// remove injected timestamp variable
+				input->variables.pop_back();
+			}
+			if (!MOOG_SAFEMODE) {
+				input->gmoog->loadMoogScript(input->gmoogScriptAddress);
+				input->gmoog->analyzeMoogScript(input->gmoog, input->variables, variationInc);
+			}
+			if (input->runAWG && !AWG_SAFEMODE) {
+				//input->moog->loadMoogScript(input->moogScriptAddress);
+				//input->moog->analyzeMoogScript(input->moog, input->variables, variationInc);
+				input->awg->loadAWGScript(input->awgScriptAddress);
+				input->awg->analyzeAWGScript(input->awg, input->variables, variationInc);
+			}
+
+			input->comm->sendError(warnings);
+			//input->topBottomTek->programMachine( variationInc );
+			//input->eoAxialTek->programMachine( variationInc );
+			//
+			input->comm->sendRepProgress(0);
+			expUpdate("Running idle sequence.\r\n", input->comm, input->quiet);
+
+			//These were moved out of the repetition loop for speed. Can put back in if necessay.
+
+			//input->dacs->stopDacs();
+			// it's important to grab the skipoption from input->skipNext only once because in principle
+			// if the cruncher thread was running behind, it could change between writing and configuring the 
+			// dacs and configuring the TTLs;
+			bool skipOption;
+			if (input->skipNext == NULL)
+			{
+				skipOption = false;
+			}
+			else
+			{
+				skipOption = input->skipNext->load();
+			}
+			input->dacs->stopDacs();
+			input->dacs->configureClocks(variationInc, skipOption);
+			input->dacs->writeDacs(variationInc, skipOption);
+			input->ttls->writeTtlDataToFPGA(variationInc, skipOption);
+			//input->dacs->startDacs();
+
+			//for (UINT repInc = 0; repInc < input->repetitionNumber; repInc++)
+			while (!input->idler->killIdler && input->idler->idleSequenceActive)
+			{
+				if (input->thisObj->isAborting)
+				{
+					thrower(abortString);
+				}
+				else if (input->thisObj->isPaused)
+				{
+					expUpdate("Paused\r\n!", input->comm, input->quiet);
+					// wait...
+					while (input->thisObj->isPaused)
+					{
+						// this could be changed to be a bit smarter using a std::condition_variable
+						Sleep(100);
+					}
+					expUpdate("Un-Paused!\r\n", input->comm, input->quiet);
+				}
+				// this was re-written each time from looking at the VB6 code.
+				if (input->runMaster)
+				{
+					//input->ttls->writeTtlData( variationInc, skipOption );
+					//input->ttls->startBoard();
+					//input->dacs->stopDacs();
+					//input->dacs->configureClocks(variationInc, skipOption);
+					//input->dacs->writeDacs(variationInc, skipOption);
+					input->dacs->startDacs();
+					input->ttls->startDioFPGA(variationInc);
+					//input->ttls->waitTillFinished( variationInc, skipOption );
+					input->ttls->wait(100);
+
+					input->dacs->stopDacs();
+				}
+				if (input->gmoog->autoTweezerOffsetActive)
+				{
+					//reset gmoog load settings if using auto calibration.
+					MessageSender ms;
+					input->gmoog->writeOff(ms);
+					input->gmoog->writeLoad(ms);
+					input->gmoog->writeTerminator(ms);
+					input->gmoog->send(ms);
+				}
+
+			}
+			//input->ttls->disconnectDioFPGA(variationInc);
+			input->idler->idleSequenceRunning = false;
+			//expUpdate("\r\n", input->comm, input->quiet);
+		}
+		/// conclude.
+		expUpdate("\r\nIdle sequence finished.\r\n", input->comm, input->quiet);
+		//input->comm->sendColorBox(Master, 'B');
+		if (input->runMaster)
+		{
+			// stop is necessary; Else the dac system will still be "running" and won't allow updates through normal 
+			// means.
+			input->dacs->stopDacs();
+			input->dacs->unshadeDacs();
+			//input->ttls->disconnectDioFPGA();
+		}
+		if (input->runMaster)
+		{
+			try
+			{
+				// make sure the display accurately displays the state that the experiment finished at.
+				input->dacs->setDacStatusNoForceOut(input->dacs->getFinalSnapshot());
+				input->ttls->unshadeTtls();
+				input->ttls->setTtlStatusNoForceOut(input->ttls->getFinalSnapshot());
+			}
+			catch (Error&) { /* this gets thrown if no dac events. just continue.*/ }
+		}
+		//if (input->runNiawg)
+		//{
+		//	input->niawg->cleanupNiawg( input->profile, input->runMaster, niawgFiles, output, input->comm,
+		//								   input->settings.dontActuallyGenerate );
+		//}
+		input->comm->sendNormalFinish();
+	}
+	catch (Error& exception)
+	{
+		input->idler->idleSequenceRunning = false;
+		{
+			std::lock_guard<std::mutex> locker(input->thisObj->abortLock);
+			//input->thisObj->isAborting = false;
+		}
+		if (input->runMaster)
+		{
+			input->ttls->unshadeTtls();
+			//input->ttls->disconnectDioFPGA();
+			input->dacs->unshadeDacs();
+		}
+		if (input->thisObj->isAborting)
+		{
+			expUpdate(abortString, input->comm, input->quiet);
+			input->comm->sendColorBox(Master, 'B');
+			input->thisObj->isAborting = false;
+		}
+		else
+		{
+			// No quiet option for a bad exit.
+			input->comm->sendColorBox(Master, 'R');
+			input->comm->sendStatus("Bad Exit!\r\n");
+			std::string exceptionTxt = exception.what();
+			input->comm->sendError(exception.what());
+			input->comm->sendFatalError("Exited main experiment thread abnormally.");
+		}
+	}
+	//std::chrono::time_point<chronoClock> endTime(chronoClock::now());
+	//expUpdate("Experiment took " + str(std::chrono::duration<double>((endTime - startTime)).count())
+	//	+ " seconds.\r\n", input->comm, input->quiet);
+	input->idler->idleSequenceRunning = false;
 	delete input;
 	return false;
 }
+
+
 
 
 double MasterManager::convertToTime( timeType time, std::vector<variableType> variables, UINT variation )
@@ -531,7 +898,7 @@ void MasterManager::loadMotSettings(MasterThreadInput* input)
 }
 
 
-void MasterManager::startExperimentThread(MasterThreadInput* input, bool waitTillFinished)
+void MasterManager::startExperimentThread(MasterThreadInput* input, bool waitTillFinished, bool isIdleSequence)
 {
 	if ( !input )
 	{
@@ -559,20 +926,26 @@ void MasterManager::startExperimentThread(MasterThreadInput* input, bool waitTil
 		input->dds->loadDDSScript(input->ddsScriptAddress);
 	}
 	// start thread.
-	if (!waitTillFinished)
+	if (isIdleSequence)
 	{
-		runningThread = AfxBeginThread(experimentThreadProcedure, input, THREAD_PRIORITY_HIGHEST);
+		runningThread = AfxBeginThread(idlerThreadProcedure, input, THREAD_PRIORITY_HIGHEST);
 	}
-	else
-	{
-		runningThread = AfxBeginThread(experimentThreadProcedure, input, THREAD_PRIORITY_HIGHEST, 0, CREATE_SUSPENDED);
-		if (runningThread)
+	else {
+		if (!waitTillFinished)
 		{
-			runningThread->m_bAutoDelete = FALSE;
-			runningThread->ResumeThread();
+			runningThread = AfxBeginThread(experimentThreadProcedure, input, THREAD_PRIORITY_HIGHEST);
 		}
-		WaitForSingleObject(runningThread->m_hThread,INFINITE);
-		delete runningThread;
+		else
+		{
+			runningThread = AfxBeginThread(experimentThreadProcedure, input, THREAD_PRIORITY_HIGHEST, 0, CREATE_SUSPENDED);
+			if (runningThread)
+			{
+				runningThread->m_bAutoDelete = FALSE;
+				runningThread->ResumeThread();
+			}
+			WaitForSingleObject(runningThread->m_hThread, INFINITE);
+			delete runningThread;
+		}
 	}
 }
 
@@ -1273,7 +1646,7 @@ void MasterManager::calculateVariations(DioSystem* ttls, DacSystem* dacs,
 	// update command lists taking into account all repeats for all variations
 	expUpdate("Recalculating TTL command list taking into account repeats for all variations...", comm, quiet);
 	ttls->constructRepeats( repeatMgr );
-	expUpdate("Recalculating TTL command list taking into account repeats for all variations...", comm, quiet);
+	expUpdate("Recalculating DAC command list taking into account repeats for all variations...", comm, quiet);
 	dacs->constructRepeats( repeatMgr );
 
 }

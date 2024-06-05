@@ -24,7 +24,8 @@
 #include <vector>
 #include <sstream>
 #include <mutex>
-# include "repeatManager.h"
+#include "repeatManager.h"
+
 
 
 class MasterManager;
@@ -44,7 +45,7 @@ class MasterManager
 								  std::vector<variableType>& vars, repeatManager& repeatMgr);
 
 		// this function needs the master window in order to gather the relevant parameters for the experiment.
-		void startExperimentThread(MasterThreadInput* input, bool waitTillFinished = false);
+		void startExperimentThread(MasterThreadInput* input, bool waitTillFinished = false, bool isIdleSequence = false);
 		void loadMotSettings(MasterThreadInput* input);
 		bool runningStatus();
 		bool isValidWord(std::string word);
@@ -65,6 +66,7 @@ class MasterManager
 									std::vector<variableType>& vars, Communicator* comm, bool quiet );
 
 		static UINT __cdecl experimentThreadProcedure(void* voidInput);
+		static UINT __cdecl idlerThreadProcedure(void* voidInput);
 		static void expUpdate(std::string text, Communicator* comm, bool quiet = false);
 		static void analyzeFunctionDefinition(std::string defLine, std::string& functionName, std::vector<std::string>& args);
 		static UINT determineVariationNumber(std::vector<variableType> vars);

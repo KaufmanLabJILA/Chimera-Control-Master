@@ -215,6 +215,7 @@
     <ClInclude Include="Expression.h" />
     <ClInclude Include="fpgaAWG.h" />
     <ClInclude Include="GigaMoog.h" />
+    <ClInclude Include="IdleSequence.h" />
     <ClInclude Include="MessagePrinter.h" />
     <ClInclude Include="MessageSender.h" />
     <ClInclude Include="Messagetypes.h" />
@@ -306,6 +307,7 @@
     <ClCompile Include="Expression.cpp" />
     <ClCompile Include="fpgaAWG.cpp" />
     <ClCompile Include="GigaMoog.cpp" />
+    <ClCompile Include="IdleSequence.cpp" />
     <ClCompile Include="MessagePrinter.cpp" />
     <ClCompile Include="MessageSender.cpp" />
     <ClCompile Include="openWithExplorer.cpp" />
