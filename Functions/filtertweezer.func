@@ -1,6 +1,6 @@
 % Master-Script See the "?" for info on commands.
 def filterTweezer():
- daclinspace: tweezerpow tweezer_pow filter_pow 10 10
+ daclinspace: tweezerpow tweezer_pow filter_pow 10 25
 % daclinspace: tweezerpow -.6 filter_pow 10 10
  t += 20
 
@@ -8,5 +8,5 @@ def filterTweezer():
  t += .003
  on: tweezerao
 
- daclinspace: tweezerpow filter_pow tweezer_pow 10 10
+ daclinspace: tweezerpow filter_pow tweezer_pow 10 25
  t += 10

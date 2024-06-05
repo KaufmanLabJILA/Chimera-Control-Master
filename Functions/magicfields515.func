@@ -5,8 +5,8 @@ def magicFields515():
 %Changed 200806   %-.2845 %191115 changed to above value
   %dac: y1coil .7
   %dac: y2coil .7
-  dac: y1coil .69  %230726 changed ycoil
-  dac: y2coil .69
+  dac: y1coil .67  %240419 changed ycoil
+  dac: y2coil .67
   dac: z1coil 0
 %  dac: x1coil -.1307
 %  dac: y1coil 0.35

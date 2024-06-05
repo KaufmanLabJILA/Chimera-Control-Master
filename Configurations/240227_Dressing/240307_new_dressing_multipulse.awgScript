@@ -1,0 +1,29 @@
+reset
+
+%%Program multidressing pulse%%
+
+setsteps 0 .006 0.08+0*ramptime+0*uvtime+0*(time407+stepdelay) 0.08+1*ramptime+0*uvtime+0*(time407+stepdelay)
+amplin 0 0.08+0*ramptime+0*uvtime+0*(time407+stepdelay) 0.08+1*ramptime+0*uvtime+0*(time407+stepdelay) 0 awgamp
+freqlin 0 0.08+0*ramptime+0*uvtime+0*(time407+stepdelay) 0.08+1*ramptime+0*uvtime+0*(time407+stepdelay) ryd_freq+ryd_det+10 ryd_freq+ryd_det 1 0
+
+setsteps 0 .006 0.08+1*ramptime+1*uvtime+0*(time407+stepdelay) 0.08+2*ramptime+1*uvtime+0*(time407+stepdelay)
+amplin 0 0.08+1*ramptime+1*uvtime+0*(time407+stepdelay) 0.08+2*ramptime+1*uvtime+0*(time407+stepdelay) awgamp 0
+freqlin 0 0.08+1*ramptime+1*uvtime+0*(time407+stepdelay) 0.08+2*ramptime+1*uvtime+0*(time407+stepdelay) ryd_freq+ryd_det ryd_freq+ryd_det+10 0 0
+
+program 0
+
+
+%%
+program 1
+
+
+%%
+program 2
+
+
+setsingle 3 0 0 240 1 0
+
+setsingle 3 0.08+uv407delay+2*ramptime+1*uvtime+0*(time407+stepdelay) pow_407 240 1 0
+setsingle 3 0.08+uv407delay+2*ramptime+1*uvtime+1*time407+0*stepdelay 0 240 1 0
+
+program 3

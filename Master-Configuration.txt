@@ -121,7 +121,7 @@ clockttl
 0
 latblink
 0
-d13
+keysightgate
 0
 d14
 0
@@ -199,10 +199,10 @@ uvpm_h
 uvpm_v
 0 - 10
 0
-56
-rmbx 0.0035
-rmby 0.016
-rmbz 0.0225
+57
+rmbx 0.004
+rmby 0.015
+rmbz 0.0232
 tune461 -0.2
 bluetuneval 0.075
 bluetune_imag 0.075
@@ -216,31 +216,31 @@ xoff 0
 yoff 7.2
 xoff813 0
 yoff813 0
-f_rad 0.06
+f_rad 0.062
 f_rad2 0.102
 f_rmot_narrow 0.39
-swapmottime 50
-mirrorscanx 0.9
-mirrorscany 2.83
-f_rad_3d 0.155
-f_ax_3d 0.046
-f_ax_3d_imag 0.135
-imagpowlat 0.185
+swapmottime 45
+mirrorscanx 1.05
+mirrorscany 2.68
+f_rad_3d 0.165
+f_ax_3d 0.051
+f_ax_3d_imag 0.1
+imagpowlat 0.175
 moverate 511
 amprate 6000
-imagpow 0.17
-dmbz 0.398
+imagpow 0.18
+dmbz 0.399
 by_lacs 0.025
 f_lac -1.64
-c_3p0 153.331194
-fcool 0.069
-c_3p1_lat 79.9898
+c_3p0 153.473706
+fcool 0.075
+c_3p1_lat 80.0012
 bluemottime 100
-uvpm_v_set 2.43
-__t0__ 1704132666
+uvpm_v_set 1.9
+__t0__ 1717608208
 dr_3p1 0.0039
-uvpm_h_set -2.3
-narrowmottime 125
+uvpm_h_set -1.55
+narrowmottime 150
 tweezerattn_off 0.4
 spec3p0 14.4262
 f_rad_813_imag 84.35
@@ -250,10 +250,11 @@ f_ax_813 0.045
 imagpow813 0.28
 c_3p1_813 79.975
 fmbx_813 0.48
-f_rad_3d_cool 0.14
-imagpowlat_fast 0.245
-f_rad_3d_fast 0.15
-f_ax_3d_imag_fast 0.13
+f_rad_3d_cool 0.143
+imagpowlat_fast 0.25
+f_rad_3d_fast 0.165
+f_ax_3d_imag_fast 0.132
 bz0 -0.0006
 enable_rearrange 1
+ryd_det 0.3205
 110 410 1 100 400 1

@@ -1,0 +1,47 @@
+% start by resetting synthesizer
+reset
+%%% for ramps:
+setsteps 0 .006 1.08 1.08+ramptime %clock runs at 153 MHz = (6.5 ns)^-1 
+amplin 0 1.08 1.08+ramptime 0 awgamp  %DO NOT EXCEED 45% amp. 
+freqlin 0 1.08 1.08+ramptime ryd_freq+ryd_det+11 ryd_freq+ryd_det 1 0  
+
+setsteps 0 .006 1.08+ramptime+uvtime 1.08+2*ramptime+uvtime 
+amplin 0 1.08+ramptime+uvtime 1.08+2*ramptime+uvtime awgamp 0 %0  
+freqlin 0 1.08+ramptime+uvtime 1.08+2*ramptime+uvtime ryd_freq+ryd_det ryd_freq+ryd_det+11 0 0 
+
+
+program 0
+
+%setsteps 1 .006 0 ramptime
+%amplin 1 0 ramptime 0 43
+%freqlin 1 0 ramptime (cuv-20)/10 cuv/10 1 0 
+
+%setsteps 1 .006 ramptime+uvtime ramptime+uvtime+ramptime  
+%amplin 1 ramptime+uvtime ramptime+uvtime+ramptime 43 0 %0  
+%freqlin 1 ramptime+uvtime ramptime+uvtime+ramptime cuv/10 (cuv-20)/10 0 0 
+
+program 1
+
+% Software trigger for testing
+%trigger
+
+%setsingle 2 0 75 ryd_freq 1 50 
+%setsingle 0 uvtime 0 ryd_freq 0 0
+
+%setsingle 2 0 0 (ryd_freq+ryd_det) 1 0
+
+
+program 2
+
+setsingle 3 0 0 f_407 1 0
+setsingle 3 (1.08 + uvtime + 2*ramptime + uv407delay) pow_407 f_407 0 0
+setsingle 3 (1.08 + uvtime + 2*ramptime + uv407delay + time407) 0 f_407 0 0
+
+%setsingle 3 0 0 (ryd_freq+ryd_det) 1 0
+
+
+program 3
+
+% Software trigger for testing
+%trigger
+%trigger%

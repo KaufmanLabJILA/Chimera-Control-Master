@@ -1,0 +1,19 @@
+% Master-Script See the "?" for info on commands.
+def rydberg_dressing(n):
+  % insert commands here...
+
+ % insert commands here...
+  on: uvttl
+  off: pi407
+  pulseon: trigger .001
+  pulseon: tektronixtrig .001
+  t += .0002
+  pulseon: awgtrig .0001
+  t += (awgblinkdelay)/1000
+
+  t += n*(uvtime+2*ramptime+time407+stepdelay)/1000 
+  %off: uvttl
+  on: pi407
+  t += .0002
+
+

@@ -1,2 +1,2 @@
-C:\Users\KLab\Desktop\Chimera-Control-Master\Configurations\230126_Gate\230126_Gate.Config
-A:\231126\Raw Data\data_79.h5
+C:\Users\KLab\Desktop\Chimera-Control-Master\Configurations\240227_Dressing\240517_clocklong\240517_clocklong5.Config
+A:\240524\Raw Data\data_26.h5

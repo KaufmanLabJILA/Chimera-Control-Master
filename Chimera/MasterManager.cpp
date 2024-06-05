@@ -318,30 +318,37 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 				// inject timestamp variable
 				input->variables.push_back(timestampVar);
 				
-				expUpdate("Timestamp __ts__: " + str(ts_double) + "\r\n", input->comm, input->quiet);
+				//expUpdate("Timestamp __ts__: " + str(ts_double) + "\r\n", input->comm, input->quiet);
 
 				// parse dds script and program dds
 				input->dds->loadDDSScript(input->ddsScriptAddress);
+				//expUpdate("DDS Script Loaded, not programmed yet\r\n", input->comm, input->quiet);
 				input->dds->programDDS(input->dds, input->variables, variationInc);
+
+				//expUpdate("Post dds script parsing/programming\r\n", input->comm, input->quiet);
 
 				// remove injected timestamp variable
 				input->variables.pop_back();
+				//expUpdate("Injected timestamp variable removed\r\n", input->comm, input->quiet);
 			}
 			if (!MOOG_SAFEMODE) {
 				input->gmoog->loadMoogScript(input->gmoogScriptAddress);
 				input->gmoog->analyzeMoogScript(input->gmoog, input->variables, variationInc);
+				//expUpdate("Moog script loaded and analyzed", input->comm, input->quiet);
 			}
 			if (input->runAWG && !AWG_SAFEMODE) {
 				//input->moog->loadMoogScript(input->moogScriptAddress);
 				//input->moog->analyzeMoogScript(input->moog, input->variables, variationInc);
 				input->awg->loadAWGScript(input->awgScriptAddress);
 				input->awg->analyzeAWGScript(input->awg, input->variables, variationInc);
+				//expUpdate("AWG script loaded and analyzed", input->comm, input->quiet);
 			}
 
 			input->comm->sendError( warnings );
 			//input->topBottomTek->programMachine( variationInc );
 			//input->eoAxialTek->programMachine( variationInc );
 			//
+			//expUpdate("Warnings sent to comm", input->comm, input->quiet);
 			input->comm->sendRepProgress( 0 );
 			expUpdate( "Running Experiment.\r\n", input->comm, input->quiet );
 			

@@ -16,14 +16,14 @@ void NoteSystem::handleNewConfig( std::ofstream& saveFile )
 {
 	saveFile << "CONFIGURATION_NOTES\n";
 	saveFile << ">>>Enter configuration-level notes here<<<\n";
-	saveFile << "\nEND_CONFIGURATION_NOTES\n";
+	saveFile << "END_CONFIGURATION_NOTES\n";
 }
 
 void NoteSystem::handleSaveConfig(std::ofstream& saveFile)
 {
 	saveFile << "CONFIGURATION_NOTES\n";
-	saveFile << getConfigurationNotes();
-	saveFile << "\nEND_CONFIGURATION_NOTES\n";
+	saveFile << getConfigurationNotes()+"\n";
+	saveFile << "END_CONFIGURATION_NOTES\n";
 }
 
 

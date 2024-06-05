@@ -1,8 +1,8 @@
 % Master-Script See the "?" for info on commands.
 def rerng_filterarbscrunchycompressx():
 
-%daclinspace: latticepow lattice_pow lattice_pow2 3 15
-%t += 10
+%daclinspace: latticepow lattice_pow scan 1 15
+%t += 1.1
 
 on: t515hold
 t += 1
@@ -70,6 +70,7 @@ variableon: latticehold 1-enable_rearrange
 dacexpspace: axialpow ax_lattice_pow ax_lattice_zero 1 30
 %t += 6
 dacexpspace: latticepow lattice_pow lattice_zero 1 30
+
 t += 2
 
 %daccosspace: axialpow ax_lattice_pow ax_lattice_pow/20 1 50
@@ -112,6 +113,7 @@ off: radial2
 dacexpspace: axialpow ax_lattice_zero ax_lattice_pow 1 30
 %t += 6
 dacexpspace: latticepow lattice_zero lattice_pow 1 30
+
 t += 2
 off: latticehold
 
@@ -121,8 +123,6 @@ off: latticehold
 %daccosspace: axialpow ax_lattice_pow/20 ax_lattice_pow 1 50
 %daccosspace: latticepow lattice_pow/20 lattice_pow 1 50
 %t += 2
-
-
 
 pulseon: resetdds .1
 t += .2

@@ -1,0 +1,176 @@
+reset
+
+%%Program multidressing pulse%%
+
+setsingle 0 0 0 ryd_freq+ryd_det 1 0
+setsingle 0 0.093021 awgamp*(0.007) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.106042 awgamp*(0.008) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.119063 awgamp*(0.008) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.132083 awgamp*(0.009) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.145104 awgamp*(0.011) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.158125 awgamp*(0.013) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.171146 awgamp*(0.015) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.184167 awgamp*(0.017) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.197188 awgamp*(0.020) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.210208 awgamp*(0.024) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.223229 awgamp*(0.027) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.236250 awgamp*(0.031) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.249271 awgamp*(0.036) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.262292 awgamp*(0.041) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.275313 awgamp*(0.046) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.288333 awgamp*(0.053) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.301354 awgamp*(0.059) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.314375 awgamp*(0.066) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.327396 awgamp*(0.074) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.340417 awgamp*(0.082) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.353438 awgamp*(0.091) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.366458 awgamp*(0.100) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.379479 awgamp*(0.111) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.392500 awgamp*(0.121) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.405521 awgamp*(0.133) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.418542 awgamp*(0.145) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.431563 awgamp*(0.158) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.444583 awgamp*(0.171) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.457604 awgamp*(0.185) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.470625 awgamp*(0.200) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.483646 awgamp*(0.215) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.496667 awgamp*(0.232) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.509688 awgamp*(0.248) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.522708 awgamp*(0.266) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.535729 awgamp*(0.284) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.548750 awgamp*(0.303) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.561771 awgamp*(0.322) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.574792 awgamp*(0.342) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.587813 awgamp*(0.362) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.600833 awgamp*(0.383) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.613854 awgamp*(0.404) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.626875 awgamp*(0.426) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.639896 awgamp*(0.448) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.652917 awgamp*(0.470) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.665938 awgamp*(0.493) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.678958 awgamp*(0.516) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.691979 awgamp*(0.539) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.705000 awgamp*(0.562) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.718021 awgamp*(0.585) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.731042 awgamp*(0.609) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.744063 awgamp*(0.632) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.757083 awgamp*(0.655) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.770104 awgamp*(0.678) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.783125 awgamp*(0.700) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.796146 awgamp*(0.722) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.809167 awgamp*(0.744) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.822188 awgamp*(0.765) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.835208 awgamp*(0.786) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.848229 awgamp*(0.806) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.861250 awgamp*(0.825) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.874271 awgamp*(0.844) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.887292 awgamp*(0.862) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.900313 awgamp*(0.879) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.913333 awgamp*(0.895) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.926354 awgamp*(0.910) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.939375 awgamp*(0.924) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.952396 awgamp*(0.937) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.965417 awgamp*(0.949) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.978438 awgamp*(0.960) ryd_freq+ryd_det+0 0 0
+setsingle 0 0.991458 awgamp*(0.969) ryd_freq+ryd_det+0 0 0
+setsingle 0 1.004479 awgamp*(0.978) ryd_freq+ryd_det+0 0 0
+setsingle 0 1.017500 awgamp*(0.985) ryd_freq+ryd_det+0 0 0
+setsingle 0 1.030521 awgamp*(0.990) ryd_freq+ryd_det+0 0 0
+setsingle 0 1.043542 awgamp*(0.995) ryd_freq+ryd_det+0 0 0
+setsingle 0 1.056563 awgamp*(0.998) ryd_freq+ryd_det+0 0 0
+setsingle 0 1.069583 awgamp*(1.000) ryd_freq+ryd_det+0 0 0
+setsingle 0 uvtime+1.069583 awgamp ryd_freq+ryd_det 0 0
+setsingle 0 uvtime+1.082604 awgamp*(1.000) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.095625 awgamp*(0.999) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.108646 awgamp*(0.997) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.121667 awgamp*(0.993) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.134688 awgamp*(0.988) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.147708 awgamp*(0.982) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.160729 awgamp*(0.974) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.173750 awgamp*(0.966) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.186771 awgamp*(0.956) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.199792 awgamp*(0.944) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.212813 awgamp*(0.932) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.225833 awgamp*(0.919) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.238854 awgamp*(0.904) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.251875 awgamp*(0.889) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.264896 awgamp*(0.872) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.277917 awgamp*(0.855) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.290938 awgamp*(0.837) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.303958 awgamp*(0.818) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.316979 awgamp*(0.798) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.330000 awgamp*(0.778) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.343021 awgamp*(0.757) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.356042 awgamp*(0.735) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.369063 awgamp*(0.713) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.382083 awgamp*(0.691) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.395104 awgamp*(0.669) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.408125 awgamp*(0.646) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.421146 awgamp*(0.623) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.434167 awgamp*(0.599) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.447188 awgamp*(0.576) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.460208 awgamp*(0.553) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.473229 awgamp*(0.530) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.486250 awgamp*(0.507) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.499271 awgamp*(0.484) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.512292 awgamp*(0.461) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.525313 awgamp*(0.439) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.538333 awgamp*(0.417) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.551354 awgamp*(0.396) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.564375 awgamp*(0.374) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.577396 awgamp*(0.354) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.590417 awgamp*(0.334) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.603438 awgamp*(0.314) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.616458 awgamp*(0.295) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.629479 awgamp*(0.277) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.642500 awgamp*(0.259) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.655521 awgamp*(0.242) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.668542 awgamp*(0.225) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.681563 awgamp*(0.209) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.694583 awgamp*(0.194) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.707604 awgamp*(0.179) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.720625 awgamp*(0.166) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.733646 awgamp*(0.152) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.746667 awgamp*(0.140) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.759688 awgamp*(0.128) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.772708 awgamp*(0.117) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.785729 awgamp*(0.106) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.798750 awgamp*(0.097) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.811771 awgamp*(0.087) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.824792 awgamp*(0.079) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.837813 awgamp*(0.071) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.850833 awgamp*(0.063) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.863854 awgamp*(0.056) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.876875 awgamp*(0.050) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.889896 awgamp*(0.044) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.902917 awgamp*(0.039) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.915938 awgamp*(0.034) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.928958 awgamp*(0.030) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.941979 awgamp*(0.026) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.955000 awgamp*(0.022) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.968021 awgamp*(0.019) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.981042 awgamp*(0.016) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+1.994063 awgamp*(0.014) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+2.007083 awgamp*(0.012) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+2.020104 awgamp*(0.010) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+2.033125 awgamp*(0.009) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+2.046146 awgamp*(0.008) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+2.059167 awgamp*(0.007) ryd_freq+ryd_det+0.000 0 0
+setsingle 0 uvtime+2.072188 0 ryd_freq+ryd_det 0 0
+program 0
+
+
+%%
+program 1
+
+
+%%
+program 2
+
+
+setsingle 3 0 0 240 1 0
+
+setsingle 3 uv407delay+uvtime+2.072188 pow_407 240 1 0
+setsingle 3 uv407delay+uvtime+2.072188+time407 0 240 1 0
+
+program 3

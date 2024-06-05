@@ -2,22 +2,26 @@
 def rydberg_ramsey(ryd_time):
   % insert commands here...
   on: uvttl
-  %off: pi407
+  off: pi407
   on: latticehold
   pulseon: trigger .001
   pulseon: tektronixtrig .001
   t += .001
   pulseon: awgtrig .0001
+  
+pulseon: keysightgate .0001
   %off: awgtrig
   t += (awgblinkdelay+1.08)/1000
-  on: latblink
+  %on: latblink
   t += 2*ryd_time/1000
-  %t += ramseytime/1000
-  t += 5/1000
+  %t += 0.0002
+  t += ramseytime/1000
+  %t += 5/1000
   t += .0002
   off: latblink 
   t += time407/1000
+  t += 1/1000
   %off: uvttl
-  %on: pi407
+  on: pi407
   off: latticehold
   t += .001
