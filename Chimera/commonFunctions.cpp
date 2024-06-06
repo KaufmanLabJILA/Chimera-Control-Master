@@ -94,8 +94,9 @@ namespace commonFunctions
 			{
 				//Need to add functionality here to handle pressing of escape key during an idle sequence running -Mybe not. 
 				//Pressing escape should not do anythig ideally and thats what is happening rn.
-				if (mainWin->idler.idleSequenceActive && mainWin->idler.idleSequenceRunning)
+				if (mainWin->idleIsActive() && mainWin->idleIsRunning())
 				{
+					mainWin->getComm()->sendStatus("Idle sequence running. Uncheck idle sequence active to stop idling.\r\n");
 					break;
 				}
 				std::string status;
@@ -150,9 +151,9 @@ namespace commonFunctions
 				//
 				mainWin->waitForRearranger( );
 
-				if (mainWin->idler.idleSequenceActive && !mainWin->idler.idleSequenceRunning)
+				if (mainWin->idleIsActive() && !mainWin->idleIsRunning())
 				{
-					mainWin->getComm()->sendStatus("Idle sequence still active. Continue idling.");
+					mainWin->getComm()->sendStatus("Experiment aborted but idle sequence still active. Start idling.\r\n");
 				}
 
 				//try
@@ -184,7 +185,7 @@ namespace commonFunctions
 			case ID_IDLE_SEQUENCE:
 			{
 				mainWin->passIdleSequenceIsOnPress();
-				if (!mainWin->idler.idleSequenceRunning && !mainWin->masterIsRunning())
+				if (!mainWin->idleIsRunning() && !mainWin->masterIsRunning())
 				{
 					ExperimentInput input;
 					try

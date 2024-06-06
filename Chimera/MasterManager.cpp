@@ -42,10 +42,30 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 		input->idler->killIdler = true;
 		while (input->idler->idleSequenceRunning)
 		{
-			Sleep(100);
+			Sleep(200);
 		}
 		input->idler->killIdler = false;
 	}
+
+	// do a set new dac values click before running the experiment, unclear why needed
+	/*input->dacs->resetDacEvents();
+	input->ttls->resetTtlEvents();
+	input->dacs->handleButtonPress(input->ttls);
+	input->dacs->organizeDacCommands(0);
+	input->dacs->makeFinalDataFormat(0);
+	input->dacs->stopDacs();
+	input->dacs->configureClocks(0, false);
+	input->dacs->writeDacs(0, false);*/
+	/*input->dacs->startDacs();
+	input->ttls->organizeTtlCommands(0);
+	input->ttls->convertToFinalFormat(0);
+	input->ttls->formatForFPGA(0);
+	input->ttls->writeTtlDataToFPGA(0, false);
+	input->ttls->startDioFPGA(0);
+	input->ttls->writeTtlData(0, false);
+	input->ttls->startBoard();
+	input->ttls->waitTillFinished(0, false);*/
+
 
 
 	// change the status of the parent object to reflect that the thread is running.
@@ -81,6 +101,14 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 			thrower( abortString );
 		}
 		
+		input->dacs->resetDacEvents();
+		input->ttls->resetTtlEvents();
+		input->dacs->handleButtonPress(input->ttls);
+		input->dacs->organizeDacCommands(0);
+		input->dacs->makeFinalDataFormat(0);
+		input->dacs->stopDacs();
+		input->dacs->configureClocks(0, false);
+		input->dacs->writeDacs(0, false);
 		
 		expUpdate( "Programming All Variation Data...\r\n", input->comm, input->quiet );
 		std::chrono::time_point<chronoClock> varProgramStartTime( chronoClock::now( ) );
@@ -484,6 +512,27 @@ UINT __cdecl MasterManager::idlerThreadProcedure(void* voidInput)
 	/// initialize various structures
 	// convert the input to the correct structure.
 	MasterThreadInput* input = (MasterThreadInput*)voidInput;
+
+	// do a set new dac values click before running the experiment, unclear why needed
+	/*input->dacs->resetDacEvents();
+	input->ttls->resetTtlEvents();
+	input->dacs->handleButtonPress(input->ttls);
+	input->dacs->organizeDacCommands(0);
+	input->dacs->makeFinalDataFormat(0);
+	input->dacs->stopDacs();
+	input->dacs->configureClocks(0, false);
+	input->dacs->writeDacs(0, false);*/
+	/*input->dacs->startDacs();
+	input->ttls->organizeTtlCommands(0);
+	input->ttls->convertToFinalFormat(0);
+	input->ttls->formatForFPGA(0);
+	input->ttls->writeTtlDataToFPGA(0, false);
+	input->ttls->startDioFPGA(0);
+	input->ttls->writeTtlData(0, false);
+	input->ttls->startBoard();
+	input->ttls->waitTillFinished(0, false);*/
+
+
 	// change the status of the parent object to reflect that the thread is running.
 	input->idler->idleSequenceRunning = true;
 	// warnings will be passed by reference to a series of function calls which can append warnings to the string.
@@ -512,6 +561,15 @@ UINT __cdecl MasterManager::idlerThreadProcedure(void* voidInput)
 		{
 			thrower(abortString);
 		}
+
+		input->dacs->resetDacEvents();
+		input->ttls->resetTtlEvents();
+		input->dacs->handleButtonPress(input->ttls);
+		input->dacs->organizeDacCommands(0);
+		input->dacs->makeFinalDataFormat(0);
+		input->dacs->stopDacs();
+		input->dacs->configureClocks(0, false);
+		input->dacs->writeDacs(0, false);
 
 
 		//expUpdate("Programming All Variation Data...\r\n", input->comm, input->quiet);
@@ -1273,7 +1331,7 @@ bool MasterManager::handleDacCommands( std::string word, ScriptStream& stream, s
 		std::string name;
 		stream >> name;
 		std::string value;
-		currentMasterScript >> command.finalVal;
+		stream >> command.finalVal;
 		command.finalVal.assertValid(vars);
 		command.time = operationTime;
 		command.commandName = "dac:";
@@ -1291,7 +1349,7 @@ bool MasterManager::handleDacCommands( std::string word, ScriptStream& stream, s
 			thrower(err.whatStr() + "... in \"dacArange:\" command inside main script");
 		}
 	}
-	else if (word == "daclinspace:" || word == "daccosspace" || word == "dacexpspace")
+	else if (word == "daclinspace:" || word == "daccosspace:" || word == "dacexpspace:")
 	{
 		DacCommandForm command;
 		std::string name;

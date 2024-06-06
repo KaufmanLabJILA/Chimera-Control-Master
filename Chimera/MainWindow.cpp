@@ -364,14 +364,14 @@ void MainWindow::passIdleSequenceIsOnPress()
 
 void MainWindow::passIdleFirstVariationPress()
 {
-	if (idler.varInd = -1)
+	if (idler.varInd == -1)
 	{
 		idler.varInd = 0;
 		menu.CheckMenuItem(ID_IDLE_FIRSTVAR, MF_CHECKED);
 	}
-	else if (idler.varInd = 0)
+	else if (idler.varInd == 0)
 	{
-		idler.varInd = 1;
+		idler.varInd = -1;
 		menu.CheckMenuItem(ID_IDLE_FIRSTVAR, MF_UNCHECKED);
 	}
 
@@ -781,6 +781,17 @@ std::string MainWindow::getSystemStatusString()
 bool MainWindow::masterIsRunning()
 {
 	return masterThreadManager.runningStatus();
+}
+
+
+bool MainWindow::idleIsActive()
+{
+	return idler.idleSequenceActive;
+}
+
+bool MainWindow::idleIsRunning()
+{
+	return idler.idleSequenceRunning;
 }
 
 

@@ -1028,7 +1028,7 @@ void DacSystem::constructRepeats( repeatManager& repeatMgr )
 				repeatIParent->data().repeatAddedTimes[varInc] += repeatAddedTime * repeatNum;
 			}
 		}
-		double time_c = 0;
+		/*double time_c = 0;
 		for (auto& cmd : cmds)
 		{
 			out += "t += " + std::to_string(cmd.time - time_c) + "\n";
@@ -1037,16 +1037,16 @@ void DacSystem::constructRepeats( repeatManager& repeatMgr )
 			//out += "<" + std::to_string(cmd.repeatId.repeatTreeMap.first) + "," + std::to_string(cmd.repeatId.repeatTreeMap.second) + ">";
 			out += "\n";
 		}
-		out += "\nEnd Variation\n\n\n";
+		out += "\nEnd Variation\n\n\n";*/
 	}
 
-	// create temporary file
+	/*// create temporary file
 	std::ofstream tmpFile(EXPORT_DACSCRIPT_TMP_FILE_LOCATION);
 	tmpFile << out;
 	tmpFile.close();
 
 	// move file (atomic operation)
-	fs::rename(EXPORT_DACSCRIPT_TMP_FILE_LOCATION, EXPORT_DACSCRIPT_FILE_LOCATION);
+	fs::rename(EXPORT_DACSCRIPT_TMP_FILE_LOCATION, EXPORT_DACSCRIPT_FILE_LOCATION);*/
 
 	repeatMgr.loadCalculationResults();
 }

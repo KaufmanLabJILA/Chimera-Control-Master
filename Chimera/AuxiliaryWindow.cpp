@@ -109,12 +109,18 @@ void AuxiliaryWindow::handleSaveConfig(std::ofstream& saveFile)
 
 void AuxiliaryWindow::handleOpeningConfig(std::ifstream& configFile, int versionMajor, int versionMinor)
 {
+	//if (!mainWindowFriend->masterIsRunning() && !mainWindowFriend->idleIsRunning())
+	//{
 	ttlBoard.prepareForce();
 	dacBoards.prepareForce();
+	//}
 
 	configVariables.handleOpenConfig(configFile, versionMajor, versionMinor);
+	//if (!mainWindowFriend->masterIsRunning() && !mainWindowFriend->idleIsRunning())
+	//{
 	ttlBoard.handleOpenConfig(configFile, versionMajor, versionMinor);
 	dacBoards.handleOpenConfig(configFile, versionMajor, versionMinor, &ttlBoard);
+	//}
 
 	//agilents[TopBottom].readConfigurationFile(configFile, versionMajor, versionMinor);
 	//agilents[TopBottom].updateSettingsDisplay(1, mainWindowFriend->getProfileSettings().categoryPath,

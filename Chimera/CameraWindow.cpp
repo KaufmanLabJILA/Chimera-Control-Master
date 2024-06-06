@@ -221,7 +221,7 @@ void CameraWindow::abortCameraRun()
 		}
 		else if (Andor.getSettings().cameraMode != "Continuous Single Scans Mode")
 		{
-			int answer = promptBox("Acquisition Aborted. Delete Data file (data_" + str(dataHandler.getDataFileNumber())
+			/*int answer = promptBox("Acquisition Aborted. Delete Data file (data_" + str(dataHandler.getDataFileNumber())
 									  + ".h5) for this run?",MB_YESNO );
 			if (answer == IDYES)
 			{
@@ -233,7 +233,7 @@ void CameraWindow::abortCameraRun()
 				{
 					mainWindowFriend->getComm()->sendError(err.what());
 				}
-			}
+			}*/
 		}
 		plotThreadAborting = false;
 	}

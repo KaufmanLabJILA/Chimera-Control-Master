@@ -45,7 +45,7 @@ class MasterManager
 								  std::vector<variableType>& vars, repeatManager& repeatMgr);
 
 		// this function needs the master window in order to gather the relevant parameters for the experiment.
-		void startExperimentThread(MasterThreadInput* input, bool waitTillFinished = false, bool isIdleSequence = false);
+		void startExperimentThread( MasterThreadInput* input, bool waitTillFinished = false, bool isIdleSequence = false);
 		void loadMotSettings(MasterThreadInput* input);
 		bool runningStatus();
 		bool isValidWord(std::string word);

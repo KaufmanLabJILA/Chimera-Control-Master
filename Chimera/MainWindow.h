@@ -119,6 +119,8 @@ class MainWindow : public CDialog
 
 		bool niawgIsRunning();
 		bool masterIsRunning();
+		bool idleIsActive();
+		bool idleIsRunning();
 		void setNiawgRunningState( bool newRunningState );
 		RunInfo getRunInfo();
 		void handleFinish();
