@@ -348,7 +348,7 @@ void MainWindow::passExportVariableIsOnPress()
 	}
 }
 
-void MainWindow::passIdleSequenceIsOnPress()
+void MainWindow::passIdleSequenceActivePress()
 {
 	if (idler.idleSequenceActive)
 	{
@@ -789,9 +789,19 @@ bool MainWindow::idleIsActive()
 	return idler.idleSequenceActive;
 }
 
-bool MainWindow::idleIsRunning()
+std::atomic<bool> MainWindow::idleIsRunning()
 {
-	return idler.idleSequenceRunning;
+	return idler.idleSequenceRunning.load();
+}
+
+void MainWindow::setKillIdlerTrue()
+{
+	idler.killIdler = true;
+}
+
+void MainWindow::setKillIdlerFalse()
+{
+	idler.killIdler = false;
 }
 
 

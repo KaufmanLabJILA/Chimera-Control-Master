@@ -36,36 +36,16 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 	// convert the input to the correct structure.
 	MasterThreadInput* input = (MasterThreadInput*)voidInput;
 
-	// stop idle sequence
+	/*// stop idle sequence
 	if (input->idler->idleSequenceRunning)
 	{
 		input->idler->killIdler = true;
 		while (input->idler->idleSequenceRunning)
 		{
-			Sleep(200);
+			Sleep(1000);
 		}
 		input->idler->killIdler = false;
-	}
-
-	// do a set new dac values click before running the experiment, unclear why needed
-	/*input->dacs->resetDacEvents();
-	input->ttls->resetTtlEvents();
-	input->dacs->handleButtonPress(input->ttls);
-	input->dacs->organizeDacCommands(0);
-	input->dacs->makeFinalDataFormat(0);
-	input->dacs->stopDacs();
-	input->dacs->configureClocks(0, false);
-	input->dacs->writeDacs(0, false);*/
-	/*input->dacs->startDacs();
-	input->ttls->organizeTtlCommands(0);
-	input->ttls->convertToFinalFormat(0);
-	input->ttls->formatForFPGA(0);
-	input->ttls->writeTtlDataToFPGA(0, false);
-	input->ttls->startDioFPGA(0);
-	input->ttls->writeTtlData(0, false);
-	input->ttls->startBoard();
-	input->ttls->waitTillFinished(0, false);*/
-
+	}*/
 
 
 	// change the status of the parent object to reflect that the thread is running.
@@ -101,14 +81,26 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 			thrower( abortString );
 		}
 		
+		/// try auto set new dac values
 		input->dacs->resetDacEvents();
 		input->ttls->resetTtlEvents();
-		input->dacs->handleButtonPress(input->ttls);
+		//input->dacs->handleButtonPress(input->ttls);
+		input->dacs->prepareDacsCurrentValues(input->ttls);
 		input->dacs->organizeDacCommands(0);
 		input->dacs->makeFinalDataFormat(0);
 		input->dacs->stopDacs();
 		input->dacs->configureClocks(0, false);
 		input->dacs->writeDacs(0, false);
+		input->dacs->startDacs();
+		/*input->ttls->organizeTtlCommands(0);
+		input->ttls->convertToFinalFormat(0);
+		input->ttls->formatForFPGA(0);
+		input->ttls->writeTtlDataToFPGA(0, false);
+		input->ttls->startDioFPGA(0);
+		input->ttls->writeTtlData(0, false);
+		input->ttls->startBoard();
+		input->ttls->waitTillFinished(0, false);*/
+
 		
 		expUpdate( "Programming All Variation Data...\r\n", input->comm, input->quiet );
 		std::chrono::time_point<chronoClock> varProgramStartTime( chronoClock::now( ) );
@@ -513,25 +505,6 @@ UINT __cdecl MasterManager::idlerThreadProcedure(void* voidInput)
 	// convert the input to the correct structure.
 	MasterThreadInput* input = (MasterThreadInput*)voidInput;
 
-	// do a set new dac values click before running the experiment, unclear why needed
-	/*input->dacs->resetDacEvents();
-	input->ttls->resetTtlEvents();
-	input->dacs->handleButtonPress(input->ttls);
-	input->dacs->organizeDacCommands(0);
-	input->dacs->makeFinalDataFormat(0);
-	input->dacs->stopDacs();
-	input->dacs->configureClocks(0, false);
-	input->dacs->writeDacs(0, false);*/
-	/*input->dacs->startDacs();
-	input->ttls->organizeTtlCommands(0);
-	input->ttls->convertToFinalFormat(0);
-	input->ttls->formatForFPGA(0);
-	input->ttls->writeTtlDataToFPGA(0, false);
-	input->ttls->startDioFPGA(0);
-	input->ttls->writeTtlData(0, false);
-	input->ttls->startBoard();
-	input->ttls->waitTillFinished(0, false);*/
-
 
 	// change the status of the parent object to reflect that the thread is running.
 	input->idler->idleSequenceRunning = true;
@@ -562,14 +535,25 @@ UINT __cdecl MasterManager::idlerThreadProcedure(void* voidInput)
 			thrower(abortString);
 		}
 
+		/// try auto set new dac values
 		input->dacs->resetDacEvents();
 		input->ttls->resetTtlEvents();
-		input->dacs->handleButtonPress(input->ttls);
+		//input->dacs->handleButtonPress(input->ttls);
+		input->dacs->prepareDacsCurrentValues(input->ttls);
 		input->dacs->organizeDacCommands(0);
 		input->dacs->makeFinalDataFormat(0);
 		input->dacs->stopDacs();
 		input->dacs->configureClocks(0, false);
 		input->dacs->writeDacs(0, false);
+		input->dacs->startDacs();
+		/*input->ttls->organizeTtlCommands(0);
+		input->ttls->convertToFinalFormat(0);
+		input->ttls->formatForFPGA(0);
+		input->ttls->writeTtlDataToFPGA(0, false);
+		input->ttls->startDioFPGA(0);
+		input->ttls->writeTtlData(0, false);
+		input->ttls->startBoard();
+		input->ttls->waitTillFinished(0, false);*/
 
 
 		//expUpdate("Programming All Variation Data...\r\n", input->comm, input->quiet);
@@ -871,7 +855,7 @@ UINT __cdecl MasterManager::idlerThreadProcedure(void* voidInput)
 	//std::chrono::time_point<chronoClock> endTime(chronoClock::now());
 	//expUpdate("Experiment took " + str(std::chrono::duration<double>((endTime - startTime)).count())
 	//	+ " seconds.\r\n", input->comm, input->quiet);
-	input->idler->idleSequenceRunning = false;
+	//input->idler->idleSequenceRunning = false;
 	delete input;
 	return false;
 }

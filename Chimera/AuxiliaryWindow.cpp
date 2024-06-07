@@ -109,18 +109,17 @@ void AuxiliaryWindow::handleSaveConfig(std::ofstream& saveFile)
 
 void AuxiliaryWindow::handleOpeningConfig(std::ifstream& configFile, int versionMajor, int versionMinor)
 {
-	//if (!mainWindowFriend->masterIsRunning() && !mainWindowFriend->idleIsRunning())
-	//{
-	ttlBoard.prepareForce();
-	dacBoards.prepareForce();
-	//}
+	bool expNotRunning = !mainWindowFriend->masterIsRunning() && !mainWindowFriend->idleIsRunning();
+	if (expNotRunning)
+	{
+		ttlBoard.prepareForce();
+		dacBoards.prepareForce();
+	}
 
 	configVariables.handleOpenConfig(configFile, versionMajor, versionMinor);
-	//if (!mainWindowFriend->masterIsRunning() && !mainWindowFriend->idleIsRunning())
-	//{
-	ttlBoard.handleOpenConfig(configFile, versionMajor, versionMinor);
-	dacBoards.handleOpenConfig(configFile, versionMajor, versionMinor, &ttlBoard);
-	//}
+
+	ttlBoard.handleOpenConfig(configFile, versionMajor, versionMinor, expNotRunning);
+	dacBoards.handleOpenConfig(configFile, versionMajor, versionMinor, &ttlBoard, expNotRunning);
 
 	//agilents[TopBottom].readConfigurationFile(configFile, versionMajor, versionMinor);
 	//agilents[TopBottom].updateSettingsDisplay(1, mainWindowFriend->getProfileSettings().categoryPath,
@@ -769,43 +768,50 @@ void AuxiliaryWindow::handleMasterConfigOpen(std::stringstream& configStream, do
 void AuxiliaryWindow::SetDacs()
 {
 	// have the dac values change
-	try
+	if (!mainWindowFriend->masterIsRunning() && !mainWindowFriend->idleIsRunning())
 	{
+		try
+		{
+			mainWindowFriend->updateConfigurationSavedStatus(false);
+			sendStatus("----------------------\r\n");
+			dacBoards.resetDacEvents();
+			ttlBoard.resetTtlEvents();
+			sendStatus("Setting Dacs...\r\n");
+			dacBoards.handleButtonPress(&ttlBoard);
+			dacBoards.organizeDacCommands(0);
+			dacBoards.makeFinalDataFormat(0);
+			// start the boards which actually sets the dac values.
+			dacBoards.stopDacs();
+			dacBoards.configureClocks(0, false);
+			sendStatus("Writing New Dac Settings...\r\n");
+			dacBoards.writeDacs(0, false);
+			dacBoards.startDacs();
+			ttlBoard.organizeTtlCommands(0);
+			ttlBoard.convertToFinalFormat(0);
+
+			//DIO FPGA commands//
+			ttlBoard.formatForFPGA(0);
+			ttlBoard.writeTtlDataToFPGA(0, false);
+			ttlBoard.startDioFPGA(0);
+			/////
+
+			ttlBoard.writeTtlData(0, false);
+			ttlBoard.startBoard();
+			ttlBoard.waitTillFinished(0, false);
+			sendStatus("Finished Setting Dacs.\r\n");
+		}
+		catch (Error& exception)
+		{
+			errBox(exception.what());
+			sendStatus(": " + exception.whatStr() + "\r\n");
+			sendErr(exception.what());
+		}
 		mainWindowFriend->updateConfigurationSavedStatus(false);
-		sendStatus("----------------------\r\n");
-		dacBoards.resetDacEvents();
-		ttlBoard.resetTtlEvents();
-		sendStatus("Setting Dacs...\r\n");
-		dacBoards.handleButtonPress(&ttlBoard);
-		dacBoards.organizeDacCommands(0);
-		dacBoards.makeFinalDataFormat(0);
-		// start the boards which actually sets the dac values.
-		dacBoards.stopDacs();
-		dacBoards.configureClocks(0, false);
-		sendStatus("Writing New Dac Settings...\r\n");
-		dacBoards.writeDacs(0, false);
-		dacBoards.startDacs();
-		ttlBoard.organizeTtlCommands(0);
-		ttlBoard.convertToFinalFormat(0);
-
-		//DIO FPGA commands//
-		ttlBoard.formatForFPGA(0);
-		ttlBoard.writeTtlDataToFPGA(0, false);
-		ttlBoard.startDioFPGA(0);
-		/////
-
-		ttlBoard.writeTtlData(0, false);
-		ttlBoard.startBoard();
-		ttlBoard.waitTillFinished(0, false);
-		sendStatus("Finished Setting Dacs.\r\n");
 	}
-	catch (Error& exception)
+	else
 	{
-		errBox(exception.what());
-		sendStatus(": " + exception.whatStr() + "\r\n");
-		sendErr(exception.what());
+		sendStatus("Master or idler is running! Stop experiment to set new DAC values. \r\n");
 	}
-	mainWindowFriend->updateConfigurationSavedStatus(false);
 }
 
 

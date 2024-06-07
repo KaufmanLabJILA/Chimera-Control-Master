@@ -40,11 +40,25 @@ namespace commonFunctions
 			case ID_FILE_MY_WRITE_WAVEFORMS:
 			{
 				ExperimentInput input;
+
 				camWin->redrawPictures(false);
 				try
 				{
 					prepareCamera( mainWin, camWin, input, false );
 					prepareMasterThread( msgID, scriptWin, mainWin, camWin, auxWin, input, false, true, true, false );
+
+					// wait for idle sequence to finish
+					if (mainWin->idleIsRunning())
+					{
+						mainWin->setKillIdlerTrue();
+						while (mainWin->idleIsRunning())
+						{
+							Sleep(10);
+						}
+						mainWin->setKillIdlerFalse();
+					}
+					Sleep(200);
+
 					camWin->preparePlotter(input);
 					camWin->prepareAtomCruncher(input);
 
@@ -184,7 +198,11 @@ namespace commonFunctions
 			}
 			case ID_IDLE_SEQUENCE:
 			{
-				mainWin->passIdleSequenceIsOnPress();
+				mainWin->passIdleSequenceActivePress();
+				if (!mainWin->idleIsActive())
+				{
+					break;
+				}
 				if (!mainWin->idleIsRunning() && !mainWin->masterIsRunning())
 				{
 					ExperimentInput input;
@@ -986,7 +1004,7 @@ namespace commonFunctions
 	UINT __cdecl multipleExperimentThreadProcedure(void* voidInput) {
 
 		MultiExperimentInput* multiExpInput = (MultiExperimentInput*)voidInput;
-		ExperimentInput input;
+		//ExperimentInput input;
 		profileSettings profileSeq = multiExpInput->mainWin->getProfileSettings();
 		std::vector<std::string> configSequence = profileSeq.sequenceConfigNames;
 		std::vector<std::string> pathSequence = profileSeq.sequenceConfigPaths;
@@ -1067,6 +1085,19 @@ namespace commonFunctions
 
 				for (int i = 0; i < reps; i++)
 				{
+					// wait for idle sequence to finish
+					if (multiExpInput->mainWin->idleIsRunning())
+					{
+						multiExpInput->mainWin->setKillIdlerTrue();
+						while (multiExpInput->mainWin->idleIsRunning())
+						{
+							Sleep(10);
+						}
+						multiExpInput->mainWin->setKillIdlerFalse();
+					}
+					Sleep(200);
+
+					ExperimentInput input;
 					std::string h5FilePath;
 					multiExpInput->mainWin->getComm()->sendStatus("Beginning repetition " + str(i + 1) +  " of sequence configuration " + str(configInc + 1) + ".\r\n\r\n");
 
@@ -1076,6 +1107,7 @@ namespace commonFunctions
 					{
 						prepareCamera(multiExpInput->mainWin, multiExpInput->camWin, input, true);
 						prepareMasterThread(multiExpInput->msgID, multiExpInput->scriptWin, multiExpInput->mainWin, multiExpInput->camWin, multiExpInput->auxWin, input, false, true, true, true);
+
 						multiExpInput->camWin->preparePlotter(input);
 						multiExpInput->camWin->prepareAtomCruncher(input);
 

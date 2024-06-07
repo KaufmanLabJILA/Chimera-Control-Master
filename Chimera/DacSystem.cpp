@@ -57,10 +57,13 @@ std::array<double, 24> DacSystem::getDacStatus()
 }
 
 
-void DacSystem::handleOpenConfig(std::ifstream& openFile, int versionMajor, int versionMinor, DioSystem* ttls)
+void DacSystem::handleOpenConfig(std::ifstream& openFile, int versionMajor, int versionMinor, DioSystem* ttls, bool expNotRunning)
 {
 	ProfileSystem::checkDelimiterLine(openFile, "DACS");
-	prepareForce( );
+	if (expNotRunning)
+	{
+		prepareForce();
+	}
 	std::vector<double> values(getNumberOfDacs());
 	UINT dacInc = 0;
 	for (auto& dac : values)
@@ -70,7 +73,29 @@ void DacSystem::handleOpenConfig(std::ifstream& openFile, int versionMajor, int 
 		try
 		{
 			double dacValue = std::stod(dacString);
-			prepareDacForceChange(dacInc, dacValue, ttls);
+			if (expNotRunning) // only fully prepare if experiment not running
+			{
+				prepareDacForceChange(dacInc, dacValue, ttls);
+			}
+			else // otherwise only change the display and values saved in dacValues vector
+			{
+				std::string valStr;
+				if (roundToDacPrecision)
+				{
+					valStr = str(roundToDacResolution(dacValue), 13);
+				}
+				else
+				{
+					valStr = str(dacValue, 13);
+				}
+				if (valStr.find(".") != std::string::npos)
+				{
+					// then it's a double. kill extra zeros on the end.
+					valStr.erase(valStr.find_last_not_of('0') + 1, std::string::npos);
+				}
+				breakoutBoardEdits[dacInc].SetWindowText(cstr(valStr));
+				dacValues[dacInc] = dacValue;
+			}
 		}
 		catch (std::invalid_argument&)
 		{
@@ -476,6 +501,19 @@ void DacSystem::handleButtonPress(DioSystem* ttls)
 	{
 		breakoutBoardEdits[dacInc].colorState = 0;
 		breakoutBoardEdits[dacInc].RedrawWindow();
+	}
+}
+
+
+
+void DacSystem::prepareDacsCurrentValues(DioSystem* ttls)
+{
+	dacCommandFormList.clear();
+	prepareForce();
+	ttls->prepareForce();
+	for (UINT dacInc = 0; dacInc < dacLabels.size(); dacInc++)
+	{
+		prepareDacForceChange(dacInc, dacValues[dacInc], ttls);
 	}
 }
 

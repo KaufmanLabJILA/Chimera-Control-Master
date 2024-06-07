@@ -1,2 +1,2 @@
-C:\Users\KLab\Desktop\Chimera-Control-Master\Configurations\240227_Dressing\240517_clocklong\240517_clocklong5.Config
-A:\240524\Raw Data\data_26.h5
+C:\Users\KLab\Desktop\Chimera-Control-Master\Configurations\210220_USETHESE\220429_deeplattice_checks.Config
+A:\240606\Raw Data\data_196.h5

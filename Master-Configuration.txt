@@ -202,7 +202,7 @@ uvpm_v
 57
 rmbx 0.004
 rmby 0.015
-rmbz 0.0232
+rmbz 0.0237
 tune461 -0.2
 bluetuneval 0.075
 bluetune_imag 0.075
@@ -232,7 +232,7 @@ imagpow 0.18
 dmbz 0.399
 by_lacs 0.025
 f_lac -1.64
-c_3p0 153.473706
+c_3p0 153.476186
 fcool 0.075
 c_3p1_lat 80.0012
 bluemottime 100

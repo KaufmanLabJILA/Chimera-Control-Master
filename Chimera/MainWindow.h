@@ -45,7 +45,7 @@ class MainWindow : public CDialog
 		void passExportArrayIsOnPress();
 		void passExportPaintIsOnPress();
 		void passExportVariableIsOnPress();
-		void passIdleSequenceIsOnPress();
+		void passIdleSequenceActivePress();
 		void passIdleFirstVariationPress();
 		bool checkGmoogState();
 		bool checkAutoAlignState();
@@ -120,7 +120,9 @@ class MainWindow : public CDialog
 		bool niawgIsRunning();
 		bool masterIsRunning();
 		bool idleIsActive();
-		bool idleIsRunning();
+		std::atomic<bool> idleIsRunning();
+		void setKillIdlerTrue();
+		void setKillIdlerFalse();
 		void setNiawgRunningState( bool newRunningState );
 		RunInfo getRunInfo();
 		void handleFinish();

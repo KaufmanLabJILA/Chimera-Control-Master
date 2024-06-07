@@ -52,7 +52,7 @@ void DioSystem::handleSaveConfig(std::ofstream& saveFile)
 }
 
 
-void DioSystem::handleOpenConfig(std::ifstream& openFile, int versionMajor, int versionMinor )
+void DioSystem::handleOpenConfig(std::ifstream& openFile, int versionMajor, int versionMinor, bool expNotRunning)
 {
 	//connectDioFPGA();
 	ProfileSystem::checkDelimiterLine(openFile, "TTLS");
@@ -70,7 +70,23 @@ void DioSystem::handleOpenConfig(std::ifstream& openFile, int versionMajor, int 
 			try
 			{
 				ttl = std::stoi(ttlString);
-				forceTtl(rowInc, colInc, ttl);
+				if (expNotRunning) // if exp not running change full output
+				{
+					forceTtl(rowInc, colInc, ttl);
+				}
+				else // otherwise change only the display and status
+				{
+					if (ttl == 0)
+					{
+						ttlPushControls[rowInc][colInc].SetCheck(BST_UNCHECKED);
+						ttlStatus[rowInc][colInc] = false;
+					}
+					else
+					{
+						ttlPushControls[rowInc][colInc].SetCheck(BST_CHECKED);
+						ttlStatus[rowInc][colInc] = true;
+					}
+				}
 			}
 			catch (std::invalid_argument&)
 			{

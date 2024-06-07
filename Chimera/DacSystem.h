@@ -24,7 +24,7 @@ class DacSystem
 		DacSystem();
 		void handleNewConfig( std::ofstream& newFile );
 		void handleSaveConfig(std::ofstream& saveFile);
-		void handleOpenConfig(std::ifstream& openFile, int versionMajor, int versionMinor, DioSystem* ttls);
+		void handleOpenConfig(std::ifstream& openFile, int versionMajor, int versionMinor, DioSystem* ttls, bool expNotRunning);
 		void abort();
 		void initialize( POINT& pos, cToolTips& toolTips, AuxiliaryWindow* master, int& id );
 		std::string getDacSequenceMessage(UINT variation );
@@ -76,6 +76,9 @@ class DacSystem
 		double roundToDacResolution(double);
 		void findLoadSkipSnapshots( double time, std::vector<variableType>& variables, UINT variation );
 		void handleEditChange( UINT dacNumber );
+
+		void prepareDacsCurrentValues(DioSystem* ttls);
+
 	private:
 		Control<CStatic> dacTitle;
 		Control<CButton> dacSetButton;

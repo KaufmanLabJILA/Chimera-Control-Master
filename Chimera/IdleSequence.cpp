@@ -13,4 +13,5 @@ idleSequence::idleSequence()
 	idleSequenceActive = false;
 	killIdler = false;
 	idleSequenceRunning = false;
+	varInd = -1;
 }

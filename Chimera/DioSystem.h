@@ -32,7 +32,7 @@ class DioSystem
 		~DioSystem();
 		void handleNewConfig( std::ofstream& saveFile );
 		void handleSaveConfig(std::ofstream& saveFile);
-		void handleOpenConfig(std::ifstream& openFile, int versionMajor, int versionMinor );
+		void handleOpenConfig(std::ifstream& openFile, int versionMajor, int versionMinor, bool expNotRunning);
 		void initialize(POINT& startLocation, cToolTips& toolTips, AuxiliaryWindow* master, int& id);
 		double getTotalTime(UINT variation );
 		void checkFinalFormatTimes( UINT variation );

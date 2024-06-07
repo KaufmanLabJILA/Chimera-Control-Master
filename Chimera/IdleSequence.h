@@ -8,8 +8,8 @@ class idleSequence
 public:
 	idleSequence();
 
-	bool idleSequenceActive = false;
-	bool killIdler = true;
-	bool idleSequenceRunning = false;
-	int varInd = -1;
+	bool idleSequenceActive;
+	std::atomic<bool> killIdler;
+	std::atomic<bool> idleSequenceRunning;
+	int varInd;
 };
