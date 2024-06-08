@@ -202,7 +202,7 @@ uvpm_v
 57
 rmbx 0.0033
 rmby 0.014
-rmbz 0.0242
+rmbz 0.0232
 tune461 -0.2
 bluetuneval 0.075
 bluetune_imag 0.075

@@ -1,2 +1,2 @@
 C:\Users\KLab\Desktop\Chimera-Control-Master\Configurations\210220_USETHESE\220429_deeplattice_checks.Config
-A:\240606\Raw Data\data_196.h5
+A:\240607\Raw Data\data_55.h5

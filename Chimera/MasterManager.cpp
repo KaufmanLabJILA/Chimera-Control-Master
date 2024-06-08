@@ -14,6 +14,7 @@ namespace fs = std::experimental::filesystem;
 MasterManager::MasterManager()
 {
 	functionsFolderLocation = FUNCTIONS_FOLDER_LOCATION;
+	//experimentIsRunning = false;
 }
 
 
@@ -993,7 +994,7 @@ void MasterManager::startExperimentThread(MasterThreadInput* input, bool waitTil
 				runningThread->ResumeThread();
 			}
 			WaitForSingleObject(runningThread->m_hThread, INFINITE);
-			delete runningThread;
+			//delete runningThread;
 		}
 	}
 }

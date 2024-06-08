@@ -1368,10 +1368,10 @@ void DioSystem::constructRepeats( repeatManager& repeatMgr )
 				repeatIParent->data().repeatAddedTimes[varInc] += repeatAddedTime * repeatNum;
 			}
 		}
-		double time_c = 0;
+		/*double time_c = 0;
 		for (auto& cmd : cmds)
 		{
-			out += "t += " + std::to_string(cmd.time - time_c) + "\n";
+			out += "t += " + std::to_string((cmd.time - time_c)) + "\n";
 			time_c = cmd.time;
 			out += "(" + std::to_string(cmd.line.first) + "," + std::to_string(cmd.line.second) + ")";
 			if (cmd.value) { out += " On "; }
@@ -1379,17 +1379,17 @@ void DioSystem::constructRepeats( repeatManager& repeatMgr )
 			out += "<" + std::to_string(cmd.repeatId.repeatTreeMap.first) + "," + std::to_string(cmd.repeatId.repeatTreeMap.second) + ">";
 			out += "\n";
 		}
-		out += "\nEnd Variation\n\n\n";
+		out += "\nEnd Variation\n\n\n";*/
 	
 	}
 
-	// create temporary file
+	/*// create temporary file
 	std::ofstream tmpFile(EXPORT_DIOSCRIPT_TMP_FILE_LOCATION);
 	tmpFile << out;
 	tmpFile.close();
 
 	// move file (atomic operation)
-	fs::rename(EXPORT_DIOSCRIPT_TMP_FILE_LOCATION, EXPORT_DIOSCRIPT_FILE_LOCATION);
+	fs::rename(EXPORT_DIOSCRIPT_TMP_FILE_LOCATION, EXPORT_DIOSCRIPT_FILE_LOCATION);*/
 
 	repeatMgr.loadCalculationResults();
 }
@@ -1431,7 +1431,7 @@ void DioSystem::organizeTtlCommands(UINT variation)
 	{
 		// because the events are sorted by time, the time organizer will already be sorted by time, and therefore I 
 		// just need to check the back value's time.
-		if (commandInc == 0 || fabs(orderedList[commandInc].time - timeOrganizer.back().first) > 2 * DBL_EPSILON)
+		if (commandInc == 0 || fabs(orderedList[commandInc].time - timeOrganizer.back().first) > 2 * DBL_EPSILON * 1e6)
 		{
 			// new time
 			timeOrganizer.push_back({ orderedList[commandInc].time, std::vector<USHORT>({ commandInc }) });

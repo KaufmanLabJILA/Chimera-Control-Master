@@ -100,6 +100,7 @@ namespace commonFunctions
 				input->parent = parent;
 				input->msgID = msgID;
 				multiExperimentThread = AfxBeginThread(multipleExperimentThreadProcedure, input, THREAD_PRIORITY_HIGHEST);
+
 				break;
 			}
 			case WM_CLOSE:
@@ -1091,6 +1092,7 @@ namespace commonFunctions
 						multiExpInput->mainWin->setKillIdlerTrue();
 						while (multiExpInput->mainWin->idleIsRunning())
 						{
+							
 							Sleep(10);
 						}
 						multiExpInput->mainWin->setKillIdlerFalse();

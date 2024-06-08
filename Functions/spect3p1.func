@@ -1,7 +1,7 @@
 % Master-Script See the "?" for info on commands.
 def spect3p1():
  on: imagshut
- t += 7.5
+ t += 4
  %on: axial
  on: radial
  %on: radial2
