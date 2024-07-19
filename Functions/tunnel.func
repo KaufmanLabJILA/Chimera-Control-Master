@@ -1,0 +1,27 @@
+% Master-Script See the "?" for info on commands.
+def tunnel(_time, axpow1, axpow2, lat2Dpow1, lat2Dpow2, lat2Dpow_tunnel):
+  daccosspace: axialpow axpow1 axpow2 15 150
+  %t += 16
+  daccosspace: latticepow lat2Dpow1 lat2Dpow2 15 150
+  %daclinspace: tweezerpow813 tweezer813_zero tweezer813_pow 10 50
+  t += 16
+
+  %daccosspace: latticepow lat2Dpow2 lat2Dpow_tunnel 50 100
+  %t += 50.1
+  
+  pulseon: trigger .1
+  %%%
+  %on: latticehold
+  %off: lat813ao
+  dac: latticepow lat2Dpow_tunnel
+  t += _time
+  %off: latticehold
+  %on: lat813ao
+  %%%
+    
+  daccosspace: latticepow lat2Dpow2 lat2Dpow1 15 15
+  %daclinspace: tweezerpow813 -.225 tweezer813_zero 10 50
+  %daclinspace: tweezerpow813 tweezer813_pow tweezer813_zero 10 50
+  %t += 11
+  daccosspace: axialpow axpow2 axpow1 15 15
+  t += 11

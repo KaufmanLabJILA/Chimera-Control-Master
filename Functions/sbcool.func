@@ -1,6 +1,8 @@
 % Master-Script See the "?" for info on commands.
 def sbcool(time):
   % insert commands here...
+  t += .1  
+  off: coolSH
   on: axial
   on: radial
   on: radial2
@@ -8,3 +10,4 @@ def sbcool(time):
   off: axial
   off: radial
   off: radial2
+  on: coolSH

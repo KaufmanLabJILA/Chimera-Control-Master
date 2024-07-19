@@ -334,6 +334,19 @@ namespace commonFunctions
 				{
 					commonFunctions::prepareMasterThread(ID_RUNMENU_RUNMASTER, scriptWin, mainWin, camWin, auxWin,
 						input, true, true, true, false);
+
+					// wait for idle sequence to finish
+					if (mainWin->idleIsRunning())
+					{
+						mainWin->setKillIdlerTrue();
+						while (mainWin->idleIsRunning())
+						{
+							Sleep(10);
+						}
+						mainWin->setKillIdlerFalse();
+					}
+					Sleep(200);
+
 					commonFunctions::startMaster(mainWin, input);
 				}
 				catch (Error& err)
@@ -365,6 +378,19 @@ namespace commonFunctions
 				{
 					commonFunctions::prepareMasterThread( ID_RUNMENU_RUNMASTER, scriptWin, mainWin, camWin, auxWin, 
 														  input, false, true, true, false );
+
+					// wait for idle sequence to finish
+					if (mainWin->idleIsRunning())
+					{
+						mainWin->setKillIdlerTrue();
+						while (mainWin->idleIsRunning())
+						{
+							Sleep(10);
+						}
+						mainWin->setKillIdlerFalse();
+					}
+					Sleep(200);
+
 					commonFunctions::startMaster( mainWin, input );
 				}
 				catch (Error& err)

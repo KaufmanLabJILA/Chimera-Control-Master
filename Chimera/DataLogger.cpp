@@ -4,6 +4,8 @@
 #include "longnam.h"
 #include "DataAnalysisHandler.h"
 #include "CameraImageDimensions.h"
+#include <experimental/filesystem>
+namespace fs = std::experimental::filesystem;
 
 
 DataLogger::DataLogger(std::string systemLocation)
@@ -80,6 +82,17 @@ std::string DataLogger::initializeDataFiles()
 				 ". Make sure you have access to the jilafile or change the save location. Error: " + str(GetLastError()) 
 				 + "\r\n" );
 	}
+	resultStat = stat(cstr(DATA_SAVE_LOCATION + finalSaveFolder), &info);
+	if (resultStat != 0)
+	{
+		result = CreateDirectory(cstr(DATA_SAVE_LOCATION + finalSaveFolder), 0);
+	}
+	if (!result)
+	{
+		thrower("ERROR: Failed to create save location for data at location " + dataFilesBaseLocation + finalSaveFolder +
+			". Make sure you have access to the jilafile or change the save location. Error: " + str(GetLastError())
+			+ "\r\n");
+	}
 	finalSaveFolder += "\\Raw Data";
 	resultStat = stat( cstr( dataFilesBaseLocation + finalSaveFolder ), &info );
 	if (resultStat != 0)
@@ -90,6 +103,15 @@ std::string DataLogger::initializeDataFiles()
 	{
 		thrower( "ERROR: Failed to create save location for data! Error: " + str( GetLastError() ) + "\r\n" );
 	}
+	resultStat = stat(cstr(DATA_SAVE_LOCATION + finalSaveFolder), &info);
+	if (resultStat != 0)
+	{
+		result = CreateDirectory(cstr(DATA_SAVE_LOCATION + finalSaveFolder), 0);
+	}
+	if (!result)
+	{
+		thrower("ERROR: Failed to create save location for data! Error: " + str(GetLastError()) + "\r\n");
+	}
 	finalSaveFolder += "\\";
 	/// Get a filename appropriate for the data
 	std::string finalSaveFileName;
@@ -99,7 +121,7 @@ std::string DataLogger::initializeDataFiles()
 	// The while condition here check if file exists. No idea how this actually works.
 	struct stat statBuffer;
 	// figure out the next file number
-	while ((stat(cstr(dataFilesBaseLocation + finalSaveFolder + "data_" + str(fileNum) + ".h5"),
+	while ((stat(cstr(DATA_SAVE_LOCATION + finalSaveFolder + "data_" + str(fileNum) + ".h5"),
 		   &statBuffer) == 0))
 	{
 		fileNum++;
@@ -770,3 +792,14 @@ void DataLogger::writeAttribute( bool data, std::string name, H5::DataSet& dset 
 	}
 }
 
+void DataLogger::moveFileToHeap()
+{
+	std::string currentFileLocation = dataFilesBaseLocation + currentSaveFolder + "\\Raw Data\\data_"
+		+ str(currentDataFileNumber) + ".h5";
+	std::string finalFileLocaation = DATA_SAVE_LOCATION + currentSaveFolder + "\\Raw Data\\data_"
+		+ str(currentDataFileNumber) + ".h5";
+	if (std::experimental::filesystem::exists(currentFileLocation))
+	{
+		fs::rename(currentFileLocation, finalFileLocaation);
+	}
+}

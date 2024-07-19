@@ -9,14 +9,14 @@ phaseoffset 0 0 0 0 0 0 0 0
 reset
 %freqs 80 c_3p0+.2 80 80 79.74 c_3p1+f_rad c_3p1+faxcool c_3p1+f_rad2
 %amps  0 100 UVaopow 100 0 6 16 1
-freqs 80 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p1+f_rad+(__ts__-__t0__)*dr_3p1/86400 c_3p1+f_rad+(__ts__-__t0__)*dr_3p1/86400 c_3p1+.03+(__ts__-__t0__)*dr_3p1/86400 c_3p1+f_rad+(__ts__-__t0__)*dr_3p1/86400
-amps  0 75 90 90 0 24 15 8
+freqs 80 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p1+f_rad+(__ts__-__t0__)*dr_3p1/86400 c_3p1+f_rad+(__ts__-__t0__)*dr_3p1/86400 c_3p1+.07+(__ts__-__t0__)*dr_3p1/86400 c_3p1+f_rad+(__ts__-__t0__)*dr_3p1/86400
+amps  0 75 90 90 0 100 100 100
 
 % SPECTROSCOPY
 snapshot 0 reps 2
 freqs 80 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p1+(__ts__-__t0__)*dr_3p1/86400 spec3p1+(__ts__-__t0__)*dr_3p1/86400 spec3p1+(__ts__-__t0__)*dr_3p1/86400 spec3p1+(__ts__-__t0__)*dr_3p1/86400
 %amps  0 0 30 100 100 100 100 100
-amps  0 75 90 90 100 10 8 3
+amps  0 75 90 90 100 100 100 100
 %for imaging optimization
 %freqs  80 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p1+fcool+(__ts__-__t0__)*dr_3p1/86400 c_3p1+fcool_dummy+(__ts__-__t0__)*dr_3p1/86400 c_3p1+faxcool_dummy+(__ts__-__t0__)*dr_3p1/86400 c_3p1+fcool_dummy+(__ts__-__t0__)*dr_3p1/86400
 %amps 0 75 90 90 16 rad_pow_dummy ax_pow_dummy rad2_pow_dummy
@@ -28,10 +28,10 @@ amps  0 75 90 90 100 10 8 3
 
 % IMAGE TWEEZERS
 snapshot 1 reps 2
-freqs 80 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p1+fcool+(__ts__-__t0__)*dr_3p1/86400 c_3p1+fcool+(__ts__-__t0__)*dr_3p1/86400 c_3p1+0.1+(__ts__-__t0__)*dr_3p1/86400 c_3p1+fcool+(__ts__-__t0__)*dr_3p1/86400
+freqs 80 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p1+fcool+(__ts__-__t0__)*dr_3p1/86400 c_3p1+fcool+(__ts__-__t0__)*dr_3p1/86400 c_3p1+0.09+(__ts__-__t0__)*dr_3p1/86400 c_3p1+fcool+(__ts__-__t0__)*dr_3p1/86400
 %amps  0 75 90 90 16 14 11 4
-amps  0 0 36 100 16 28 30 4
-%amps  0 100 30 100 18 50 20 100
+%amps  0 0 36 100 16 35 16 20
+amps  0 100 30 100 18 100 100 100
 
 % IMAGE LATTICE
 %snapshot 1 reps 2
@@ -44,7 +44,7 @@ snapshot 2 reps 2
 %freqs 80 c_3p0+spec3p0/1000 81.905 c_3p0+spec3p0/1000 c_3p1+f_rmot_narrow+(__ts__-__t0__)*dr_3p1/86400 c_3p1+f_lac+(__ts__-__t0__)*dr_3p1/86400 c_3p1+f_lac+(__ts__-__t0__)*dr_3p1/86400 80+(__ts__-__t0__)*dr_3p1/86400
 %amps  0 75 90 90 13.5 30 0 30
 freqs 80 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p1+f_rmot_narrow+(__ts__-__t0__)*dr_3p1/86400 c_3p1+f_lac+(__ts__-__t0__)*dr_3p1/86400 c_3p1+f_lac+(__ts__-__t0__)*dr_3p1/86400 80+(__ts__-__t0__)*dr_3p1/86400
-amps  0 75 90 90 10 30 0 30
+amps  0 75 90 90 18 100 100 100
 
 
 % SB COOL LATTICE

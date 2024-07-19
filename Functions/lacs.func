@@ -8,15 +8,21 @@ def lacs(lactime):
 %  t += .1
 % end
 
- dac: bluetune bluetune_imag
- dac: imagingPow imagpow/1.5
+ dac: imagpow1 impow1/9.0
+ dac: imagpow2 impow2/9.0
+ %dac: bluetune bluetune_imag %outdated as of 240617
  %on: rp707
 
  t += .1
 
+ %%% 240613:
+ off: bigzrsd
+ off: coolSH
+ %%% 240613^^
+
  on: rp707
  on: rp679
- on: imag461
+ %on: imag461
  %on: red3dnarrow
  %on: radial2
  on: radial
@@ -31,4 +37,9 @@ def lacs(lactime):
  off: shut679
  off: rp707
  off: rp679
+
+ %%% 240613:
+ on: bigzrsd
+ on: coolSH
+ %%% 240613^^
 

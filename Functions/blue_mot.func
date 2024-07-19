@@ -1,16 +1,19 @@
 def blue_mot(loadTime):
+  on: blueshut %reminder that this needed to be on earlier
+  t += 4 
 
-  dac: blue3dpow .3
+  dac: blue3dpow 0.35
+
   on: red3d
-  dac: red3dpow .1
+  dac: red3dpow 0.55
   on: blue3d
   on: slower
 
   dac: bigzcoil 1.8
   dac: x1coil -.075
-  dac: y1coil .065
-  dac: y2coil .065
-  dac: z1coil .16
+  dac: y1coil 0.065
+  dac: y2coil 0.065
+  dac: z1coil -0.06 % changed to -0.05 from 0.16 on 240620+240624
 
 
 %  dac: x1coil -0.08
@@ -24,16 +27,31 @@ def blue_mot(loadTime):
 %  dac: x1coil -0.07
 %  dac: y1coil .02
 %  dac: y2coil .02
-%  dac: z1coil .1
+%  dac: z1coil scan
 
-  daclinspace: blue3dpow .3 .01 12 15
-%  daclinspace: bigzcoil 1 0.5 12 15
-  t += 12
+  dacexpspace: blue3dpow .35 .001 12 9
+  %daclinspace: bigzcoil 1.8 0.15 12 15
+  t += 8
 %  dac: blue3dpow 0.02 %.06 %0.077
-%  t += 2
+  t += 3
 
   %Try compressing the mot
   off: blue3d
 %  off: rp707
 %  off: rp679
   t += 0.01
+
+  dac: blue3dpow 0.3
+  t += .001
+
+  on: blue3d
+  %on: blowawayttl
+  %t += .25
+  t += 0.001
+  off: blowawayttl
+  off: imag461
+  off: mako1
+  off: blue3d
+  off: blueshut
+  off: slower
+

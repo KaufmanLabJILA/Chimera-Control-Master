@@ -36,6 +36,7 @@ class DataLogger
 		void closeFile();
 		void deleteFile(Communicator* comm);
 		int getDataFileNumber( );
+		void moveFileToHeap();
 	private:
 		H5::DataSet writeDataSet( bool data, std::string name, H5::Group& group );
 		H5::DataSet writeDataSet( UINT data, std::string name, H5::Group& group );

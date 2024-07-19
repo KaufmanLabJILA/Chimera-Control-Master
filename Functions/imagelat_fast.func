@@ -4,7 +4,7 @@ def imageLat_fast():
  on: shut679
  on: andorshut
  on: imagshut
- dac: imagingPow 0.115
+ %dac: imagingPow 0.115
 
  t += 4
 

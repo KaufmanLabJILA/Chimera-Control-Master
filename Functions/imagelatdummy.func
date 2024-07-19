@@ -10,6 +10,11 @@ def imagelatdummy(imageTime):
  on: rp707
  on: rp679
 
+ %%% 240613:
+ off: bigzrsd
+ off: coolSH
+ %%% 240613^^
+
  on: imag461
  on: axial
  on: radial2
@@ -24,6 +29,11 @@ def imagelatdummy(imageTime):
  off: imag461
  off: andortrig
  off: andorshut
+
+ %%% 240613:
+ on: bigzrsd
+ on: coolSH
+ %%% 240613^^
  
  off: rp707
  off: rp679

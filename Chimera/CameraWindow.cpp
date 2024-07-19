@@ -12,7 +12,7 @@
 
 CameraWindow::CameraWindow() : CDialog(), 
 								CameraSettings(&Andor), 
-								dataHandler(DATA_SAVE_LOCATION)
+								dataHandler(TMP_DATA_SAVE_LOCATION)
 {
 	/// test the plotter quickly
 	std::vector<double> data(100);
@@ -215,6 +215,7 @@ void CameraWindow::abortCameraRun()
 		{
 			mainWindowFriend->getComm()->sendError(err.what());
 		}
+		dataHandler.deleteFile(mainWindowFriend->getComm());
 		
 		if (!mainWindowFriend->masterIsRunning()) {
 
@@ -502,6 +503,7 @@ LRESULT CameraWindow::onCameraFinish( WPARAM wParam, LPARAM lParam )
 		alerts.playSound();
 	}
 	dataHandler.closeFile();
+	dataHandler.moveFileToHeap();
 	mainWindowFriend->getComm()->sendColorBox( Camera, 'B' );
 	mainWindowFriend->getComm()->sendStatus( "Camera has finished taking pictures and is no longer running.\r\n" );
 	CameraSettings.cameraIsOn( false );
@@ -1237,9 +1239,8 @@ UINT __stdcall CameraWindow::atomCruncherProcedure(void* inputPtr)
 				input->writeAtomArrayFile(input->picsPerRep);
 			}
 		}
-
 		if (input->gmoog->painterActive)
-		{	
+		{
 			try
 			{
 				if (imageCount % input->picsPerRep == 1)

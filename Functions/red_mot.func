@@ -1,8 +1,8 @@
 def red_mot(loadTime):
   on: red3d
 
-  dac: bigzcoil .15
-  dac: red3dpow .4 %.8 %.25 %.5
+  dac: bigzcoil 0.15
+  dac: red3dpow 1.5 %.4 %.8 %.25 %.5
   
   %dac: x1coil .01  %.005
   %dac: y1coil .013  %.018
@@ -16,13 +16,12 @@ def red_mot(loadTime):
   
   t += loadTime
   
-  %dac: latticepow lattice_zero
+  dac: latticepow lattice_zero
   dac: axialpow ax_lattice_zero
 
-  %daclinspace: red3dpow 1.5 .5 10 20
+  %daclinspace: red3dpow 1.5 0.5 10 20
   %t += 10
 
-  %t += 10
   %on: blueshut
   %t += 6
   off: red3d

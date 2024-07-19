@@ -1,0 +1,123 @@
+% Master-Script See the "?" for info on commands.
+def clock_spec():
+  %%% Clock spectroscopy
+
+  on: shut707
+  on: shut679
+  on: rp707
+  on: rp679
+  off: rp688
+  %on: clkshut
+ 
+  call fieldzero()
+  call fieldbigz(1.0)
+  %call fieldzero() 
+  %dac: z1coil 0.4
+ 
+  %off: imagshut
+  
+  %%DDS state: spectroscopy2
+  pulseon: resetdds .1
+  t += .2
+  repeat: 6
+   pulseon: stepdds 0.007
+   t += .1
+  end
+  t += .1
+ 
+  t += 75 
+  %t += 125
+  
+  %%% first clock dds channel or RIGOL
+  off: wiesera
+  off: wieserb
+  off: toggleclockdds
+  off: toggleclockdds2
+  t += .001
+  
+  t += 7  %%% wait for specific line trigger alignment
+  
+  off: shut707
+  off: shut679
+  off: rp707
+  off: rp679
+  t += 4
+  pulseon: trigger 0.001
+  
+  %t += 0.005
+  %t += shutdelay-4*piquarterstime-.4
+  %call clockpi(piquarterstime)
+  %call clockpi(probetime)
+
+
+ %%% Ramsey
+  on: t515hold
+  off: tweezerao
+  dac: int633servo 0.05
+  t += 0.001
+
+  call clockpihalves(piquarterstime)
+  t += 0.005
+
+  on: tweezerao
+  t += 3
+  
+  off: tweezerao
+  t += 0.001
+  
+  on: wiesera
+  off: wieserb
+  t += 0.1
+
+  call clockpihalves(piquarterstime)
+  
+  on: wieserb
+  off: wiesera
+  t += .005
+  
+  call blowaway_pulse(5)  
+  %t += .001
+  
+  call clockpi(piquarterstime)
+  %call clockpi(0.47)
+  
+  off: tweezershut
+  t += 4
+  on: tweezerao
+  dac: int633servo tweezer_atten_zero
+
+  off: wiesera
+ 
+  call magicfieldsDual813()
+  t += 1
+  
+  % %%% Compensate fields for shifts induced by bigz z
+  %dac: z1coil dmbz_bigz
+  
+  dac: bigzcoil bz0
+  t += 30
+  on: bigzantihelm
+  t += 5
+  dac: bigzcoil bz0
+  
+   
+  %%% Blowaway gnd, 3P2, repump 3P0
+  on: imagshut 
+  on: shut707 
+  on: shut679 
+  t += 4.1
+
+  on: rp707 
+  on: rp679 
+  t += .5
+  off: rp707 
+  off: rp679 
+  off: shut707 
+  off: shut679 
+  off: imagshut 
+  %%
+
+  % reset to load for next cycle
+  %pulseon: gmload .0001
+  %t += .1
+

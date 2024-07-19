@@ -2,6 +2,7 @@
 def spect3p1():
  on: imagshut
  t += 4
+ off: coolSH
  %on: axial
  on: radial
  %on: radial2
@@ -9,6 +10,7 @@ def spect3p1():
  off: axial
  off: radial
  off: radial2
+ on: coolSH
 
  on: latticehold
  on: blowawayttl

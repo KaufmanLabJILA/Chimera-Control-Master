@@ -1,8 +1,6 @@
 def imagec():
 
-  dac: bluetune bluetune_imag
-  dac: imagingPow imagpow
-  off: radial2
+  %dac: bluetune bluetune_imag %outdated as of 240617
   on: andorshut
   on: imagshut
   on: shut707
@@ -12,10 +10,16 @@ def imagec():
   on: andortrig
   t += .2
   on: imag461
-  %on: radial2
-  on: radial
+  on: radial2
+  on: radial 
   on: axial
   %on: red3dnarrow
+
+  %%% 240613:
+  off: bigzrsd
+  off: coolSH
+  %%% 240613^^
+
   on: rp707
   on: rp679
   t += 75
@@ -33,3 +37,8 @@ def imagec():
   off: imagshut
   off: lampttl
   t += .01
+
+  %%% 240613:
+  on: bigzrsd
+  on: coolSH
+  %%% 240613^^

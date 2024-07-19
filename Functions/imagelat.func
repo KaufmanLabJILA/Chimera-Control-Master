@@ -1,5 +1,7 @@
 % Master-Script See the "?" for info on commands.
 def imageLat(imageTime):
+
+
  on: shut707
  on: shut679
  on: andorshut
@@ -10,6 +12,11 @@ def imageLat(imageTime):
  t += .2
  on: rp707
  on: rp679
+ 
+ %%% 240613:
+ off: bigzrsd
+ off: coolSH
+ %%% 240613^^
 
  on: imag461
  on: axial
@@ -25,6 +32,11 @@ def imageLat(imageTime):
  off: imag461
  off: andortrig
  off: andorshut
+
+ %%% 240613:
+ on: bigzrsd
+ on: coolSH
+ %%% 240613^^
  
  off: rp707
  off: rp679

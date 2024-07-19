@@ -1,0 +1,5 @@
+% Master-Script See the "?" for info on commands.
+def setSBcoolPows(radpow, rad2pow, axpow):
+  dac: radialPow radpow
+  dac: radial2Pow rad2pow
+  dac: axialcoolpow axpow

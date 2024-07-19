@@ -30,7 +30,7 @@ freqs 80 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 79.74 c_3p1_la
 %freqs 80 c_3p0+1 180 80 79.74 c_3p1_lat+f_rad_3d+.003 c_3p1_lat+f_ax_3d_imag c_3p1_lat+f_rad_3d-0.007
 %amps  0 0 30 92 0 10 9 50
 %amps  0 75 90 90 0 12.5 15 8
-amps  0 75 90 90 0 25 33 35
+amps  0 75 90 90 0 22.5 24 16
 %amps  0 0 30 92 0 20 20 20
 
 
@@ -45,7 +45,7 @@ snapshot 2 reps 2
 freqs 80 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 spec3p1+(__ts__-__t0__)*dr_3p1/86400 spec3p1+(__ts__-__t0__)*dr_3p1/86400 spec3p1+(__ts__-__t0__)*dr_3p1/86400 spec3p1+(__ts__-__t0__)*dr_3p1/86400
 %amps  0 75 90 90 0 3.5 3.5 5
 %amps  0 75 90 90 0 3.5 3.5 8
-amps  0 75 90 90 0 7 7 21
+amps  0 75 90 90 0 7 7 15
 
 % use for dummy image
 %freqs 80 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 79.74 c_3p1_lat+f_rad_3d+.003+(__ts__-__t0__)*dr_3p1/86400 c_3p1_lat+f_ax_3d_imag+(__ts__-__t0__)*dr_3p1/86400 c_3p1_lat+f_rad_3d-0.007+(__ts__-__t0__)*dr_3p1/86400
@@ -108,7 +108,7 @@ amps  0 75 90 90 0 7 4 7
 % IMAGE LATTICE FAST
 snapshot 8 reps 2
 freqs 80 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 79.74 c_3p1_lat+f_rad_3d_fast+.003+(__ts__-__t0__)*dr_3p1/86400 c_3p1_lat+f_ax_3d_imag_fast+(__ts__-__t0__)*dr_3p1/86400 c_3p1_lat+f_rad_3d_fast-0.007+(__ts__-__t0__)*dr_3p1/86400
-amps  0 75 90 60 0 10 30 30
+amps  0 75 90 60 0 20 30 30
 
 %amps  0 75 90 60 0 100 100 100
 

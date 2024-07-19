@@ -1,2 +1,2 @@
-C:\Users\KLab\Desktop\Chimera-Control-Master\Configurations\210220_USETHESE\220429_deeplattice_checks.Config
-A:\240607\Raw Data\data_55.h5
+C:\Users\KLab\Desktop\Chimera-Control-Master\Configurations\240617_Superfluid\240619_Superfluid.Config
+D:\240718\Raw Data\data_37.h5
