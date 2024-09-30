@@ -1,8 +1,9 @@
 % Master-Script See the "?" for info on commands.
 def rerng_filterarbscrunchycompressx():
 
-daccosspace: latticepow lattice_pow 0.85 1 25
-t += 1.1
+daccosspace: axialpow ax_lattice_pow 0.5 10 100
+daccosspace: latticepow lattice_pow 0.5 10 100
+t += 10.1
 on: t515hold
 t += 1
 pulseon: gmload .00011
@@ -41,8 +42,9 @@ pulseon: gmmove .00011
 t += .8
 %t += 100.1
 
-daccosspace: latticepow 0.85 lattice_pow 1.0 25
-t += 1.1
+daccosspace: latticepow 0.5 lattice_pow 10.0 100
+daccosspace: axialpow 0.5 ax_lattice_pow 10 100
+t += 10.1
 
 off: radial
 off: radial2
@@ -94,15 +96,15 @@ end
 t += .1
 
 %off: coolSH
-on: radial2
+off: radial2
 variableon: latticehold 1-enable_rearrange
 %dacexpspace: axialpow ax_lattice_pow ax_lattice_zero 1 30
-daccosspace: axialpow ax_lattice_pow 0.34 2 40
+daccosspace: axialpow ax_lattice_pow 0.01 20 200
 %t += 6
 %dacexpspace: latticepow lattice_pow lattice_zero 1 30
 %daccosspace: latticepow lattice_pow 1.5 1 40
 
-t += 2.1
+t += 20.1
 
 %daccosspace: axialpow ax_lattice_pow ax_lattice_pow/20 1 50
 %daccosspace: latticepow lattice_pow lattice_pow/20 1 50
@@ -123,18 +125,22 @@ t += 2.1
 %t += .1
 
 %call magicfields515()
-%on: imagshut
-%t += 6
+call setsbcoolpows(radpow_img, rad2pow_img, axpow_img)
+off: coolSH
+on: radial2
+on: axial
+on: radial
 on: latticehold
+on: latblink
+
 t += 0.01
 %variableon: latblink enable_rearrange
 %pulseon: tektronixtrig .001
 off: lat813ao
-t += 15
+t += 50
 %call lacs(5)  % This wants imaging snapshot
 
-
-%off: latblink
+off: latblink
 on: lat813ao
 t += 0.01
 off: latticehold
@@ -146,12 +152,12 @@ off: radial2
 off: radial
 off: axial
 on: coolSH
-daclinspace: axialpow 0.34 ax_lattice_pow 1 30
+daclinspace: axialpow 0.01 ax_lattice_pow 10 100
 %dacexpspace: axialpow ax_lattice_zero ax_lattice_pow 1 30
 %t += 6
 %dacexpspace: latticepow lattice_zero lattice_pow 1 30
 %daclinspace: latticepow 1.5 lattice_pow 1 30
-t += 1.1
+t += 10.1
 
 off: latticehold
 
@@ -186,6 +192,7 @@ t += .1
 %t += 5
 %%%% end cooling %%%%
 
+call setsbcoolpows(radpow_sbcool, rad2pow_sbcool, axpow_sbcool)
 off: coolSH
 on: radial
 on: radial2
@@ -220,5 +227,7 @@ off: t515hold
 
 %daclinspace: latticepow lattice_pow2 lattice_pow 3 15
 %t += 10
+
+
 
 

@@ -794,12 +794,24 @@ void DataLogger::writeAttribute( bool data, std::string name, H5::DataSet& dset 
 
 void DataLogger::moveFileToHeap()
 {
-	std::string currentFileLocation = dataFilesBaseLocation + currentSaveFolder + "\\Raw Data\\data_"
-		+ str(currentDataFileNumber) + ".h5";
-	std::string finalFileLocaation = DATA_SAVE_LOCATION + currentSaveFolder + "\\Raw Data\\data_"
-		+ str(currentDataFileNumber) + ".h5";
+	std::string currentFileLocation = getCurrentFileTmpPath();
+	std::string finalFileLocation = getCurrentFileSavePath();
 	if (std::experimental::filesystem::exists(currentFileLocation))
 	{
-		fs::rename(currentFileLocation, finalFileLocaation);
+		fs::rename(currentFileLocation, finalFileLocation);
 	}
+}
+
+std::string DataLogger::getCurrentFileSavePath()
+{
+	std::string fileSaveLocation = DATA_SAVE_LOCATION + currentSaveFolder + "\\Raw Data\\data_"
+		+ str(currentDataFileNumber) + ".h5";
+	return fileSaveLocation;
+}
+
+std::string DataLogger::getCurrentFileTmpPath()
+{
+	std::string fileTmpLocation = dataFilesBaseLocation + currentSaveFolder + "\\Raw Data\\data_"
+		+ str(currentDataFileNumber) + ".h5";
+	return fileTmpLocation;
 }

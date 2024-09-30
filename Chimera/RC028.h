@@ -2,15 +2,20 @@
 #include <windows.h>
 #include "ftd2xx.h"
 
-#define NUMPOINTS         2048
+//#define NUMPOINTS         2048
+#define NUMPOINTS         16384
 #define MSGLENGTH         7
-#define TIMEOFFS          0x0800
-#define BANKAOFFS         0x1000
-#define BANKBOFFS         0x1800
+//#define TIMEOFFS          0x0800
+//#define BANKAOFFS         0x1000
+//#define BANKBOFFS         0x1800
+#define TIMEOFFS          0x4000
+#define BANKAOFFS         0x8000
+#define BANKBOFFS         0xC000
 #define WBWRITE           (unsigned char)161
 #define WRITESPERDATAPT   3
 #define BUFFERSIZESER     100
-#define BUFFERSIZEASYNC   2048
+//#define BUFFERSIZEASYNC   2048
+#define BUFFERSIZEASYNC   16384
 
 #define NONE              0
 #define SERIAL            1

@@ -11,6 +11,7 @@ def clock_spec():
  
   call fieldzero()
   call fieldbigz(1.0)
+  %call fieldbigz(0.5)
   %call fieldzero() 
   %dac: z1coil 0.4
  
@@ -53,14 +54,14 @@ def clock_spec():
  %%% Ramsey
   on: t515hold
   off: tweezerao
-  dac: int633servo 0.05
+  %dac: int633servo 0.5
   t += 0.001
 
   call clockpihalves(piquarterstime)
   t += 0.005
 
   on: tweezerao
-  t += 3
+  t += 0.1
   
   off: tweezerao
   t += 0.001
@@ -74,7 +75,9 @@ def clock_spec():
   on: wieserb
   off: wiesera
   t += .005
-  
+
+ %%% end of ramsey  
+
   call blowaway_pulse(5)  
   %t += .001
   

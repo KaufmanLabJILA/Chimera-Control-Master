@@ -44,7 +44,7 @@ snapshot 2 reps 2
 %freqs 80 c_3p0+spec3p0/1000 81.905 c_3p0+spec3p0/1000 c_3p1+f_rmot_narrow+(__ts__-__t0__)*dr_3p1/86400 c_3p1+f_lac+(__ts__-__t0__)*dr_3p1/86400 c_3p1+f_lac+(__ts__-__t0__)*dr_3p1/86400 80+(__ts__-__t0__)*dr_3p1/86400
 %amps  0 75 90 90 13.5 30 0 30
 freqs 80 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p1+f_rmot_narrow+(__ts__-__t0__)*dr_3p1/86400 c_3p1+f_lac+(__ts__-__t0__)*dr_3p1/86400 c_3p1+f_lac+(__ts__-__t0__)*dr_3p1/86400 80+(__ts__-__t0__)*dr_3p1/86400
-amps  0 75 90 90 18 100 100 100
+amps  0 75 90 90 11 100 100 100
 
 
 % SB COOL LATTICE

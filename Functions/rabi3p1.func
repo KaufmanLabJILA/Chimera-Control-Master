@@ -1,11 +1,12 @@
 % Master-Script See the "?" for info on commands.
 def rabi3p1(rabitime):
+ pulseon: tektronixtrig 0.01
  on: imagshut
  t += 4
  off: coolSH
- %on: axial
+ on: axial
  %on: radial
- on: radial2
+ %on: radial2
  t += rabitime
  off: axial
  off: radial
@@ -13,9 +14,11 @@ def rabi3p1(rabitime):
  on: coolSH
 
  on: latticehold
+ on: latblink
  on: blowawayttl
- t += 0.005
+ t += 0.0005
  off: blowawayttl
+ off: latblink
  off: latticehold
  %off: pi407
  %off: imagshut

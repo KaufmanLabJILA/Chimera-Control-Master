@@ -1,29 +1,32 @@
 % Master-Script See the "?" for info on commands.
 def rerng_filterarbscrunchy():
 
+daccosspace: axialpow ax_lattice_pow 0.5 5 300
+daccosspace: latticepow lattice_pow 0.5 5 300
+t += 15.1
 on: t515hold
-pulseon: gmload .0001
+t += 1
+pulseon: gmload .00011
 t += .1
-pulseon: gmmove .0001
+pulseon: gmmove .00011
 t += .1
-on: tweezershut
+%on: tweezershut
+variableon: tweezershut enable_rearrange
 t += 5
 
 %pulseon: trigger .1
 
-off: coolSH
-on: radial
-on: radial2
+%off: coolSH
+%on: radial
+%on: radial2
 %on: axial
 
-% change number of repeats according to number of initx columns (n)
-% number of repeats should be n * 2 - 1
-repeat: 31 % 11 % 7 % 31
+repeat: 31
  pulseon: gmmove .00011
  t += .08
 % t += 100.1
  pulseon: gmmove .00011
- t += 1.11
+ t += 1
 % t += 100.1
  pulseon: gmmove .00011
  t += .08
@@ -31,12 +34,18 @@ repeat: 31 % 11 % 7 % 31
 end
 
 %%%Filter reservoir atoms
-pulseon: gmmove .0001
-t += .08
-%t += 100.1
-pulseon: gmmove .0001
+pulseon: gmmove .00011
 t += .8
 %t += 100.1
+
+pulseon: gmmove .00011
+t += .8
+%t += 100.1
+
+
+daccosspace: latticepow 0.5 lattice_pow 15 300
+daccosspace: axialpow 0.5 ax_lattice_pow 15 300
+t += 15.1
 
 off: radial
 off: radial2
@@ -52,6 +61,34 @@ on: coolSH
 %daclinspace: latticepow lattice_zero lattice_pow 3 15
 %t += 5
 
+%%% cooling %%%%
+daclinspace: int633servo tweezer_atten_zero tweezer_atten_final 2 5
+t += 2
+off: tweezershut
+t += 5
+
+%%%lattice SB cool
+pulseon: resetdds .1
+t += .2
+call setsbcoolpows(radpow_sbcool, rad2pow_sbcool, axpow_sbcool)
+off: coolSH
+%on: axial
+on: radial
+on: radial2
+t += 10
+%off: axial
+off: radial
+off: radial2
+on: coolSH
+
+on: tweezershut
+t += 5
+
+daclinspace: int633servo tweezer_atten_final tweezer_atten_zero 5 20
+t += 6
+%%% end cooling %%%%
+
+
 pulseon: resetdds .1
 t += .2
 repeat: 2
@@ -60,13 +97,24 @@ repeat: 2
 end
 t += .1
 
-%on: imagshut
-
-%on: radial2
-dacexpspace: axialpow ax_lattice_pow ax_lattice_zero 1 30
+%off: coolSH
+off: radial2
+variableon: latticehold 1-enable_rearrange
+%dacexpspace: axialpow ax_lattice_pow ax_lattice_zero 1 30
+daccosspace: axialpow ax_lattice_pow 0.34 20 200
 %t += 6
-dacexpspace: latticepow lattice_pow lattice_zero 1 30
-t += 2
+%dacexpspace: latticepow lattice_pow lattice_zero 1 30
+%daccosspace: latticepow lattice_pow 1.5 1 40
+
+t += 20.1
+
+%daccosspace: axialpow ax_lattice_pow ax_lattice_pow/20 1 50
+%daccosspace: latticepow lattice_pow lattice_pow/20 1 50
+%t += 2
+%dacexpspace: axialpow ax_lattice_pow/20 ax_lattice_zero 25 100
+%dacexpspace: latticepow lattice_pow/20 lattice_zero 25 100
+%t += 30
+
 
 %%% testing 230829
 
@@ -79,27 +127,48 @@ t += 2
 %t += .1
 
 %call magicfields515()
-%on: imagshut
-%t += 6
+%call setsbcoolpows(radpow_img, rad2pow_img, axpow_img*0.5)
+%off: coolSH
+on: radial2
+%on: axial
+%on: radial
 on: latticehold
-t += 0.05
-on: latblink
+%on: latblink
 
+t += 0.01
+%variableon: latblink enable_rearrange
+%pulseon: tektronixtrig .001
+off: lat813ao
 t += 15
 %call lacs(5)  % This wants imaging snapshot
 
-off: latblink
-t += 0.05
+%off: latblink
+on: lat813ao
+t += 0.01
 off: latticehold
+%variableon: latticehold 1-enable_rearrange
 
 %call magicfieldsdual813()
 
-
 off: radial2
-dacexpspace: axialpow ax_lattice_zero ax_lattice_pow 1 30
+off: radial
+off: axial
+on: coolSH
+daclinspace: axialpow 0.34 ax_lattice_pow 10 100
+%dacexpspace: axialpow ax_lattice_zero ax_lattice_pow 1 30
 %t += 6
-dacexpspace: latticepow lattice_zero lattice_pow 1 30
-t += 2
+%dacexpspace: latticepow lattice_zero lattice_pow 1 30
+%daclinspace: latticepow 1.5 lattice_pow 1 30
+t += 10.1
+
+off: latticehold
+
+%dacexpspace: axialpow ax_lattice_zero ax_lattice_pow/20 25 100
+%dacexpspace: latticepow lattice_zero lattice_pow/20 25 100
+%t += 30
+%daccosspace: axialpow ax_lattice_pow/20 ax_lattice_pow 1 50
+%daccosspace: latticepow lattice_pow/20 lattice_pow 1 50
+%t += 2
 
 pulseon: resetdds .1
 t += .2
@@ -109,12 +178,41 @@ repeat: 1
 end
 t += .1
 
+%%%% cooling %%%%
+%off: tweezershut
+%t += 5
+
+%%%lattice SB cool
+%pulseon: resetdds .1
+%t += .2
+%call setsbcoolpows(radpow_sbcool, rad2pow_sbcool, axpow_sbcool)
+%call sbcool(time_sbcool)
+
+%call sbcool_pulsed(time_sbcool_pulsed_rad, time_sbcool_pulsed_ax, pulsenum)
+
+%on: tweezershut
+%t += 5
+%%%% end cooling %%%%
+
+call setsbcoolpows(radpow_sbcool, rad2pow_sbcool, axpow_sbcool)
 off: coolSH
 on: radial
 on: radial2
-
 pulseon: gmmove .0001
 t += .08
+
+%%Compress
+%repeat: 16
+% pulseon: gmmove .00011
+% t += .08
+%% t += 100.1
+% pulseon: gmmove .00011
+% t += 1
+%% t += 100.1
+% pulseon: gmmove .00011
+% t += .08
+%% t += 100.1
+%end
 
 off: radial
 off: radial2
@@ -128,3 +226,6 @@ dac: tweezerpow tweezer_pow
 pulseon: gmload .0001
 t += 1
 off: t515hold
+
+%daclinspace: latticepow lattice_pow2 lattice_pow 3 15
+%t += 10

@@ -117,6 +117,18 @@ ULONG DioSystem::countDacTriggers(UINT variation)
 	return triggerCount;
 }
 
+ULONG DioSystem::countAllTriggers(UINT variation)
+{
+	ULONG triggerCount = 0;
+	// D14
+	std::pair<unsigned short, unsigned short> dacLine = { 3,14 };
+	for (auto command : ttlCommandList[variation])
+	{
+		triggerCount++;
+	}
+	return triggerCount;
+}
+
 
 std::array< std::array<bool, 16>, 4 > DioSystem::getFinalSnapshot()
 {
@@ -1678,10 +1690,11 @@ UINT DioSystem::countTriggers( UINT row, UINT number, UINT variation )
 
 void DioSystem::checkNotTooManyTimes( UINT variation )
 {
-	if ( formattedTtlSnapshots[variation].size( ) > 4096)
+	//if ( formattedTtlSnapshots[variation].size( ) > 4096)
+	if (formattedTtlSnapshots[variation].size() > 16384)
 	{
-		thrower( "ERROR: DIO Data has more than 4096 individual timestamps, which is larger than the DIO64 FIFO Buffer"
-				 ". The DIO64 card can only support 4096 individual time-stamps. If you need more, you need to configure"
+		thrower( "ERROR: DIO Data has more than 16384 individual timestamps, which is larger than the DIO64 FIFO Buffer"
+				 ". The DIO64 card can only support 16384 individual time-stamps. If you need more, you need to configure"
 				 " this code to create a thread to continuously write to the DIO64 card as it outputs." );
 	}
 }

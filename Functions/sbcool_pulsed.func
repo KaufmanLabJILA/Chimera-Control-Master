@@ -2,13 +2,20 @@
 def sbcool_pulsed(timeperpulse_ax, timeperpulse_rad, pulses):
   % insert commands here...
   repeat: pulses
-   on: axial
-   t += timeperpulse_ax
-   off: axial
-   on: radial2
-   t += timeperpulse_rad
-   off: radial2
    on: radial
    t += timeperpulse_rad
    off: radial
+   t += timeperpulse_rad
+   on: axial
+   t += timeperpulse_ax
+   off: axial
+   t += timeperpulse_ax
+   on: radial2
+   t += timeperpulse_rad
+   off: radial2
+   t += timeperpulse_rad
+   on: axial
+   t += timeperpulse_ax
+   off: axial
+   t += timeperpulse_ax
   end

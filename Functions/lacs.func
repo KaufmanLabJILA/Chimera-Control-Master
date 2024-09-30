@@ -16,7 +16,7 @@ def lacs(lactime):
  t += .1
 
  %%% 240613:
- off: bigzrsd
+ %off: bigzrsd
  off: coolSH
  %%% 240613^^
 
@@ -39,7 +39,7 @@ def lacs(lactime):
  off: rp679
 
  %%% 240613:
- on: bigzrsd
+ %on: bigzrsd
  on: coolSH
  %%% 240613^^
 

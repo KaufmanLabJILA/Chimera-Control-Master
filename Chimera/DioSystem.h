@@ -49,6 +49,7 @@ class DioSystem
 		void setTtlStatusNoForceOut(std::array< std::array<bool, 16>, 4 > status);
 
 		ULONG countDacTriggers(UINT variation );
+		ULONG countAllTriggers(UINT variation);
 		ULONG getNumberEvents(UINT variation );
 
 		void rearrange(UINT width, UINT height, fontMap fonts);

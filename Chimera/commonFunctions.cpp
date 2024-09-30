@@ -1552,8 +1552,9 @@ namespace commonFunctions
 		logger->logAWGParameters(input.masterInput);
 		logger->logMiscellaneous();
 		//logger->closeFile(); //TODO: May have to remove this once andor is integrated.
+		std::string fileSavePath = logger->getCurrentFileSavePath();
 
-		return dateStr;
+		return fileSavePath;
 	}
 
 	void abortRearrangement( MainWindow* mainWin, CameraWindow* camWin )
@@ -1624,7 +1625,7 @@ namespace commonFunctions
 
 		OVERLAPPED ovl { 0 };
 		ovl.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
-		std::vector<BYTE> buffer(1024);
+		std::vector<BYTE> buffer(1024*64);
 
 		bool pyAnalysisFound = false;
 		while (!pyAnalysisFound)

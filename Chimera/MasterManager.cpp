@@ -147,8 +147,13 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 						"snapshots was " + str(input->dacs->getNumberSnapshots(variationInc)));
 				}
 				input->dacs->checkTimingsWork(variationInc);
+
+				//expUpdate("All trigger count" + str(input->ttls->countAllTriggers(variationInc)), input->comm, input->quiet );
+				//expUpdate("DAC trigger count" + str(input->ttls->countDacTriggers(variationInc)), input->comm, input->quiet );
 			}
 		}
+
+
 		/// output some timing information
 		std::chrono::time_point<chronoClock> varProgramEndTime( chronoClock::now( ) );
 		expUpdate( "Programming took " 

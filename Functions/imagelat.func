@@ -12,19 +12,18 @@ def imageLat(imageTime):
  t += .2
  on: rp707
  on: rp679
+ t += 1
  
  %%% 240613:
  off: bigzrsd
  off: coolSH
  %%% 240613^^
-
- on: imag461
  on: axial
  on: radial2
  on: radial
+ on: imag461
  %on: red3dnarrow %%%%
  t += imageTime
-
  off: axial
  off: radial2
  off: radial

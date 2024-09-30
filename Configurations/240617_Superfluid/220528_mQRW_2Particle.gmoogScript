@@ -1,4 +1,4 @@
-rearrange filterarbscrunchycompressx 2 amprate moverate %max is ampstep 134217727(?may be 26 bit), freqstep 511
+rearrange filterarbscrunchy 2 amprate moverate %max is ampstep 134217727(?may be 26 bit), freqstep 511
 %filterarbscrunchy compressx
 %centerscrunchyx
 
@@ -71,7 +71,7 @@ targetstart
 000000000000000000000000000000000000000000000000
 100100100100100100100100100100100100100100100100
 
-targetend
+targetend 
 %%%
 
 %test
