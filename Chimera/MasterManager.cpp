@@ -1383,11 +1383,45 @@ bool MasterManager::handleDacCommands( std::string word, ScriptStream& stream, s
 			{
 				thrower(err.whatStr() + "... in \"dacCosSpace:\" command inside main script.\r\n");
 			}
-			if (word == "dacexpspace:")
+			else if (word == "dacexpspace:")
 			{
 				thrower(err.whatStr() + "... in \"dacExpSpace:\" command inside main script.\r\n");
 			}
+			else if (word == "dacpartcosspace:")
+			{
+				thrower(err.whatStr() + "... in \"dacPartCosSpace:\" command inside main script.\r\n");
+			}
 		}
+	}
+	else if (word == "dacpartcosspace:")
+	{
+		DacCommandForm command;
+		std::string name;
+		stream >> name;
+		stream >> command.initVal;
+		command.initVal.assertValid(vars);
+		stream >> command.finalVal;
+		command.finalVal.assertValid(vars);
+		stream >> command.rampTime;
+		command.rampTime.assertValid(vars);
+		stream >> command.numSteps;
+		command.numSteps.assertValid(vars);
+		command.time = operationTime;
+		command.repeatId = repeatId;
+		stream >> command.rampFrac;
+		command.rampFrac.assertValid(vars);
+
+		command.commandName = "dacpartcosspace:";
+
+		try
+		{
+			dacs->handleDacScriptCommand(command, name, dacShades, vars, ttls);
+		}
+		catch (Error& err)
+		{
+			thrower(err.whatStr() + "... in \"dacPartCosSpace:\" command inside main script.\r\n");
+		}
+
 	}
 	else if (word == "dacarange:")
 	{
@@ -1631,7 +1665,7 @@ void MasterManager::callCppCodeFunction()
 bool MasterManager::isValidWord( std::string word )
 {
 	if (word == "t" || word == "t++" || word == "t+=" || word == "t=" || word == "on:" || word == "off:"
-		 || word == "dac:" || word == "dacarange:" || word == "daclinspace:" || word == "daccosspace:" || word == "dacexpspace:" || word == "rsg:" || word == "call" 
+		 || word == "dac:" || word == "dacarange:" || word == "daclinspace:" || word == "daccosspace:" || word == "dacexpspace:" || word == "dacpartcosspace:" || word == "rsg:" || word == "call" 
 		 || word == "repeat:" || word == "end" || word == "pulseon:" || word == "pulseoff:" || word == "variableon:" || word == "callcppcode")
 	{
 		return true;

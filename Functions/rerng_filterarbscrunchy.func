@@ -1,8 +1,10 @@
 % Master-Script See the "?" for info on commands.
 def rerng_filterarbscrunchy():
 
-daccosspace: axialpow ax_lattice_pow 0.5 5 300
-daccosspace: latticepow lattice_pow 0.5 5 300
+
+
+daccosspace: axialpow ax_lattice_pow ax_pow_rearrange 15 300
+daccosspace: latticepow lattice_pow lattice_pow_rearrange 15 300
 t += 15.1
 on: t515hold
 t += 1
@@ -43,8 +45,8 @@ t += .8
 %t += 100.1
 
 
-daccosspace: latticepow 0.5 lattice_pow 15 300
-daccosspace: axialpow 0.5 ax_lattice_pow 15 300
+daccosspace: latticepow lattice_pow_rearrange lattice_pow 15 300
+daccosspace: axialpow ax_pow_rearrange ax_lattice_pow 15 300
 t += 15.1
 
 off: radial
@@ -101,9 +103,10 @@ t += .1
 off: radial2
 variableon: latticehold 1-enable_rearrange
 %dacexpspace: axialpow ax_lattice_pow ax_lattice_zero 1 30
+%dacexpspace: latticepow lattice_pow lattice_zero 1 30
+%t += 1.1
 daccosspace: axialpow ax_lattice_pow 0.34 20 200
 %t += 6
-%dacexpspace: latticepow lattice_pow lattice_zero 1 30
 %daccosspace: latticepow lattice_pow 1.5 1 40
 
 t += 20.1
@@ -156,6 +159,8 @@ off: axial
 on: coolSH
 daclinspace: axialpow 0.34 ax_lattice_pow 10 100
 %dacexpspace: axialpow ax_lattice_zero ax_lattice_pow 1 30
+%dacexpspace: latticepow lattice_zero lattice_pow 1 30
+%t += 1.1
 %t += 6
 %dacexpspace: latticepow lattice_zero lattice_pow 1 30
 %daclinspace: latticepow 1.5 lattice_pow 1 30

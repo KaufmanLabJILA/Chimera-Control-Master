@@ -7,7 +7,7 @@
 
 struct DacCommandForm
 {
-	// can either be "dac", "dacarange", "daclinspace", "daccosspace", or "dacexpspace"
+	// can either be "dac", "dacarange", "daclinspace", "daccosspace", "dacpartcosspace", or "dacexpspace"
 	std::string commandName;
 
 	unsigned short line;
@@ -18,6 +18,7 @@ struct DacCommandForm
 	Expression rampTime;
 	Expression rampInc;
 	Expression numSteps;
+	Expression rampFrac;
 
 	// stores whether this command is subject to repeats and which repeat it correpsonds to in the tree if so
 	repeatInfoId repeatId = { 0, {0,0}, false };

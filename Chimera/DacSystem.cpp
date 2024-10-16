@@ -826,6 +826,7 @@ void DacSystem::interpretKey( std::vector<variableType>& variables, std::string&
 				finalValue = dacCommandFormList[eventInc].finalVal.evaluate(variables, variationInc);
 				// deal with numPoints
 				numSteps = dacCommandFormList[eventInc].numSteps.evaluate(variables, variationInc);
+
 				double rampInc = (finalValue - initValue) / numSteps;
 				if ((fabs(rampInc) < 10.0 / pow(2, 16)) && !resolutionWarningPosted)
 				{
@@ -852,6 +853,57 @@ void DacSystem::interpretKey( std::vector<variableType>& variables, std::string&
 				}
 				// and get the final value. Just use the nums explicitly to avoid rounding error I guess.
 				tempEvent.value = finalValue;
+				tempEvent.time = initTime + rampTime;
+				dacCommandList[variationInc].push_back(tempEvent);
+			}
+			else if (dacCommandFormList[eventInc].commandName == "dacpartcosspace:")
+			{
+				// Important: this ramp still takes the full rampTime to complete, but only completes rampFrac of the cosine ramp in that time
+				// Effectively, this does (rampFrac) of a full cosine ramp which would take rampTime/rampFrac normally
+				// We do this to stay consistent for timing purposes
+
+				// Also important to note that the final value specified is the theoretical final value of the full cosine ramp, not the actual
+				// end value which the DAC ends the ramp at
+
+				// interpret ramp time command. I need to know whether it's ramping or not.
+				double rampTime = dacCommandFormList[eventInc].rampTime.evaluate(variables, variationInc);
+				/// many points to be made.
+				// convert initValue and finalValue to doubles to be used
+				double initValue, finalValue, numSteps, rampFrac;
+				initValue = dacCommandFormList[eventInc].initVal.evaluate(variables, variationInc);
+				// deal with final value;
+				finalValue = dacCommandFormList[eventInc].finalVal.evaluate(variables, variationInc);
+				// deal with numPoints
+				numSteps = dacCommandFormList[eventInc].numSteps.evaluate(variables, variationInc);
+				// deal with rampFrac
+				rampFrac = dacCommandFormList[eventInc].rampFrac.evaluate(variables, variationInc);
+
+				double rampInc = (finalValue - initValue) / numSteps;
+				if ((fabs(rampInc) < 10.0 / pow(2, 16)) && !resolutionWarningPosted)
+				{
+					resolutionWarningPosted = true;
+					warnings += "Warning: numPoints of " + str(numSteps) + " results in a ramp increment of " + str(rampInc) + " is below the resolution of the dacs (which is 10/2^16 = " + str(10.0 / pow(2, 16)) + "). It's likely taxing the system to "
+																																																					  "calculate the ramp unnecessarily.\r\n";
+				}
+				// This might be the first not i++ usage of a for loop I've ever done... XD
+				// calculate the time increment:
+				double timeInc = rampTime / numSteps;
+				double initTime = tempEvent.time;
+				double currentTime = tempEvent.time;
+				double val = initValue;
+				double rampAmplitude = (finalValue - initValue);
+				// handle the two directions seperately.
+				for (auto stepNum : range(numSteps))
+				{
+					tempEvent.value = val;
+					tempEvent.time = currentTime;
+					dacCommandList[variationInc].push_back(tempEvent);
+					currentTime += timeInc;
+					// val += rampInc;
+					val = initValue + rampAmplitude * (1 - pow(cos(rampFrac * ((stepNum + 1) / numSteps) * 3.14159 / 2), 2));
+				}
+				// use the calculateed final value as the final value, even though this may introduce small rounding errors in some cases
+				tempEvent.value = val;
 				tempEvent.time = initTime + rampTime;
 				dacCommandList[variationInc].push_back(tempEvent);
 			}
@@ -1373,7 +1425,7 @@ void DacSystem::makeFinalDataFormat(UINT variation)
 void DacSystem::handleDacScriptCommand( DacCommandForm command, std::string name, std::vector<UINT>& dacShadeLocations,
 										std::vector<variableType>& vars, DioSystem* ttls )
 {
-	if (command.commandName != "dac:" && command.commandName != "dacarange:" && command.commandName != "daclinspace:" && command.commandName != "daccosspace:" && command.commandName != "dacexpspace:")
+	if (command.commandName != "dac:" && command.commandName != "dacarange:" && command.commandName != "daclinspace:" && command.commandName != "daccosspace:" && command.commandName != "dacexpspace:" && command.commandName != "dacpartcosspace:")
 	{
 		thrower( "ERROR: dac commandName not recognized!" );
 	}

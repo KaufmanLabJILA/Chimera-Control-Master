@@ -10,14 +10,13 @@ def blue_mot(loadTime):
   on: slower
 
   dac: bigzcoil 1.8
-  dac: x1coil -0.075
+  dac: x1coil -0.065
   dac: y1coil 0.065
   dac: y2coil 0.065
   %dac: z1coil -0.06 % changed to -0.05 from 0.16 on 240620+240624
   % dac: z1coil -0.05
   % dac: z1coil -0.11 %0.1 % changed from -0.05 on 240813
   dac: z1coil -0.11 % changed 240917
-
 
 %  dac: x1coil -0.08
 %  dac: y1coil 0.03
@@ -32,7 +31,8 @@ def blue_mot(loadTime):
 %  dac: y2coil .02
 %  dac: z1coil scan
 
-  dacexpspace: blue3dpow .35 .001 12 9
+  %dacexpspace: blue3dpow .35 .001 12 9
+  dacexpspace: blue3dpow .35 0.025 12 9
   %daclinspace: bigzcoil 1.8 0.15 12 15
   t += 8
 %  dac: blue3dpow 0.02 %.06 %0.077
@@ -44,12 +44,12 @@ def blue_mot(loadTime):
 %  off: rp679
   t += 0.01
 
-  dac: blue3dpow 0.3
+  dac: blue3dpow 0.001
   t += .001
 
   on: blue3d
   %on: blowawayttl
-  %t += .25
+  %t += scan
   t += 0.001
   off: blowawayttl
   off: imag461

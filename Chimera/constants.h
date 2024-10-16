@@ -901,6 +901,7 @@ const char MASTER_HELP[] = "This is a script for programming master timing for T
 "-      daclinspace: [dacName] [initValue] [finalValue] [rampTime] [numberOfSteps]\n"
 "-      daccosspace: [dacName] [initValue] [finalValue] [rampTime] [numberOfSteps]\n"
 "-      dacexpspace: [dacName] [initValue] [finalValue] [rampTime] [numberOfSteps]\n"
+"-      dacpartcosspace: [dacName] [initValue] [finalValue] [rampTime] [numberOfSteps] [rampFraction]\n"
 "-      rsg: [frequency to add] [Power at that frequency (dBm)]\n"
 "-      def [functionName]([functionArguments]):\n"
 "-      call [functionName(argument1, argument2, etc...)]\n"
