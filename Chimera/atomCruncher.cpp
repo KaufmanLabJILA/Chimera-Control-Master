@@ -393,6 +393,143 @@ int atomCruncher::equalizeY(moveSequence& moveseq) {
 	return nxMean;
 }
 
+void atomCruncher::smartScrunchXTarget(moveSequence& moveseq, bool constantMoves = false) {
+	UINT wx = (positionsX.size()); // 48, 48 typically
+	UINT wy = (positionsY.size());
+
+	UINT nx = std::count(positionsX.begin(), positionsX.end(), true);
+	UINT ny = std::count(positionsY.begin(), positionsY.end(), true);
+
+	char buf[100];
+
+	// to start, calculate the required column distribution and current number of atoms in each row
+	std::vector<int> reqColCounts(wx, 0);
+	std::vector<int> rowFill(ny, 0);
+
+	int tx = -1;
+	for (int x = 0; x < wx; x++) {
+		if (positionsX[x]) { tx++; }
+		int ty = -1;
+		for (int y = 0; y < wy; y++) {
+			if (positionsY[y]) { ty++; }
+			if ((*rearrangerAtomQueue)[0][x + wx * y]) { rowFill[ty]++; }
+		}
+		for (int y = 1; y < wy - 1; y++) { // exclude top and bottom row in definition of rearrangement pattern
+			if (targetPositionsTemp[x + wx * y]) { reqColCounts[x]++; }
+		}
+	}
+
+	// this is a hack: make the required column counts in columns which are not active very negative so we definitely don't try to place atoms there
+	for (int x = 0; x < wx; x++) {
+		if (!positionsX[x]) {
+			reqColCounts[x] = -(int)nx * (int)ny;
+		}
+	}
+
+	// determine order in which to process rows
+	std::vector<int> rowOrder(ny);
+	std::iota(rowOrder.begin(), rowOrder.end(),0);
+	std::sort(rowOrder.begin(), rowOrder.end(), [&](int i, int j) {return rowFill[i] > rowFill[j]; });
+
+	// now go row by row, and and rearrange each row
+	std::vector<int> leftToFill(reqColCounts);
+	std::vector<std::vector<int>> rowRearrangements(ny);
+
+	for (int ty = 0; ty < ny; ty++) {
+		int curRowNum = rowOrder[ty]; // process rows in the order we determined before
+		int rowAtomCount = rowFill[curRowNum];
+
+		// priority is to fill the columns which need the most atoms first
+		std::vector<int> colOrder(wx);
+		std::iota(colOrder.begin(), colOrder.end(), 0);
+		std::sort(colOrder.begin(), colOrder.end(), [&](int i, int j) {return leftToFill[i] > leftToFill[j]; }); // colOrder holds the indices of cols in order of need
+
+		// we will move atoms into the first rowAtomCount of these
+		colOrder.resize(rowAtomCount);
+		for (int i = 0; i < rowAtomCount; i++) {
+			leftToFill[colOrder[i]]--;
+		}
+
+		std::sort(colOrder.begin(), colOrder.end());
+
+		rowRearrangements[curRowNum] = colOrder;
+	}
+
+	// rowRearrangements[i] now holds the lattice positions that atoms in row i need to be moved to
+	/*
+	OutputDebugStringA("Column Counts Required\n");
+	for (auto const& cnt : reqColCounts) {
+		sprintf(buf, " %d ", cnt);
+		OutputDebugStringA(buf);
+	}
+
+
+	OutputDebugStringA("\n Row Counts Present\n");
+	for (auto const& cnt : rowFill) {
+		sprintf(buf, " %d ", cnt);
+		OutputDebugStringA(buf);
+	}
+
+	OutputDebugStringA("\n Row Processing Order\n");
+	for (auto const& cnt : rowOrder) {
+		sprintf(buf, " %d ", cnt);
+		OutputDebugStringA(buf);
+	}
+
+	OutputDebugStringA("\n Row Rearrangements\n");
+	for (auto const& rearr : rowRearrangements) {
+		for (auto const& c : rearr) {
+			sprintf(buf, " %d ", c);
+			OutputDebugStringA(buf);
+		}
+		OutputDebugStringA("\n");
+	}
+	*/
+
+	// execute the moves
+	
+	int iy = 0;
+	int ty = 0;
+	for (auto const& channelBoolY : positionsY)
+	{
+		if (channelBoolY)
+		{
+			// place a start tweezer on each atom in the row
+			moveSingle single;
+			int ix = 0;
+			for (auto const& channelBoolX : positionsX)
+			{
+				if (channelBoolX && (*rearrangerAtomQueue)[0][ix + wx * iy])
+				{
+					//sprintf(buf, "iy: %d, ix: %d, have atom here\n", iy, ix);
+					//OutputDebugStringA(buf);
+					single.startAOX.push_back(ix); //Place tweezers on all atoms in column
+					(*rearrangerAtomQueue)[0][ix + wx * iy] = 0; //remove atom from pickup location
+				}
+				ix++;
+			}
+			single.startAOY.push_back(iy); //Single tone in x
+			single.endAOY.push_back(iy); //x does not move
+			if (single.nx() > 0 || constantMoves) { moveseq.moves.push_back(single); }
+
+			// do the relocation, we know we have matching numbers of target sites and atoms in each row
+			int nAtomsInRow = moveseq.moves.back().nx();
+			int ixTarget = 0;
+			for (int ix2 = 0; ix2 < nAtomsInRow; ix2++)
+			{
+				ixTarget = rowRearrangements[ty][ix2];
+				//sprintf(buf, "iy: %d, ty: %d, ix2: %d, Target x: %d\n", iy, ty, ix2, ixTarget);
+				//OutputDebugStringA(buf);
+				moveseq.moves.back().endAOX.push_back(ixTarget); //Move tweezer to target site
+				(*rearrangerAtomQueue)[0][ixTarget + wx * iy] = 1; //place atom in dropoff location
+			};
+
+			ty++;
+		}
+		iy++;
+	}
+
+}
 
 void atomCruncher::scrunchYTarget(moveSequence& moveseq, bool constantMoves = false) {
 	UINT wx = (positionsX.size()); //For convenience, could remove.
@@ -861,6 +998,12 @@ moveSequence atomCruncher::getRearrangeMoves(std::string rearrangeType) {
 		}
 
 		scrunchX(moveseq, true);
+	}
+	else if (rearrangeType == "filterarbssmartscrunchxy") {
+		// new algo, blame Theo
+		smartScrunchXTarget(moveseq, true);
+		scrunchYTarget(moveseq, true);
+		filterReservoir(moveseq);
 	}
 	else if (rearrangeType == "equaltetris")
 	{

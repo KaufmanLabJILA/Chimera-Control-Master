@@ -25,6 +25,7 @@ public:
 	void scrunchYFixedLength(moveSequence& moveseq, int nPerColumn, bool centered);
 	int equalizeY(moveSequence& moveseq);
 	void enoughY(moveSequence& moveseq, bool constantMoves);
+	void smartScrunchXTarget(moveSequence& moveseq, bool constantMoves);
 	void filterAtomQueue(void);
 	void writeAtomArrayFile(int picsPerRep);
 

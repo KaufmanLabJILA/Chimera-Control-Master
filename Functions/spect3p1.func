@@ -3,8 +3,8 @@ def spect3p1():
  on: imagshut
  t += 4
  off: coolSH
- %on: axial
- on: radial
+ on: axial
+ %on: radial
  %on: radial2
  t += 0.1
  off: axial
