@@ -22,10 +22,13 @@ public:
 	void filterReservoir(moveSequence& moveseq);
 	void scrunchY(moveSequence& moveseq, bool centered);
 	void scrunchYTarget(moveSequence& moveseq, bool constantMoves);
+	void NNscrunchYTarget(moveSequence& moveseq, bool constantMoves);
 	void scrunchYFixedLength(moveSequence& moveseq, int nPerColumn, bool centered);
 	int equalizeY(moveSequence& moveseq);
 	void enoughY(moveSequence& moveseq, bool constantMoves);
+	void NNscrunchX(moveSequence& moveseq, bool constantMoves);
 	void smartScrunchXTarget(moveSequence& moveseq, bool constantMoves);
+	void smartScrunchXTargetAvoidNN(moveSequence& moveseq, bool constantMoves);
 	void filterAtomQueue(void);
 	void writeAtomArrayFile(int picsPerRep);
 
