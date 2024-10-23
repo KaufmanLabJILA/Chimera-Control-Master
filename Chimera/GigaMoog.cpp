@@ -487,6 +487,22 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 			hardwareChannelsDAC1 = memoryDAC1.getNextChannels(ny);
 		}
 
+		char buf[100];
+		sprintf(buf, "\n Allocation for step %d: ", (int)stepID);
+		OutputDebugStringA(buf);
+
+		OutputDebugStringA(" X's: ");
+		for (int c : hardwareChannelsDAC0) {
+			sprintf(buf, " %d ", c);
+			OutputDebugStringA(buf);
+		}
+
+		OutputDebugStringA(" Y's: ");
+		for (int c : hardwareChannelsDAC1) {
+			sprintf(buf, " %d ", c);
+			OutputDebugStringA(buf);
+		}
+
 		//step 1: ramp up tones at initial locations and phases
 		for (int channel = 0; channel < 16; channel++) {//TODO: 16 could be changed to 48 if using more tones for rearrangement
 			if (ny > 1 && nx == 1 && channel < 3) //Triple up tones if only a single tone on, assuming y axis not already tripled.
@@ -501,6 +517,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 				ms.enqueue(m);
 			}
 			else if (ny != 0 && nx != 0 && channel < nx) {
+				OutputDebugStringA("\n USing nonstandard write for X \n");
 				size_t hardwareChannel = hardwareChannelsDAC0[channel];
 				freq = getFreqX(input.moves[stepID].startAOX[channel], input.moves[stepID].startAOY[0]);
 				amp = getAmpX(input.moves[stepID].startAOX[channel], input.moves[stepID].startAOY[0]);
@@ -528,6 +545,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 				ms.enqueue(m);
 			}
 			else if (nx != 0 && ny != 0 && channel < ny) {
+				OutputDebugStringA("\n USing nonstandard write for Y \n");
 				size_t hardwareChannel = hardwareChannelsDAC1[channel];
 				freq = getFreqY(input.moves[stepID].startAOX[0], input.moves[stepID].startAOY[channel]);
 				amp = getAmpY(input.moves[stepID].startAOX[0], input.moves[stepID].startAOY[channel]);

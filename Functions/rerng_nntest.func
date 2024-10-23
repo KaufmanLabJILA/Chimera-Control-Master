@@ -17,7 +17,7 @@ on: radial2
 
 % change number of repeats according to right number
 % 24 + 22 gets first column, 23 first two
-repeat: 24+24  %+42
+repeat: 24+48+1  %+42
  pulseon: gmmove .00011
  t += 0.08
 % t += 100.1

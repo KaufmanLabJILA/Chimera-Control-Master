@@ -469,7 +469,11 @@ void atomCruncher::smartScrunchXTargetAvoidNN(moveSequence& moveseq, bool consta
 		for (int y = 0; y < wy; y++) {
 			if (positionsY[y]) { ty++; }
 			if ((*rearrangerAtomQueue)[0][x + wx * y]) { rowFill[ty]++; }
-			if (targetPositionsTemp[x + wx * y]) { rowFillTarget[ty]++; }
+			if (targetPositionsTemp[x + wx * y]) { // include adjacent rows as well
+				rowFillTarget[ty]++; 
+				if (ty > 0) { rowFillTarget[ty - 1]++; }
+				if (ty < wy-1) { rowFillTarget[ty + 1]++; }
+			}
 			if (targetPositionsTemp[x + wx * y]) { reqColCounts[x]++; }
 		}
 		for (int y = 1; y < wy - 1; y++) { // exclude top and bottom row in definition of rearrangement pattern
@@ -911,21 +915,26 @@ void atomCruncher::NNscrunchYTarget(moveSequence& moveseq, bool constantMoves = 
 		};
 
 		// Now move the whole column one left (for columns which have atoms (not on edge)
-		
+		shiftCol = false;
 		if (shiftCol) {
 			sprintf(buf, "\n Shifting column %d left: ", ix);
 			OutputDebugStringA(buf);
 			moveSingle shift;
-			// middle 10 for now
-			for (int iy2 = 18; iy2 < 29; iy2++) {
-				shift.startAOY.push_back(iy2);
-				shift.endAOY.push_back(iy2); // don't change Y
+			// find which rows have atoms
+			for (int iy2 = 0; iy2 < wx; iy2++) {
+				// if there is atom here
+				if ((*rearrangerAtomQueue)[0][ix + wx * iy2] == 1) {
 
-				shift.startAOX.push_back(ix);
-				shift.endAOX.push_back(ix - 1); // shift X left one
-				sprintf(buf, "(%d, %d) -> (%d, %d),  ", ix, iy2, ix - 1, iy2);
-				OutputDebugStringA(buf);
+					shift.startAOY.push_back(iy2);
+					shift.endAOY.push_back(iy2); // turn on tweezer, but don't change Y
+
+					sprintf(buf, "(%d, %d) -> (%d, %d),  ", ix, iy2, ix - 2, iy2);
+					OutputDebugStringA(buf);
+				}
 			}
+			shift.startAOX.push_back(ix); // single tone in X
+			shift.endAOX.push_back(ix - 2); // shift X left two
+
 			moveseq.moves.push_back(shift);
 
 			sprintf(buf, "\n Atoms supposedly moved: %d \n", moveseq.moves.back().ny());
@@ -1068,6 +1077,39 @@ void atomCruncher::compressX(moveSequence& moveseq) {
 		single.endAOX.push_back(coordXtarget); //move entire column
 		if (single.ny() > 0) { moveseq.moves.push_back(single); }
 	}
+}
+
+void atomCruncher::NNcompressX(moveSequence& moveseq) {
+	///Change the spacing between columns of target pattern by moving entire columns at a time.
+	char buf[100];
+
+	std::vector<int> positionCoordinatesXtmp = positionCoordinatesX; //make a version of positionCoordinates that can be modified.
+	int iCenter = positionCoordinatesX.size() / 2; //central load column index
+	int coordXCenter = positionCoordinatesX[iCenter];
+
+	OutputDebugStringA("\n Column shift: Rows: ");
+
+	// start by moving just column 18 left, shouldn't interfere with anything
+	moveSingle single;
+	int col = 18;
+	for (int iy = 21; iy < 26; iy++) {
+		sprintf(buf, " %d ", iy);
+		OutputDebugStringA(buf);
+		single.startAOY.push_back(iy);
+		single.endAOY.push_back(iy);
+	}
+	//sprintf(buf, "from column %d to %d \n", 21, 19);
+	//OutputDebugStringA(buf);
+
+	single.startAOX.push_back(18);
+	single.endAOX.push_back(15);
+
+	single.startAOX.push_back(21);
+	single.endAOX.push_back(21);
+
+	single.startAOX.push_back(24);
+	single.endAOX.push_back(24);
+	moveseq.moves.push_back(single);
 }
 
 void atomCruncher::compressX2(moveSequence& moveseq) {
@@ -1350,8 +1392,10 @@ moveSequence atomCruncher::getRearrangeMoves(std::string rearrangeType) {
 	}
 	else if (rearrangeType == "nnrearrtest") {
 		// do some testing for potential nearest-neighbor rearrangement alg
-		smartScrunchXTargetAvoidNN(moveseq, true); // needs nRow = 24 triggers
+		//smartScrunchXTargetAvoidNN(moveseq, true); // needs nRow = 24 triggers
+		smartScrunchXTarget(moveseq, true); // needs nRow = 24 triggers
 		NNscrunchYTarget(moveseq, true); // need nCol = 16 triggers
+		NNcompressX(moveseq);
 
 
 	}
