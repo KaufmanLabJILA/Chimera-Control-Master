@@ -19,6 +19,7 @@ public:
 	std::vector<int8> endAOX;
 	std::vector<int8> endAOY;
 
+
 	bool manualPhaseX = false; // allow manually specifying phases so that we can stack tones "by hand"
 	bool manualPhaseY = false;
 

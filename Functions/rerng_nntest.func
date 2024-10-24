@@ -29,7 +29,7 @@ repeat: 24+16  %+42
 %t += 300.1
 end
 
-repeat: 0 
+repeat: 1
  pulseon: gmmove .00011
  t += 0.08
 %t += 1000.1
@@ -40,6 +40,7 @@ repeat: 0
  t += 0.08
 %t += 300.1
 end
+
 
 off: radial
 off: radial2

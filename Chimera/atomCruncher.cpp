@@ -1110,25 +1110,18 @@ void atomCruncher::NNcompressX(moveSequence& moveseq) {
 	single.manualPhaseX = true;
 
 	// hold tweezer on 18
-	single.startAOX.push_back(18); // 1
-	single.endAOX.push_back(18);
-	single.startAOX.push_back(18); // 2
-	single.endAOX.push_back(18);
-	single.startAOX.push_back(18); // 3
-	single.endAOX.push_back(18);
-	single.phaseX.push_back(0);
-	single.phaseX.push_back(0);
-	single.phaseX.push_back(0);
+
+
 
 	// move tweezer from 21 to 19
 	single.startAOX.push_back(21); // 1
 	single.endAOX.push_back(19);
+	single.phaseX.push_back(120);
 	single.startAOX.push_back(21); // 2
 	single.endAOX.push_back(19);
+	single.phaseX.push_back(120);
 	single.startAOX.push_back(21); // 3
 	single.endAOX.push_back(19);
-	single.phaseX.push_back(120);
-	single.phaseX.push_back(120);
 	single.phaseX.push_back(120);
 
 	moveseq.moves.push_back(single);
