@@ -19,6 +19,12 @@ public:
 	std::vector<int8> endAOX;
 	std::vector<int8> endAOY;
 
+	bool manualPhaseX = false; // allow manually specifying phases so that we can stack tones "by hand"
+	bool manualPhaseY = false;
+
+	std::vector<double> phaseX; // specified phases, only accessed if corresponding flag above is true
+	std::vector<double> phaseY;
+
 	inline UINT8 nx() {
 		return startAOX.size();
 	}; //number of active tweezers

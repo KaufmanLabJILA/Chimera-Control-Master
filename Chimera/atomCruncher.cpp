@@ -855,8 +855,14 @@ void atomCruncher::NNscrunchYTarget(moveSequence& moveseq, bool constantMoves = 
 			}
 		}
 
+		if (nxTarget == 0) {
+			OutputDebugStringA("No target patterns in this column, not writing a move\n");
+			continue;
+		}
+
 		sprintf(buf, "\nColumn %d needs %d atoms. Starting tweezers on: ", ix, nxTarget);
 		OutputDebugStringA(buf);
+
 
 		moveSingle single;
 		// start tweezer positions for moves
@@ -1101,14 +1107,30 @@ void atomCruncher::NNcompressX(moveSequence& moveseq) {
 	//sprintf(buf, "from column %d to %d \n", 21, 19);
 	//OutputDebugStringA(buf);
 
-	single.startAOX.push_back(18);
-	single.endAOX.push_back(15);
+	single.manualPhaseX = true;
 
-	single.startAOX.push_back(21);
-	single.endAOX.push_back(21);
+	// hold tweezer on 18
+	single.startAOX.push_back(18); // 1
+	single.endAOX.push_back(18);
+	single.startAOX.push_back(18); // 2
+	single.endAOX.push_back(18);
+	single.startAOX.push_back(18); // 3
+	single.endAOX.push_back(18);
+	single.phaseX.push_back(0);
+	single.phaseX.push_back(0);
+	single.phaseX.push_back(0);
 
-	single.startAOX.push_back(24);
-	single.endAOX.push_back(24);
+	// move tweezer from 21 to 19
+	single.startAOX.push_back(21); // 1
+	single.endAOX.push_back(19);
+	single.startAOX.push_back(21); // 2
+	single.endAOX.push_back(19);
+	single.startAOX.push_back(21); // 3
+	single.endAOX.push_back(19);
+	single.phaseX.push_back(120);
+	single.phaseX.push_back(120);
+	single.phaseX.push_back(120);
+
 	moveseq.moves.push_back(single);
 }
 

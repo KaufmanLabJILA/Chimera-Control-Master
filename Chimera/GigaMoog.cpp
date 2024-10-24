@@ -502,7 +502,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 			sprintf(buf, " %d ", c);
 			OutputDebugStringA(buf);
 		}
-
+		OutputDebugStringA("\n");
 		//step 1: ramp up tones at initial locations and phases
 		for (int channel = 0; channel < 16; channel++) {//TODO: 16 could be changed to 48 if using more tones for rearrangement
 			if (ny > 1 && nx == 1 && channel < 3) //Triple up tones if only a single tone on, assuming y axis not already tripled.
@@ -515,19 +515,26 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 					.setting(MessageSetting::MOVEFREQUENCY)
 					.frequencyMHz(freq).amplitudePercent(amp).phaseDegrees(0).instantFTW(1).ATWIncr(ampStepMag).stepSequenceID(3 * stepID + 1).FTWIncr(0).phaseJump(1);;
 				ms.enqueue(m);
+
+				sprintf(buf, "X start msg chan %d: f = %f, amp = %f, phase = 0 \n", channel, freq, amp);
+				OutputDebugStringA(buf);
 			}
 			else if (ny != 0 && nx != 0 && channel < nx) {
-				OutputDebugStringA("\n USing nonstandard write for X \n");
 				size_t hardwareChannel = hardwareChannelsDAC0[channel];
 				freq = getFreqX(input.moves[stepID].startAOX[channel], input.moves[stepID].startAOY[0]);
 				amp = getAmpX(input.moves[stepID].startAOX[channel], input.moves[stepID].startAOY[0]);
 				phase = fmod(180 * pow(channel + 1, 2) / nx, 360); //this assumes comb of even tones, imperfect, but also short duration so not super critical, and fast.
+				if (input.moves[stepID].manualPhaseX) { // set phase manually if specified for this step
+					phase = fmod(input.moves[stepID].phaseX[channel], 360);
+				}
 
 				Message m = Message::make().destination(MessageDestination::KA007)
 					.DAC(MessageDAC::DAC0).channel(hardwareChannel)
 					.setting(MessageSetting::MOVEFREQUENCY)
 					.frequencyMHz(freq).amplitudePercent(amp).phaseDegrees(phase).instantFTW(1).ATWIncr(ampStepMag).stepSequenceID(3 * stepID + 1).FTWIncr(0).phaseJump(1);;
 				ms.enqueue(m);
+				sprintf(buf, "X start msg chan %d: f = %f, amp = %f, phase = %f \n", channel, freq, amp, phase);
+				OutputDebugStringA(buf);
 			}
 		}
 
@@ -543,19 +550,27 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 					.setting(MessageSetting::MOVEFREQUENCY)
 					.frequencyMHz(freq).amplitudePercent(amp).phaseDegrees(0).instantFTW(1).ATWIncr(ampStepMag).stepSequenceID(3 * stepID + 1).FTWIncr(0).phaseJump(1);;
 				ms.enqueue(m);
+
+				sprintf(buf, "Y start msg chan %d: f = %f, amp = %f, phase = %f \n", channel, freq, amp, 0);
+				OutputDebugStringA(buf);
 			}
 			else if (nx != 0 && ny != 0 && channel < ny) {
-				OutputDebugStringA("\n USing nonstandard write for Y \n");
 				size_t hardwareChannel = hardwareChannelsDAC1[channel];
 				freq = getFreqY(input.moves[stepID].startAOX[0], input.moves[stepID].startAOY[channel]);
 				amp = getAmpY(input.moves[stepID].startAOX[0], input.moves[stepID].startAOY[channel]);
 				phase = fmod(180 * pow(channel + 1, 2) / ny, 360);
+				if (input.moves[stepID].manualPhaseY) { // set phase manually if specified for this step
+					phase = fmod(input.moves[stepID].phaseY[channel], 360);
+				}
 
 				Message m = Message::make().destination(MessageDestination::KA007)
 					.DAC(MessageDAC::DAC1).channel(hardwareChannel)
 					.setting(MessageSetting::MOVEFREQUENCY)
 					.frequencyMHz(freq).amplitudePercent(amp).phaseDegrees(phase).instantFTW(1).ATWIncr(ampStepMag).stepSequenceID(3 * stepID + 1).FTWIncr(0).phaseJump(1);;
 				ms.enqueue(m);
+
+				sprintf(buf, "Y start msg chan %d: f = %f, amp = %f, phase = %f \n", channel, freq, amp, phase);
+				OutputDebugStringA(buf);
 			}
 		}
 
