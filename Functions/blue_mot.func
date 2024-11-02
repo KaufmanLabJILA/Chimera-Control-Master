@@ -1,35 +1,28 @@
 def blue_mot(loadTime):
+
+  %% open shutters
   on: blueshut %reminder that this needed to be on earlier
+  on: shut679
+  on: shut707
   t += 4 
 
+  %% turn on beams
   dac: blue3dpow 0.35
-
+  on: blue3d
   on: red3d
   dac: red3dpow 0.55
-  on: blue3d
   on: slower
+  on: rp679
+  on: rp707
 
+  %% set fields
   dac: bigzcoil 1.8
   dac: x1coil -0.065
   dac: y1coil 0.065
   dac: y2coil 0.065
-  %dac: z1coil -0.06 % changed to -0.05 from 0.16 on 240620+240624
-  % dac: z1coil -0.05
-  % dac: z1coil -0.11 %0.1 % changed from -0.05 on 240813
   dac: z1coil -0.11 % changed 240917
 
-%  dac: x1coil -0.08
-%  dac: y1coil 0.03
-%  dac: y2coil 0.03
-%  dac: z1coil 0.1
-
   t += loadTime
-
-  %Drop power for additional cooling 
-%  dac: x1coil -0.07
-%  dac: y1coil .02
-%  dac: y2coil .02
-%  dac: z1coil scan
 
   %dacexpspace: blue3dpow .35 .001 12 9
   dacexpspace: blue3dpow .35 0.025 12 9
@@ -43,18 +36,18 @@ def blue_mot(loadTime):
 %  off: rp707
 %  off: rp679
   t += 0.01
-
   dac: blue3dpow 0.001
   t += .001
-
   on: blue3d
-  %on: blowawayttl
-  %t += scan
   t += 0.001
-  off: blowawayttl
-  off: imag461
-  off: mako1
-  off: blue3d
+
+  %% shutter/turn off blue and repumps
   off: blueshut
+  off: shut679
+  off: shut707
+  off: blue3d
   off: slower
+  off: rp679
+  off: rp707
+  t += 4
 

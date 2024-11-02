@@ -130,10 +130,10 @@ private:
 	int ampStepPaintMag = 134217727;
 	int freqStepPaintMag = 511;
 
-	double getFreqX(int xIndex, int yIndex);
-	double getAmpX(int xIndex, int yIndex);
-	double getFreqY(int xIndex, int yIndex);
-	double getAmpY(int xIndex, int yIndex);
+	double getFreqX(float xIndex, float yIndex);
+	double getAmpX(float xIndex, float yIndex);
+	double getFreqY(float xIndex, float yIndex);
+	double getAmpY(float xIndex, float yIndex);
 	double getPaintAmpX(unsigned int xIndex, unsigned int yIndex);
 	double getPaintAmpY(unsigned int xIndex, unsigned int yIndex);
 	bool getPaintMaskX(unsigned int xIndex, unsigned int yIndex);

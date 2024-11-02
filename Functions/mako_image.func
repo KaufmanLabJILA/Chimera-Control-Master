@@ -17,12 +17,13 @@ def mako_image():
   %on: blowawayttl
   %t += .25
   t += 2
+  off: blueshut
   off: blowawayttl
   off: imag461
   off: mako1
   off: blue3d
-  off: blueshut
   off: slower
+  t += 4
 
   %off: imag461
   %off: imagshut

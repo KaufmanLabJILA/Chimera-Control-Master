@@ -11,8 +11,8 @@ t += 5
 
 %pulseon: trigger .1
 
-on: radial
-on: radial2
+%on: radial
+%on: radial2
 %on: axial
 
 % change number of repeats according to right number

@@ -15,14 +15,25 @@ def imagec():
   on: axial
   %on: red3dnarrow
 
-  %%% 240613:
+  %%
   off: bigzrsd
+  %%
+
+  %%% 240613:
+  t += 0.1
+  %%off: bigzrsd
   off: coolSH
   %%% 240613^^
 
   on: rp707
   on: rp679
   t += 75
+  
+  %%
+  on: bigzrsd
+  t += 0.01
+  %%
+
   off: radial2
   off: axial
   off: radial
@@ -36,9 +47,10 @@ def imagec():
   off: imag461
   off: imagshut
   off: lampttl
-  t += .01
+  t += 4
 
   %%% 240613:
-  on: bigzrsd
+  %on: bigzrsd
   on: coolSH
+  t += 0.01
   %%% 240613^^

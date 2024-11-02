@@ -1,49 +1,65 @@
 % Master-Script See the "?" for info on commands.
 def ttlReset():
-  
-  %off: rp707
-  %off: rp679
 
+  %% axial lattice mirror active or not (off unless you are changing)
+  off: mirroractive
+  
+  %% resonant beam AOs
+  %% repumps
+  off: rp707
+  off: rp679
+  off: rp688
+  %% red cooling
   off: axial
   off: radial
   off: radial2
   off: red3d
   off: red3dnarrow
+  on: slower
+  on: coolSH
+  %% blue
   off: imag461
   off: blowawayttl
+  %% clock
+  off: clockttl
+  %% rydberg
+  off: uvttl
+  %% autoionization
+  off: pi407
+
+
   off: tweezermod
   off: tweezerhold
 
+  %% shutters
   off: imagshut
   off: andorshut
-  %off: blowawayshutter
-  %off: repumpshut
+  off: shutuv
+  off: blowawayshutter
+  on: blowawayshutter
+  on: blueshut
+  on: tweezershut
+  on: shut689
+  off: shut679
+  off: shut707
+  off: shut688
 
+  %% triggers
   off: mako1
-%  off: mmload
   off: stepdds
   off: resetdds
+  off: trigger
+  off: tektronixtrig
 
-%off: clockttl
+  %% trapping beam AOs
+  on: tweezerAO
+  on: tweezer813ao
+  on: lat813ao
+  on: axlatTTL
 
-on: blowawayshutter
-on: blueshut
-on: tweezershut
-on: tweezerAO
-on: tweezer813ao
-on: lat813ao
-on: axlatTTL
-on: shut689
-on: slower
 
-off: imagshut
-off: shut688
-off: rp688
 on: bigzantihelm
 
-on: metertrig %meter trigger on falling edge
-off: pi407
-off: uvttl
-off: clockttl
+off: metertrig %not connected to anything currently
 
 off: lampttl

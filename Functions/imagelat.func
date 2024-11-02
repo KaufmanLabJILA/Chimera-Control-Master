@@ -21,6 +21,8 @@ def imageLat(imageTime):
  on: axial
  on: radial2
  on: radial
+
+
  on: imag461
  t += 0.01
  off: bigzrsd
@@ -29,6 +31,17 @@ def imageLat(imageTime):
  on: bigzrsd
  t += 0.01
 
+ %on: bigzrsd
+ %t += 0.1
+ %on: imag461
+ %t += 0.25
+ %off: bigzrsd
+ %%on: red3dnarrow %%%%
+ %t += imageTime
+ %on: bigzrsd
+
+
+
  off: axial
  off: radial2
  off: radial
@@ -36,6 +49,7 @@ def imageLat(imageTime):
  off: imag461
  off: andortrig
  off: andorshut
+
 
  %%% 240613:
  %on: bigzrsd
@@ -48,4 +62,4 @@ def imageLat(imageTime):
  off: shut679
  off: imagshut
  off: lampttl
- t += .01
+ t += 4

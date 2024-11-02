@@ -1097,8 +1097,9 @@ void atomCruncher::NNcompressX(moveSequence& moveseq) {
 
 	// start by moving just column 18 left, shouldn't interfere with anything
 	moveSingle single;
-	int col = 18;
+
 	for (int iy = 21; iy < 26; iy++) {
+		if (iy == 22 || iy == 23) { continue; }
 		sprintf(buf, " %d ", iy);
 		OutputDebugStringA(buf);
 		single.startAOY.push_back(iy);
@@ -1109,20 +1110,39 @@ void atomCruncher::NNcompressX(moveSequence& moveseq) {
 
 	single.manualPhaseX = true;
 
-	// hold tweezer on 18
+	float start = 18;
+	float end = 18.8;
 
+	// hold tweezer on 18
+	single.startAOX.push_back(start); // 1
+	single.endAOX.push_back(end);
+	single.phaseX.push_back(0);	
+	single.startAOX.push_back(start); // 2
+	single.endAOX.push_back(end);
+	single.phaseX.push_back(0);
+	single.startAOX.push_back(start); // 3
+	single.endAOX.push_back(end);
+	single.phaseX.push_back(0);
+
+
+
+	float start2 = 21;
+	float end2 = 20.2;
+
+	// hold tweezer on 18
+	single.startAOX.push_back(start2); // 1
+	single.endAOX.push_back(end2);
+	single.phaseX.push_back(120);
+	single.startAOX.push_back(start2); // 2
+	single.endAOX.push_back(end2);
+	single.phaseX.push_back(120);
+	single.startAOX.push_back(start2); // 3
+	single.endAOX.push_back(end2);
+	single.phaseX.push_back(120);
 
 
 	// move tweezer from 21 to 19
-	single.startAOX.push_back(21); // 1
-	single.endAOX.push_back(19);
-	single.phaseX.push_back(120);
-	single.startAOX.push_back(21); // 2
-	single.endAOX.push_back(19);
-	single.phaseX.push_back(120);
-	single.startAOX.push_back(21); // 3
-	single.endAOX.push_back(19);
-	single.phaseX.push_back(120);
+
 
 	moveseq.moves.push_back(single);
 }

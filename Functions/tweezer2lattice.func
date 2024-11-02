@@ -1,9 +1,20 @@
 % Master-Script See the "?" for info on commands.
 def tweezer2lattice(rampTime):
-
-  daclinspace: axialpow ax_lattice_zero ax_lattice_pow rampTime 15
-  t += rampTime
-  daclinspace: latticepow lattice_zero lattice_pow rampTime 15
-  t += rampTime
-  daclinspace: tweezerpow tweezer_pow tweezer_zero rampTime 15
-  t += rampTime
+  %% lattice back to sampling
+  on: lat813ao
+  off: latticehold
+  t += .01
+  
+  %% ramp lattice up, then tweezer down
+  daccosspace: axialpow ax_lattice_zero ax_lattice_pow rampTime 100
+  daccosspace: latticepow lattice_zero lattice_pow rampTime 100
+  t += rampTime+0.1
+  daccosspace: tweezerpow tweezer_pow tweezer_zero rampTime 100
+  t += rampTime+0.1
+  
+  %% shutter tweezes, set back to high
+  off: tweezershut
+  t += 5
+  on: tweezerao
+  dac: tweezerpow tweezer_pow
+  t += .01

@@ -14,10 +14,10 @@ public:
 	//	return std::count(boolAOY.begin(), boolAOY.end(), true);
 	//}; //number of active tweezers
 
-	std::vector<int8> startAOX; //negative values allow for special handling, e.g. removing atoms.
-	std::vector<int8> startAOY;
-	std::vector<int8> endAOX;
-	std::vector<int8> endAOY;
+	std::vector<float> startAOX; //negative values allow for special handling, e.g. removing atoms.
+	std::vector<float> startAOY; // a non-whole number linearly interpolates from the neighboring LUT values
+	std::vector<float> endAOX;
+	std::vector<float> endAOY;
 
 
 	bool manualPhaseX = false; // allow manually specifying phases so that we can stack tones "by hand"

@@ -1,0 +1,22 @@
+% Master-Script See the "?" for info on commands.
+def dac_reset():
+  % insert commands here...
+
+%% Axial lattice phase
+dac: axial_piezo axial_phase_set
+dac: axial_piezo2 10-axial_phase_set
+
+%% Axial lattice position
+dac: mirror_x mirrorscanx
+dac: mirror_y mirrorscany
+
+%% UV mirror position
+dac: uvpm_h uvpm_h_set
+dac: uvpm_v uvpm_v_set
+
+%% trapping lasers, 515 tweezers on, everything else off
+dac: axialpow ax_lattice_zero
+dac: tweezerpow tweezer_pow
+dac: latticepow lattice_zero
+dac: tweezerpow813 tweezer813_zero
+dac: int633servo tweezer_atten_zero %currently attenuates tweezers

@@ -176,8 +176,19 @@ void gigaMoog::refreshLUT()
 	yPix2MHz = { subpixelLUT[nSubpixel - 1 + sqrt(nSubpixel) - 1] * 2 , subpixelLUT[nSubpixel - 1 + sqrt(nSubpixel) - 1 + 1] * 2 }; //y then x for consistency.
 }
 
-double gigaMoog::getFreqX(int xIndex, int yIndex) {
+double gigaMoog::getFreqX(float xIndex, float yIndex) {
 	yIndex = (yIndex < 0) ? 0 : yIndex;
+
+	int xIndRound = floorf(xIndex);
+	int yIndRound = floorf(yIndex);
+
+	// don't go out of bounds when index is just an integer
+	int xIndNext = (xIndRound == xIndex) ? xIndRound : xIndRound + 1;
+	int yIndNext = (yIndRound == yIndex) ? yIndRound : yIndRound + 1;
+
+	float xInterp = xIndex - xIndRound;
+	float yInterp = yIndex - yIndRound;
+
 
 	if (xIndex == -1 && yIndex >= 0) //special handling for atom removal
 	{
@@ -189,7 +200,13 @@ double gigaMoog::getFreqX(int xIndex, int yIndex) {
 	}
 	else if (xIndex >= 0 && yIndex >= 0) 
 	{
-		return FTW_LUT[2 * yDim * xIndex + 2 * yIndex + 0] + xOffset;
+		// use bilinear interpolation
+		double loXloY = FTW_LUT[2 * yDim * xIndRound + 2 * yIndRound + 0] + xOffset;
+		double hiXloY = FTW_LUT[2 * yDim * xIndNext + 2 * yIndRound + 0] + xOffset;
+		double loXhiY = FTW_LUT[2 * yDim * xIndRound + 2 * yIndNext + 0] + xOffset;
+		double hiXhiY = FTW_LUT[2 * yDim * xIndNext + 2 * yIndNext + 0] + xOffset;
+
+		return (1 - xInterp)*(1 - yInterp)*loXloY + xInterp * (1 - yInterp)*hiXloY + (1 - xInterp)*yInterp*loXhiY + xInterp * yInterp*hiXhiY;
 	}
 	else
 	{
@@ -197,16 +214,34 @@ double gigaMoog::getFreqX(int xIndex, int yIndex) {
 	}
 }
 
-double gigaMoog::getAmpX(int xIndex, int yIndex) {
+double gigaMoog::getAmpX(float xIndex, float yIndex) {
 	yIndex = (yIndex < 0) ? 0 : yIndex;
+
+	int xIndRound = floorf(xIndex);
+	int yIndRound = floorf(yIndex);
+
+	// don't go out of bounds when index is just an integer
+	int xIndNext = (xIndRound == xIndex) ? xIndRound : xIndRound + 1;
+	int yIndNext = (yIndRound == yIndex) ? yIndRound : yIndRound + 1;
+
+	float xInterp = xIndex - xIndRound;
+	float yInterp = yIndex - yIndRound;
 
 	if ((xIndex == -1 || xIndex == -2) && yIndex >= 0) //special handling for atom removal
 	{
-		return ATW_LUT[2 * yDim * 0 + 2 * yIndex + 0];
+		double loY = ATW_LUT[2 * yDim * 0 + 2 * yIndRound + 0];;
+		double hiY = ATW_LUT[2 * yDim * 0 + 2 * yIndNext + 0];;
+		return (1 - yInterp) * loY + yInterp * hiY;
 	}
 	else if (xIndex >= 0 && yIndex >= 0)
 	{
-		return ATW_LUT[2 * yDim * xIndex + 2 * yIndex + 0];
+		double loXloY = ATW_LUT[2 * yDim * xIndRound + 2 * yIndRound + 0];
+		double loXhiY = ATW_LUT[2 * yDim * xIndRound + 2 * yIndNext + 0];
+		double hiXloY = ATW_LUT[2 * yDim * xIndNext + 2 * yIndRound + 0];
+		double hiXhiY = ATW_LUT[2 * yDim * xIndNext + 2 * yIndNext + 0];
+
+		return (1 - xInterp)*(1 - yInterp)*loXloY + xInterp * (1 - yInterp)*hiXloY + (1 - xInterp)*yInterp*loXhiY + xInterp * yInterp*hiXhiY;
+		
 	}
 	else
 	{
@@ -214,8 +249,18 @@ double gigaMoog::getAmpX(int xIndex, int yIndex) {
 	}
 }
 
-double gigaMoog::getFreqY(int xIndex, int yIndex) {
+double gigaMoog::getFreqY(float xIndex, float yIndex) {
 	xIndex = (xIndex < 0) ? 0 : xIndex;
+
+	int xIndRound = floorf(xIndex);
+	int yIndRound = floorf(yIndex);
+
+	// don't go out of bounds when index is just an integer
+	int xIndNext = (xIndRound == xIndex) ? xIndRound : xIndRound + 1;
+	int yIndNext = (yIndRound == yIndex) ? yIndRound : yIndRound + 1;
+
+	float xInterp = xIndex - xIndRound;
+	float yInterp = yIndex - yIndRound;
 
 	if (xIndex >= 0 && yIndex == -1) //special handling for atom removal
 	{
@@ -227,7 +272,12 @@ double gigaMoog::getFreqY(int xIndex, int yIndex) {
 	}
 	else if (xIndex >= 0 && yIndex >= 0)
 	{
-		return FTW_LUT[2 * yDim * xIndex + 2 * yIndex + 1] + yOffset;
+		double loXloY = FTW_LUT[2 * yDim * xIndRound + 2 * yIndRound + 1] + yOffset;
+		double loXhiY = FTW_LUT[2 * yDim * xIndRound + 2 * yIndNext + 1] + yOffset;
+		double hiXloY = FTW_LUT[2 * yDim * xIndNext + 2 * yIndRound + 1] + yOffset;
+		double hiXhiY = FTW_LUT[2 * yDim * xIndNext + 2 * yIndNext + 1] + yOffset;
+
+		return (1 - xInterp)*(1 - yInterp)*loXloY + xInterp * (1 - yInterp)*hiXloY + (1 - xInterp)*yInterp*loXhiY + xInterp * yInterp*hiXhiY;
 	}
 	else
 	{
@@ -235,16 +285,34 @@ double gigaMoog::getFreqY(int xIndex, int yIndex) {
 	}
 }
 
-double gigaMoog::getAmpY(int xIndex, int yIndex) {
+double gigaMoog::getAmpY(float xIndex, float yIndex) {
 	xIndex = (xIndex < 0) ? 0 : xIndex;
+
+	int xIndRound = floorf(xIndex);
+	int yIndRound = floorf(yIndex);
+
+	// don't go out of bounds when index is just an integer
+	int xIndNext = (xIndRound == xIndex) ? xIndRound : xIndRound + 1;
+	int yIndNext = (yIndRound == yIndex) ? yIndRound : yIndRound + 1;
+
+	float xInterp = xIndex - xIndRound;
+	float yInterp = yIndex - yIndRound;
 
 	if (xIndex >= 0 && (yIndex == -1 || yIndex == -2)) //special handling for atom removal
 	{
-		return ATW_LUT[2 * yDim * xIndex + 2 * 0 + 1];
+		double loX = ATW_LUT[2 * yDim * xIndRound + 2 * 0 + 1];
+		double hiX = ATW_LUT[2 * yDim * xIndNext + 2 * 0 + 1];
+
+		return (1 - xInterp) * loX + xInterp * hiX;
 	}
 	else if (xIndex >= 0 && yIndex >= 0)
 	{
-		return ATW_LUT[2 * yDim * xIndex + 2 * yIndex + 1];
+		double loXloY = ATW_LUT[2 * yDim * xIndRound + 2 * yIndRound + 1];
+		double loXhiY = ATW_LUT[2 * yDim * xIndRound + 2 * yIndNext + 1];
+		double hiXloY = ATW_LUT[2 * yDim * xIndNext + 2 * yIndRound + 1];
+		double hiXhiY = ATW_LUT[2 * yDim * xIndNext + 2 * yIndNext + 1];
+
+		return (1 - xInterp)*(1 - yInterp)*loXloY + xInterp * (1 - yInterp)*hiXloY + (1 - xInterp)*yInterp*loXhiY + xInterp * yInterp*hiXhiY;
 	}
 	else
 	{
