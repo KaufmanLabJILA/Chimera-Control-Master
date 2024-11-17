@@ -62,4 +62,4 @@ def imageLat(imageTime):
  off: shut679
  off: imagshut
  off: lampttl
- t += 4
+ t += 4

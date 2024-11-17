@@ -15,6 +15,7 @@
 #include "CameraWindow.h"
 #include "AuxiliaryWindow.h"
 #include "constants.h"
+#include "socketClient.h"
 #include <fstream>
 #include <cstdio>
 #include <experimental/filesystem>
@@ -24,6 +25,8 @@
 #include <boost/algorithm/string/split.hpp>
 using namespace boost::posix_time;
 namespace fs = std::experimental::filesystem;
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
 
 // Functions called by all windows to do the same thing, mostly things that happen on menu presses.
 namespace commonFunctions
@@ -912,11 +915,6 @@ namespace commonFunctions
 				mainWin->passExportPaintIsOnPress();
 				break;
 			}
-			case ID_EXPORTVARIABLES:
-			{
-				mainWin->passExportVariableIsOnPress();
-				break;
-			}
 			case ID_RUNMENU_ABORTCAMERA:
 			{
 				try
@@ -1024,11 +1022,129 @@ namespace commonFunctions
 		input.includesCameraRun = true;
 	}
 
+	UINT  __cdecl multipleExperimentThreadProcedure(void* voidInput) {
+		MultiExperimentInput* multiExpInput = (MultiExperimentInput*)voidInput;
+		bool abortSequence = false;
+
+		// Confirm with user that they want to run in sequence
+		UINT_PTR areYouSure = 0;
+		if (!areYouSure)
+		{
+			areYouSure = DialogBoxParam(NULL, MAKEINTRESOURCE(IDD_BEGINNING_SETTINGS), 0,
+				beginningSettingsDialogProc, (LPARAM)cstr("\r\n\r\nBegin Sequence Execution?\n\r\n\r"));
+		}
+
+		// run configurations determined by python in a loop until aborted
+		while (!abortSequence)
+		{
+			// if experiment aborted, then abort sequence
+			if (!multiExpInput->mainWin->sequenceIsRunning)
+			{
+				multiExpInput->mainWin->getComm()->sendStatus("EXITED SEQUENCE!\r\n");
+				abortSequence = true;
+				continue;
+			}
+
+			// wait for idle sequence to finish
+			if (multiExpInput->mainWin->idleIsRunning()) {
+				multiExpInput->mainWin->setKillIdlerTrue();
+				while (multiExpInput->mainWin->idleIsRunning()) { Sleep(10); }
+				multiExpInput->mainWin->setKillIdlerFalse();
+			}
+			Sleep(200);
+
+			// Run configuration
+			ExperimentInput input;
+			std::string h5FilePath;
+			multiExpInput->camWin->redrawPictures(false);
+			try // execute the experiment
+			{
+				prepareCamera(multiExpInput->mainWin, multiExpInput->camWin, input, true);
+				prepareMasterThread(multiExpInput->msgID, multiExpInput->scriptWin, multiExpInput->mainWin, multiExpInput->camWin, multiExpInput->auxWin, input, false, true, true, true);
+				multiExpInput->camWin->preparePlotter(input);
+				multiExpInput->camWin->prepareAtomCruncher(input);
+				h5FilePath = logParameters(input, multiExpInput->camWin, true);
+				multiExpInput->camWin->startAtomCruncher(input);
+				multiExpInput->camWin->startPlotterThread(input);
+				multiExpInput->camWin->startCamera();
+				startMaster(multiExpInput->mainWin, input, true); // true argument sets wait for experimentThread to finish
+			}
+			catch (Error& err)
+			{
+				if (err.whatBare() == "CANCEL")
+				{
+					multiExpInput->mainWin->getComm()->sendStatus("Canceled camera initialization.\r\n");
+					multiExpInput->mainWin->getComm()->sendColorBox(Niawg, 'B');
+					break;
+				}
+				multiExpInput->mainWin->getComm()->sendError("EXITED WITH ERROR! " + err.whatStr());
+				multiExpInput->mainWin->getComm()->sendColorBox(Camera, 'R');
+				multiExpInput->mainWin->getComm()->sendStatus("EXITED WITH ERROR!\r\nInitialized Default Waveform\r\n");
+				multiExpInput->mainWin->getComm()->sendTimer("ERROR!");
+				multiExpInput->camWin->assertOff();
+				abortSequence = true;
+				continue;
+			}
+
+			if (abortSequence) { continue; }
+
+			// tell python configuration finished running
+			json j;
+			j["UPDATE"] = "CONFIG";
+			std::string jstr = j.dump();
+			SOCKET sock = socketClient::initialize();
+			if (sock == INVALID_SOCKET) {
+				multiExpInput->mainWin->getComm()->sendStatus("Failed to initialize socket.\r\n"); continue;
+			}
+			if (!socketClient::connectWithTimeout(sock, 5000, 8001)) {
+				multiExpInput->mainWin->getComm()->sendStatus("Failed to connect to server.\r\n");
+				socketClient::close(sock);  continue;
+			};
+			socketClient::sendAll(sock, jstr.c_str(), strlen(jstr.c_str()));
+			// receive response from python and close socket connection
+			char buffer[1024] = { 0 };
+			int bytes_received = socketClient::recvAll(sock, buffer, sizeof(buffer));
+			socketClient::close(sock);
+			// update based on response appropriately
+			if (bytes_received <= 0) {
+				if (bytes_received == 0) { multiExpInput->mainWin->getComm()->sendStatus("Python server closed connection.\r\n"); }
+				continue;
+			}
+			json msg = json::parse(std::string(buffer, bytes_received));
+			multiExpInput->mainWin->getComm()->sendStatus(msg.dump());
+			if (msg.contains("ABORT")) { if (msg["ABORT"]) { abortSequence = true; continue; } }
+			if (msg.contains("CONFIG")) { multiExpInput->mainWin->changeConfig(msg["CONFIG"]); }
+			if (msg.contains("GIGAMOOG")) {
+				if (msg["GIGAMOOG"] != multiExpInput->mainWin->checkGmoogState()) {
+					multiExpInput->mainWin->passGmoogIsOnPress();
+				}
+			}
+			if (msg.contains("AUTOALIGN")) {
+				if (msg["AUTOALIGN"] != multiExpInput->mainWin->checkAutoAlignState()) {
+					multiExpInput->mainWin->passAutoAlignIsOnPress();
+				}
+			}
+			if (msg.contains("PAINTER")) {
+				if (msg["PAINTER"] != multiExpInput->mainWin->checkPainterState()) {
+					multiExpInput->mainWin->passPainterIsOnPress();
+				}
+			}
+			if (msg.contains("PAINTSTATIC")) {
+				if (msg["PAINTSTATIC"] != multiExpInput->mainWin->checkPaintStatic()) {
+					multiExpInput->mainWin->passPaintStaticIsOnPress();
+				}
+			}
+		}
+		multiExpInput->mainWin->getComm()->sendStatus("Sequence ended.\r\n");
+		multiExpInput->mainWin->sequenceIsRunning = false;
+		return 0;
+	}
+
 
 	// Sequentially runs configurations in a sequence. At each iteration, the mainWindow opens the given configuration
 	// of the sequence and a new thread is started to execute. The multiExperimentThread will wait for this thread to
 	// terminate before loading and starting the next configuration
-	UINT __cdecl multipleExperimentThreadProcedure(void* voidInput) {
+	/*UINT __cdecl multipleExperimentThreadProcedure(void* voidInput) {
 
 		MultiExperimentInput* multiExpInput = (MultiExperimentInput*)voidInput;
 		//ExperimentInput input;
@@ -1253,7 +1369,7 @@ namespace commonFunctions
 		}
 		multiExpInput->mainWin->sequenceIsRunning = false;
 		return 0;
-	}
+	}*/
 
 
 	void prepareMasterThread( int msgID, ScriptingWindow* scriptWin, MainWindow* mainWin, CameraWindow* camWin, 

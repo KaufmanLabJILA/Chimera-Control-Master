@@ -93,9 +93,9 @@
     <LibraryPath>C:\Program Files\Andor SOLIS\Drivers;C:\Users\Mark\Documents\Quantum Gas Assembly Control\Chimera;C:\Program Files (x86)\National Instruments\NI-DAQ\DAQmx ANSI C Dev\lib\msvc;C:\Program Files (x86)\IVI Foundation\VISA\WinNT\lib\msc;C:\Program Files (x86)\IVI Foundation\IVI\Lib\msc;C:\Program Files (x86)\HDF_Group\HDF5\Release\HDF5-1.10.1-win32\lib;$(ProjectDir)\Packages\boost_1_64_0\lib-32bit;$(ProjectDir)\Packages\32-Bit-Libs\Release\HDF5-1.10.1-win32-Release\lib;$(ProjectDir)\Packages\32-Bit-Libs\Release\Python;$(ProjectDir)\Packages\32-Bit-Libs\DIO64;$(ProjectDir)\Packages\32-Bit-Libs\Release\Andor;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\ProgramData\Anaconda3\include;$(ProjectDir)\Packages\64-Bit-Libs\boost_1_64_0;$(IncludePath);$(ProjectDir)\Packages\64-Bit-Libs\Release\HDF5-1.10.1-win64\include</IncludePath>
+    <IncludePath>C:\ProgramData\Anaconda3\include;$(ProjectDir)\Packages\64-Bit-Libs\boost_1_64_0;$(IncludePath);$(ProjectDir)\Packages\64-Bit-Libs\Release\HDF5-1.10.1-win64\include;$(ProjectDir)</IncludePath>
     <LinkIncremental>false</LinkIncremental>
-    <LibraryPath>C:\Program Files\Andor SDK;$(ProjectDir)\Packages\64-Bit-Libs\boost_1_64_0\lib-64bit;$(ProjectDir)\Packages\64-Bit-Libs\Release\HDF5-1.10.1-win64\lib;$(ProjectDir)\Packages\64-Bit-Libs\Release\Python;C:\Program Files (x86)\National Instruments\Shared\ExternalCompilerSupport\C\lib64\msvc;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir);C:\Program Files\Andor SDK;$(ProjectDir)\Packages\64-Bit-Libs\boost_1_64_0\lib-64bit;$(ProjectDir)\Packages\64-Bit-Libs\Release\HDF5-1.10.1-win64\lib;$(ProjectDir)\Packages\64-Bit-Libs\Release\Python;C:\Program Files (x86)\National Instruments\Shared\ExternalCompilerSupport\C\lib64\msvc;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -220,6 +220,8 @@
     <ClInclude Include="MessageSender.h" />
     <ClInclude Include="Messagetypes.h" />
     <ClInclude Include="moveSequence.h" />
+    <ClInclude Include="nlohmann\json.hpp" />
+    <ClInclude Include="nlohmann\json_fwd.hpp" />
     <ClInclude Include="profileSettings.h" />
     <ClInclude Include="ProfileSystem.h" />
     <ClInclude Include="DacSettingsDialog.h" />
@@ -270,6 +272,7 @@
     <ClInclude Include="Segment.h" />
     <ClInclude Include="SerialSynth.h" />
     <ClInclude Include="SmsTextingControl.h" />
+    <ClInclude Include="socketClient.h" />
     <ClInclude Include="splashDialog.h" />
     <ClInclude Include="StatusControl.h" />
     <ClInclude Include="StatusIndicator.h" />
@@ -347,6 +350,7 @@
     <ClCompile Include="SerialSynth.cpp" />
     <ClCompile Include="SmsTextingControl.cpp" />
     <ClCompile Include="atomCruncher.cpp" />
+    <ClCompile Include="socketClient.cpp" />
     <ClCompile Include="splashDialog.cpp" />
     <ClCompile Include="StatusControl.cpp" />
     <ClCompile Include="StatusIndicator.cpp" />

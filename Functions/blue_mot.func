@@ -17,10 +17,14 @@ def blue_mot(loadTime):
 
   %% set fields
   dac: bigzcoil 1.8
+  %dac: bigzcoil scanbigz
+  %dac: bigzcoil 1.953/factor % changed 241114
+  %dac: bigzcoil 1.94
   dac: x1coil -0.065
   dac: y1coil 0.065
   dac: y2coil 0.065
   dac: z1coil -0.11 % changed 240917
+  %dac: z1coil scanz1
 
   t += loadTime
 

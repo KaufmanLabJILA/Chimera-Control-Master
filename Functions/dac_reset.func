@@ -19,4 +19,4 @@ dac: axialpow ax_lattice_zero
 dac: tweezerpow tweezer_pow
 dac: latticepow lattice_zero
 dac: tweezerpow813 tweezer813_zero
-dac: int633servo tweezer_atten_zero %currently attenuates tweezers
+%dac: int633servo tweezer_atten_zero 

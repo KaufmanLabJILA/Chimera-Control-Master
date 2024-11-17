@@ -7,8 +7,11 @@
 #include "AuxiliaryWindow.h"
 //#include "NiawgWaiter.h"
 #include "Expression.h"
+#include "socketClient.h"
 #include <experimental/filesystem>
 namespace fs = std::experimental::filesystem;
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
 
 
 MasterManager::MasterManager()
@@ -213,29 +216,39 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 							   input->comm, input->quiet );
 				}
 
-				if (input->exportVariables)
+				if (tempVariable.valuesVary)
 				{
-					if (tempVariable.valuesVary)
-					{
-						varOutput += "VARIABLE\n";
-					}
-					else
-					{
-						varOutput += "CONSTANT\n";
-					}
-					varOutput += tempVariable.name + "\n";
-					varOutput += str(tempVariable.keyValues[variationInc], 12) + "\n";
+					varOutput += "VARIABLE\n";
 				}
+				else
+				{
+					varOutput += "CONSTANT\n";
+				}
+				varOutput += tempVariable.name + "\n";
+				varOutput += str(tempVariable.keyValues[variationInc], 12) + "\n";
 
 			}
-			if (input->exportVariables)
-			{
-				// export variables to text file
-				std::ofstream tmpFile(EXPORT_VARIABLE_TMP_FILE_LOCATION);
-				tmpFile << varOutput;
-				tmpFile.close();
-				fs::rename(EXPORT_VARIABLE_TMP_FILE_LOCATION, EXPORT_VARIABLE_FILE_LOCATION);
-			}
+			
+			// export variables to text file
+			std::ofstream tmpFile(EXPORT_VARIABLE_TMP_FILE_LOCATION);
+			tmpFile << varOutput;
+			tmpFile.close();
+			fs::rename(EXPORT_VARIABLE_TMP_FILE_LOCATION, EXPORT_VARIABLE_FILE_LOCATION);
+
+			// tell python to update keysight/wieser
+			json j;
+			j["UPDATE"] = "KEYSIGHTWIESER";
+			std::string jstr = j.dump();
+			SOCKET sock = socketClient::initialize();
+			if (sock == INVALID_SOCKET) { expUpdate("Failed to initialize socket.\r\n", input->comm, input->quiet); goto skipsock; }
+			if (!socketClient::connectWithTimeout(sock, 100)) { expUpdate("Failed to connect to server.\r\n", input->comm, input->quiet); 
+			socketClient::close(sock); goto skipsock; }
+			socketClient::sendAll(sock, jstr.c_str(), strlen(jstr.c_str()));
+			char buffer[1024] = { 0 };
+			int bytes_received = socketClient::recvAll(sock, buffer, sizeof(buffer));
+			socketClient::close(sock);
+		skipsock:
+
 
 			expUpdate( "Programming RSG, Agilents, NIAWG, & Teltronics...\r\n", input->comm, input->quiet );
 			//input->rsg->programRsg( variationInc );
@@ -663,29 +676,23 @@ UINT __cdecl MasterManager::idlerThreadProcedure(void* voidInput)
 						input->comm, input->quiet);
 				}
 
-				if (input->exportVariables)
+				if (tempVariable.valuesVary)
 				{
-					if (tempVariable.valuesVary)
-					{
-						varOutput += "VARIABLE\n";
-					}
-					else
-					{
-						varOutput += "CONSTANT\n";
-					}
-					varOutput += tempVariable.name + "\n";
-					varOutput += str(tempVariable.keyValues[variationInc], 12) + "\n";
+					varOutput += "VARIABLE\n";
 				}
+				else
+				{
+					varOutput += "CONSTANT\n";
+				}
+				varOutput += tempVariable.name + "\n";
+				varOutput += str(tempVariable.keyValues[variationInc], 12) + "\n";
 
 			}
-			if (input->exportVariables)
-			{
-				// export variables to text file
-				std::ofstream tmpFile(EXPORT_VARIABLE_TMP_FILE_LOCATION);
-				tmpFile << varOutput;
-				tmpFile.close();
-				fs::rename(EXPORT_VARIABLE_TMP_FILE_LOCATION, EXPORT_VARIABLE_FILE_LOCATION);
-			}
+			// export variables to text file
+			std::ofstream tmpFile(EXPORT_VARIABLE_TMP_FILE_LOCATION);
+			tmpFile << varOutput;
+			tmpFile.close();
+			fs::rename(EXPORT_VARIABLE_TMP_FILE_LOCATION, EXPORT_VARIABLE_FILE_LOCATION);
 
 			if (!DDS_SAFEMODE) {
 				// determine seconds since the epoch

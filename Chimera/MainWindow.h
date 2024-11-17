@@ -154,7 +154,6 @@ class MainWindow : public CDialog
 		StatusControl errorStatus;
 		SmsTextingControl texter;
 		StatusIndicator shortStatus;
-		bool exportVariables = false;
 		
 		//rerngControl rearrangeControl;
 		//NiawgController niawg;

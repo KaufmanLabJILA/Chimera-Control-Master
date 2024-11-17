@@ -334,20 +334,6 @@ void MainWindow::passExportPaintIsOnPress()
 	}
 }
 
-void MainWindow::passExportVariableIsOnPress()
-{
-	if (exportVariables)
-	{
-		exportVariables = false;
-		menu.CheckMenuItem(ID_EXPORTVARIABLES, MF_UNCHECKED);
-	}
-	else
-	{
-		exportVariables = true;
-		menu.CheckMenuItem(ID_EXPORTVARIABLES, MF_CHECKED);
-	}
-}
-
 void MainWindow::passIdleSequenceActivePress()
 {
 	if (idler.idleSequenceActive)
@@ -919,7 +905,6 @@ void MainWindow::fillMasterThreadInput(MasterThreadInput* input)
 	input->awg = &awg;
 	input->gmoog = &gmoog;
 	input->dds = &dds;
-	input->exportVariables = exportVariables;
 	input->idler = &idler;
 
 	VariableSystem::generateKey( input->variables, input->settings.randomizeVariations, input->settings.interleaveVariations );

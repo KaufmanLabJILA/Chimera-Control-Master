@@ -19,6 +19,7 @@ def ttlReset():
   on: coolSH
   %% blue
   off: imag461
+  on: imageSH
   off: blowawayttl
   %% clock
   off: clockttl
@@ -35,6 +36,7 @@ def ttlReset():
   off: imagshut
   off: andorshut
   off: shutuv
+  off: uvcavshut
   off: blowawayshutter
   on: blowawayshutter
   on: blueshut

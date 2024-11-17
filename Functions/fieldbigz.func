@@ -8,6 +8,13 @@ def fieldbigz(fieldvalue):
   off: bigzantihelm
   t += 1
   dac: bigzcoil bz0-.0011
+
+  %dac: bigzcoil bzservo0
+  %t += 30
+  %off: bigzantihelm
+  %t += 1
+  %dac: bigzcoil bzservo0
+
   %dac: bigzcoil bz0-.0015
   %t += 200
   %dac: bigzcoil .7 %.14 %0.28 %0.7 %0.112  %2*0.08875 %1.775 %
@@ -20,7 +27,15 @@ def fieldbigz(fieldvalue):
 
   % squeezing paper conditions
   %dac: bigzcoil 1 %0.2 %2 %1.0
+
   daccosspace: bigzcoil bz0-.0011 fieldvalue 20 30
+
+  %daccosspace: bigzcoil bzservo0 fieldvalue 20 30
+
+
+  %dac: bigzcoil fieldvalue
+ %t += 30
+
   %dac: bigzcoil fieldvalue
   t += 20
 

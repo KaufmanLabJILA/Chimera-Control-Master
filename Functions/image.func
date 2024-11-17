@@ -1,54 +1,54 @@
 % Master-Script See the "?" for info on commands.
-def image(imagetime):
- t += 1
- dac: blue3dpow 0.3
- dac: imagingDelta -.3
- dac: imagingPow imagepow
+def image(imageTime, image_pow, andorState):
+ 
+ %%% Set imaging and cooling freq/powers
+ dac: imagpow1 (image_pow * imagpowratio12)
+ dac: imagpow2 image_pow
 
- %%%%%%Image 1%%%%%
- dac: y1coil -5
- dac: z1coil 0
- dac: x1coil .5
-
- t += 1
- off: blueshut
+ %%% Open shutters
+ on: shut707
+ on: shut679
  on: andorshut
- t += 5
+ on: imagshut
+ on: lampttl
+ t += 4
 
-%%%Red MOT cooling parameters
-off: red3d
-dac: red3dpow .4
-%%%%%
- on: andortrig
- on: mako1
- t += .2 
- %off: tweezerAO
+ %%% Trigger camera
+ variableon: andortrig andorState
+ t += .2
+
+ %%% Turn beams on
+ on: rp707
+ on: rp679
+ on: axial
+ on: radial2
+ on: radial
+ on: imag461
+ t += 0.01
+
+ %%% Sample image/cooling beams
+ off: coolSH
+ off: imageSH
+
+ %%% image time
+ t += imageTime
+
+ %%% Hold image/cooling beams
+ on: imageSH
+ on: coolSH
+ t += 0.01
+
+ %%% Turn beams off and close shutters
+ off: axial
+ off: radial2
+ off: radial
+ off: imag461
+ off: andortrig
+ off: andorshut
  off: rp707
  off: rp679
- %on: blue3d
- %on: red3dnarrow 
- %on: redcool
-repeat: 12
-   on: imag461
-   t += .1
-   off: imag461
-   %repeat: 10
-   %on: axial
-   %t += .1
-   %off: axial
-   on: redcool
-   t += 4
-   off: redcool
-   %end
-end
-
- 
- off: redcool
- off: andortrig
- off: mako1
- off: red3d
- %%%%%
- dac: red3dpow .4
- t += 5
-
- off: andorshut
+ off: shut707
+ off: shut679
+ off: imagshut
+ off: lampttl
+ t += 4

@@ -2,6 +2,9 @@ def red_mot(loadTime):
   on: red3d
 
   dac: bigzcoil 0.145
+  %dac: bigzcoil scanbigz
+  %dac: bigzcoil 0.157/factor % changed 241114
+  %dac: bigzcoil redmotbigz
   dac: red3dpow 1.5 %.4 %.8 %.25 %.5
   
   %dac: x1coil .01  %.005

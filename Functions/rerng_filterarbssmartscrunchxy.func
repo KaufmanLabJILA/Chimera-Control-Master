@@ -58,8 +58,8 @@ on: coolSH
 %t += 5
 
 %%% cooling %%%%
-daclinspace: int633servo tweezer_atten_zero tweezer_atten_final 2 5
-t += 2
+%daclinspace: int633servo tweezer_atten_zero tweezer_atten_final 2 5
+%t += 2
 off: tweezershut
 t += 5
 
@@ -80,8 +80,8 @@ on: coolSH
 on: tweezershut
 t += 5
 
-daclinspace: int633servo tweezer_atten_final tweezer_atten_zero 5 20
-t += 6
+%daclinspace: int633servo tweezer_atten_final tweezer_atten_zero 5 20
+%t += 6
 %%% end cooling %%%%
 
 
@@ -228,3 +228,4 @@ off: t515hold
 
 %daclinspace: latticepow lattice_pow2 lattice_pow 3 15
 %t += 10
+

@@ -189,6 +189,7 @@
     <ClCompile Include="BoostUDP.cpp" />
     <ClCompile Include="repeatManager.cpp" />
     <ClCompile Include="IdleSequence.cpp" />
+    <ClCompile Include="socketClient.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -448,6 +449,9 @@
     <ClInclude Include="repeatManager.h" />
     <ClInclude Include="TreeItem.h" />
     <ClInclude Include="IdleSequence.h" />
+    <ClInclude Include="nlohmann\json.hpp" />
+    <ClInclude Include="nlohmann\json_fwd.hpp" />
+    <ClInclude Include="socketClient.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Icon2.ico">
