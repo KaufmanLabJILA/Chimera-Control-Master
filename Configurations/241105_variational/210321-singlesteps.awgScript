@@ -23,14 +23,8 @@ setsingle 0 1.08 awgamp (ryd_freq+ryd_det) 0 0
 %setsingle 0 1.08 awgamp/10 (ryd_freq+ryd_det) 0 0
 setsingle 0 (uvtime + 1.08) 0 (ryd_freq+ryd_det) 0 0
 
-setsingle 0 (uvtime + ramseytime + 1.08) awgamp (ryd_freq+ryd_det) 0 0
-setsingle 0 (2*uvtime + ramseytime + 1.08) 0 (ryd_freq+ryd_det) 0 0
-
-%setsingle 0 (uvtime + ramseytime/2 + 1.08) awgamp (ryd_freq+ryd_det) 0 0
-%setsingle 0 (3*uvtime + ramseytime/2 + 1.08) 0 (ryd_freq+ryd_det) 0 0
-%setsingle 0 (3*uvtime + ramseytime + 1.08) awgamp (ryd_freq+ryd_det) 0 0
-%setsingle 0 (4*uvtime + ramseytime + 1.08) 0 (ryd_freq+ryd_det) 0 0
-
+%setsingle 0 (uvtime + ramseytime + 1.08) awgamp (ryd_freq+ryd_det) 0 0
+%setsingle 0 (2*uvtime + ramseytime + 1.08) 0 (ryd_freq+ryd_det) 0 0
 
 %setsingle 0 0 100 ryd_freq 1 0
 %setsingle 0 0 100 100 1 0
@@ -38,6 +32,11 @@ setsingle 0 (2*uvtime + ramseytime + 1.08) 0 (ryd_freq+ryd_det) 0 0
 program 0
 
 %%% for monitoring:
+
+setsingle 1 0 0 (ryd_freq+ryd_det) 1 0
+setsingle 1 1.08+delayuv12 awgamp (ryd_freq+ryd_det) 0 0
+setsingle 1 (uvtime + 1.08+delayuv12) 0 (ryd_freq+ryd_det) 0 0
+
 
 %setsingle 1 0 0 (ryd_freq+ryd_det) 1 0
 
@@ -60,12 +59,7 @@ program 2
 
 setsingle 3 0 0 f_407 1 0
 setsingle 3 (1.08 + uvtime + uv407delay) pow_407 f_407 0 0
-setsingle 3 (1.08 + uvtime + uv407delay + time407) 0 f_407 0 0
-
-%setsingle 3 (1.08 + 2*uvtime + ramseytime + uv407delay) pow_407 f_407 0 0
-%setsingle 3 (1.08 + 2*uvtime + ramseytime + uv407delay + time407) 0 f_407 0 0
-%setsingle 3 0 0 (ryd_freq+ryd_det) 1 0
-
+%setsingle 3 (1.08 + uvtime + uv407delay + time407) 0 f_407 0 0
 
 program 3
 

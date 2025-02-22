@@ -24,3 +24,6 @@ def blowaway_pulse(blowaway_time):
    t += 4
    dacexpspace: latticepow lattice_pow/20 lattice_pow .3 50
    t += .35
+
+   %% turn back on upstream AO for thermal reasons
+   on: imag461

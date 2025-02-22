@@ -25,10 +25,10 @@ def imageLat(imageTime):
 
  on: imag461
  t += 0.01
- off: bigzrsd
+ %off: bigzrsd
  %on: red3dnarrow %%%%
- t += imageTime
- on: bigzrsd
+ %t += imageTime
+ %on: bigzrsd
  t += 0.01
 
  %on: bigzrsd
@@ -62,4 +62,4 @@ def imageLat(imageTime):
  off: shut679
  off: imagshut
  off: lampttl
- t += 4
+ t += 4

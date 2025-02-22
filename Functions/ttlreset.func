@@ -18,13 +18,16 @@ def ttlReset():
   on: slower
   on: coolSH
   %% blue
-  off: imag461
+  %off: imag461
+  on: imag461 % changed 241119
   on: imageSH
   off: blowawayttl
   %% clock
   off: clockttl
   %% rydberg
   off: uvttl
+  on: holduv
+  on: uv2ttl
   %% autoionization
   off: pi407
 
@@ -65,3 +68,4 @@ on: bigzantihelm
 off: metertrig %not connected to anything currently
 
 off: lampttl
+

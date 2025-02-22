@@ -16,14 +16,15 @@ def red_mot(loadTime):
   dac: y1coil rmby
   dac: y2coil rmby
   dac: z1coil rmbz
-  
-  t += loadTime
 
+  t += loadTime
+ 
   %daclinspace: red3dpow 1.5 0.5 10 20
   %t += 10
 
   %on: blueshut
   %t += 6
+
   off: red3d
   %dac: motcoils .5
   %dac: red3dpow .5
@@ -33,7 +34,7 @@ def red_mot(loadTime):
   %dac: y1coil rmby
   %dac: y2coil rmby
   %dac: z1coil rmbz 
-  
+ 
   on: red3dnarrow
   t += narrowmottime
   %%%%%%%%%%%%%%%%%%%%%%%
@@ -43,6 +44,7 @@ def red_mot(loadTime):
   %%%%%%%%%%%%%%%%%%%%%%%
 
   off: red3dnarrow
+
  %dac: red3dpow .15
   %t += 30
   %t += 20

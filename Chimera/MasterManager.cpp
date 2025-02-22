@@ -12,6 +12,7 @@
 namespace fs = std::experimental::filesystem;
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
+#include <chrono>
 
 
 MasterManager::MasterManager()
@@ -236,6 +237,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 			fs::rename(EXPORT_VARIABLE_TMP_FILE_LOCATION, EXPORT_VARIABLE_FILE_LOCATION);
 
 			// tell python to update keysight/wieser
+			auto t1 = std::chrono::high_resolution_clock::now();
 			json j;
 			j["UPDATE"] = "KEYSIGHTWIESER";
 			std::string jstr = j.dump();
@@ -245,10 +247,11 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 			socketClient::close(sock); goto skipsock; }
 			socketClient::sendAll(sock, jstr.c_str(), strlen(jstr.c_str()));
 			char buffer[1024] = { 0 };
-			int bytes_received = socketClient::recvAll(sock, buffer, sizeof(buffer));
+			//int bytes_received = socketClient::recvAll(sock, buffer, sizeof(buffer));
 			socketClient::close(sock);
 		skipsock:
-
+			auto t2 = std::chrono::high_resolution_clock::now();
+			expUpdate(str(std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count()), input->comm, input->quiet);
 
 			expUpdate( "Programming RSG, Agilents, NIAWG, & Teltronics...\r\n", input->comm, input->quiet );
 			//input->rsg->programRsg( variationInc );

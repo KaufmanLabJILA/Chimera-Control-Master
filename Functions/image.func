@@ -5,6 +5,11 @@ def image(imageTime, image_pow, andorState):
  dac: imagpow1 (image_pow * imagpowratio12)
  dac: imagpow2 image_pow
 
+ %%% Turn off upstream AO during shutter
+ off: imag461
+ t += 1
+
+
  %%% Open shutters
  on: shut707
  on: shut679
@@ -51,4 +56,8 @@ def image(imageTime, image_pow, andorState):
  off: shut679
  off: imagshut
  off: lampttl
- t += 4
+ t += 4
+
+ %%% Turn upstream AO back on for thermal reasons
+ t += 1
+ on: imag461

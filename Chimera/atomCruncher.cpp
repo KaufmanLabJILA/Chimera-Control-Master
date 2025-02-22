@@ -1425,6 +1425,13 @@ moveSequence atomCruncher::getRearrangeMoves(std::string rearrangeType) {
 		scrunchYTarget(moveseq, true); // needs nCol = 16 triggers
 		filterReservoir(moveseq);
 	}
+	else if (rearrangeType == "filterarbssmartscrunchxycompressx") {
+		smartScrunchXTarget(moveseq, true); // needs nRow = 24 triggers
+		scrunchYTarget(moveseq, true); // needs nCol = 16 triggers
+		compressX(moveseq); // needs nCol = 16 triggers (I hope we have enough triggers)
+		filterReservoir(moveseq);
+
+	}
 	else if (rearrangeType == "nnrearrtest") {
 		// do some testing for potential nearest-neighbor rearrangement alg
 		//smartScrunchXTargetAvoidNN(moveseq, true); // needs nRow = 24 triggers

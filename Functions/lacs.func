@@ -32,7 +32,7 @@ def lacs(lactime):
  off: axial
  off: radial
  off: red3dnarrow
- off: imag461
+ %off: imag461
  off: imagshut
  off: shut707
  off: shut679

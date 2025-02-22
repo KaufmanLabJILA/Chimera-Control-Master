@@ -1035,14 +1035,13 @@ namespace commonFunctions
 		}
 
 		// run configurations determined by python in a loop until aborted
-		while (!abortSequence)
+		while (true)
 		{
 			// if experiment aborted, then abort sequence
 			if (!multiExpInput->mainWin->sequenceIsRunning)
 			{
 				multiExpInput->mainWin->getComm()->sendStatus("EXITED SEQUENCE!\r\n");
-				abortSequence = true;
-				continue;
+				break;
 			}
 
 			// wait for idle sequence to finish
@@ -1082,8 +1081,7 @@ namespace commonFunctions
 				multiExpInput->mainWin->getComm()->sendStatus("EXITED WITH ERROR!\r\nInitialized Default Waveform\r\n");
 				multiExpInput->mainWin->getComm()->sendTimer("ERROR!");
 				multiExpInput->camWin->assertOff();
-				abortSequence = true;
-				continue;
+				break;
 			}
 
 			if (abortSequence) { continue; }
@@ -1112,7 +1110,7 @@ namespace commonFunctions
 			}
 			json msg = json::parse(std::string(buffer, bytes_received));
 			multiExpInput->mainWin->getComm()->sendStatus(msg.dump());
-			if (msg.contains("ABORT")) { if (msg["ABORT"]) { abortSequence = true; continue; } }
+			if (msg.contains("ABORT")) { if (msg["ABORT"]) { break; } }
 			if (msg.contains("CONFIG")) { multiExpInput->mainWin->changeConfig(msg["CONFIG"]); }
 			if (msg.contains("GIGAMOOG")) {
 				if (msg["GIGAMOOG"] != multiExpInput->mainWin->checkGmoogState()) {
@@ -1134,6 +1132,40 @@ namespace commonFunctions
 					multiExpInput->mainWin->passPaintStaticIsOnPress();
 				}
 			}
+
+			/*for (const auto& item : msg.items())
+			{
+				if (item.key() == "CONFIG") { multiExpInput->mainWin->changeConfig(item.value()); }
+				else if (item.key() == "GIGAMOOG") {
+					if (item.value() != multiExpInput->mainWin->checkGmoogState()) {
+						multiExpInput->mainWin->passGmoogIsOnPress();
+					}
+				}
+				else if (item.key() == "AUTOALIGN" ) {
+					if (item.value() != multiExpInput->mainWin->checkAutoAlignState()) {
+						multiExpInput->mainWin->passAutoAlignIsOnPress();
+					}
+				}
+				else if (item.key() == "PAINTER") {
+					if (item.value() != multiExpInput->mainWin->checkPainterState()) {
+						multiExpInput->mainWin->passPainterIsOnPress();
+					}
+				}
+				else if (item.key() == "PAINTSTATIC") {
+					if (item.value() != multiExpInput->mainWin->checkPaintStatic()) {
+						multiExpInput->mainWin->passPaintStaticIsOnPress();
+					}
+				}
+				else if (multiExpInput->auxWin->globalVariables.checkVariableExists(item.key()))
+				{
+
+				}
+				else if (multiExpInput->auxWin->globalVariables.checkVariableExists(item.key()))
+				{
+
+				}
+			}*/
+
 		}
 		multiExpInput->mainWin->getComm()->sendStatus("Sequence ended.\r\n");
 		multiExpInput->mainWin->sequenceIsRunning = false;

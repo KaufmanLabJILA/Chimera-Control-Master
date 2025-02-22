@@ -39,14 +39,15 @@ t += .8
 %t += 100.1
 
 
-daccosspace: latticepow lattice_pow_rearrange lattice_pow 15 300
-daccosspace: axialpow ax_pow_rearrange ax_lattice_pow 15 300
-t += 15.1
+%daccosspace: latticepow lattice_pow_rearrange lattice_pow 15 300
+%daccosspace: axialpow ax_pow_rearrange ax_lattice_pow 15 300
+%t += 15.1
 
 off: radial
 off: radial2
 off: axial
 on: coolSH
+t += 0.2
 
 %daclinspace: latticepow lattice_pow lattice_zero 3 15
 %t += 4
@@ -60,25 +61,25 @@ on: coolSH
 %%% cooling %%%%
 %daclinspace: int633servo tweezer_atten_zero tweezer_atten_final 2 5
 %t += 2
-off: tweezershut
-t += 5
+%off: tweezershut
+%t += 5
 
 %%%lattice SB cool
-pulseon: resetdds .1
-t += .2
-call setsbcoolpows(radpow_sbcool, rad2pow_sbcool, axpow_sbcool)
-off: coolSH
+%pulseon: resetdds .1
+%t += .2
+%call setsbcoolpows(radpow_sbcool, rad2pow_sbcool, axpow_sbcool)
+%off: coolSH
 %on: axial
-on: radial
-on: radial2
-t += 10
+%on: radial
+%on: radial2
+%t += 10
 %off: axial
-off: radial
-off: radial2
-on: coolSH
+%off: radial
+%off: radial2
+%on: coolSH
 
-on: tweezershut
-t += 5
+%on: tweezershut
+%t += 5
 
 %daclinspace: int633servo tweezer_atten_final tweezer_atten_zero 5 20
 %t += 6
@@ -99,11 +100,11 @@ variableon: latticehold 1-enable_rearrange
 %dacexpspace: axialpow ax_lattice_pow ax_lattice_zero 1 30
 %dacexpspace: latticepow lattice_pow lattice_zero 1 30
 %t += 1.1
-daccosspace: axialpow ax_lattice_pow 0.34 20 200
+daccosspace: axialpow ax_lattice_pow 0.34 2 200
 %t += 6
 %daccosspace: latticepow lattice_pow 1.5 1 40
 
-t += 20.1
+t += 2.1
 
 %daccosspace: axialpow ax_lattice_pow ax_lattice_pow/20 1 50
 %daccosspace: latticepow lattice_pow lattice_pow/20 1 50
@@ -151,14 +152,14 @@ off: radial2
 off: radial
 off: axial
 on: coolSH
-daclinspace: axialpow 0.34 ax_lattice_pow 10 100
+daccosspace: axialpow 0.34 ax_lattice_pow 2 100
 %dacexpspace: axialpow ax_lattice_zero ax_lattice_pow 1 30
 %dacexpspace: latticepow lattice_zero lattice_pow 1 30
 %t += 1.1
 %t += 6
 %dacexpspace: latticepow lattice_zero lattice_pow 1 30
 %daclinspace: latticepow 1.5 lattice_pow 1 30
-t += 10.1
+t += 2.1
 
 off: latticehold
 
