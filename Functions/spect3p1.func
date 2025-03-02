@@ -1,14 +1,14 @@
 % Master-Script See the "?" for info on commands.
-def spect3p1():
+def spect3p1(radon, rad2on, axon):
  off: imag461
  t += 0.1
  on: imagshut
 
  t += 5
  off: coolSH
- %on: axial
- on: radial
- %on: radial2
+ variableon: axial axon
+ variableon: radial radon
+ variableon: radial2 rad2on
  t += 0.1
  off: axial
  off: radial

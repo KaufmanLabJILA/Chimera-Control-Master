@@ -4,9 +4,9 @@ tweezer_pow
 CONSTANT
 filter_pow
 -0.035
-CONSTANT
+VARIABLE
 spec3p1
-79.92
+79.9735294118
 CONSTANT
 c_3p1
 80
@@ -33,7 +33,7 @@ f_sis
 1.25
 CONSTANT
 uvpow
-0.25
+0.5
 CONSTANT
 uvtime
 0.01
@@ -82,9 +82,9 @@ axpow_img
 CONSTANT
 time_sbcool
 5
-CONSTANT
+VARIABLE
 scanax
-0.1
+0.6375
 CONSTANT
 scan2d
 0.5
@@ -258,7 +258,7 @@ ax_lattice_zero
 -0.009
 CONSTANT
 axial_phase_set
-6.7
+4.9
 CONSTANT
 xoff
 0
@@ -324,7 +324,7 @@ fcool
 0.095
 CONSTANT
 c_3p1_lat
-80.0063
+80.0095832326
 CONSTANT
 bluemottime
 30
@@ -333,7 +333,7 @@ uvpm_v_set
 7.21
 CONSTANT
 __t0__
-1739991479.5
+1740866346
 CONSTANT
 dr_3p1
 0.0039
@@ -403,3 +403,6 @@ imag_lat_time
 CONSTANT
 imag_lat_time_fast
 120
+CONSTANT
+offset_689
+345.4925794

@@ -1100,71 +1100,67 @@ namespace commonFunctions
 			};
 			socketClient::sendAll(sock, jstr.c_str(), strlen(jstr.c_str()));
 			// receive response from python and close socket connection
-			char buffer[1024] = { 0 };
-			int bytes_received = socketClient::recvAll(sock, buffer, sizeof(buffer));
+			char buffer1[1024] = { 0 };
+			int bytes_received_chimera_update = socketClient::recvAll(sock, buffer1, sizeof(buffer1));
+			char buffer2[1024] = { 0 };
+			int bytes_received_variable_update = socketClient::recvAll(sock, buffer2, sizeof(buffer2));
 			socketClient::close(sock);
 			// update based on response appropriately
-			if (bytes_received <= 0) {
-				if (bytes_received == 0) { multiExpInput->mainWin->getComm()->sendStatus("Python server closed connection.\r\n"); }
-				continue;
+			if (bytes_received_chimera_update == 0 & bytes_received_variable_update == 0) {
+				multiExpInput->mainWin->getComm()->sendStatus("Python server closed connection.\r\n"); continue;
 			}
-			json msg = json::parse(std::string(buffer, bytes_received));
-			multiExpInput->mainWin->getComm()->sendStatus(msg.dump());
-			if (msg.contains("ABORT")) { if (msg["ABORT"]) { break; } }
-			if (msg.contains("CONFIG")) { multiExpInput->mainWin->changeConfig(msg["CONFIG"]); }
-			if (msg.contains("GIGAMOOG")) {
-				if (msg["GIGAMOOG"] != multiExpInput->mainWin->checkGmoogState()) {
-					multiExpInput->mainWin->passGmoogIsOnPress();
-				}
-			}
-			if (msg.contains("AUTOALIGN")) {
-				if (msg["AUTOALIGN"] != multiExpInput->mainWin->checkAutoAlignState()) {
-					multiExpInput->mainWin->passAutoAlignIsOnPress();
-				}
-			}
-			if (msg.contains("PAINTER")) {
-				if (msg["PAINTER"] != multiExpInput->mainWin->checkPainterState()) {
-					multiExpInput->mainWin->passPainterIsOnPress();
-				}
-			}
-			if (msg.contains("PAINTSTATIC")) {
-				if (msg["PAINTSTATIC"] != multiExpInput->mainWin->checkPaintStatic()) {
-					multiExpInput->mainWin->passPaintStaticIsOnPress();
-				}
-			}
+			json chimera_update = json::parse(std::string(buffer1, bytes_received_chimera_update));
+			multiExpInput->mainWin->getComm()->sendStatus(chimera_update.dump());
+			json variable_update = json::parse(std::string(buffer2, bytes_received_variable_update));
+			multiExpInput->mainWin->getComm()->sendStatus(variable_update.dump());
 
-			/*for (const auto& item : msg.items())
-			{
-				if (item.key() == "CONFIG") { multiExpInput->mainWin->changeConfig(item.value()); }
-				else if (item.key() == "GIGAMOOG") {
-					if (item.value() != multiExpInput->mainWin->checkGmoogState()) {
+			if (chimera_update.contains("ABORT")) { break; }
+
+			for (const auto& item : chimera_update.items())
+			{ 
+				std::string key = item.key();
+				const nlohmann::json& value = item.value();
+				if (key == "CONFIG") { multiExpInput->mainWin->changeConfig(value); }
+				else if (key == "GIGAMOOG") {
+					if (value != multiExpInput->mainWin->checkGmoogState()) {
 						multiExpInput->mainWin->passGmoogIsOnPress();
 					}
 				}
-				else if (item.key() == "AUTOALIGN" ) {
-					if (item.value() != multiExpInput->mainWin->checkAutoAlignState()) {
+				else if (key == "AUTOALIGN") {
+					if (value != multiExpInput->mainWin->checkAutoAlignState()) {
 						multiExpInput->mainWin->passAutoAlignIsOnPress();
 					}
 				}
-				else if (item.key() == "PAINTER") {
-					if (item.value() != multiExpInput->mainWin->checkPainterState()) {
+				else if (key == "PAINTER") {
+					if (value != multiExpInput->mainWin->checkPainterState()) {
 						multiExpInput->mainWin->passPainterIsOnPress();
 					}
 				}
-				else if (item.key() == "PAINTSTATIC") {
-					if (item.value() != multiExpInput->mainWin->checkPaintStatic()) {
+				else if (key == "PAINTSTATIC") {
+					if (value != multiExpInput->mainWin->checkPaintStatic()) {
 						multiExpInput->mainWin->passPaintStaticIsOnPress();
 					}
 				}
-				else if (multiExpInput->auxWin->globalVariables.checkVariableExists(item.key()))
-				{
+			}
+		
 
-				}
-				else if (multiExpInput->auxWin->globalVariables.checkVariableExists(item.key()))
+			for (const auto& item : variable_update.items())
+			{
+				std::string key = item.key();
+				const nlohmann::json& value = item.value();
+				if (multiExpInput->auxWin->configVariables.checkVariableExists(key))
 				{
-
+					multiExpInput->auxWin->configVariables.changeVariableValue(key, value);
 				}
-			}*/
+				// not sure if it makes sense to prioritize one or the other with else if, or do both with if. for now do both (but global only if not varying)
+				if (multiExpInput->auxWin->globalVariables.checkVariableExists(key))
+				{
+					if (value.is_number()) {
+						multiExpInput->auxWin->globalVariables.changeVariableValue(key, value);
+					}
+				}
+				
+			}
 
 		}
 		multiExpInput->mainWin->getComm()->sendStatus("Sequence ended.\r\n");

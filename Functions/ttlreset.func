@@ -39,7 +39,7 @@ def ttlReset():
   off: imagshut
   off: andorshut
   off: shutuv
-  off: uvcavshut
+  %off: uvcavshut
   off: blowawayshutter
   on: blowawayshutter
   on: blueshut

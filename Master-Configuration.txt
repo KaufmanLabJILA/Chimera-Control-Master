@@ -199,7 +199,7 @@ uvpm_h
 uvpm_v
 0 - 10
 0
-64
+65
 rmbx 0.0035
 rmby 0.0145
 rmbz 0.0229
@@ -211,7 +211,7 @@ lattice_pow 1.85
 lattice_zero 0.0175
 ax_lattice_pow 2.85
 ax_lattice_zero -0.009
-axial_phase_set 6.7
+axial_phase_set 4.9
 xoff 0
 yoff 7.2
 xoff813 0
@@ -234,10 +234,10 @@ by_lacs 0.025
 f_lac -1.64
 c_3p0 153.748906
 fcool 0.095
-c_3p1_lat 80.0063
+c_3p1_lat 80.0146
 bluemottime 30
 uvpm_v_set 7.21
-__t0__ 1739991480
+__t0__ 1740866346
 dr_3p1 0.0039
 uvpm_h_set -2.76
 narrowmottime 150
@@ -264,4 +264,5 @@ bzservo0 -0.003
 fast_image_toggle 1
 imag_lat_time 500
 imag_lat_time_fast 120
+offset_689 345.4925794
 110 410 1 100 400 1
