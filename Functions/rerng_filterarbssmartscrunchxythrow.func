@@ -2,8 +2,8 @@
 def rerng_filterarbssmartscrunchxythrow():
   % insert commands here...
 
-daccosspace: latticepow lattice_pow lattice_pow_rearrange 15 300
-t += 15.1
+%daccosspace: latticepow lattice_pow lattice_pow_rearrange 15 300
+%t += 15.1
 
 on: t515hold
 pulseon: gmload .0001
@@ -41,11 +41,11 @@ pulseon: gmmove .00011
 t += .8
 %t += 100.1
 
-t += .1
+%t += .1
 %daccosspace: latticepow lattice_pow_rearrange lattice_pow 15 300
 %daccosspace: axialpow ax_pow_rearrange ax_lattice_pow 15 300
-dac: latticepow lattice_pow
-t += 0.2
+%dac: latticepow lattice_pow
+%t += 0.2
 
 off: radial
 off: radial2

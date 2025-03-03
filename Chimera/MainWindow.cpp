@@ -1313,3 +1313,8 @@ void MainWindow::changeConfig(std::string pathToConfig)
 {
 	profile.openConfigFromPath(pathToConfig, TheScriptingWindow, this, TheCameraWindow, TheAuxiliaryWindow);
 }
+
+void MainWindow::saveMasterConfiguration()
+{
+	masterConfig.save(this, TheAuxiliaryWindow, TheCameraWindow);
+}

@@ -1034,15 +1034,18 @@ namespace commonFunctions
 				beginningSettingsDialogProc, (LPARAM)cstr("\r\n\r\nBegin Sequence Execution?\n\r\n\r"));
 		}
 
+		bool first = true;
 		// run configurations determined by python in a loop until aborted
 		while (true)
 		{
-			// if experiment aborted, then abort sequence
-			if (!multiExpInput->mainWin->sequenceIsRunning)
+			if (!first)
 			{
-				multiExpInput->mainWin->getComm()->sendStatus("EXITED SEQUENCE!\r\n");
-				break;
-			}
+				// if experiment aborted, then abort sequence
+				if (!multiExpInput->mainWin->sequenceIsRunning)
+				{
+					multiExpInput->mainWin->getComm()->sendStatus("EXITED SEQUENCE!\r\n");
+					break;
+				}
 
 			// wait for idle sequence to finish
 			if (multiExpInput->mainWin->idleIsRunning()) {
@@ -1085,10 +1088,13 @@ namespace commonFunctions
 			}
 
 			if (abortSequence) { continue; }
+			}
 
 			// tell python configuration finished running
 			json j;
 			j["UPDATE"] = "CONFIG";
+			j["ANALYZE"] = !first;
+			if (first) { first = false; }
 			std::string jstr = j.dump();
 			SOCKET sock = socketClient::initialize();
 			if (sock == INVALID_SOCKET) {
@@ -1114,8 +1120,23 @@ namespace commonFunctions
 			json variable_update = json::parse(std::string(buffer2, bytes_received_variable_update));
 			multiExpInput->mainWin->getComm()->sendStatus(variable_update.dump());
 
-			if (chimera_update.contains("ABORT")) { break; }
+			// first update any global variables
+			for (const auto& item : variable_update.items())
+			{
+				std::string key = item.key();
+				const nlohmann::json& value = item.value();
+				if (multiExpInput->auxWin->globalVariables.checkVariableExists(key))
+				{
+					if (value.is_number()) {
+						multiExpInput->auxWin->globalVariables.changeVariableValue(key, value);
+					}
+				}
 
+			}
+			multiExpInput->mainWin->saveMasterConfiguration();
+
+			// abort if requested, otherwise update to new configuration
+			if (chimera_update.contains("ABORT")) { break; }
 			for (const auto& item : chimera_update.items())
 			{ 
 				std::string key = item.key();
@@ -1143,7 +1164,7 @@ namespace commonFunctions
 				}
 			}
 		
-
+			// now update configuration variables
 			for (const auto& item : variable_update.items())
 			{
 				std::string key = item.key();
@@ -1152,15 +1173,8 @@ namespace commonFunctions
 				{
 					multiExpInput->auxWin->configVariables.changeVariableValue(key, value);
 				}
-				// not sure if it makes sense to prioritize one or the other with else if, or do both with if. for now do both (but global only if not varying)
-				if (multiExpInput->auxWin->globalVariables.checkVariableExists(key))
-				{
-					if (value.is_number()) {
-						multiExpInput->auxWin->globalVariables.changeVariableValue(key, value);
-					}
-				}
-				
 			}
+			multiExpInput->mainWin->saveConfiguration();
 
 		}
 		multiExpInput->mainWin->getComm()->sendStatus("Sequence ended.\r\n");

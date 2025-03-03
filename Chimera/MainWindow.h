@@ -136,6 +136,7 @@ class MainWindow : public CDialog
 		void passAddCurrentConfigToSeqPress();
 		void changeConfig(std::string pathToConfig);
 		bool sequenceIsRunning = false;
+		void saveMasterConfiguration();
 
 	private:		
 		DECLARE_MESSAGE_MAP();

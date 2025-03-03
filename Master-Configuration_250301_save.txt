@@ -1,0 +1,268 @@
+Version 2.0
+blue3d
+0
+rp707
+0
+rp679
+0
+red3d
+0
+andortrig
+0
+imag461
+0
+red3dnarrow
+0
+trigger
+0
+tweezermod
+0
+blowawayshutter
+0
+resetdds
+0
+stepdds
+0
+awgtrig
+0
+shut689
+0
+mirroractive
+0
+mako1
+0
+tweezerao
+0
+slower
+0
+blowawayttl
+0
+radial2
+0
+radial
+0
+axial
+0
+imagshut
+0
+blueshut
+0
+shut707
+0
+coolsh
+0
+shut679
+0
+tweezershut
+0
+tweezerhold
+0
+axlatttl
+0
+lat813ao
+0
+tweezer813ao
+0
+offset689
+0
+wiesera
+0
+makotweezer
+0
+lampttl
+0
+shut407
+0
+pi407
+0
+rp688
+0
+toggleclockdds
+0
+andorshut
+0
+bigzantihelm
+0
+t515hold
+0
+latticehold
+0
+toggleclockdds2
+0
+uv2ttl
+0
+imagesh
+0
+c15
+0
+uvcavshut
+0
+rigoltrig
+0
+metertrig
+0
+tektronixtrig
+0
+uvttl
+0
+holduv
+0
+shutuv
+0
+shut688
+0
+gmload
+0
+gmmove
+0
+wieserb
+0
+clockttl
+0
+latblink
+0
+keysightgate
+0
+d14
+0
+d15
+0
+x1coil
+-10 - 10
+0
+tweezerpow813
+-10 - 1
+0
+y1coil
+-10 - 10
+0
+y2coil
+-10 - 10
+0
+z1coil
+-10 - 10
+0
+z2coil
+-10 - 10
+0
+bigzcoil
+-0.1 - 2
+0
+int633servo
+-0.8 - 6
+0
+imagpow1
+0 - 10
+0
+radialpow
+-10 - 10
+0
+axialcoolpow
+-10 - 10
+0
+axialpow
+-5 - 5
+0
+imagpow2
+0 - 10
+0
+tweezerpow
+-10 - 3
+0
+radial2pow
+-10 - 10
+0
+blue3dpow
+-10 - 10
+0
+axial_piezo
+0 - 10
+0
+axial_piezo2
+0 - 10
+0
+mirror_y
+0 - 5
+0
+mirror_x
+0 - 5
+0
+latticepow
+-10 - 10
+0
+red3dpow
+0 - 10
+0
+uvpm_h
+-6 - 0
+0
+uvpm_v
+0 - 10
+0
+65
+rmbx 0.0042
+rmby 0.0145
+rmbz 0.0229
+tune461 -0.2
+bluetuneval 0.075
+bluetune_imag 0.075
+tweezer_zero 0.013
+lattice_pow 1.85
+lattice_zero 0.0175
+ax_lattice_pow 2.85
+ax_lattice_zero -0.009
+axial_phase_set 4.9
+xoff 0
+yoff 7.2
+xoff813 0
+yoff813 0
+f_rad 0.08
+f_rad2 0.071
+f_rmot_narrow 0.4
+swapmottime 50
+mirrorscanx 0.65
+mirrorscany 2.55
+f_rad_3d 0.146
+f_ax_3d 0.05676
+f_ax_3d_imag 0.12
+imagpowlat 1.2
+moverate 511
+amprate 6000
+imagpow 1.6
+dmbz 0.398
+by_lacs 0.025
+f_lac -1.64
+c_3p0 153.748906
+fcool 0.095
+c_3p1_lat 80.0146
+bluemottime 30
+uvpm_v_set 7.21
+__t0__ 1740866346
+dr_3p1 0.0039
+uvpm_h_set -2.76
+narrowmottime 150
+tweezerattn_off 0.45
+spec3p0 14.4262
+f_rad_813_imag 84.35
+fmby_813 0.619
+f_rad_813 0.11
+f_ax_813 0.045
+imagpow813 0.28
+c_3p1_813 79.975
+fmbx_813 0.48
+f_rad_3d_cool 0.14
+imagpowlat_fast 2.6
+f_rad_3d_fast 0.15
+f_ax_3d_imag_fast 0.12
+bz0 -0.0006
+enable_rearrange 1
+ryd_det 0.3205
+tweezer_atten_zero 4
+imagpowratio12 0.359
+dmbz_bigz_shift 0.007
+bzservo0 -0.003
+fast_image_toggle 1
+imag_lat_time 500
+imag_lat_time_fast 120
+offset_689 345.4925794
+110 410 1 100 400 1
