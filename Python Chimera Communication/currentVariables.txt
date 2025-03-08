@@ -33,7 +33,7 @@ f_sis
 1.25
 CONSTANT
 uvpow
-0.25
+0.7
 CONSTANT
 uvtime
 0.01
@@ -171,7 +171,7 @@ tweezer_atten_int
 0
 CONSTANT
 lattice_pow_rearrange
-0.6
+0.9
 CONSTANT
 ax_pow_rearrange
 1.4
@@ -258,7 +258,7 @@ ax_lattice_zero
 -0.009
 CONSTANT
 axial_phase_set
-8.2
+3.6
 CONSTANT
 xoff
 0
@@ -324,7 +324,7 @@ fcool
 0.095
 CONSTANT
 c_3p1_lat
-80.0138790651
+80.01387907
 CONSTANT
 bluemottime
 30
@@ -405,4 +405,4 @@ imag_lat_time_fast
 120
 CONSTANT
 offset_689
-345.496243001
+345.496243

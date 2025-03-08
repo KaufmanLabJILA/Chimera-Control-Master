@@ -90,25 +90,25 @@ t += 0.2
 %%% end cooling %%%%
 
 
-%%pulseon: resetdds .1
-%%t += .2
-%%repeat: 2
-%% pulseon: stepdds 0.007
-%% t += .1
-%%end
-%%t += .1
+pulseon: resetdds .1
+t += .2
+repeat: 2
+ pulseon: stepdds 0.007
+ t += .1
+end
+t += .1
 
 %off: coolSH
-%%off: radial2
-%%variableon: latticehold 1-enable_rearrange
+off: radial2
+variableon: latticehold 1-enable_rearrange
 %dacexpspace: axialpow ax_lattice_pow ax_lattice_zero 1 30
 %dacexpspace: latticepow lattice_pow lattice_zero 1 30
 %t += 1.1
-%%daccosspace: axialpow ax_lattice_pow 0.34 2 200
+daccosspace: axialpow ax_lattice_pow 0.34 2 200
 %t += 6
 %daccosspace: latticepow lattice_pow 1.5 1 40
 
-%%t += 2.1
+t += 2.1
 
 %daccosspace: axialpow ax_lattice_pow ax_lattice_pow/20 1 50
 %daccosspace: latticepow lattice_pow lattice_pow/20 1 50
@@ -131,32 +131,32 @@ t += 0.2
 %call magicfields515()
 %call setsbcoolpows(radpow_img, rad2pow_img, axpow_img*0.5)
 %off: coolSH
-%%on: radial2
+on: radial2
 %on: axial
 %on: radial
-%%on: latticehold
+on: latticehold
 %on: latblink
 
 t += 0.01
 %variableon: latblink enable_rearrange
 %pulseon: tektronixtrig .001
-%%off: lat813ao
-%%t += 15
+off: lat813ao
+t += 15
 %call lacs(5)  % This wants imaging snapshot
 
 %off: latblink
-%%on: lat813ao
-%%t += 0.01
-%%off: latticehold
+on: lat813ao
+t += 0.01
+off: latticehold
 %variableon: latticehold 1-enable_rearrange
 
 %call magicfieldsdual813()
 
-%%off: radial2
-%%off: radial
-%%off: axial
-%%on: coolSH
-%%daccosspace: axialpow 0.34 ax_lattice_pow 2 100
+off: radial2
+off: radial
+off: axial
+on: coolSH
+daccosspace: axialpow 0.34 ax_lattice_pow 2 100
 %dacexpspace: axialpow ax_lattice_zero ax_lattice_pow 1 30
 %dacexpspace: latticepow lattice_zero lattice_pow 1 30
 %t += 1.1
@@ -165,7 +165,7 @@ t += 0.01
 %daclinspace: latticepow 1.5 lattice_pow 1 30
 t += 2.1
 
-%%off: latticehold
+off: latticehold
 
 %dacexpspace: axialpow ax_lattice_zero ax_lattice_pow/20 25 100
 %dacexpspace: latticepow lattice_zero lattice_pow/20 25 100
@@ -183,40 +183,55 @@ end
 t += .1
 
 %%%% cooling %%%%
-%off: tweezershut
-%t += 5
+off: tweezershut
+t += 5
 
 %%%lattice SB cool
-%pulseon: resetdds .1
-%t += .2
-%call setsbcoolpows(radpow_sbcool, rad2pow_sbcool, axpow_sbcool)
-%call sbcool(time_sbcool)
+pulseon: resetdds .1
+t += .2
+call setsbcoolpows(radpow_sbcool, rad2pow_sbcool, axpow_sbcool)
+call sbcool(time_sbcool)
 
-%call sbcool_pulsed(time_sbcool_pulsed_rad, time_sbcool_pulsed_ax, pulsenum)
+call sbcool_pulsed(time_sbcool_pulsed, pulsenum)
 
-%on: tweezershut
-%t += 5
+on: tweezershut
+t += 5
 %%%% end cooling %%%%
 
-call setsbcoolpows(radpow_sbcool, rad2pow_sbcool, axpow_sbcool)
-off: coolSH
-on: radial
-on: radial2
+
+%%%% Throw some atoms around
+
+%call setsbcoolpows(radpow_sbcool, rad2pow_sbcool, axpow_sbcool)
+%off: coolSH
+%on: radial
+%on: radial2
 pulseon: gmmove .0001
 t += .08
 
-%%Compress
-%repeat: 16
-% pulseon: gmmove .00011
-% t += .08
+daccosspace: latticepow lattice_pow lattice_pow_rearrange 15 300
+t += 15.1
+
+
+%% Throw trigger
+repeat: 1
+ pulseon: gmmove .00011
+ t += .08
 %% t += 100.1
-% pulseon: gmmove .00011
-% t += 1
+ pulseon: gmmove .00011
+ t += 0.07
 %% t += 100.1
-% pulseon: gmmove .00011
-% t += .08
+
+ %daccosspace: latticepow lattice_pow_rearrange lattice_pow 15 300
+ dac: latticepow lattice_pow
+ t += .1
+
+
+ pulseon: gmmove .00011
+ %t += .08
 %% t += 100.1
-%end
+end
+
+
 
 off: radial
 off: radial2

@@ -636,6 +636,44 @@ void atomCruncher::smartScrunchXTargetAvoidNN(moveSequence& moveseq, bool consta
 
 }
 
+void atomCruncher::throwTest(moveSequence& moveseq) {
+	// move the first atom from the left in the first filled row
+	UINT wx = (positionsX.size()); // 48, 48 typically
+	UINT wy = (positionsY.size());
+
+	// find row
+	int intRow = -1;
+
+	for (int x = 0; x < wx; x++) {
+		for (int y = 1; y < wy - 1; y++) { // exclude top and bottom row in definition of rearrangement pattern
+			if ((*rearrangerAtomQueue)[0][x + wx * y]) { intRow = y; break; }
+		}
+	}
+
+	// find col
+
+	int intCol = -1;
+
+	for (int x = 0; x < wx; x++) {
+		if ((*rearrangerAtomQueue)[0][x + wx * intRow]) {
+			intCol = x;
+		}
+	}
+
+	// move that atom 6 rows up
+	moveSingle single;
+
+	single.startAOX.push_back(intCol);
+	single.endAOX.push_back(intCol);
+
+	single.startAOY.push_back(intRow);
+	single.endAOY.push_back(intRow - 6);
+
+	//single.instantOff = true;
+	single.rampOffOnMove = true;
+	moveseq.moves.push_back(single);
+}
+
 void atomCruncher::smartScrunchXTarget(moveSequence& moveseq, bool constantMoves = false) {
 	UINT wx = (positionsX.size()); // 48, 48 typically
 	UINT wy = (positionsY.size());
@@ -1435,9 +1473,13 @@ moveSequence atomCruncher::getRearrangeMoves(std::string rearrangeType) {
 	else if (rearrangeType == "nnrearrtest") {
 		// do some testing for potential nearest-neighbor rearrangement alg
 		//smartScrunchXTargetAvoidNN(moveseq, true); // needs nRow = 24 triggers
+
+		OutputDebugStringA("in nnrearrtest");
+
 		smartScrunchXTarget(moveseq, true); // needs nRow = 24 triggers
-		NNscrunchYTarget(moveseq, true); // need nCol = 16 triggers
-		NNcompressX(moveseq);
+		scrunchYTarget(moveseq, true); // need nCol = 16 triggers
+		filterReservoir(moveseq);
+		throwTest(moveseq);
 
 
 	}

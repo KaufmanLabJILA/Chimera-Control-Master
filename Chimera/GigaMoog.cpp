@@ -653,6 +653,10 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 				freq = getFreqX(input.moves[stepID].endAOX[0], input.moves[stepID].endAOY[0]);
 				amp = getAmpX(input.moves[stepID].endAOX[0], input.moves[stepID].endAOY[0]);
 
+				if (input.moves[stepID].rampOffOnMove) {
+					amp = 0.01;
+				}
+
 				ampstep = (amp < ampPrev) ? -ampStepMag : ampStepMag; //Change sign of steps appropriately.
 				freqstep = (freq < freqPrev) ? -freqStepMag : freqStepMag;
 
@@ -670,6 +674,10 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 
 				freq = getFreqX(input.moves[stepID].endAOX[channel], input.moves[stepID].endAOY[0]);
 				amp = getAmpX(input.moves[stepID].endAOX[channel], input.moves[stepID].endAOY[0]);
+
+				if (input.moves[stepID].rampOffOnMove) {
+					amp = 0.01;
+				}
 
 				ampstep = (amp < ampPrev) ? -ampStepMag : ampStepMag; //Change sign of steps appropriately.
 				freqstep = (freq < freqPrev) ? -freqStepMag : freqStepMag;
@@ -693,6 +701,10 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 				freq = getFreqY(input.moves[stepID].endAOX[0], input.moves[stepID].endAOY[0]);
 				amp = getAmpY(input.moves[stepID].endAOX[0], input.moves[stepID].endAOY[0]);
 
+				if (input.moves[stepID].rampOffOnMove) {
+					amp = 0.01;
+				}
+
 				ampstep = (amp < ampPrev) ? -ampStepMag : ampStepMag; //Change sign of steps appropriately.
 				freqstep = (freq < freqPrev) ? -freqStepMag : freqStepMag;
 
@@ -712,6 +724,10 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 				freq = getFreqY(input.moves[stepID].endAOX[0], input.moves[stepID].endAOY[channel]);
 				amp = getAmpY(input.moves[stepID].endAOX[0], input.moves[stepID].endAOY[channel]);
 
+				if (input.moves[stepID].rampOffOnMove) {
+					amp = 0.01;
+				}
+
 				ampstep = (amp < ampPrev) ? -ampStepMag : ampStepMag; //Change sign of steps appropriately.
 				freqstep = (freq < freqPrev) ? -freqStepMag : freqStepMag;
 
@@ -724,7 +740,10 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 		}
 
 		//step 3: ramp all tones to 0
+		int ampStepMagToUse = ampStepMag;
+
 		for (int channel = 0; channel < 16; channel++) {
+
 			if (ny > 1 && nx == 1 && channel < 3) //Triple up tones if only a single tone on.
 			{
 				size_t hardwareChannel = hardwareChannelsDAC0[channel];
@@ -732,16 +751,29 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 				Message m = Message::make().destination(MessageDestination::KA007)
 					.DAC(MessageDAC::DAC0).channel(hardwareChannel)
 					.setting(MessageSetting::MOVEFREQUENCY)
-					.frequencyMHz(freq).amplitudePercent(0.01).phaseDegrees(0).instantFTW(1).ATWIncr(-ampStepMag).stepSequenceID(3 * stepID + 2 + 1).FTWIncr(0).phaseJump(0);;
+					.frequencyMHz(freq).amplitudePercent(0.01).phaseDegrees(0).instantFTW(1).ATWIncr(-ampStepMagToUse).stepSequenceID(3 * stepID + 2 + 1).FTWIncr(0).phaseJump(0);;
+				if (input.moves[stepID].instantOff) {
+					m = Message::make().destination(MessageDestination::KA007)
+						.DAC(MessageDAC::DAC0).channel(hardwareChannel)
+						.setting(MessageSetting::LOADFREQUENCY)
+						.frequencyMHz(freq).amplitudePercent(0).phaseDegrees(0.0).stepSequenceID(3 * stepID + 2 + 1);
+				}
 				ms.enqueue(m);
 			}
 			else if (ny != 0 && nx != 0 && channel < nx) {
 				size_t hardwareChannel = hardwareChannelsDAC0[channel];
 				freq = getFreqX(input.moves[stepID].endAOX[channel], input.moves[stepID].endAOY[0]);
+
 				Message m = Message::make().destination(MessageDestination::KA007)
 					.DAC(MessageDAC::DAC0).channel(hardwareChannel)
 					.setting(MessageSetting::MOVEFREQUENCY)
-					.frequencyMHz(freq).amplitudePercent(0.01).phaseDegrees(0).instantFTW(1).ATWIncr(-ampStepMag).stepSequenceID(3 * stepID + 2 + 1).FTWIncr(0).phaseJump(0);;
+					.frequencyMHz(freq).amplitudePercent(0.01).phaseDegrees(0).instantFTW(1).ATWIncr(-ampStepMagToUse).stepSequenceID(3 * stepID + 2 + 1).FTWIncr(0).phaseJump(0);;
+				if (input.moves[stepID].instantOff) {
+					m = Message::make().destination(MessageDestination::KA007)
+						.DAC(MessageDAC::DAC0).channel(hardwareChannel)
+						.setting(MessageSetting::LOADFREQUENCY)
+						.frequencyMHz(freq).amplitudePercent(0).phaseDegrees(0.0).stepSequenceID(3 * stepID + 2 + 1);
+				}
 				ms.enqueue(m);
 				//Has trouble with ramping to 0 amp for some reason - set to ~1 LSB = 100/65535.
 			}
@@ -752,10 +784,17 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 			{
 				size_t hardwareChannel = hardwareChannelsDAC1[channel];
 				freq = getFreqY(input.moves[stepID].endAOX[0], input.moves[stepID].endAOY[0]);
+
 				Message m = Message::make().destination(MessageDestination::KA007)
 					.DAC(MessageDAC::DAC1).channel(hardwareChannel)
 					.setting(MessageSetting::MOVEFREQUENCY)
-					.frequencyMHz(freq).amplitudePercent(0.01).phaseDegrees(0).instantFTW(1).ATWIncr(-ampStepMag).stepSequenceID(3 * stepID + 2 + 1).FTWIncr(0).phaseJump(0);;
+					.frequencyMHz(freq).amplitudePercent(0.01).phaseDegrees(0).instantFTW(1).ATWIncr(-ampStepMagToUse).stepSequenceID(3 * stepID + 2 + 1).FTWIncr(0).phaseJump(0);;
+				if (input.moves[stepID].instantOff) {
+					m = Message::make().destination(MessageDestination::KA007)
+						.DAC(MessageDAC::DAC1).channel(hardwareChannel)
+						.setting(MessageSetting::LOADFREQUENCY)
+						.frequencyMHz(freq).amplitudePercent(0).phaseDegrees(0.0).stepSequenceID(3 * stepID + 2 + 1);
+				}
 				ms.enqueue(m);
 			}
 			else if (nx != 0 && ny != 0 && channel < ny) {
@@ -764,7 +803,13 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 				Message m = Message::make().destination(MessageDestination::KA007)
 					.DAC(MessageDAC::DAC1).channel(hardwareChannel)
 					.setting(MessageSetting::MOVEFREQUENCY)
-					.frequencyMHz(freq).amplitudePercent(0.01).phaseDegrees(0).instantFTW(1).ATWIncr(-ampStepMag).stepSequenceID(3 * stepID + 2 + 1).FTWIncr(0).phaseJump(0);;
+					.frequencyMHz(freq).amplitudePercent(0.01).phaseDegrees(0).instantFTW(1).ATWIncr(-ampStepMagToUse).stepSequenceID(3 * stepID + 2 + 1).FTWIncr(0).phaseJump(0);;
+				if (input.moves[stepID].instantOff) {
+					m = Message::make().destination(MessageDestination::KA007)
+						.DAC(MessageDAC::DAC1).channel(hardwareChannel)
+						.setting(MessageSetting::LOADFREQUENCY)
+						.frequencyMHz(freq).amplitudePercent(0).phaseDegrees(0.0).stepSequenceID(3 * stepID + 2 + 1);
+				}
 				ms.enqueue(m);
 			}
 		}
@@ -1283,7 +1328,7 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vari
 		}
 
 		freqStepMag = round(freqStepNew.evaluate(variables, variation));
-		if (freqStepMag > 511 || ampStepMag < 0) {
+		if (freqStepMag > 511 || freqStepMag < 0) {
 			thrower("Warning: gmoog frequency step out of range [-512, 511]");
 		}
 

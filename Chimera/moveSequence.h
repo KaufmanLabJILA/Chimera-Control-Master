@@ -26,6 +26,9 @@ public:
 	std::vector<double> phaseX; // specified phases, only accessed if corresponding flag above is true
 	std::vector<double> phaseY;
 
+	bool instantOff = false; // if true, turn off tweezer immediately instead of ramping
+	bool rampOffOnMove = false; // if true, ramp off as you move
+
 	inline UINT8 nx() {
 		return startAOX.size();
 	}; //number of active tweezers
