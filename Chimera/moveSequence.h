@@ -28,6 +28,9 @@ public:
 
 	bool instantOff = false; // if true, turn off tweezer immediately instead of ramping
 	bool rampOffOnMove = false; // if true, ramp off as you move
+	bool slowMove = false; // if true, override normal moverate with slowMoveSpeed 
+
+	int slowMoveSpeed = 255;
 
 	inline UINT8 nx() {
 		return startAOX.size();

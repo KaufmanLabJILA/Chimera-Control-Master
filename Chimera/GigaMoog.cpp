@@ -250,6 +250,8 @@ double gigaMoog::getAmpX(float xIndex, float yIndex) {
 }
 
 double gigaMoog::getFreqY(float xIndex, float yIndex) {
+	char buf[255];
+
 	xIndex = (xIndex < 0) ? 0 : xIndex;
 
 	int xIndRound = floorf(xIndex);
@@ -277,7 +279,12 @@ double gigaMoog::getFreqY(float xIndex, float yIndex) {
 		double hiXloY = FTW_LUT[2 * yDim * xIndNext + 2 * yIndRound + 1] + yOffset;
 		double hiXhiY = FTW_LUT[2 * yDim * xIndNext + 2 * yIndNext + 1] + yOffset;
 
-		return (1 - xInterp)*(1 - yInterp)*loXloY + xInterp * (1 - yInterp)*hiXloY + (1 - xInterp)*yInterp*loXhiY + xInterp * yInterp*hiXhiY;
+		double interpvalue = (1 - xInterp)*(1 - yInterp)*loXloY + xInterp * (1 - yInterp)*hiXloY + (1 - xInterp)*yInterp*loXhiY + xInterp * yInterp*hiXhiY;
+
+		sprintf(buf, "NOW: getFreqY for (%f, %f). xIndRound = %d, yIndRound = %d, xIndNext = %d, yIndNext = %d, xInterp = %f, yInterp = %f, loxloy = %f, loxhiy = %f, hixloy = %f, hixhiy = %f, interpvalue = %f\n", xIndex, yIndex, xIndRound, yIndRound, xIndNext, yIndNext, xInterp, yInterp, loXloY, loXhiY, hiXloY, hiXhiY, interpvalue);
+		OutputDebugStringA(buf);
+
+		return interpvalue;
 	}
 	else
 	{
@@ -555,6 +562,13 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 			hardwareChannelsDAC1 = memoryDAC1.getNextChannels(ny);
 		}
 
+		// check to see if freqstep needs to be overridden
+		int freqStepMagToUse = freqStepMag;
+
+		if (input.moves[stepID].slowMove) {
+			int freqStepMagToUse = input.moves[stepID].slowMoveSpeed;
+		}
+
 		char buf[100];
 		sprintf(buf, "\n Allocation for step %d: ", (int)stepID);
 		OutputDebugStringA(buf);
@@ -658,7 +672,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 				}
 
 				ampstep = (amp < ampPrev) ? -ampStepMag : ampStepMag; //Change sign of steps appropriately.
-				freqstep = (freq < freqPrev) ? -freqStepMag : freqStepMag;
+				freqstep = (freq < freqPrev) ? -freqStepMagToUse : freqStepMagToUse;
 
 				Message m = Message::make().destination(MessageDestination::KA007)
 					.DAC(MessageDAC::DAC0).channel(hardwareChannel)
@@ -680,7 +694,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 				}
 
 				ampstep = (amp < ampPrev) ? -ampStepMag : ampStepMag; //Change sign of steps appropriately.
-				freqstep = (freq < freqPrev) ? -freqStepMag : freqStepMag;
+				freqstep = (freq < freqPrev) ? -freqStepMagToUse : freqStepMagToUse;
 
 				Message m = Message::make().destination(MessageDestination::KA007)
 					.DAC(MessageDAC::DAC0).channel(hardwareChannel)
@@ -706,7 +720,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 				}
 
 				ampstep = (amp < ampPrev) ? -ampStepMag : ampStepMag; //Change sign of steps appropriately.
-				freqstep = (freq < freqPrev) ? -freqStepMag : freqStepMag;
+				freqstep = (freq < freqPrev) ? -freqStepMagToUse : freqStepMagToUse;
 
 				Message m = Message::make().destination(MessageDestination::KA007)
 					.DAC(MessageDAC::DAC1).channel(hardwareChannel)
@@ -729,7 +743,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 				}
 
 				ampstep = (amp < ampPrev) ? -ampStepMag : ampStepMag; //Change sign of steps appropriately.
-				freqstep = (freq < freqPrev) ? -freqStepMag : freqStepMag;
+				freqstep = (freq < freqPrev) ? -freqStepMagToUse : freqStepMagToUse;
 
 				Message m = Message::make().destination(MessageDestination::KA007)
 					.DAC(MessageDAC::DAC1).channel(hardwareChannel)
@@ -1303,7 +1317,7 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vari
 	if (word == "rearrange")
 	{
 		//rearrangerActive = true;
-		Expression ampStepNew, freqStepNew, ampStepPaintNew, freqStepPaintNew, xoff, yoff, yPaintStartExpr, yPaintEndExpr, scrunchSpacingExpression;
+		Expression ampStepNew, freqStepNew, ampStepPaintNew, freqStepPaintNew, xoff, yoff, yPaintStartExpr, yPaintEndExpr, scrunchSpacingExpression, testVarExpr;
 		std::string tmp, initAOX, initAOY, filterAOX, filterAOY;
 		currentMoogScript >> rearrangeMode;
 
@@ -1333,6 +1347,16 @@ void gigaMoog::analyzeMoogScript(gigaMoog* moog, std::vector<variableType>& vari
 		}
 
 		currentMoogScript >> tmp;
+
+		if (tmp == "testvar") {
+			// optional parameter specification so you can do tests withou rebuilding chimera
+			currentMoogScript >> testVarExpr;
+
+			testVar = testVarExpr.evaluate(variables, variation);
+
+			currentMoogScript >> tmp;
+		}
+
 		if (tmp == "painter")
 		{
 			currentMoogScript >> yPaintStartExpr;

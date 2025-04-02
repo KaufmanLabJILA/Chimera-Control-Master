@@ -423,6 +423,7 @@ void DataLogger::logGmoogParameters(MasterThreadInput* input)
 			writeDataSet(scriptBuf, "Gmoog-Script", runParametersGroup);
 			writeDataSet(input->gmoogScriptAddress, "Gmoog-Script-File-Address", runParametersGroup);
 			writeDataSet(input->gmoog->autoTweezerOffsetActive, "auto-offset-active", runParametersGroup);
+			writeDataSet(input->gmoog->rearrangerActive, "rearranger-active", runParametersGroup);
 			//writeDataSet(input->gmoog->xOffsetAuto, "x-auto-offset-MHz", tweezerAutoOffsetGroup);
 			//writeDataSet(input->gmoog->yOffsetAuto, "y-auto-offset-MHz", tweezerAutoOffsetGroup);
 		}

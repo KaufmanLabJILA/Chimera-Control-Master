@@ -29,6 +29,7 @@ public:
 	void enoughY(moveSequence& moveseq, bool constantMoves);
 	void NNscrunchX(moveSequence& moveseq, bool constantMoves);
 	void throwTest(moveSequence& moveseq);
+	void makePair(moveSequence& moveseq);
 	void smartScrunchXTarget(moveSequence& moveseq, bool constantMoves);
 	void smartScrunchXTargetAvoidNN(moveSequence& moveseq, bool constantMoves);
 	void filterAtomQueue(void);

@@ -201,6 +201,8 @@ on: radial2
 pulseon: gmmove .0001
 t += .08
 
+%%%% Compression
+
 %%Compress
 %repeat: 16
 % pulseon: gmmove .00011
@@ -213,6 +215,8 @@ t += .08
 % t += .08
 %% t += 100.1
 %end
+
+%%%% End More Rearrangement
 
 off: radial
 off: radial2
@@ -229,4 +233,6 @@ off: t515hold
 
 %daclinspace: latticepow lattice_pow2 lattice_pow 3 15
 %t += 10
+
+
 

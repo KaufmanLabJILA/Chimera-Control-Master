@@ -2,9 +2,6 @@
 def rerng_filterarbssmartscrunchxythrow():
   % insert commands here...
 
-%daccosspace: latticepow lattice_pow lattice_pow_rearrange 15 300
-%t += 15.1
-
 on: t515hold
 pulseon: gmload .0001
 t += .1
@@ -23,13 +20,13 @@ on: radial2
 repeat: 40
  pulseon: gmmove .00011
  t += 0.08
-% t += 100.1
+ %t += 100.1
  pulseon: gmmove .00011
  t += 1.11
-% t += 100.1
+ %t += 100.1
  pulseon: gmmove .00011
  t += 0.08
-% t += 100.1
+ %t += 100.1
 end
 
 %%%Filter reservoir atoms
@@ -41,11 +38,10 @@ pulseon: gmmove .00011
 t += .8
 %t += 100.1
 
-%t += .1
+
 %daccosspace: latticepow lattice_pow_rearrange lattice_pow 15 300
 %daccosspace: axialpow ax_pow_rearrange ax_lattice_pow 15 300
-%dac: latticepow lattice_pow
-%t += 0.2
+%t += 15.1
 
 off: radial
 off: radial2
@@ -183,55 +179,52 @@ end
 t += .1
 
 %%%% cooling %%%%
-off: tweezershut
-t += 5
+%off: tweezershut
+%t += 5
 
 %%%lattice SB cool
-pulseon: resetdds .1
-t += .2
-call setsbcoolpows(radpow_sbcool, rad2pow_sbcool, axpow_sbcool)
-call sbcool(time_sbcool)
+%pulseon: resetdds .1
+%t += .2
+%call setsbcoolpows(radpow_sbcool, rad2pow_sbcool, axpow_sbcool)
+%call sbcool(time_sbcool)
 
-call sbcool_pulsed(time_sbcool_pulsed, pulsenum)
+%call sbcool_pulsed(time_sbcool_pulsed_rad, time_sbcool_pulsed_ax, pulsenum)
 
-on: tweezershut
-t += 5
+%on: tweezershut
+%t += 5
 %%%% end cooling %%%%
 
-
-%%%% Throw some atoms around
-
-%call setsbcoolpows(radpow_sbcool, rad2pow_sbcool, axpow_sbcool)
-%off: coolSH
-%on: radial
-%on: radial2
+call setsbcoolpows(radpow_sbcool, rad2pow_sbcool, axpow_sbcool)
+off: coolSH
+on: radial
+on: radial2
 pulseon: gmmove .0001
 t += .08
 
+%%%% Do More Rearrangement
+
 daccosspace: latticepow lattice_pow lattice_pow_rearrange 15 300
+%daccosspace: axialpow ax_lattice_pow ax_pow_rearrange 15 300
 t += 15.1
 
-
-%% Throw trigger
-repeat: 1
- pulseon: gmmove .00011
+%%Compress
+repeat: 2
+ pulseon: gmmove .0001
  t += .08
-%% t += 100.1
- pulseon: gmmove .00011
- t += 0.07
-%% t += 100.1
-
- %daccosspace: latticepow lattice_pow_rearrange lattice_pow 15 300
- dac: latticepow lattice_pow
- t += .1
-
-
- pulseon: gmmove .00011
- %t += .08
-%% t += 100.1
+ %t += 100.1
+ pulseon: gmmove .0001
+ t += 2
+ %t += 11100.1
+ pulseon: gmmove .0001
+ t += .08
+ %t += 100.1
 end
 
+daccosspace: latticepow lattice_pow_rearrange lattice_pow 15 300
+%daccosspace: axialpow ax_pow_rearrange ax_lattice_pow 15 300
+t += 15.1
 
+%%%% End More Rearrangement
 
 off: radial
 off: radial2
@@ -248,5 +241,7 @@ off: t515hold
 
 %daclinspace: latticepow lattice_pow2 lattice_pow 3 15
 %t += 10
+
+
 
 

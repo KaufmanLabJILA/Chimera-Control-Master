@@ -171,10 +171,10 @@ tweezer_atten_int
 0
 CONSTANT
 lattice_pow_rearrange
-0.9
+0.27
 CONSTANT
 ax_pow_rearrange
-1.4
+1.65
 CONSTANT
 filterfreq
 0.041
@@ -224,14 +224,17 @@ CONSTANT
 delayuv12
 0.015
 CONSTANT
+flashoffset
+1.19
+CONSTANT
 rmbx
-0.0042
+0.0037
 CONSTANT
 rmby
 0.0145
 CONSTANT
 rmbz
-0.0229
+0.0232
 CONSTANT
 tune461
 -0.2
@@ -258,7 +261,7 @@ ax_lattice_zero
 -0.009
 CONSTANT
 axial_phase_set
-3.6
+0.9
 CONSTANT
 xoff
 0
@@ -324,7 +327,7 @@ fcool
 0.095
 CONSTANT
 c_3p1_lat
-80.01387907
+80.02314148
 CONSTANT
 bluemottime
 30
@@ -333,7 +336,7 @@ uvpm_v_set
 7.21
 CONSTANT
 __t0__
-1741028939
+1743532761
 CONSTANT
 dr_3p1
 0.0039
@@ -405,4 +408,4 @@ imag_lat_time_fast
 120
 CONSTANT
 offset_689
-345.496243
+345.5956912

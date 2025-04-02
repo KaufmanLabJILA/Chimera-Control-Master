@@ -106,6 +106,8 @@ public:
 	int yPaintStart, yPaintEnd;
 	std::string rearrangeMode;
 
+	double testVar = NULL;
+
 private:
 	BoostUDP fpga;
 
