@@ -673,14 +673,14 @@ void atomCruncher::makePair(moveSequence& moveseq) {
 
 	single.startAOX.push_back(intCol);
 	single.startAOX.push_back(intCol-3);
-	single.startAOX.push_back(intCol - 6);
+
 
 	single.startAOY.push_back(intRow);
 	single.startAOY.push_back(intRow + 2);
 
+	single.endAOX.push_back(intCol - 1);
 	single.endAOX.push_back(intCol - 2);
-	single.endAOX.push_back(intCol - 3);
-	single.endAOX.push_back(intCol - 4);
+
 
 	single.endAOY.push_back(intRow);
 	single.endAOY.push_back(intRow + 2);
@@ -690,23 +690,37 @@ void atomCruncher::makePair(moveSequence& moveseq) {
 
 	moveSingle single2;
 
+	single2.startAOX.push_back(intCol - 1);
 	single2.startAOX.push_back(intCol - 2);
-	single2.startAOX.push_back(intCol - 3);
-	single2.startAOX.push_back(intCol - 4);
 
-	single2.startAOY.push_back(intRow);
+	single2.startAOY.push_back(intRow - 0.1);
 	single2.startAOY.push_back(intRow + 2);
 
+	single2.endAOX.push_back(intCol - 1);
 	single2.endAOX.push_back(intCol - 2);
-	single2.endAOX.push_back(intCol - 3);
-	single2.endAOX.push_back(intCol - 4);
 
-	single2.endAOY.push_back(intRow);
-	single2.endAOY.push_back(intRow + moveAmount);
+	single2.endAOY.push_back(intRow - 0.1);
+	single2.endAOY.push_back(intRow + 1 + 0.1);
 
 	single2.slowMove = true;
 
 	moveseq.moves.push_back(single2);
+
+	moveSingle single3;
+	single3.startAOX.push_back(intCol - 1);
+	single3.startAOX.push_back(intCol - 2);
+
+	single3.startAOY.push_back(intRow + moveAmount);
+	single3.startAOY.push_back(intRow + 1 - moveAmount);
+
+	single3.endAOX.push_back(intCol - 1);
+	single3.endAOX.push_back(intCol - 2);
+
+	single3.endAOY.push_back(intRow + moveAmount);
+	single3.endAOY.push_back(intRow + 1 - moveAmount);
+
+	moveseq.moves.push_back(single3);
+	
 
 	//// move first col and second col together in first row
 	//moveSingle single;

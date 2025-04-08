@@ -124,8 +124,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;NO_WARN_MBCS_MFC_DEPRECATION;_DEBUG;_CONSOLE;_LIB;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;_SILENCE_FPOS_SEEKPOS_DEPRECATION_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>
-      </AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Program Files\boost_1_60_0</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <ShowIncludes>false</ShowIncludes>
       <UseFullPaths>false</UseFullPaths>
@@ -137,7 +136,7 @@
       </AdditionalLibraryDirectories>
       <TreatLinkerWarningAsErrors>
       </TreatLinkerWarningAsErrors>
-      <AdditionalDependencies>atmcd64m.lib;python36_d.lib;libhdf5_cpp_D.lib;libhdf5_D.lib;libzlib_D.lib;libszip_D.lib;NIDAQmx.lib</AdditionalDependencies>
+      <AdditionalDependencies>atmcd64m.lib;%(AdditionalDependencies);python37.lib;libhdf5_cpp.lib;libhdf5.lib;libzlib.lib;libszip.lib;NIDAQmx.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

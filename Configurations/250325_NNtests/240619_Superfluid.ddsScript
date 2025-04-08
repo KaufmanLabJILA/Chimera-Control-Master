@@ -43,10 +43,10 @@ snapshot 5 reps 2
 freqs 80 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 79.74+(__ts__-__t0__)*dr_3p1/86400 c_3p1+f_rad+(__ts__-__t0__)*dr_3p1/86400 c_3p1+f_ax_515+(__ts__-__t0__)*dr_3p1/86400 c_3p1+f_rad2+(__ts__-__t0__)*dr_3p1/86400
 amps  0 75 90 90 0 100 100 100
 
-% IMAGE LATTICE DUMMY
+% SB COOL SHALLOW LATTICE PULSE
 snapshot 6 reps 2
-freqs 80 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 79.74 c_3p1_lat+f_rad_3d+.005+(__ts__-__t0__)*dr_3p1/86400 c_3p1_lat+f_ax_3d_imag+(__ts__-__t0__)*dr_3p1/86400 c_3p1_lat+f_rad_3d-0.005+(__ts__-__t0__)*dr_3p1/86400
-amps  0 75 90 90 0 100 100 100
+freqs 80 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p1_lat+f_rad_3d+.003+(__ts__-__t0__)*dr_3p1/86400 c_3p1_lat+f_rad_3d_cool+.005+(__ts__-__t0__)*dr_3p1/86400 c_3p1_lat+f_ax_3d_imag+(__ts__-__t0__)*dr_3p1/86400 c_3p1_lat+f_rad_3d-0.005+(__ts__-__t0__)*dr_3p1/86400
+amps  0 75 90 90 0 7 4 7
 
 % SB COOL LATTICE PULSE
 snapshot 7 reps 2
