@@ -203,7 +203,8 @@ t += .08
 
 %%%% Do More Rearrangement
 
-daccosspace: latticepow lattice_pow lattice_pow_rearrange 15 300
+%daccosspace: latticepow lattice_pow lattice_pow_rearrange 15 300
+daccosspace: latticepow lattice_pow 0.27 15 300
 %daccosspace: axialpow ax_lattice_pow ax_pow_rearrange 15 300
 t += 15.1
 
@@ -220,7 +221,8 @@ repeat: 2
  %t += 100.1
 end
 
-daccosspace: latticepow lattice_pow_rearrange lattice_pow 15 300
+%daccosspace: latticepow lattice_pow_rearrange lattice_pow 15 300
+daccosspace: latticepow 0.27 lattice_pow 15 300
 %daccosspace: axialpow ax_pow_rearrange ax_lattice_pow 15 300
 t += 15.1
 

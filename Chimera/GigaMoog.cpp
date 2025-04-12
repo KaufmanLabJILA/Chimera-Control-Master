@@ -592,6 +592,11 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 				size_t hardwareChannel = hardwareChannelsDAC0[channel];
 				freq = getFreqX(input.moves[stepID].startAOX[0], input.moves[stepID].startAOY[0]);
 				amp = getAmpX(input.moves[stepID].startAOX[0], input.moves[stepID].startAOY[0]);
+
+				if (input.moves[stepID].powerMultsX.size() > 0) {
+					amp *= input.moves[stepID].powerMultsX[0];
+				}
+
 				Message m = Message::make().destination(MessageDestination::KA007)
 					.DAC(MessageDAC::DAC0).channel(hardwareChannel)
 					.setting(MessageSetting::MOVEFREQUENCY)
@@ -608,6 +613,10 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 				phase = fmod(180 * pow(channel + 1, 2) / nx, 360); //this assumes comb of even tones, imperfect, but also short duration so not super critical, and fast.
 				if (input.moves[stepID].manualPhaseX) { // set phase manually if specified for this step
 					phase = fmod(input.moves[stepID].phaseX[channel], 360);
+				}
+
+				if (input.moves[stepID].powerMultsX.size() > 0) {
+					amp *= input.moves[stepID].powerMultsX[channel];
 				}
 
 				Message m = Message::make().destination(MessageDestination::KA007)
@@ -627,6 +636,10 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 				freq = getFreqY(input.moves[stepID].startAOX[0], input.moves[stepID].startAOY[0]);
 				amp = getAmpY(input.moves[stepID].startAOX[0], input.moves[stepID].startAOY[0]);
 
+				if (input.moves[stepID].powerMultsY.size() > 0) {
+					amp *= input.moves[stepID].powerMultsY[0];
+				}
+
 				Message m = Message::make().destination(MessageDestination::KA007)
 					.DAC(MessageDAC::DAC1).channel(hardwareChannel)
 					.setting(MessageSetting::MOVEFREQUENCY)
@@ -643,6 +656,9 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 				phase = fmod(180 * pow(channel + 1, 2) / ny, 360);
 				if (input.moves[stepID].manualPhaseY) { // set phase manually if specified for this step
 					phase = fmod(input.moves[stepID].phaseY[channel], 360);
+				}
+				if (input.moves[stepID].powerMultsY.size() > 0) {
+					amp *= input.moves[stepID].powerMultsY[channel];
 				}
 
 				Message m = Message::make().destination(MessageDestination::KA007)
@@ -663,9 +679,14 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 				size_t hardwareChannel = hardwareChannelsDAC0[channel];
 				freqPrev = getFreqX(input.moves[stepID].startAOX[0], input.moves[stepID].startAOY[0]);
 				ampPrev = getAmpX(input.moves[stepID].startAOX[0], input.moves[stepID].startAOY[0]);
-				
+
 				freq = getFreqX(input.moves[stepID].endAOX[0], input.moves[stepID].endAOY[0]);
 				amp = getAmpX(input.moves[stepID].endAOX[0], input.moves[stepID].endAOY[0]);
+
+				if (input.moves[stepID].powerMultsX.size() > 0) {
+					ampPrev *= input.moves[stepID].powerMultsX[0];
+					amp *= input.moves[stepID].powerMultsX[0];
+				}
 
 				if (input.moves[stepID].rampOffOnMove) {
 					amp = 0.01;
@@ -688,6 +709,11 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 
 				freq = getFreqX(input.moves[stepID].endAOX[channel], input.moves[stepID].endAOY[0]);
 				amp = getAmpX(input.moves[stepID].endAOX[channel], input.moves[stepID].endAOY[0]);
+
+				if (input.moves[stepID].powerMultsX.size() > 0) {
+					ampPrev *= input.moves[stepID].powerMultsX[channel];
+					amp *= input.moves[stepID].powerMultsX[channel];
+				}
 
 				if (input.moves[stepID].rampOffOnMove) {
 					amp = 0.01;
@@ -719,6 +745,11 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 					amp = 0.01;
 				}
 
+				if (input.moves[stepID].powerMultsY.size() > 0) {
+					ampPrev *= input.moves[stepID].powerMultsY[0];
+					amp *= input.moves[stepID].powerMultsY[0];
+				}
+
 				ampstep = (amp < ampPrev) ? -ampStepMag : ampStepMag; //Change sign of steps appropriately.
 				freqstep = (freq < freqPrev) ? -freqStepMagToUse : freqStepMagToUse;
 
@@ -740,6 +771,11 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 
 				if (input.moves[stepID].rampOffOnMove) {
 					amp = 0.01;
+				}
+
+				if (input.moves[stepID].powerMultsY.size() > 0) {
+					ampPrev *= input.moves[stepID].powerMultsY[channel];
+					amp *= input.moves[stepID].powerMultsY[channel];
 				}
 
 				ampstep = (amp < ampPrev) ? -ampStepMag : ampStepMag; //Change sign of steps appropriately.

@@ -18,6 +18,8 @@ public:
 	std::vector<float> startAOY; // a non-whole number linearly interpolates from the neighboring LUT values
 	std::vector<float> endAOX;
 	std::vector<float> endAOY;
+	std::vector<float> powerMultsX; // multiply the normally set power (use especially to make tweezers shallower, you may run into problems with values >1.0)
+	std::vector<float> powerMultsY; // these can be empty, but if you add to them they must be the same length as start/endAOX/Y
 
 
 	bool manualPhaseX = false; // allow manually specifying phases so that we can stack tones "by hand"
@@ -31,6 +33,8 @@ public:
 	bool slowMove = false; // if true, override normal moverate with slowMoveSpeed 
 
 	int slowMoveSpeed = 255;
+
+	
 
 	inline UINT8 nx() {
 		return startAOX.size();
