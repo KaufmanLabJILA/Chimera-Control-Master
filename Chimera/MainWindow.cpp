@@ -10,7 +10,7 @@
 
 MainWindow::MainWindow(UINT id, CDialog* splash) : CDialog(id), profile(PROFILES_PATH), 
     masterConfig( MASTER_CONFIGURATION_FILE_ADDRESS ), 
-	appSplash( splash ), dds(DDS_FPGA_ADDRESS), gmoog(GIGAMOOG_IPADDRESS, GIGAMOOG_PORT), awg(AWG_PORT, AWG_BAUD), idler()
+	appSplash( splash ), dds(DDS_FPGA_ADDRESS), gmoog(GIGAMOOG_IPADDRESS, GIGAMOOG_PORT), awg(AWG_PORT, AWG_BAUD), idler(), comm(), client(&comm)
 {
 	// create all the main rgbs and brushes. I want to make sure this happens before other windows are created.
 	mainRGBs["Light Green"]			= RGB( 163,	190, 140);
@@ -906,6 +906,7 @@ void MainWindow::fillMasterThreadInput(MasterThreadInput* input)
 	input->gmoog = &gmoog;
 	input->dds = &dds;
 	input->idler = &idler;
+	input->client = &client;
 
 	VariableSystem::generateKey( input->variables, input->settings.randomizeVariations, input->settings.interleaveVariations );
 	// it's important to do this after the key is generated so that the constants have their values.
@@ -1317,4 +1318,9 @@ void MainWindow::changeConfig(std::string pathToConfig)
 void MainWindow::saveMasterConfiguration()
 {
 	masterConfig.save(this, TheAuxiliaryWindow, TheCameraWindow);
+}
+
+std::string MainWindow::client_send_receive_message(std::string msg, bool wait_for_response)
+{
+	return client.send_receive_message(msg, wait_for_response);
 }

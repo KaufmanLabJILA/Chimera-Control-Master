@@ -19,7 +19,7 @@
 #include "GigaMoog.h"
 #include "fpgaAWG.h"
 #include "idleSequence.h"
-
+#include "socketClient.h"
 #include "rerngParams.h"
 
 class DataLogger;
@@ -39,6 +39,7 @@ struct MasterThreadInput
 	std::string ddsScriptAddress;
 
 	idleSequence* idler;
+	socketClient* client;
 
 	EmbeddedPythonHandler* python;
 	DataLogger* logger;

@@ -17,6 +17,7 @@
 #include "NoteSystem.h"
 #include "profileSettings.h"
 #include "idleSequence.h"
+#include "socketClient.h"
 //#include "NiawgController.h"
 //#include "rerngControl.h"
 
@@ -138,6 +139,8 @@ class MainWindow : public CDialog
 		bool sequenceIsRunning = false;
 		void saveMasterConfiguration();
 
+		std::string client_send_receive_message(std::string msg, bool wait_for_response);
+
 	private:		
 		DECLARE_MESSAGE_MAP();
 		ScriptingWindow* TheScriptingWindow;
@@ -177,6 +180,8 @@ class MainWindow : public CDialog
 		cToolTips tooltips;
 		EmbeddedPythonHandler python;
 		//KeyHandler masterKey;
+
+		socketClient client;
 
 		static BOOL CALLBACK monitorHandlingProc( _In_ HMONITOR hMonitor, _In_ HDC      hdcMonitor,
 										   _In_ LPRECT   lprcMonitor, _In_ LPARAM   dwData );
