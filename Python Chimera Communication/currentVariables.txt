@@ -4,7 +4,7 @@ tweezer_pow
 CONSTANT
 filter_pow
 -0.035
-CONSTANT
+VARIABLE
 spec3p1
 79.9
 CONSTANT
@@ -179,7 +179,7 @@ CONSTANT
 piquarterstime
 0.45265
 CONSTANT
-pscan
+pscan0
 0
 CONSTANT
 pscan1
@@ -188,10 +188,10 @@ CONSTANT
 p0
 0
 CONSTANT
-p01
+p1
 0
 CONSTANT
-p02
+p2
 0
 CONSTANT
 pscan2

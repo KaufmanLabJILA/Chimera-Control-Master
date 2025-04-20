@@ -17,6 +17,7 @@
 #include "NoteSystem.h"
 #include "profileSettings.h"
 #include "idleSequence.h"
+#include "socketClient.h"
 //#include "NiawgController.h"
 //#include "rerngControl.h"
 
@@ -137,6 +138,8 @@ class MainWindow : public CDialog
 		void changeConfig(std::string pathToConfig);
 		bool sequenceIsRunning = false;
 		void saveMasterConfiguration();
+
+		socketClient client;
 
 	private:		
 		DECLARE_MESSAGE_MAP();

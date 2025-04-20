@@ -15,7 +15,6 @@
 #include "CameraWindow.h"
 #include "AuxiliaryWindow.h"
 #include "constants.h"
-#include "socketClient.h"
 #include <fstream>
 #include <cstdio>
 #include <experimental/filesystem>
@@ -34,7 +33,7 @@ namespace commonFunctions
 	// this function handles messages that all windows can recieve, e.g. accelerator keys and menu messages. It 
 	// redirects everything to all of the other functions below, for the most part.
 	void handleCommonMessage( int msgID, CWnd* parent, MainWindow* mainWin, ScriptingWindow* scriptWin, 
-							  CameraWindow* camWin, AuxiliaryWindow* auxWin )
+							  CameraWindow* camWin, AuxiliaryWindow* auxWin)
 	{
 		switch (msgID)
 		{
@@ -1091,12 +1090,16 @@ namespace commonFunctions
 			}
 
 			// tell python configuration finished running
-			json j;
-			j["UPDATE"] = "CONFIG";
-			j["ANALYZE"] = !first;
-			if (first) { first = false; }
-			std::string jstr = j.dump();
-			SOCKET sock = socketClient::initialize();
+			std::string type;
+			if (first) { type = "config only"; first = false; }
+			else { type = "analyze data"; }
+			json update = multiExpInput->mainWin->client.request("sequence", type, {}, 30);
+			std::string update_str = update.dump();
+			json chimera_update = update["chimera_update"];
+			std::string chimera_str = chimera_update.dump();
+			json variable_update = update["variable_update"];
+			std::string variable_str = variable_update.dump();
+			/*SOCKET sock = socketClient::initialize();
 			if (sock == INVALID_SOCKET) {
 				multiExpInput->mainWin->getComm()->sendStatus("Failed to initialize socket.\r\n"); continue;
 			}
@@ -1118,7 +1121,7 @@ namespace commonFunctions
 			json chimera_update = json::parse(std::string(buffer1, bytes_received_chimera_update));
 			multiExpInput->mainWin->getComm()->sendStatus(chimera_update.dump());
 			json variable_update = json::parse(std::string(buffer2, bytes_received_variable_update));
-			multiExpInput->mainWin->getComm()->sendStatus(variable_update.dump());
+			multiExpInput->mainWin->getComm()->sendStatus(variable_update.dump());*/
 
 			// first update any global variables
 			for (const auto& item : variable_update.items())
@@ -1141,7 +1144,23 @@ namespace commonFunctions
 			{ 
 				std::string key = item.key();
 				const nlohmann::json& value = item.value();
-				if (key == "CONFIG") { multiExpInput->mainWin->changeConfig(value); }
+				if (key == "file") { multiExpInput->mainWin->changeConfig(value); }
+				else if (key == "gigamoog_state")
+				{
+					if (value[0] != multiExpInput->mainWin->checkGmoogState()) {
+						multiExpInput->mainWin->passGmoogIsOnPress();
+					}
+					if (value[1] != multiExpInput->mainWin->checkAutoAlignState()) {
+						multiExpInput->mainWin->passAutoAlignIsOnPress();
+					}
+					if (value[2] != multiExpInput->mainWin->checkPainterState()) {
+						multiExpInput->mainWin->passPainterIsOnPress();
+					}
+					if (value[3] != multiExpInput->mainWin->checkPaintStatic()) {
+						multiExpInput->mainWin->passPaintStaticIsOnPress();
+					}
+				}
+				/*if (key == "CONFIG") { multiExpInput->mainWin->changeConfig(value); }
 				else if (key == "GIGAMOOG") {
 					if (value != multiExpInput->mainWin->checkGmoogState()) {
 						multiExpInput->mainWin->passGmoogIsOnPress();
@@ -1161,7 +1180,7 @@ namespace commonFunctions
 					if (value != multiExpInput->mainWin->checkPaintStatic()) {
 						multiExpInput->mainWin->passPaintStaticIsOnPress();
 					}
-				}
+				}*/
 			}
 		
 			// now update configuration variables

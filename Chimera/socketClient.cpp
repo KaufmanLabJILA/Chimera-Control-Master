@@ -1,184 +1,207 @@
-#define WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN 
 
+#include <windows.h>
 #include <winsock2.h>
-#include <iostream>
+#include <ws2tcpip.h>
+
+#pragma comment(lib, "Ws2_32.lib")
 #include "stdafx.h"
+#include <thread>
+#include <iostream>
+#include <chrono>
+#include <future>
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
 
 #include "socketClient.h"
 
-#pragma comment(lib, "Ws2_32.lib")
-
-namespace socketClient
+socketClient::socketClient(const char* host, const char* port, Communicator* communicator) : comm(communicator)
 {
-	SOCKET initialize()
-	{
-		int wsaStatus; //check errors
-		WSADATA WSAData;
-		wsaStatus = WSAStartup(MAKEWORD(2, 0), &WSAData);
-		if (wsaStatus != NO_ERROR) {
-			std::cout << "WSA Startup failed with error : " << wsaStatus;
-			return INVALID_SOCKET;
-		}
+	HOST = host;
+	PORT = port;
+}
 
-		// Create socket
-		SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
-		if (sock == INVALID_SOCKET) {
-			std::cerr << "Socket creation failed!" << std::endl;
-			WSACleanup();
-		}
-		return sock;
+socketClient::~socketClient()
+{
+	WSACleanup();
+	freeaddrinfo(servinfo);
+	if (t1.joinable()) t1.join();
+	if (t2.joinable()) t2.join();
+}
+
+void socketClient::start(HWND hwnd)
+{
+	this->hwnd = hwnd;
+
+	int wsastatus = WSAStartup(MAKEWORD(2, 2), &wsaData);
+	if (wsastatus != 0) {
+		comm->sendStatus("WSA startup failed with code: " + std::to_string(wsastatus) + ". Socket client cannot be started.\n");
+		return;
 	}
 
-	/*bool connect(SOCKET sock, UINT port, const char* host)
+	int status;
+	struct addrinfo hints;
+
+	memset(&hints, 0, sizeof hints);
+	hints.ai_family = AF_INET;
+	hints.ai_socktype = SOCK_STREAM;
+
+	if ((status = getaddrinfo(HOST, PORT, &hints, &servinfo)) != 0) {
+		std::string error = gai_strerror(status);
+		comm->sendStatus("Error getting address info: " + error + ". Socket client cannot be started.\n");
+		return;
+	}
+
+	t1 = std::thread(&socketClient::runthread, this);
+	t2 = std::thread(&socketClient::runheartbeat, this);
+}
+
+
+void socketClient::runthread()
+{
+	while (true)
 	{
-		struct sockaddr_in serverAddr;
-		serverAddr.sin_family = AF_INET;
-		serverAddr.sin_port = htons(port);
-		serverAddr.sin_addr.s_addr = inet_addr(host);
-
-		if (connect(sock, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) < 0) {
-			//std::cerr << "Connection to server failed!" << std::endl;
-			closesocket(sock);
-			return false;
-		}
-
-		return true;
-	}*/
-
-	// Helper function to send all data
-	int sendAll(SOCKET sock, const char* data, int data_len, DWORD timeout) {
-		// set timeout
-		setsockopt(sock, SOL_SOCKET, SO_SNDTIMEO, (char*)&timeout, sizeof(timeout));
-
-		// Send the size of the data (4 bytes for an integer)
-		int total = 0;
-		int size = htonl(data_len);  // Convert size to network byte order
-		int sent = send(sock, (char*)&size, sizeof(size), 0);
-		if (sent != sizeof(size)) {
-			return -1;  // Failed to send the size
-		}
-
-		// Send the actual data
-		while (total < data_len) {
-			int bytes_sent = send(sock, data + total, data_len - total, 0);
-			if (bytes_sent == SOCKET_ERROR) {
-				return -1;  // Error during sending
+		sock = socket(servinfo->ai_family, servinfo->ai_socktype, servinfo->ai_protocol);
+		int status = connect(sock, servinfo->ai_addr, servinfo->ai_addrlen);
+		if (status == 0)
+		{
+			setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, (const char*)&timeout, sizeof(timeout));
+			setsockopt(sock, SOL_SOCKET, SO_SNDTIMEO, (const char*)&timeout, sizeof(timeout));
+			connected = true;
+			comm->sendStatus("Successfully connected to server.\n");
+			while (connected.load())
+			{
+				char buf[2048];
+				int received = recvall(buf);
+				if (received <= 0)
+				{
+					connected = false;
+					WSAGetLastError();
+					break;
+				}
+				std::string msg_str(buf, received);
+				json msg = json::parse(msg_str);
+				if (msg["type"] == "heartbeat"){ continue; }
+				comm->sendStatus("Message received: " + msg["type"].get<std::string>() + ".\n");
+				{
+					std::lock_guard<std::mutex> lock(m);
+					auto it = pending_requests.find(msg["type"]);
+					if (it != pending_requests.end())
+					{
+						it->second.set_value(msg["data"]);
+					}
+				}
 			}
-			total += bytes_sent;
 		}
-		return total;  // Total bytes sent
-	}
-
-	// Helper function to receive all data
-	int recvAll(SOCKET sock, char* buffer, int buffer_size, DWORD timeout) {
-		// set timeout
-		setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, (char*)&timeout, sizeof(timeout));
-
-		// First, receive the size of the data (4 bytes)
-		int size;
-		int received = recv(sock, (char*)&size, sizeof(size), 0);
-		if (received != sizeof(size)) {
-			return -1;  // Failed to receive size
-		}
-		size = ntohl(size);  // Convert size back to host byte order
-
-		// Check if the size fits within the buffer
-		if (size > buffer_size) {
-			return -1;  // Buffer is too small to hold the incoming data
-		}
-
-		// Now receive the actual data
-		int total = 0;
-		while (total < size) {
-			int bytes_received = recv(sock, buffer + total, size - total, 0);
-			if (bytes_received == SOCKET_ERROR || bytes_received == 0) {
-				return -1;  // Error or connection closed
-			}
-			total += bytes_received;
-		}
-		return total;  // Total bytes received
-	}
-
-	void close(SOCKET sock)
-	{
 		closesocket(sock);
-		WSACleanup();
+		std::this_thread::sleep_for(std::chrono::seconds(heartbeat_interval));
 	}
+}
 
-
-	// Helper function to set a socket to non-blocking mode
-	bool set_non_blocking(SOCKET sock, bool non_blocking) {
-		u_long mode = non_blocking ? 1 : 0;
-		return ioctlsocket(sock, FIONBIO, &mode) == 0;
-	}
-
-	// Function to connect with a timeout
-	bool connectWithTimeout(SOCKET sock, int timeout_ms, UINT port, const char* host) {
-		// Set the socket to non-blocking mode
-		if (!set_non_blocking(sock, true)) {
-			std::cerr << "Failed to set non-blocking mode" << std::endl;
-			return false;
-		}
-
-		struct sockaddr_in serverAddr;
-		serverAddr.sin_family = AF_INET;
-		serverAddr.sin_port = htons(port);
-		serverAddr.sin_addr.s_addr = inet_addr(host);
-
-		// Attempt to connect (this will return immediately because the socket is non-blocking)
-		int result = connect(sock, (struct sockaddr*)&serverAddr, sizeof(serverAddr));
-
-		// Check if connect is in progress (non-blocking sockets return SOCKET_ERROR with WSAEWOULDBLOCK)
-		if (result == SOCKET_ERROR && WSAGetLastError() == WSAEWOULDBLOCK) {
-			// Set up the timeout
-			fd_set writefds;
-			FD_ZERO(&writefds);
-			FD_SET(sock, &writefds);
-
-			timeval timeout;
-			timeout.tv_sec = timeout_ms / 1000;
-			timeout.tv_usec = (timeout_ms % 1000) * 1000;
-
-			// Wait for the socket to become writable or for the timeout
-			result = select(0, nullptr, &writefds, nullptr, &timeout);
-			if (result == 0) {
-				std::cerr << "Connect timeout!" << std::endl;
-				set_non_blocking(sock, false);  // Always reset to blocking
-				return false;  // Timeout occurred
-			}
-			else if (result > 0) {
-				// Check if the socket is now writable (i.e., connection successful)
-				int optval;
-				int optlen = sizeof(optval);
-				if (getsockopt(sock, SOL_SOCKET, SO_ERROR, (char*)&optval, &optlen) == 0 && optval == 0) {
-					std::cout << "Connected successfully!" << std::endl;
-					set_non_blocking(sock, false);  // Always reset to blocking
-					return true;
-				}
-				else {
-					std::cerr << "Connection failed after select: " << optval << std::endl;
-					set_non_blocking(sock, false);  // Always reset to blocking
-					return false;
-				}
-			}
-			else {
-				std::cerr << "Select error!" << std::endl;
-				set_non_blocking(sock, false);  // Always reset to blocking
-				return false;  // Some error occurred
+void socketClient::runheartbeat()
+{
+	while (true)
+	{
+		if (connected.load())
+		{
+			std::string msg = formatmessage("heartbeat");
+			int sent = sendall(msg.data(), msg.size());
+			if (sent == -1)
+			{
+				connected = false;
+				WSAGetLastError();
 			}
 		}
-		else if (result == 0) {
-			std::cout << "Connected immediately!" << std::endl;
-			set_non_blocking(sock, false);  // Always reset to blocking
-			return true;  // Connected immediately
-		}
-		else {
-			std::cerr << "Connection error: " << WSAGetLastError() << std::endl;
-			set_non_blocking(sock, false);  // Always reset to blocking
-			return false;  // Some other error occurred
-		}
-
-		// Restore the socket to blocking mode
-		set_non_blocking(sock, false);
+		std::this_thread::sleep_for(std::chrono::seconds(heartbeat_interval));
 	}
+}
+
+json socketClient::request(std::string id, std::string type, json data, int timeout_s)
+{
+	json response;
+	if (!connected.load())
+	{
+		if (!t1.joinable())
+		{
+			comm->sendStatus("Socket client failed to start. Unable to send request: " + type + ".\n");
+		}
+		else
+		{
+			comm->sendStatus("No connection to server. Unable to send request: " + type + ".\n");
+		}
+		response = {};
+		return response;
+	}
+
+	std::promise<json> prom;
+	std::future<json> future = prom.get_future();
+	{
+		std::lock_guard<std::mutex> lock(m);
+		pending_requests[id] = std::move(prom);
+	}
+
+	std::string msg = formatmessage(type, data);
+	sendall(msg.data(), msg.size());
+
+	if (future.wait_for(std::chrono::seconds(timeout_s)) == std::future_status::ready)
+	{
+		response = future.get();
+		comm->sendStatus("Received response to request: " + response.dump() + ".\n");
+	}
+	else { 
+		response = {};
+		comm->sendStatus("Timeout waiting for response.\n");
+	}
+	{
+		std::lock_guard<std::mutex> lock(m);
+		pending_requests.erase(id);
+	}
+	return response;
+}
+
+
+std::string socketClient::formatmessage(std::string type, json data)
+{
+	json msg = { {"from", "chimera"},
+		{"type", type},
+		{"data", data}
+	};
+	return msg.dump();
+}
+
+
+int socketClient::sendall(const char* buf, int len)
+{
+	int total = 0;
+	int n;
+
+	uint32_t data_len = htonl(len);
+	int result = send(sock, (const char*)&data_len, sizeof(data_len), 0);
+	if (result != sizeof(data_len)) { return -1; }
+
+	while (total < len) {
+		n = send(sock, buf + total, len - total, 0);
+		if (n == -1) { break; }
+		total += n;
+	}
+
+	return n == -1 ? -1 : total;
+}
+
+int socketClient::recvall(char* buf)
+{
+	int size;
+	int received = recv(sock, (char*)&size, sizeof(size), 0);
+	if (received <= 0) { return received; }
+
+	int bytes_received = 0;
+	int bytes_remaining = ntohl(size);
+	while (bytes_remaining > 0)
+	{
+		int received = recv(sock, buf + bytes_received, bytes_remaining, 0);
+		if (received <= 0) { return received; }
+		bytes_received += received;
+		bytes_remaining -= received;
+	}
+	return bytes_received;
 }

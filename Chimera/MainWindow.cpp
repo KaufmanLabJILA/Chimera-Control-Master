@@ -10,7 +10,8 @@
 
 MainWindow::MainWindow(UINT id, CDialog* splash) : CDialog(id), profile(PROFILES_PATH), 
     masterConfig( MASTER_CONFIGURATION_FILE_ADDRESS ), 
-	appSplash( splash ), dds(DDS_FPGA_ADDRESS), gmoog(GIGAMOOG_IPADDRESS, GIGAMOOG_PORT), awg(AWG_PORT, AWG_BAUD), idler()
+	appSplash( splash ), dds(DDS_FPGA_ADDRESS), gmoog(GIGAMOOG_IPADDRESS, GIGAMOOG_PORT), awg(AWG_PORT, AWG_BAUD), 
+	idler(), comm(), client(PYTHONSERVER_IPADDRESS, PYTHONSERVER_PORT, &comm)
 {
 	// create all the main rgbs and brushes. I want to make sure this happens before other windows are created.
 	mainRGBs["Light Green"]			= RGB( 163,	190, 140);
@@ -525,7 +526,7 @@ BOOL MainWindow::OnInitDialog( )
 	{
 		errBox( err.what( ) );
 	}
-
+	client.start(GetSafeHwnd());
 
 	ShowWindow( SW_MAXIMIZE );
 	TheCameraWindow->ShowWindow( SW_MAXIMIZE );
@@ -906,6 +907,7 @@ void MainWindow::fillMasterThreadInput(MasterThreadInput* input)
 	input->gmoog = &gmoog;
 	input->dds = &dds;
 	input->idler = &idler;
+	input->client = &client;
 
 	VariableSystem::generateKey( input->variables, input->settings.randomizeVariations, input->settings.interleaveVariations );
 	// it's important to do this after the key is generated so that the constants have their values.

@@ -7,7 +7,6 @@
 #include "AuxiliaryWindow.h"
 //#include "NiawgWaiter.h"
 #include "Expression.h"
-#include "socketClient.h"
 #include <experimental/filesystem>
 namespace fs = std::experimental::filesystem;
 #include <nlohmann/json.hpp>
@@ -203,7 +202,8 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 		{
 			expUpdate( "Variation #" + str( variationInc + 1 ) + "\r\n", input->comm, input->quiet );
 			Sleep( input->debugOptions.sleepTime );
-			std::string varOutput;
+			//std::string varOutput;
+			json variables_json;
 			for (auto tempVariable : input->variables)
 			{
 				// if varies...
@@ -216,8 +216,8 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 					expUpdate( tempVariable.name + ": " + str( tempVariable.keyValues[variationInc], 12) + "\r\n", 
 							   input->comm, input->quiet );
 				}
-
-				if (tempVariable.valuesVary)
+				variables_json[tempVariable.name] = tempVariable.keyValues[variationInc];
+				/*if (tempVariable.valuesVary)
 				{
 					varOutput += "VARIABLE\n";
 				}
@@ -226,22 +226,21 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 					varOutput += "CONSTANT\n";
 				}
 				varOutput += tempVariable.name + "\n";
-				varOutput += str(tempVariable.keyValues[variationInc], 12) + "\n";
+				varOutput += str(tempVariable.keyValues[variationInc], 12) + "\n";*/
 
 			}
 			
 			// export variables to text file
-			std::ofstream tmpFile(EXPORT_VARIABLE_TMP_FILE_LOCATION);
+			/*std::ofstream tmpFile(EXPORT_VARIABLE_TMP_FILE_LOCATION);
 			tmpFile << varOutput;
 			tmpFile.close();
-			fs::rename(EXPORT_VARIABLE_TMP_FILE_LOCATION, EXPORT_VARIABLE_FILE_LOCATION);
+			fs::rename(EXPORT_VARIABLE_TMP_FILE_LOCATION, EXPORT_VARIABLE_FILE_LOCATION);*/
 
-			// tell python to update keysight/wieser
-			auto t1 = std::chrono::high_resolution_clock::now();
-			json j;
-			j["UPDATE"] = "KEYSIGHTWIESER";
-			std::string jstr = j.dump();
-			SOCKET sock = socketClient::initialize();
+			// tell python to update external devices
+			//auto t1 = std::chrono::high_resolution_clock::now();
+			input->client->request("master", "program devices", variables_json, 0.01);
+			
+			/*SOCKET sock = socketClient::initialize();
 			if (sock == INVALID_SOCKET) { expUpdate("Failed to initialize socket.\r\n", input->comm, input->quiet); goto skipsock; }
 			if (!socketClient::connectWithTimeout(sock, 100)) { expUpdate("Failed to connect to server.\r\n", input->comm, input->quiet); 
 			socketClient::close(sock); goto skipsock; }
@@ -251,7 +250,7 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 			socketClient::close(sock);
 		skipsock:
 			auto t2 = std::chrono::high_resolution_clock::now();
-			expUpdate(str(std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count()), input->comm, input->quiet);
+			expUpdate(str(std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count()), input->comm, input->quiet);*/
 
 			expUpdate( "Programming RSG, Agilents, NIAWG, & Teltronics...\r\n", input->comm, input->quiet );
 			//input->rsg->programRsg( variationInc );

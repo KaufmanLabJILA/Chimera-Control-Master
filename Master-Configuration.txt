@@ -237,7 +237,7 @@ fcool 0.095
 c_3p1_lat 80.01748384
 bluemottime 30
 uvpm_v_set 7.21
-__t0__ 1745091546
+__t0__ 1745107241
 dr_3p1 0.0039
 uvpm_h_set -2.76
 narrowmottime 150
