@@ -1,65 +1,55 @@
 #pragma once
+#include "stdafx.h"
 
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN
-#endif
+#define WIN32_LEAN_AND_MEAN 
 
 #include <windows.h>
 #include <winsock2.h>
 #include <ws2tcpip.h>
 
-#include <string>
 #include <thread>
 #include <atomic>
-
+#include <mutex>
+#include <future>
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
 #include "Communicator.h"
-
-/*namespace socketClient
-{
-	SOCKET initialize();
-	//bool connect(SOCKET sock, UINT port = 8000, const char* host = "127.0.0.1");
-	int sendAll(SOCKET sock, const char* data, int data_len, DWORD timeout = 0.1 * 1000);
-	int recvAll(SOCKET sock, char* buffer, int buffer_size, DWORD timeout = 10 * 1000);
-	void close(SOCKET sock);
-
-	bool set_non_blocking(SOCKET sock, bool non_blocking);
-	bool connectWithTimeout(SOCKET sock, int timeout_ms, UINT port = 8000, const char* host = "127.0.0.1");
-}*/
 
 class socketClient
 {
-	public:
-		socketClient(Communicator* communicator);
+public:
+	socketClient(const char* host, const char* port, Communicator* communicator);
+	~socketClient();
 
-		std::string send_receive_message(std::string msg, bool wait_for_response);
+	void start(HWND hwnd);
 
-	private:
-		WSADATA wsaData;
-		std::thread clientThread;
-		SOCKET sock = INVALID_SOCKET;
-		std::mutex mtx;
-		std::condition_variable cv;
+	json request(std::string id, std::string type, json data = {}, int timeout_s = 0.1);
 
-		const char* host = "127.0.0.1";
-		UINT port = 12345;
-		sockaddr_in serverAddr;
+private:
+	void runthread();
+	void runheartbeat();
 
-		DWORD send_timeout = 1000;
-		DWORD recv_timeout = 60 * 1000;
+	int sendall(const char* buf, int len);
+	int recvall(char* buf);
 
-		int wsaStatus = 1;
-		int connStatus = SOCKET_ERROR;
+	std::string formatmessage(std::string type, json data = {});
 
-		bool flag = false;
-		std::string message_to_send = "";
-		std::string response_received = "";
+	const char* HOST;
+	const char* PORT;
 
-		int sendAll(const char* data);
-		int recvAll(char* buffer);
+	WSADATA wsaData;
+	struct addrinfo *servinfo;
+	SOCKET sock;
+	DWORD timeout = 5000; // 1 second
+	int heartbeat_interval = 1;
+	std::atomic_bool connected = false;
 
-		void runThread();
+	std::mutex m;
+	std::unordered_map<std::string, std::promise<json>> pending_requests;
 
-		Communicator* comm;
+	std::thread t1, t2;
 
-		std::string identifier = "chimera";
+	Communicator* comm;
+
+	HWND hwnd = nullptr;
 };

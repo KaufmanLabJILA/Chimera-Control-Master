@@ -236,13 +236,9 @@ UINT __cdecl MasterManager::experimentThreadProcedure( void* voidInput )
 			tmpFile.close();
 			fs::rename(EXPORT_VARIABLE_TMP_FILE_LOCATION, EXPORT_VARIABLE_FILE_LOCATION);*/
 
-			// tell python to update keysight/wieser
-			auto t1 = std::chrono::high_resolution_clock::now();
-			json j;
-			j["action"] = "program devices";
-			j["variables"] = variables_json;
-			std::string jstr = j.dump();
-			input->client->send_receive_message(jstr, true);
+			// tell python to update external devices
+			//auto t1 = std::chrono::high_resolution_clock::now();
+			input->client->request("master", "program devices", variables_json, 0.01);
 			
 			/*SOCKET sock = socketClient::initialize();
 			if (sock == INVALID_SOCKET) { expUpdate("Failed to initialize socket.\r\n", input->comm, input->quiet); goto skipsock; }

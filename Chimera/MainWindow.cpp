@@ -10,7 +10,8 @@
 
 MainWindow::MainWindow(UINT id, CDialog* splash) : CDialog(id), profile(PROFILES_PATH), 
     masterConfig( MASTER_CONFIGURATION_FILE_ADDRESS ), 
-	appSplash( splash ), dds(DDS_FPGA_ADDRESS), gmoog(GIGAMOOG_IPADDRESS, GIGAMOOG_PORT), awg(AWG_PORT, AWG_BAUD), idler(), comm(), client(&comm)
+	appSplash( splash ), dds(DDS_FPGA_ADDRESS), gmoog(GIGAMOOG_IPADDRESS, GIGAMOOG_PORT), awg(AWG_PORT, AWG_BAUD), 
+	idler(), comm(), client(PYTHONSERVER_IPADDRESS, PYTHONSERVER_PORT, &comm)
 {
 	// create all the main rgbs and brushes. I want to make sure this happens before other windows are created.
 	mainRGBs["Light Green"]			= RGB( 163,	190, 140);
@@ -525,7 +526,7 @@ BOOL MainWindow::OnInitDialog( )
 	{
 		errBox( err.what( ) );
 	}
-
+	client.start(GetSafeHwnd());
 
 	ShowWindow( SW_MAXIMIZE );
 	TheCameraWindow->ShowWindow( SW_MAXIMIZE );
@@ -1318,9 +1319,4 @@ void MainWindow::changeConfig(std::string pathToConfig)
 void MainWindow::saveMasterConfiguration()
 {
 	masterConfig.save(this, TheAuxiliaryWindow, TheCameraWindow);
-}
-
-std::string MainWindow::client_send_receive_message(std::string msg, bool wait_for_response)
-{
-	return client.send_receive_message(msg, wait_for_response);
 }

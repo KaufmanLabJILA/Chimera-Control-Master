@@ -139,7 +139,7 @@ class MainWindow : public CDialog
 		bool sequenceIsRunning = false;
 		void saveMasterConfiguration();
 
-		std::string client_send_receive_message(std::string msg, bool wait_for_response);
+		socketClient client;
 
 	private:		
 		DECLARE_MESSAGE_MAP();
@@ -180,8 +180,6 @@ class MainWindow : public CDialog
 		cToolTips tooltips;
 		EmbeddedPythonHandler python;
 		//KeyHandler masterKey;
-
-		socketClient client;
 
 		static BOOL CALLBACK monitorHandlingProc( _In_ HMONITOR hMonitor, _In_ HDC      hdcMonitor,
 										   _In_ LPRECT   lprcMonitor, _In_ LPARAM   dwData );

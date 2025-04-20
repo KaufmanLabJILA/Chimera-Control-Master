@@ -405,6 +405,10 @@
 const double Y_AMP_LUT_MEAN = 75.7;
 const double X_AMP_LUT_MEAN = 82.2;
 
+// Python server communication
+constexpr const char* PYTHONSERVER_PORT = "12345";
+constexpr const char* PYTHONSERVER_IPADDRESS = "localhost";
+
 //Sequence Flags
 const std::string AXIAL_PHASE_FLAG = "Axial Lattice Phase Flag";
 const std::string AXIAL_PHASE_CONFIG_NAME = "220305_tweezer_checks.Config";

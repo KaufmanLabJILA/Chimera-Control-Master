@@ -1090,13 +1090,15 @@ namespace commonFunctions
 			}
 
 			// tell python configuration finished running
-			json j;
-			if (first) { j["action"] = "config only"; first = false; }
-			else { j["action"] = "analyze"; }
-			std::string jstr = j.dump();
-			json update = json::parse(multiExpInput->mainWin->client_send_receive_message(jstr, true));
+			std::string type;
+			if (first) { type = "config only"; first = false; }
+			else { type = "analyze data"; }
+			json update = multiExpInput->mainWin->client.request("sequence", type, {}, 30);
+			std::string update_str = update.dump();
 			json chimera_update = update["chimera_update"];
+			std::string chimera_str = chimera_update.dump();
 			json variable_update = update["variable_update"];
+			std::string variable_str = variable_update.dump();
 			/*SOCKET sock = socketClient::initialize();
 			if (sock == INVALID_SOCKET) {
 				multiExpInput->mainWin->getComm()->sendStatus("Failed to initialize socket.\r\n"); continue;
