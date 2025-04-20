@@ -59,7 +59,7 @@ program 2
 
 setsingle 3 0 0 f_407 1 0
 setsingle 3 (1.08 + uvtime + uv407delay) pow_407 f_407 0 0
-setsingle 3 (1.08 + uvtime + uv407delay + time407) 0 f_407 0 0
+%setsingle 3 (1.08 + uvtime + uv407delay + time407) 0 f_407 0 0
 
 program 3
 

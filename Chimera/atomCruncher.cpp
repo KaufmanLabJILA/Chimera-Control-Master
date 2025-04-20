@@ -637,7 +637,7 @@ void atomCruncher::smartScrunchXTargetAvoidNN(moveSequence& moveseq, bool consta
 }
 
 void atomCruncher::makePair(moveSequence& moveseq) {
-	// move the first atom from the left in the first filled row
+	// FOR TESTING PURPOSES ONLY
 	UINT wx = (positionsX.size()); // 48, 48 typically
 	UINT wy = (positionsY.size());
 
@@ -648,6 +648,12 @@ void atomCruncher::makePair(moveSequence& moveseq) {
 		for (int y = 1; y < wy - 1; y++) { // exclude top and bottom row in definition of rearrangement pattern
 			if ((*rearrangerAtomQueue)[0][x + wx * y]) { intRow = y; break; }
 		}
+	}
+
+	// count columns in initial pattern
+	int colCount = 0;
+	for (int x = 0; x < wx; x++) {
+		if ((*rearrangerAtomQueue)[0][x + wx * intRow]) { colCount++; }
 	}
 
 	// find col
@@ -662,14 +668,79 @@ void atomCruncher::makePair(moveSequence& moveseq) {
 
 	float moveAmount = gmoog->testVar;
 
+	// compress one row
+
+
 	//char buf[100];
 	//sprintf(buf, "TESTVAR Value: %f\n", gmoog->testVar);
 	//OutputDebugStringA(buf);
 	//sprintf(buf, "moveAmount Value: %d\n", moveAmount);
 	//OutputDebugStringA(buf);
+	/*
+	int center = colCount / 2 + 1;
 
+	for (int i = 0; i < 5; i++) {
+		// compress rows at full power
+		moveSingle single;
 
+		single.startAOY.push_back(intRow + i * 2);
+		single.endAOY.push_back(intRow + i * 2);
+
+		for (int j = 0; j < colCount; j++) {
+			single.startAOX.push_back(intCol - j * 3);
+			single.endAOX.push_back(intCol - center - j);
+		}
+		moveseq.moves.push_back(single);
+	}
+
+	// move rows together
+	// first squish at full power
 	moveSingle single;
+	for (int j = 0; j < colCount; j++) {
+		single.startAOX.push_back(intCol - center - j);
+		single.endAOX.push_back(intCol - center - j);
+	}
+	single.startAOY.push_back(intRow);
+	single.startAOY.push_back(intRow + 2);
+
+	single.endAOY.push_back(intRow);
+	single.endAOY.push_back(intRow + 1 + 0.214);
+	
+	single.powerMultsY.push_back(0.264);
+	single.powerMultsY.push_back(1);
+
+	single.slowMove = true;
+	single.slowMoveSpeed = 424;
+
+	moveseq.moves.push_back(single);
+
+	// three more squishes with reduced power
+	for (int i = 0; i < 3; i++) {
+		moveSingle single;
+		for (int j = 0; j < colCount; j++) {
+			single.startAOX.push_back(intCol - center - j);
+			single.endAOX.push_back(intCol - center - j);
+		}
+		single.startAOY.push_back(intRow + 1 + i);
+		single.startAOY.push_back(intRow + 4 + 2 * i);
+
+		single.endAOY.push_back(intRow + 1 + i);
+		single.endAOY.push_back(intRow + 2 + i + 0.155);
+
+		single.powerMultsY.push_back(0.264);
+		single.powerMultsY.push_back(1);
+
+		single.slowMove = true;
+		single.slowMoveSpeed = 465;
+
+		moveseq.moves.push_back(single);
+		
+	}
+
+	*/
+
+
+	/*moveSingle single;
 
 	single.startAOX.push_back(intCol);
 	single.startAOX.push_back(intCol-3);
@@ -679,6 +750,7 @@ void atomCruncher::makePair(moveSequence& moveseq) {
 	single.startAOY.push_back(intRow);
 	single.startAOY.push_back(intRow + 2);
 	single.startAOY.push_back(intRow + 4);
+	single.startAOY.push_back(intRow + 6);
 
 	single.endAOX.push_back(intCol - 1);
 	single.endAOX.push_back(intCol - 2);
@@ -688,6 +760,7 @@ void atomCruncher::makePair(moveSequence& moveseq) {
 	single.endAOY.push_back(intRow);
 	single.endAOY.push_back(intRow + 2);
 	single.endAOY.push_back(intRow + 4);
+	single.endAOY.push_back(intRow + 6);
 
 	single.slowMove = true;
 	moveseq.moves.push_back(single);
@@ -710,8 +783,8 @@ void atomCruncher::makePair(moveSequence& moveseq) {
 
 	single2.slowMove = true;
 
-	single2.powerMultsY.push_back(moveAmount);
-	single2.powerMultsY.push_back(1);
+	//single2.powerMultsY.push_back(moveAmount);
+	//single2.powerMultsY.push_back(1);
 
 	moveseq.moves.push_back(single2);
 
@@ -737,38 +810,27 @@ void atomCruncher::makePair(moveSequence& moveseq) {
 	single3.slowMove = true;
 
 	moveseq.moves.push_back(single3);
-	
 
-	//// move first col and second col together in first row
-	//moveSingle single;
+	moveSingle single4;
+	single4.startAOX.push_back(intCol - 1);
+	single4.startAOX.push_back(intCol - 2);
 
-	//single.startAOX.push_back(intCol);
-	//single.startAOX.push_back(intCol - 3);
-	//single.startAOY.push_back(intRow);
-	//single.startAOY.push_back(intRow + 2);
+	single4.startAOY.push_back(intRow + 2);
+	single4.startAOY.push_back(intRow + 6);
 
-	//single.endAOX.push_back(intCol - 1);
-	//single.endAOX.push_back(intCol - 2);
-	//single.endAOY.push_back(intRow);
-	//single.endAOY.push_back(intRow + 1);
+	single4.endAOX.push_back(intCol - 1);
+	single4.endAOX.push_back(intCol - 2);
 
-	//moveseq.moves.push_back(single);
+	single4.endAOY.push_back(intRow + 2);
+	single4.endAOY.push_back(intRow + 3 + 0.179);
 
-	//// flash on double tweezer
-	//moveSingle single2;
+	single4.powerMultsY.push_back(moveAmount);
+	single4.powerMultsY.push_back(1);
 
-	//single2.startAOX.push_back(intCol - 1);
-	//single2.startAOX.push_back(intCol - 2);
-	//single2.startAOY.push_back(intRow+1);
-	//single2.startAOY.push_back(intRow);
+	single4.slowMove = true;
 
-	//single2.endAOX.push_back(intCol - 1);
-	//single2.endAOX.push_back(intCol - 2);
-	//single2.endAOY.push_back(intRow+1);
-	//single2.endAOY.push_back(intRow);
-
-	//moveseq.moves.push_back(single2);
-
+	moveseq.moves.push_back(single4);
+	*/
 }
 
 void atomCruncher::throwTest(moveSequence& moveseq) {
