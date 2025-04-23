@@ -211,7 +211,7 @@ lattice_pow 1.85
 lattice_zero 0.0175
 ax_lattice_pow 2.85
 ax_lattice_zero -0.009
-axial_phase_set 2.765731998
+axial_phase_set 1.6
 xoff 0
 yoff 7.2
 xoff813 0
@@ -237,7 +237,7 @@ fcool 0.095
 c_3p1_lat 80.01748384
 bluemottime 30
 uvpm_v_set 7.21
-__t0__ 1745107241
+__t0__ 1745261494
 dr_3p1 0.0039
 uvpm_h_set -2.76
 narrowmottime 150
@@ -261,10 +261,10 @@ tweezer_atten_zero 4
 imagpowratio12 0.359
 dmbz_bigz_shift 0.007
 bzservo0 -0.003
-fast_image_toggle 0
+fast_image_toggle 1
 imag_lat_time 300
 imag_lat_time_fast 110
-offset_689 345.6495419
+offset_689 345.6577888
 f_rad_shallow_cool 0.066
 f_rad2_shallow_cool 0.072
 strobefreq 495.51

@@ -28,9 +28,11 @@ public:
 	std::vector<double> phaseX; // specified phases, only accessed if corresponding flag above is true
 	std::vector<double> phaseY;
 
-	bool instantOff = false; // if true, turn off tweezer immediately instead of ramping
+	bool instantOff = false; // if true, turn off tweezer immediately instead of ramping (currently broken)
 	bool rampOffOnMove = false; // if true, ramp off as you move
 	bool slowMove = false; // if true, override normal moverate with slowMoveSpeed 
+
+	bool strobeY = false; // if true, every second row is written to DAC3 (813AOY) instead of the normal DAC1 (AOY)
 
 	int slowMoveSpeed = 255;
 

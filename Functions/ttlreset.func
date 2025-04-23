@@ -34,6 +34,7 @@ def ttlReset():
 
   off: tweezermod
   off: tweezerhold
+  off: tweezerstrobe
 
   %% shutters
   off: imagshut

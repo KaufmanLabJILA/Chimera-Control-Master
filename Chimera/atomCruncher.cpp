@@ -668,8 +668,19 @@ void atomCruncher::makePair(moveSequence& moveseq) {
 
 	float moveAmount = gmoog->testVar;
 
-	// compress one row
+	// move one row
+	moveSingle single;
 
+	single.startAOY.push_back(intRow);
+	single.endAOY.push_back(intRow-1);
+
+	for (int j = 0; j < colCount; j++) {
+		single.startAOX.push_back(intCol - j * 3);
+		single.endAOX.push_back(intCol - j * 3);
+	}
+	single.slowMove = true;
+	single.slowMoveSpeed = 15;
+	moveseq.moves.push_back(single);
 
 	//char buf[100];
 	//sprintf(buf, "TESTVAR Value: %f\n", gmoog->testVar);
