@@ -4,7 +4,13 @@ def clockpi(piquarters):
 
  repeat: 4
  on: clockttl
- t += piquarters
+ t += .01
+ off: clockhold
+ off: coolSH
+ t += piquarters-.002
+ on: clockhold
+ on: coolSH
+ t += .01
  off: clockttl
- t += .004
+ t += .003
  end

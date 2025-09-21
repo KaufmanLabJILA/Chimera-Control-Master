@@ -31,7 +31,7 @@ amps  0 75 90 90 0 100 100 100
 % MOT
 snapshot 3 reps 2
 freqs 80 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p1+f_rmot_narrow+(__ts__-__t0__)*dr_3p1/86400 c_3p1+f_lac+(__ts__-__t0__)*dr_3p1/86400 c_3p1+f_lac+(__ts__-__t0__)*dr_3p1/86400 80+(__ts__-__t0__)*dr_3p1/86400
-amps  0 75 90 90 9 100 100 100
+amps  0 75 90 90 14 100 100 100
 
 % IMAGE TWEEZERS
 snapshot 4 reps 2
@@ -51,10 +51,15 @@ amps  0 75 90 90 0 100 100 100
 % SB COOL LATTICE PULSE
 snapshot 7 reps 2
 freqs 80 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p1_lat+f_rad_3d+.003+(__ts__-__t0__)*dr_3p1/86400 c_3p1_lat+f_rad_3d+(__ts__-__t0__)*dr_3p1/86400 c_3p1_lat+f_ax_3d+(__ts__-__t0__)*dr_3p1/86400 c_3p1_lat+f_rad_3d+(__ts__-__t0__)*dr_3p1/86400
-amps  0 75 90 90 0 7 4 7
+amps  0 75 90 90 0 100 100 100
 
 % IMAGE LATTICE FAST
 snapshot 8 reps 2
+freqs 80 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 79.74 c_3p1_lat+f_rad_3d_fast+.005+(__ts__-__t0__)*dr_3p1/86400 c_3p1_lat+f_ax_3d_imag_fast+(__ts__-__t0__)*dr_3p1/86400 c_3p1_lat+f_rad_3d_fast-0.005+(__ts__-__t0__)*dr_3p1/86400
+amps  0 75 90 60 0 100 100 100
+
+% IMAGE LATTICE FAST
+snapshot 9 reps 2
 freqs 80 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 c_3p0+spec3p0/1000 79.74 c_3p1_lat+f_rad_3d_fast+.005+(__ts__-__t0__)*dr_3p1/86400 c_3p1_lat+f_ax_3d_imag_fast+(__ts__-__t0__)*dr_3p1/86400 c_3p1_lat+f_rad_3d_fast-0.005+(__ts__-__t0__)*dr_3p1/86400
 amps  0 75 90 60 0 100 100 100
 

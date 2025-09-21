@@ -1,11 +1,12 @@
 def red_mot(loadTime):
   on: red3d
 
-  dac: bigzcoil 0.145
+  %dac: bigzcoil 0.145
+  daccosspace: bigzcoil bigz_bluemot*bigz_conv bigz_redmot*bigz_conv 30 40
   %dac: bigzcoil scanbigz
   %dac: bigzcoil 0.157/factor % changed 241114
   %dac: bigzcoil redmotbigz
-  dac: red3dpow 1.5 %.4 %.8 %.25 %.5
+  dac: red3dpow 0.65 %1.5 %.4 %.8 %.25 %.5
   
   %dac: x1coil .01  %.005
   %dac: y1coil .013  %.018
@@ -13,11 +14,11 @@ def red_mot(loadTime):
   %dac: z1coil .021  %.025 
 
   dac: x1coil rmbx
-  dac: y1coil rmby
-  dac: y2coil rmby
+  daccosspace: y1coil bmby rmby 30 80
+  daccosspace: y2coil bmby rmby 30 80
   dac: z1coil rmbz
 
-  t += loadTime
+  t += loadTime+30
  
   %daclinspace: red3dpow 1.5 0.5 10 20
   %t += 10

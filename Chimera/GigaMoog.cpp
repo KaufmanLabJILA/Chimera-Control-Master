@@ -497,6 +497,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 
 	memoryController memoryDAC0;
 	memoryController memoryDAC1;
+	memoryController memoryDAC3; // with strobed moves, we might want to write to 813AOY channel
 
 	if (nMoves>256/3)
 	{
@@ -537,6 +538,18 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 			ms.enqueue(m);
 		}
 	}
+	for (int channel = 0; channel < 24; channel++) {
+		if (channel < nTweezerY)
+		{
+			size_t hardwareChannel = (channel * 8) % 48 + (channel * 8) / 48;
+			memoryDAC3.moveChannel(hardwareChannel / 8);
+			Message m = Message::make().destination(MessageDestination::KA007)
+				.DAC(MessageDAC::DAC3).channel(hardwareChannel)
+				.setting(MessageSetting::MOVEFREQUENCY)
+				.frequencyMHz(0).amplitudePercent(0.01).phaseDegrees(0).instantFTW(1).ATWIncr(-ampStepMag).stepSequenceID(0).FTWIncr(0).phaseJump(1);;
+			ms.enqueue(m);
+		}
+	}
 
 	for (size_t stepID = 0; stepID < nMoves; stepID++)
 	{
@@ -562,6 +575,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 			hardwareChannelsDAC1 = memoryDAC1.getNextChannels(ny);
 		}
 
+
 		// check to see if freqstep needs to be overridden
 		int freqStepMagToUse = freqStepMag;
 
@@ -585,6 +599,8 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 			OutputDebugStringA(buf);
 		}
 		OutputDebugStringA("\n");
+
+
 		//step 1: ramp up tones at initial locations and phases
 		for (int channel = 0; channel < 16; channel++) {//TODO: 16 could be changed to 48 if using more tones for rearrangement
 			if (ny > 1 && nx == 1 && channel < 3) //Triple up tones if only a single tone on, assuming y axis not already tripled.
@@ -649,7 +665,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 				sprintf(buf, "Y start msg chan %d: f = %f, amp = %f, phase = %f \n", channel, freq, amp, 0);
 				OutputDebugStringA(buf);
 			}
-			else if (nx != 0 && ny != 0 && channel < ny) {
+			else if (nx != 0 && ny != 0 && channel < ny && !input.moves[stepID].strobeY) {
 				size_t hardwareChannel = hardwareChannelsDAC1[channel];
 				freq = getFreqY(input.moves[stepID].startAOX[0], input.moves[stepID].startAOY[channel]);
 				amp = getAmpY(input.moves[stepID].startAOX[0], input.moves[stepID].startAOY[channel]);
@@ -663,6 +679,30 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 
 				Message m = Message::make().destination(MessageDestination::KA007)
 					.DAC(MessageDAC::DAC1).channel(hardwareChannel)
+					.setting(MessageSetting::MOVEFREQUENCY)
+					.frequencyMHz(freq).amplitudePercent(amp).phaseDegrees(phase).instantFTW(1).ATWIncr(ampStepMag).stepSequenceID(3 * stepID + 1).FTWIncr(0).phaseJump(1);;
+				ms.enqueue(m);
+
+				sprintf(buf, "Y start msg chan %d: f = %f, amp = %f, phase = %f \n", channel, freq, amp, phase);
+				OutputDebugStringA(buf);
+			}
+			else if (nx != 0 && ny != 0 && channel < ny && input.moves[stepID].strobeY) {
+				// if we're strobing Y, need to split the rows up over DAC1 and DAC3
+				// we will just use the DAC1 hardware channels for this, since I think it works just as well.
+				size_t hardwareChannel = hardwareChannelsDAC1[channel];
+				MessageDAC dactouse = (channel % 2 == 0) ? MessageDAC::DAC1 : MessageDAC::DAC3; // first row goes to DAC1 (normal 515 output) then alternate
+				freq = getFreqY(input.moves[stepID].startAOX[0], input.moves[stepID].startAOY[channel]);
+				amp = getAmpY(input.moves[stepID].startAOX[0], input.moves[stepID].startAOY[channel]);
+				phase = fmod(180 * pow(channel + 1, 2) / ny, 360);
+				if (input.moves[stepID].manualPhaseY) { // set phase manually if specified for this step
+					phase = fmod(input.moves[stepID].phaseY[channel], 360);
+				}
+				if (input.moves[stepID].powerMultsY.size() > 0) {
+					amp *= input.moves[stepID].powerMultsY[channel];
+				}
+
+				Message m = Message::make().destination(MessageDestination::KA007)
+					.DAC(dactouse).channel(hardwareChannel)
 					.setting(MessageSetting::MOVEFREQUENCY)
 					.frequencyMHz(freq).amplitudePercent(amp).phaseDegrees(phase).instantFTW(1).ATWIncr(ampStepMag).stepSequenceID(3 * stepID + 1).FTWIncr(0).phaseJump(1);;
 				ms.enqueue(m);
@@ -759,7 +799,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 					.frequencyMHz(freq).amplitudePercent(amp).phaseDegrees(0).instantFTW(0).ATWIncr(ampstep).stepSequenceID(3 * stepID + 1 + 1).FTWIncr(freqstep).phaseJump(0);;
 				ms.enqueue(m);
 			}
-			else if (nx != 0 && ny != 0 && channel < ny)
+			else if (nx != 0 && ny != 0 && channel < ny && !input.moves[stepID].strobeY)
 			{
 				size_t hardwareChannel = hardwareChannelsDAC1[channel];
 
@@ -783,6 +823,35 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 
 				Message m = Message::make().destination(MessageDestination::KA007)
 					.DAC(MessageDAC::DAC1).channel(hardwareChannel)
+					.setting(MessageSetting::MOVEFREQUENCY)
+					.frequencyMHz(freq).amplitudePercent(amp).phaseDegrees(0).instantFTW(0).ATWIncr(ampstep).stepSequenceID(3 * stepID + 1 + 1).FTWIncr(freqstep).phaseJump(0);;
+				ms.enqueue(m);
+			}
+			else if (nx != 0 && ny != 0 && channel < ny && input.moves[stepID].strobeY)
+			{
+				size_t hardwareChannel = hardwareChannelsDAC1[channel];
+				MessageDAC dactouse = (channel % 2 == 0) ? MessageDAC::DAC1 : MessageDAC::DAC3; // first row goes to DAC1 (normal 515 output) then alternate
+
+				freqPrev = getFreqY(input.moves[stepID].startAOX[0], input.moves[stepID].startAOY[channel]);
+				ampPrev = getAmpY(input.moves[stepID].startAOX[0], input.moves[stepID].startAOY[channel]);
+
+				freq = getFreqY(input.moves[stepID].endAOX[0], input.moves[stepID].endAOY[channel]);
+				amp = getAmpY(input.moves[stepID].endAOX[0], input.moves[stepID].endAOY[channel]);
+
+				if (input.moves[stepID].rampOffOnMove) {
+					amp = 0.01;
+				}
+
+				if (input.moves[stepID].powerMultsY.size() > 0) {
+					ampPrev *= input.moves[stepID].powerMultsY[channel];
+					amp *= input.moves[stepID].powerMultsY[channel];
+				}
+
+				ampstep = (amp < ampPrev) ? -ampStepMag : ampStepMag; //Change sign of steps appropriately.
+				freqstep = (freq < freqPrev) ? -freqStepMagToUse : freqStepMagToUse;
+
+				Message m = Message::make().destination(MessageDestination::KA007)
+					.DAC(dactouse).channel(hardwareChannel)
 					.setting(MessageSetting::MOVEFREQUENCY)
 					.frequencyMHz(freq).amplitudePercent(amp).phaseDegrees(0).instantFTW(0).ATWIncr(ampstep).stepSequenceID(3 * stepID + 1 + 1).FTWIncr(freqstep).phaseJump(0);;
 				ms.enqueue(m);
@@ -847,7 +916,7 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 				}
 				ms.enqueue(m);
 			}
-			else if (nx != 0 && ny != 0 && channel < ny) {
+			else if (nx != 0 && ny != 0 && channel < ny && !input.moves[stepID].strobeY) {
 				size_t hardwareChannel = hardwareChannelsDAC1[channel];
 				freq = getFreqY(input.moves[stepID].endAOX[0], input.moves[stepID].endAOY[channel]);
 				Message m = Message::make().destination(MessageDestination::KA007)
@@ -857,6 +926,22 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 				if (input.moves[stepID].instantOff) {
 					m = Message::make().destination(MessageDestination::KA007)
 						.DAC(MessageDAC::DAC1).channel(hardwareChannel)
+						.setting(MessageSetting::LOADFREQUENCY)
+						.frequencyMHz(freq).amplitudePercent(0).phaseDegrees(0.0).stepSequenceID(3 * stepID + 2 + 1);
+				}
+				ms.enqueue(m);
+			}
+			else if (nx != 0 && ny != 0 && channel < ny && input.moves[stepID].strobeY) {
+				size_t hardwareChannel = hardwareChannelsDAC1[channel];
+				MessageDAC dactouse = (channel % 2 == 0) ? MessageDAC::DAC1 : MessageDAC::DAC3; // first row goes to DAC1 (normal 515 output) then alternate
+				freq = getFreqY(input.moves[stepID].endAOX[0], input.moves[stepID].endAOY[channel]);
+				Message m = Message::make().destination(MessageDestination::KA007)
+					.DAC(dactouse).channel(hardwareChannel)
+					.setting(MessageSetting::MOVEFREQUENCY)
+					.frequencyMHz(freq).amplitudePercent(0.01).phaseDegrees(0).instantFTW(1).ATWIncr(-ampStepMagToUse).stepSequenceID(3 * stepID + 2 + 1).FTWIncr(0).phaseJump(0);;
+				if (input.moves[stepID].instantOff) {
+					m = Message::make().destination(MessageDestination::KA007)
+						.DAC(dactouse).channel(hardwareChannel)
 						.setting(MessageSetting::LOADFREQUENCY)
 						.frequencyMHz(freq).amplitudePercent(0).phaseDegrees(0.0).stepSequenceID(3 * stepID + 2 + 1);
 				}
@@ -878,6 +963,13 @@ void gigaMoog::writeRearrangeMoves(moveSequence input, MessageSender& ms) {
 		{
 			Message m = Message::make().destination(MessageDestination::KA007)
 				.DAC(MessageDAC::DAC1).channel(channel)
+				.setting(MessageSetting::MOVEFREQUENCY)
+				.frequencyMHz(0).amplitudePercent(0.01).phaseDegrees(0).instantFTW(1).ATWIncr(-ampStepMag).stepSequenceID(3 * (nMoves - 1) + 2 + 2).FTWIncr(0).phaseJump(1);;
+			ms.enqueue(m);
+		}
+		{
+			Message m = Message::make().destination(MessageDestination::KA007)
+				.DAC(MessageDAC::DAC3).channel(channel)
 				.setting(MessageSetting::MOVEFREQUENCY)
 				.frequencyMHz(0).amplitudePercent(0.01).phaseDegrees(0).instantFTW(1).ATWIncr(-ampStepMag).stepSequenceID(3 * (nMoves - 1) + 2 + 2).FTWIncr(0).phaseJump(1);;
 			ms.enqueue(m);
@@ -1304,6 +1396,32 @@ void gigaMoog::writeLoad(MessageSender& ms)
 				phase = fmod(180 * pow(iTweezer + 1, 2) / nTweezerY, 360); //this assumes comb of even tones.
 				Message m = Message::make().destination(MessageDestination::KA007)
 					.DAC(MessageDAC::DAC1).channel(hardwareChannel)
+					.setting(MessageSetting::LOADFREQUENCY)
+					.frequencyMHz(FTW_LUT[1 + 2 * iMask] + yOffset).amplitudePercent(ATW_LUT[1 + 2 * iMask]).phaseDegrees(phase);;
+				ms.enqueue(m);
+				iTweezer++;
+			}
+			iMask++;
+		}
+	}
+	bool loadPatternDac3 = false;
+	if (loadPatternDac3) {
+		size_t iTweezer = 0;
+		size_t iMask = 0;
+		for (auto const& channelBool : initialPositionsY)
+		{
+			double phase, amp, freq;
+			if (iTweezer > 24)
+			{
+				thrower("For safety, maximum number of y tones is limited to 24 in rearrangement mode");
+			}
+			if (channelBool)
+			{
+				//size_t hardwareChannel = iTweezer;
+				size_t hardwareChannel = (iTweezer * 8) % 48 + (iTweezer * 8) / 48;
+				phase = fmod(180 * pow(iTweezer + 1, 2) / nTweezerY, 360); //this assumes comb of even tones.
+				Message m = Message::make().destination(MessageDestination::KA007)
+					.DAC(MessageDAC::DAC3).channel(hardwareChannel)
 					.setting(MessageSetting::LOADFREQUENCY)
 					.frequencyMHz(FTW_LUT[1 + 2 * iMask] + yOffset).amplitudePercent(ATW_LUT[1 + 2 * iMask]).phaseDegrees(phase);;
 				ms.enqueue(m);

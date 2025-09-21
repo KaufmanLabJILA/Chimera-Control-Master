@@ -1,0 +1,5 @@
+% Master-Script See the "?" for info on commands.
+def set_wieser_snapshot(a, b, c):
+  variableon: wiesera a
+  variableon: wieserb b
+  variableon: wieserc c

@@ -2,6 +2,9 @@
 def rerng_filterarbssmartscrunchxy():
   % insert commands here...
 
+%daccosspace: latticepow lattice_pow lattice_pow_rearrange 15 300
+%t += 16
+
 on: t515hold
 pulseon: gmload .0001
 t += .1
@@ -32,7 +35,7 @@ end
 %%%Filter reservoir atoms
 pulseon: gmmove .00011
 t += .8
-%t += 100.1
+t += 100.1
 
 pulseon: gmmove .00011
 t += .8

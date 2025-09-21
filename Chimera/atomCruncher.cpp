@@ -668,8 +668,91 @@ void atomCruncher::makePair(moveSequence& moveseq) {
 
 	float moveAmount = gmoog->testVar;
 
-	// move one row
 	moveSingle single;
+	//single.startAOY.push_back(intRow - 1);
+	//single.endAOY.push_back(intRow - 1);
+	single.startAOY.push_back(intRow);
+	single.endAOY.push_back(intRow+0.8);	
+	single.startAOY.push_back(intRow+2);
+	single.endAOY.push_back(intRow+2);
+	single.startAOY.push_back(intRow);
+	single.endAOY.push_back(intRow + 0.8);
+	single.startAOY.push_back(intRow + 4);
+	single.endAOY.push_back(intRow + 4);
+	single.startAOY.push_back(intRow + 3);
+	single.endAOY.push_back(intRow + 3);
+	
+	
+	single.manualPhaseY = true;
+	single.phaseY.push_back(0);
+	single.phaseY.push_back(0);
+	single.phaseY.push_back(0);
+	single.phaseY.push_back(120);
+	single.phaseY.push_back(120);
+
+	single.powerMultsY.push_back(moveAmount);
+	single.powerMultsY.push_back(1);
+	single.powerMultsY.push_back(moveAmount);
+	single.powerMultsY.push_back(1);
+	single.powerMultsY.push_back(1);
+
+	for (int j = 0; j < 5; j++) {
+		single.startAOX.push_back(intCol - j * 3);
+		single.endAOX.push_back(intCol - j * 3);
+	}
+	
+	single.strobeY = true;
+	single.slowMove = true;
+	single.slowMoveSpeed = 31;
+	moveseq.moves.push_back(single);
+	
+
+	// flash on grid
+	/*
+	moveSingle single;
+
+	single.startAOY.push_back(intRow);
+	single.startAOY.push_back(intRow + 10);
+	single.startAOY.push_back(intRow);
+	single.endAOY.push_back(intRow);
+	single.endAOY.push_back(intRow + 10);
+	single.endAOY.push_back(intRow); // double tone
+	for (int i = 1; i < 5; i++) {
+		single.startAOY.push_back(intRow + i * 2);
+		single.endAOY.push_back(intRow + i * 2);
+	}
+	single.manualPhaseY = true;
+	single.phaseY.push_back(0);
+	single.phaseY.push_back(0);
+	single.phaseY.push_back(0);
+	single.powerMultsY.push_back(moveAmount);
+	single.powerMultsY.push_back(0);
+	single.powerMultsY.push_back(moveAmount);
+
+	single.phaseY.push_back(108);
+	single.phaseY.push_back(288);
+	single.phaseY.push_back(180);
+	single.phaseY.push_back(144);
+	single.powerMultsY.push_back(1);
+	single.powerMultsY.push_back(1);
+	single.powerMultsY.push_back(1);
+	single.powerMultsY.push_back(1);
+
+
+
+	for (int j = 0; j < colCount; j++) {
+		single.startAOX.push_back(intCol - j * 3);
+		single.endAOX.push_back(intCol - j * 3);
+	}
+	single.strobeY = true;
+	single.slowMove = true;
+	//single.slowMoveSpeed = moveAmount;
+	moveseq.moves.push_back(single);
+
+	*/
+
+	// move one row
+	/*moveSingle single;
 
 	single.startAOY.push_back(intRow);
 	single.endAOY.push_back(intRow-1);
@@ -681,6 +764,7 @@ void atomCruncher::makePair(moveSequence& moveseq) {
 	single.slowMove = true;
 	single.slowMoveSpeed = 15;
 	moveseq.moves.push_back(single);
+	*/
 
 	//char buf[100];
 	//sprintf(buf, "TESTVAR Value: %f\n", gmoog->testVar);

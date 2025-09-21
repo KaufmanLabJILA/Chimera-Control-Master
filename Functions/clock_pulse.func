@@ -1,0 +1,27 @@
+% Master-Script See the "?" for info on commands.
+def clock_pulse(time, a, b, c, sh):
+  %% set rf to right wieserDDS snapshot
+  off: clockttl
+  t += .002 
+  variableon: wiesera a
+  variableon: wieserb b
+  variableon: wieserc c
+  t += .002
+
+  %% perform pulse
+  on: clockttl
+  t += .005
+  variableon: coolSH sh
+  t += (time-.03)
+  on: coolSH
+  t += .005
+  off: clockttl
+  t += .01
+  
+  %% turn RF back on but away from resonance to keep AO warm
+  on: wiesera
+  on: wieserb
+  on: wieserc
+  t += .001
+  on: clockttl
+  t += .001

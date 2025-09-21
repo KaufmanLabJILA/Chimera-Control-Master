@@ -4,7 +4,7 @@ def rydberg_ramsey(ryd_time):
   on: uvttl
   off: pi407
   on: latticehold
-  pulseon: trigger .001
+  %pulseon: trigger .001
   pulseon: tektronixtrig .001
   t += .001
   pulseon: awgtrig .0001

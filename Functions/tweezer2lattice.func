@@ -12,9 +12,8 @@ def tweezer2lattice(rampTime):
   daccosspace: tweezerpow tweezer_pow tweezer_zero rampTime 100
   t += rampTime+0.1
   
-  %% shutter tweezes, set back to high
+  %% shutter tweezers, set back to high
   off: tweezershut
   t += 5
-  on: tweezerao
   dac: tweezerpow tweezer_pow
   t += .01

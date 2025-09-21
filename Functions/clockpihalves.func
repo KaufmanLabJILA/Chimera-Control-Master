@@ -4,7 +4,11 @@ def clockpihalves(piquarters):
 
  repeat: 2
  on: clockttl
- t += piquarters
+ t += .001
+ off: clockhold
+ t += piquarters-.002
+ on: clockhold
+ t += .001
  off: clockttl
- t += .004
+ t += .01
  end
