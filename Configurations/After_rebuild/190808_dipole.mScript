@@ -1,0 +1,290 @@
+t = 1
+pulseon: trigger .1
+pulseon: resetdds .1
+pulseon: mmload .007
+pulseon: gmload .0001
+t += .1
+off: mirroractive
+%on: mirroractive
+dac: mirror_y 2.5
+dac: mirror_x 1.6
+
+%DDS state: MOT
+repeat: 3
+ pulseon: stepdds 0.007
+ t += .1
+end
+
+dac: galvo galvo_set
+dac: axial_piezo axial_phase_set
+
+
+
+
+call ttlReset()
+t += 1
+on: blowawayshutter
+on: blueshut
+on: tweezerAO
+on: shut689
+on: slower
+off: imagshut
+dac: bluetune bluetuneval
+dac: intensity698 pow698
+dac: tweezerpow 0
+dac: axialpow 0
+dac: latticepow 0
+
+t += 1
+
+dac: tweezerpow tweezerpow_val
+%dac: axialpow ax_lattice_pow
+%dac: latticepow -.7
+%%REMOVE
+dac: imagtune tune461
+t += 1
+%on: radial
+
+call blue_mot(100)
+%call mako_image()
+
+off: slower
+on: blowawayshutter
+off: imagshut
+%on: imag461
+on: blueshut
+
+call red_mot(100)
+%call mako_image()
+
+%on: blowawayttl
+%t += 0.02
+%off: blowawayttl
+
+off: radial
+
+%pulseon: mako1 .05
+
+off: mirroractive
+
+dac: motcoils 0
+
+call fieldZero()
+
+off: blowawayshutter
+off: blueshut
+
+%call magicfields515()
+%on: imag461
+
+on: imagshut
+
+t += 30
+%daclinspace: axialpow 0 ax_lattice_pow 10 15
+%daclinspace: latticepow 0 lattice_pow 10 15
+
+%t += 15 %dropping red MOT
+
+%daclinspace: tweezerpow tweezerpow_val filter_pow 15 15
+%t += 15
+
+%daclinspace: tweezerpow filter_pow tweezerpow_val 10 15
+%t += 15 %dropping red MOT
+
+%call mako_image()
+
+%%%Light assisted collisions%%%
+%DDS state: LAC
+pulseon: stepdds 0.007
+t += .1
+
+pulseon: mmload 0.007
+t += .1
+dac: bluetune bluetune_imag
+dac: imagingpow .1
+%on: red3d
+%t += 25
+%off: red3d
+
+%on: rp707
+%on: radial2
+%on: radial2
+%on: imag461
+%t += lactime
+off: blowawayshutter
+off: imag461
+off: radial
+off: radial2
+off: rp707
+
+%%%REPEAT START%%%
+repeat: 1
+
+dac: intensity698 0
+
+%on: radial
+pulseon: mmload 0.007
+t += .1
+
+%%%1st image
+%DDS state: Image
+pulseon: resetdds .1
+t += .2
+repeat: 2
+ pulseon: stepdds 0.007
+ t += .1
+end
+t += .1
+
+%on: rp707
+%on: rp679
+%on: slower
+call imageshort()
+%call imagef()
+off: imagshut
+off: slower
+
+dac: z1coil .26
+dac: y1coil 0.5
+dac: y2coil 0.5
+dac: x1coil .014
+
+%daclinspace: axialpow 0 ax_lattice_pow 10 15
+%t += 15
+
+%daclinspace: latticepow 0 lattice_pow 10 15
+t += 15
+
+on: imagshut
+%call fieldZero()
+%daclinspace: tweezerpow tweezerpow_val filter_pow 10 15
+t += 10
+
+%DDS state: SB cooling
+pulseon: resetdds .1
+t += .2
+
+%%%FAKE IMAGE
+%  dac: bluetune bluetune_imag
+%  dac: imagingPow scan
+%  on: imagshut
+%  t += 4
+%  t += .2
+%  on: imag461
+%  on: radial2
+%  t += 90
+%  off: radial2
+%  off: imag461
+%  off: imagshut
+%  t += .01
+
+%DDS state: spectroscopy
+pulseon: stepdds 0.007
+t += .1
+
+%call magicfields515()
+
+on: blowawayshutter
+%t += 15
+%daclinspace: tweezerpow tweezerpow_val filter_pow 15 15
+%t += 20
+
+%on: radial
+t += .1
+off: radial
+%t += .1
+%off: axial
+%off: axial
+%on: blowawayttl
+t += .001
+%off: tweezerao
+t += .001
+on: tweezerao
+t += 0.001
+off: blowawayttl
+off: blowawayshutter
+
+%daclinspace: tweezerpow filter_pow tweezerpow_val 15 15
+t += 15
+
+%%Return to imaging conditions
+%DDS state: image
+pulseon: stepdds 0.007
+t += .1
+
+%daclinspace: tweezerpow filter_pow tweezerpow_val 10 15
+%t += 15
+
+
+call magicfields515()
+%daclinspace: axialpow ax_lattice_pow 0 10 15
+t += 15
+%daclinspace: latticepow lattice_pow 0 10 15
+t += 15
+
+on: imagshut
+%call fieldZero()
+on: rp707
+%on: rp679
+on: shut689
+%on: slower
+
+
+%daclinspace: tweezerpow filter_pow tweezerpow_val 10 15
+daclinspace: axialpow ax_lattice_pow ax_lattice_zero 10 15
+t += 15
+
+%daclinspace: galvo galvo_set -1.8 1000 50
+%daclinspace: axial_piezo axial_phase_set -1.5 1000 50
+%t += 1010
+%daclinspace: galvo -2.2 galvo_set 1000 50
+%daclinspace: axial_piezo -1.5 axial_phase_set 1000 50
+%t += 1010
+
+%t += 50
+
+%%%2nd image, no repumps if doing clock spec
+%call imageshort()
+%call imagef()
+off: imagshut
+on: slower
+%%Deopopulate 3p0
+on: rp707
+on: rp679
+t += 5
+end
+%%%REPEAT END%%%
+
+%%%END
+on: tweezerAO
+% don't remove these!
+off: andorshut
+
+dac: x1coil 0
+
+dac: y1coil 0
+dac: y2coil 0
+
+dac: z1coil 0
+dac: motcoils 0
+off: red3d
+off: radial
+on: radial2
+off: slower %DO NOT REMOVE; for avoiding coating of cell.
+on: imag461
+on: axial
+on: rp679
+on: rp707
+%on: red3dnarrow
+dac: intensity698 pow698
+on: blowawayshutter
+off: blowawayttl
+
+
+
+
+dac: bluetune bluetuneval
+%t += 1
+%%%
+%call bluemot_steadystate()
+%t +=

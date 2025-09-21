@@ -1,0 +1,48 @@
+t = 1
+on: trigger 
+t += .1
+off: trigger
+off: tweezermod
+off: redprobe
+off: redcool
+
+on: blueshut
+on: slower
+on: tweezerAO
+dac: tweezerpow tweezerpow_val
+
+call blue_mot(30)
+off: slower
+off: blueshut
+dac: blue3dpow 0.01
+call red_mot(40)
+dac: lowermotcoil 0
+dac: uppermotcoil 0
+dac: y1coil -5
+
+t += 15
+
+on: tweezermod
+t += 0.3/fscan
+off: tweezermod
+
+%daclinspace: tweezerpow tweezerpow_val -.01 5 10
+%t += 10
+%daclinspace: tweezerpow -.01 tweezerpow_val 5 10
+t += 1
+
+off: tweezerAO
+t += .005
+on: tweezerAO
+
+t += 1
+daclinspace: tweezerpow tweezerpow_val -5 1 10
+%dac: tweezerpow -5
+t += 1
+call image(0.5)
+t += 2
+off: blueshut
+dac: tweezerpow tweezerpow_val
+t += .1
+call bluemot_steadystate()
+t += .1

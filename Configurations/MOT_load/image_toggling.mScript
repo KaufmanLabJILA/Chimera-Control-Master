@@ -1,0 +1,92 @@
+t = 1
+on: trigger 
+t += .1
+off: trigger
+off: tweezermod
+off: redprobe
+
+on: blueshut
+on: slower
+on: tweezerAO
+dac: tweezerpow tweezerpow_val
+
+call blue_mot(40)
+off: slower
+off: blueshut
+dac: blue3dpow 0.01
+call red_mot(40)
+dac: lowermotcoil 0
+dac: uppermotcoil 0
+dac: y1coil -5
+
+on: red3d
+t += 10
+off: red3d
+
+t += 15
+
+on: redcool
+t += 50
+off: redcool
+
+%daclinspace: tweezerpow tweezerpow_val filter_pow 5 10
+%t += 15
+%daclinspace: tweezerpow filter_pow tweezerpow_val 5 10
+%t += 5
+
+t += 1
+
+%daclinspace: tweezerpow tweezerpow_val -5 1 10
+%dac: tweezerpow -5
+t += 1
+
+dac: blue3dpow 0.3
+dac: imagingDelta -.3
+dac: imagingPow 0.2
+
+%%%%%%Image 1%%%%%
+dac: y1coil -5
+%dac: z1coil 0
+%dac: x1coil .5
+t += 1
+off: blueshut
+on: andorshut
+t += 3
+
+%%%%%
+on: andortrig
+on: mako1
+t += .2 
+%off: tweezerAO
+on: rp707
+off: rp679
+%on: blue3d
+%on: red3dnarrow 
+
+%on: imag461
+%t += 0.5
+%off: imag461
+
+repeat: 50
+ on: imag461
+ t += .1
+ off: imag461
+ on: redprobe
+ t += tscan
+ off: redprobe
+end
+
+off: andortrig
+off: mako1
+
+%%%%%
+
+dac: red3dpow .4
+t += 20
+
+off: andorshut
+t += 2
+on: blueshut
+t += .1
+call bluemot_steadystate()
+t += .1

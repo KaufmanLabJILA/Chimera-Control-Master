@@ -1,0 +1,776 @@
+t = 1
+pulseon: resetdds .1
+pulseon: gmload .0001
+
+t += .1
+off: mirroractive 
+dac: mirror_x mirrorscanx
+dac: mirror_y mirrorscany
+
+%DDS state: MOT
+repeat: 4
+ pulseon: stepdds 0.007
+ t += .1
+end
+
+dac: axial_piezo axial_phase_set
+dac: axial_piezo2 10-axial_phase_set
+
+call ttlReset() 
+t += 1
+
+dac: bluetune bluetuneval
+dac: imagtune tune461
+dac: int633servo 1.
+
+%dac: tweezerpow 0
+%dac: axialpow ax_lattice_pow
+dac: axialpow ax_lattice_zero
+dac: tweezerpow tweezer_pow
+dac: red3dpow 1.5 %about maximum
+%dac: latticepow lattice_pow
+dac: latticepow lattice_zero
+dac: tweezerpow813 tweezer813_zero
+%dac: tweezerpow813 tweezer813_pow
+
+t += 1
+
+%dac: axialpow -2
+%off: tweezerao
+%off: tweezer813ao
+%off: axlatTTL
+
+%%REMOVE
+t += 1
+
+%on: imagshut
+
+on: blueshut
+on: shut707
+on: shut679
+on: rp707
+on: rp679
+
+%on: shut688
+%on: rp688
+
+%%%%
+%on: imagshut %%Used for mako_image_singleBeam
+%%%%
+%on: blowawayttl
+call blue_mot(bluemottime)
+off: blowawayttl
+off: rp707
+off: rp679
+off: rp688
+off: shut707
+off: shut679
+off: shut688
+
+off: metertrig
+off: radial
+
+off: slower
+
+%call mako_image()
+
+off: blueshut %comment out for mako imaging, uncomment to have andor imaging after redmot.
+
+dac: bluetune 0.4 %0.1  %.6 for blue3d imaging.
+
+%%%%%
+%on: rp688
+%on: shut688
+call red_mot(swapmottime)
+off: rp688
+off: shut688
+%pulseon: trigger .1
+
+%%%%%
+%call mako_image()
+on: metertrig
+off: mirroractive
+
+dac: bigzcoil 0
+
+%call magicfields515()
+call fieldzero()
+
+off: imagshut
+on: shut707
+on: shut679
+
+off: blueshut %Extra shutter for safety.
+t += 4
+
+%%%Light assisted collisions%%%
+%call enhanced_lacs(75) % this wants MOT snapshot
+%% regular lacs after enhanced loading 
+pulseon: stepdds 0.007
+t += .1
+call magicfields515()
+on: imagshut
+t += 12.5 %dropping red MOT
+call lacs(25)  % This wants imaging snapshot
+
+%off: imagshut
+
+pulseon: gmload .0001
+t += .1
+
+%%%SB COOL
+%DDS state: SB cooling
+pulseon: stepdds 0.007
+t += .1
+
+%repeat: 50
+% on: axial
+% t += .1
+% off: axial
+% on: radial2
+% t += .1
+% off: radial2
+% on: radial
+% t += .1
+% off: radial
+%end
+
+on: axial
+on: radial
+t += 5
+off: axial
+off: radial
+
+on: lat813ao
+t += 1
+
+call magicfieldsdual813()
+
+%%% normal handoff
+daclinspace: axialpow ax_lattice_zero ax_lattice_pow 10 15
+t += 11
+daclinspace: latticepow lattice_zero lattice_pow 10 15
+t += 11
+daclinspace: tweezerpow tweezer_pow tweezer_zero 10 15
+t += 15
+
+%%%
+off: tweezershut
+t += 10
+on: tweezerao
+dac: tweezerpow tweezer_pow
+t += .01
+
+%%%SB COOL LATTICE
+pulseon: resetdds .1
+t += .2
+
+%repeat: 50
+% on: radial2
+% t += .1
+% off: radial2
+% on: axial
+% t += .1
+% off: axial
+%end
+
+on: radial
+on: radial2
+on: axial
+t += 5
+off: radial
+off: radial2
+off: axial
+
+%%%image lattice
+dac: imagingPow imagpowlat  % imagpowscan
+
+pulseon: stepdds 0.007
+t += .1
+
+call imagelat(150)
+off: imagshut %%%IMPORTANT
+t += 5
+
+%%%MOVES
+
+pulseon: resetdds .1
+t += .2
+
+off: shut707
+off: shut679
+off: shut688
+off: blueshut
+off: clkshut
+off: imagshut
+
+t += 130 %necessary for rearrangement
+
+%repeat: 50
+% on: radial2
+% t += .1
+% off: radial2
+% on: axial
+% t += .1
+% off: axial
+%end
+
+on: radial
+on: radial2
+on: axial
+t += 5
+off: radial
+off: radial2
+off: axial
+
+%rearrangement cooling happens under imaging conditions now.
+pulseon: stepdds 0.007
+t += .1
+
+%daclinspace: axialpow ax_lattice_pow -3.5 10 10
+%t += 10
+
+%call rerng_arbscrunchy()
+%call rerng_filterarbscrunchy()
+call rerng_filterarbscrunchycompressx()
+
+%daclinspace: axialpow -3.5 ax_lattice_pow 10 10
+%t += 10
+
+%%%lattice SB cool
+
+pulseon: resetdds .1
+t += .2
+
+%repeat: 50
+% on: radial2
+% t += .1
+% off: radial2
+% on: axial
+% t += .1
+% off: axial
+%end
+
+on: radial
+on: radial2
+on: axial
+t += 5
+off: radial
+off: radial2
+off: axial
+
+%pulseon: trigger .1
+
+%%%Image lattice
+dac: imagingPow imagpowlat  % imagpowscan
+
+pulseon: stepdds 0.007
+t += .1
+
+call imagelat(375)
+
+off: shut707
+off: shut679
+off: shut688
+off: blueshut
+off: clkshut
+off: imagshut
+
+%dac: z1coil dmbz_center
+%t += 15
+
+%%%lattice SB cool
+
+%daclinspace: latticepow lattice_pow -5 10 50
+%t += 15
+
+%% switch to helmholtz before cooling
+%dac: bigzcoil 0
+%t += 4
+%off: bigzantihelm
+%t += 10
+%dac: bigzcoil 0
+
+%%% Set tweezer to filter condition
+off: tweezershut
+off: t515hold
+t += 5
+
+dac: tweezerpow 0.01 %set to low value but which definitely servos
+t += 5
+%call paintpotential()
+
+%pulseon: gmload .0001
+%t += .1
+
+%repeat: 31 % 11 % 7 % 31
+% pulseon: gmmove .00011
+% t += .08
+% pulseon: gmmove .00011
+% t += 1.11
+% pulseon: gmmove .00011
+% t += .08
+%end
+
+%pulseon: gmmove .0001
+%t += .08
+%pulseon: gmmove .0001
+%t += .8
+
+%dac: tweezerpow .0163
+%%%
+
+
+pulseon: resetdds .1
+t += .2
+repeat: 7
+ pulseon: stepdds 0.007
+ t += .1
+end
+t += .1
+
+repeat: 30
+ on: radial
+ t += .2
+ off: radial
+ t += .2
+ on: axial
+ t += .4
+ off: axial
+ t += .2
+ on: radial2
+ t += .2
+ off: radial2
+ t += .2
+ on: axial
+ t += .4
+ off: axial
+ t += .2
+end
+
+%%% static paint trigger
+pulseon: gmload .0001
+t += .1
+%t += 10
+dac: tweezerpow paint_zero
+t += 5
+
+%on: radial
+%on: radial2
+%on: axial
+%t += 60
+%off: radial
+%off: radial2
+%off: axial
+
+%repeat: 10
+% on: radial
+% t += 1
+% off: radial
+% on: radial2
+% t += 1
+% off: radial2
+% on: axial
+% t += 2
+% off: axial
+%end
+
+%%%% Clock
+%off: clockttl
+%on: clkshut
+t += 5
+
+%%% 3p1 Spectroscopy
+pulseon: resetdds .1
+t += .2
+repeat: 3
+ pulseon: stepdds 0.007
+ t += .1
+end
+t += .1
+
+%%%% ramp on tweezers
+on: tweezershut
+%off: tweezershut
+t += 5
+daccosspace: tweezerpow paint_zero paint_pow 15 15
+t += 15
+
+%%% 2D tweezer prep protocol
+
+daccosspace: axialpow ax_lattice_pow tunnel_pow_ax 60 60
+daccosspace: latticepow lattice_pow tunnel_pow_2D 60 120
+t += 65
+
+on: t515hold
+t += .1
+
+daclinspace: tweezeratten tweezerattn_off tweezerfinal tweezerramptime 150
+t += tweezerramptime
+%t += tunnel_time
+
+%daccosspace: axialpow tunnel_pow_ax scan 100 100
+%t += 101
+%daclinspace: latticepow tunnel_pow_2D pre_tunnel_pow_2D 100 100
+%t += 101
+
+dac: axialpow -0.025
+dac: latticepow -0.0133
+
+%daclinspace: tweezeratten tweezerfinal tweezerattn_off tweezerramptime 150
+%t += tweezerramptime
+%t += 1
+
+t += tunnel_time
+
+dac: latticepow pre_tunnel_pow_2D
+dac: axialpow tunnel_pow_ax
+
+%t += 5
+
+%%%
+
+%%%Tunneling
+pulseon: trigger .1
+
+%%daclinspace: latticepow lattice_pow -2 30 50
+%%t += 30.1
+%daccosspace: axialpow ax_lattice_pow tunnel_pow_ax 60 150
+%%t += 30.1
+%daccosspace: latticepow lattice_pow pre_tunnel_pow_2D 60 150
+%t += 65
+%%daclinspace: axialpow -.028 tunnel_pow_ax 3 5
+%%t += 3
+
+%on: t515hold
+%off: tweezerao
+%t += .001
+%on: tweezershut
+%t += 5
+
+%%% first clock dds channel or RIGOL
+%off: toggleclockdds
+%off: toggleclockdds2
+
+%repeat: 2
+%t += 0.001
+%on: clockttl
+%t += piquarterstime
+%off: clockttl
+%t += 0.001
+%end
+
+%on: tweezerao
+%t += scan
+%off: tweezerao
+%t += .001
+
+%%% second clock dds channel or RIGOL
+%on: toggleclockdds
+%off: toggleclockdds2
+%t += 0.001
+
+%repeat: 2 
+%t += 0.001
+%on: clockttl
+%t += piquarterstime
+%off: clockttl
+%t += 0.001
+%end
+
+%off: tweezershut
+%off: t515hold
+%t += 5
+%on: tweezerao
+%t += .001
+
+%%% Quench
+%dac: latticepow tunnel_pow_2d
+%dac: latticepow lattice_zero
+%off: lat813ao
+%t += tunnel_time
+%dac: latticepow pre_tunnel_pow_2D
+%on: lat813ao
+%%%
+
+%%% Adiabatic ramp
+
+%daccosspace: latticepow pre_tunnel_pow_2D tunnel_pow_2D latticeramptime 50
+%%daccosspace: tweezerpow paint_pow scan latticeramptime 50
+%%daccosspace: axialpow tunnel_pow_ax axramppow1 latticeramptime 50
+%t += latticeramptime
+%% += 0.1
+
+%daccosspace: latticepow tunnel_pow_2D pre_tunnel_pow_2D 10 150
+%daccosspace: axialpow tunnel_pow_ax -0.1 10 150
+%t += 11
+
+%%% Quench
+%dac: latticepow tunnel_pow_2d
+%dac: latticepow -0.015
+%dac: tweezerpow paint_zero
+%off: lat813ao
+
+%t += tunnel_time
+%dac: latticepow pre_tunnel_pow_2D
+
+%on: lat813ao
+
+%daccosspace: latticepow tunnel_pow_2D pre_tunnel_pow_2D latticeramptime 50
+%daccosspace: axialpow axramppow1 tunnel_pow_ax latticeramptime 50
+%t += latticeramptime
+%t += .01
+
+%daclinspace: latticepow pre_tunnel_pow_2D ramppow1 ramptime1 40
+%t += ramptime1
+%daclinspace: latticepow ramppow1 ramppow2 ramptime2 30
+%t += ramptime2
+%daclinspace: latticepow ramppow2 ramppow3 ramptime3 25
+%daclinspace: axialpow tunnel_pow_ax axramppow1 ramptime3 25
+%t += ramptime3
+%daclinspace: latticepow ramppow3 tunnel_pow_2D latticeramptime 25
+%t += latticeramptime 
+%t += 5
+%daclinspace: latticepow tunnel_pow_2D ramppow3 latticeramptime 25
+%t += latticeramptime 
+%daclinspace: latticepow ramppow3 ramppow2 ramptime3 25
+%daclinspace: axialpow axramppow1 tunnel_pow_ax ramptime3 25
+%t += ramptime3
+%daclinspace: latticepow ramppow2 ramppow1 ramptime2 30
+%t += ramptime2 
+%daclinspace: latticepow ramppow1 pre_tunnel_pow_2D ramptime1 40
+%t += ramptime1
+%t += 5
+
+%%%
+
+%dac: axialpow (tunnel_pow_ax*2)
+%t += scan
+%daclinspace: latticepow tunnel_pow_2D scan 10 30
+%t += 11
+%dac: latticepow -.0145
+%dac: axialpow -.02
+%off: lat813ao
+%t += .125
+%t += 5
+%on: lat813ao
+%t += 1
+%dac: latticepow lattice_pow
+%dac: axialpow ax_lattice_pow
+
+daclinspace: latticepow pre_tunnel_pow_2D lattice_pow 10 15
+%daccosspace: latticepow pre_tunnel_pow_2D lattice_pow 60 150
+%%t += 30.1
+%daccosspace: axialpow (tunnel_pow_ax*2) ax_lattice_pow 10 30
+daclinspace: axialpow tunnel_pow_ax ax_lattice_pow 10 15
+%daclinspace: axialpow -0.05 ax_lattice_pow 10 15
+%daclinspace: axialpow scan ax_lattice_pow 10 15
+%daccosspace: axialpow tunnel_pow_ax ax_lattice_pow 60 150
+t += 10
+%t += 65
+%%daclinspace: latticepow -2 lattice_pow 30 50
+%%t += 30.1
+
+%%%% paint tweezers off
+%daclinspace: tweezerpow paint_pow paint_zero 15 15
+%t += 25
+dac: tweezerpow paint_zero
+t += 1
+off: tweezershut
+t += 5
+off: t515hold
+dac: tweezeratten tweezerattn_off
+
+%pulseon: gmload .0001
+%t += .001
+dac: tweezerpow tweezer_pow
+t += .1
+
+%daclinspace: axialpow ax_lattice_pow tunnel_pow_ax 20 100
+%t += 21
+%daclinspace: latticepow lattice_pow pre_tunnel_pow_2D 20 100
+%t += 25
+
+%dac: latticepow -2
+%t += 3
+%dac: axialpow tunnel_pow_ax
+%t += 3
+%dac: latticepow pre_tunnel_pow_2D
+%t += 8
+
+%pulseon: trigger .1
+%%%
+%dac: latticepow tunnel_pow_2D
+%t += tunnel_time
+%%%
+
+%daclinspace: latticepow -.2 tunnel_pow_2D t_ramptime 150
+%daclinspace: tweezerpow813 tweezer813_pow -.225 t_ramptime 150
+%t += t_ramptime+1
+%t += 10
+
+%repeat: 100
+%  on: d15
+%  t += scan
+%  off: d15
+%  t += 1
+%end
+
+%%%
+
+%daclinspace: latticepow tunnel_pow_2D -.2 t_ramptime 150
+%daclinspace: tweezerpow813 -.225 tweezer813_pow t_ramptime 150
+%t += t_ramptime+1
+
+%%%
+
+%daclinspace: latticepow pre_tunnel_pow_2D lattice_pow 10 50
+%%daclinspace: tweezerpow813 -.225 tweezer813_zero 10 50
+%%daclinspace: tweezerpow813 tweezer813_pow tweezer813_zero 10 50
+%t += 10
+%daclinspace: axialpow tunnel_pow_ax ax_lattice_pow 10 50
+%t += 10
+
+%on: radial2
+%on: axial
+%t += 50
+%off: radial2
+%off: axial
+
+%repeat: 50
+% on: radial2
+% t += .1
+% off: radial2
+% on: axial
+% t += .1
+% off: axial
+%end
+
+
+%%% clock state readout
+%on: imagshut
+%t += 5
+%on: blowawayttl
+%t += 1
+%off: blowawayttl
+%off: imagshut
+
+%on: clockttl
+%t += 31.08
+%off: clockttl
+%t += 0.1
+
+%on: imagshut
+%on: shut707
+%on: shut679
+%t += 5
+%on: rp707
+%on: rp679
+%t += 0.2
+%off: rp707
+%off: rp679
+%off: shut707
+%off: shut679
+%off: imagshut
+%%
+
+%%% 3p1 Spectroscopy
+pulseon: resetdds .1
+t += .2
+repeat: 3
+ pulseon: stepdds 0.007
+ t += .1
+end
+t += .1
+
+%daclinspace: latticepow lattice_pow -.6 15 30
+%t += 20
+%call spect3p1()
+%daclinspace: latticepow -.6 lattice_pow 15 30
+%t += 15
+
+%%% SB cooling
+pulseon: resetdds .1
+t += .2
+
+on: radial
+on: radial2
+on: axial
+t += 5
+off: radial
+off: radial2
+off: axial
+
+%daclinspace: latticepow -5 lattice_pow 10 50
+%t += 15
+
+%dac: z1coil dmbz
+%t += 15
+
+%%%Image lattice
+dac: imagingPow imagpowlat  % imagpowscan
+
+pulseon: resetdds .1
+t += .2
+pulseon: stepdds 0.007
+t += .1
+
+call imagelat(375)
+
+off: shut688
+on: tweezershut
+call magicfields515()
+dac: bigzcoil 0
+
+t += 20 %Remove stripe from 2nd image - unclear where this coming from
+pulseon: gmload .0001
+
+%%%END
+% don't remove these!
+
+%dac: tweezerpow tweezer_pow
+%dac: axialpow ax_lattice_zero
+%dac: latticepow 0
+
+off: andorshut
+
+dac: x1coil 0
+dac: y1coil 0
+dac: y2coil 0
+dac: z1coil 0
+dac: bigzcoil 0
+
+on: radial
+on: radial2
+off: slower %DO NOT REMOVE; avoid coating cell.
+on: imag461
+on: axial
+on: rp679
+on: rp707
+on: shut679
+on: shut707
+%on: red3dnarrow
+%dac: intensity698 pow698
+off: blowawayttl
+on: lat813ao
+dac: latticepow lattice_pow
+dac: axialpow ax_lattice_pow
+dac: bluetune bluetuneval
+
+on: red3d
+dac: red3dpow 1.5
+
+%call bluemot_steadystate() %DO NOT LEAVE ON; avoid coating cell.
+%call grafanaSnapshot() %DO NOT LEAVE ON; avoid coating cell.
+
+%%% tweezer tracking
+%dac: tweezerpow -.05
+%dac: tweezerpow813 -.1
+%t += 5
+%pulseon: makoTweezer .01
+%t += 150
+%dac: tweezerpow tweezer_pow
+%dac: tweezerpow813 tweezer813_zero
+%%%
+
+t += 1

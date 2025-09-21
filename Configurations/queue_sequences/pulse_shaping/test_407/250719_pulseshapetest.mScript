@@ -1,0 +1,22 @@
+pulseon: gmload .0001
+t += 0.1
+
+call setSBcoolPows(0.18, 0.184, 0.18)
+
+call ttlReset() 
+t += 1
+call dac_reset()
+t += 1
+
+pulseon: trigger .01
+t += .01
+
+off: pi407
+t += .001
+pulseon: keysightgate .01
+t += .01
+on: pi407
+
+t += 100
+
+pulseon: resetdds .1

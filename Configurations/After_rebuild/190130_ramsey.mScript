@@ -1,0 +1,244 @@
+t = 1
+pulseon: trigger .1
+pulseon: resetdds .1
+pulseon: mmload .007
+t += .1
+
+call ttlReset()
+t += 1
+on: blueshut
+on: tweezerAO
+on: shut689
+dac: intensity698 pow698
+dac: tweezerpow tweezerpow_val
+%%REMOVE
+dac: imagtune tune461
+
+t += 1
+
+%on: radial2
+call blue_mot(20)
+%call mako_image()
+off: blowawayshutter
+call red_mot(100)
+%call mako_image()
+off: blueshut
+%off: radial2
+
+%0 Further cooling step
+pulseon: stepdds 0.007
+t += .1
+
+dac: motcoils 0
+
+%Zero field values.
+dac: z1coil -.003
+dac: y1coil .017
+dac: x1coil .022
+
+t += 10 %dropping red MOT
+
+%1 DDS state for LAC step
+pulseon: stepdds 0.007
+t += .1
+%on: red3dnarrow
+%t += 30
+%off: red3dnarrow
+
+pulseon: mmload 0.007
+t += .1
+
+on: imagshut
+t += 4
+
+%Light assisted collisions step, lac() routine. 
+call lac()
+
+pulseon: mmload 0.007
+t += .1
+
+%2 DDS state for First Image
+pulseon: stepdds 0.007
+t += .1
+
+%off: blueshut
+
+%%%1st image
+on: rp707
+on: rp679
+call imagef()
+off: imagshut
+
+%post image sisphhis
+%on: radial2
+%t += 70
+%off: radial2
+
+%3 DDS state for fake Image, post image cooling
+pulseon: stepdds 0.007
+t += .1
+
+%%Fake image%%
+%dac: imagingPow 0.3
+%t += 1
+%repeat: 5
+
+%on: imag461
+%on: radial
+%on: axial
+%t += 18
+%off: imag461
+%off: radial
+%off: axial
+%on: rp707
+%on: rp679
+
+%Recool
+%t += .1
+%on: radial
+%t += 30
+%off: radial 
+%t += .1
+%end
+%%Fake image%%
+
+%%%%%%%%%%%%%Sideband cooling%%%%%
+
+%%%Change field values%%%
+dac: z1coil 0.2
+dac: x1coil .27
+
+t += 20
+
+%post image cooling: 10% power, 83MHz freq
+
+%on: radial2
+%t += 25
+%off: radial2
+
+repeat: 5
+ on: radial
+ t += 3  %.7
+ off: radial
+ %on: axial
+ %t += 1
+ %off: axial
+ on: radial2
+ t += 3
+ off: radial2
+ %on: axial
+ %t += 1
+ %off: axial
+end
+
+dac: x1coil .022 %return field x to 0 
+
+pulseon: mmload 0.007
+t += .1
+
+%%Spectroscopy sequence%%
+
+dac: intensity698 pow698
+on: rp707
+on: rp679
+off: shut689
+off: slower
+dac: z1coil 0.4
+daclinspace: tweezerpow tweezerpow_val filter_pow 15 25
+t += 20
+
+%Actuates beginning of clock pulse
+off: rp707
+off: rp679
+t += 1
+%4 DDS state for spectroscopy
+pulseon: stepdds 0.007
+
+%repeat: 75
+
+%clock pulse length, 50 typical
+%t += pulse1
+%dac: intensity698 0
+%t += probetime
+%dac: intensity698 pow698
+%t += pulse2
+%dac: intensity698 0
+
+%end
+
+
+%%%repump spect
+repeat: 150
+t += .05
+on: rp679
+t += .1
+off: rp679
+end
+
+dac: intensity698 0
+
+%%%
+%5, 2nd image settings, terminates clock pulse
+pulseon: stepdds 0.007
+t += .1
+
+on: imagshut
+
+
+on: blowawayshutter
+t += 5
+on: blowawayttl
+t += 5
+off: blowawayttl
+off: blowawayshutter
+
+%%Return to imaging conditions
+dac: z1coil -.003
+daclinspace: tweezerpow filter_pow tweezerpow_val 15 25
+t += 15
+on: slower
+
+%%%2nd image, no repumps if doing clock spec
+off: rp707
+off: rp679
+on: shut689
+t += 4
+call imagef()
+off: imagshut
+%%%
+
+%6
+pulseon: stepdds 0.007
+t += .1
+
+%7
+pulseon: stepdds 0.007
+t += .1
+
+%8
+pulseon: stepdds 0.007
+t += .1
+
+
+% don't remove these!
+dac: x1coil 0
+dac: y1coil 0
+dac: z1coil 0
+dac: motcoils 0
+on: red3d
+on: radial
+on: imag461
+on: radial2
+off: axial
+on: rp679
+on: rp707
+%on: red3dnarrow
+dac: intensity698 pow698
+on: blowawayshutter
+
+t += 1
+%%%
+%call bluemot_steadystate()
+
+%t += 150
+

@@ -1,0 +1,138 @@
+t = 1
+on: trigger
+
+on: resetdds %NEW FOR DDS
+t += .1
+off: resetdds %NEW FOR DDS
+off: trigger
+off: tweezermod
+off: radial2
+off: axial
+off: radial
+off: radial2
+
+on: blueshut
+on: slower
+on: tweezerAO
+dac: tweezerpow tweezerpow_val
+
+on: stepdds
+t += .007
+off: stepdds
+t += 1
+
+call blue_mot(150)
+off: slower
+dac: blue3dpow 0.01
+
+off: blueshut
+
+%call red_mot(40)
+dac: motcoils 0
+dac: x1coil 0
+dac: y1coil 0
+dac: z1coil 0
+
+
+%dac: blue3dpow 0.3
+%on: blue3d
+%on: mako1
+%t += .01
+%on: imag461
+%t += .5
+%off: mako1
+%off: imag461
+%off: blue3d
+
+on: red3d
+t += 5
+off: red3d
+
+t += 1
+on: blowawayshutter
+
+on: stepdds
+t += .007
+off: stepdds
+
+on: red3dnarrow
+t += 20
+off: red3dnarrow
+
+%repeat: 10
+  %on: radial
+  %t += fscan
+  %off: radial
+  %on: radial2
+  %t += fscan
+  %off: radial2
+%end
+
+%on: tweezermod
+%t += 2/fscan
+
+
+daclinspace: tweezerpow tweezerpow_val filter_pow .1 50
+t += 5
+
+
+daclinspace: tweezerpow filter_pow tweezerpow_val .1 50
+t += 5
+%off: tweezermod
+%EXAMPLE FOR STEPPING DDS TO SNAPSHOT 0
+%EXAMPLE ENDS
+%dac: x1coil 1.175
+
+
+%daclinspace: tweezerpow tweezerpow_val -1 5 10
+%t += 10
+%repeat: 10
+%  on: radial
+%  t += 2
+%  off: radial
+%  on: axial
+%  t += 2
+%  off: axial
+%end
+on: stepdds
+t += .007
+off: stepdds
+
+%on: radial
+t += .1
+off: radial
+%on: blowawayttl
+t += .005
+%off: tweezerao
+t += .001
+on: tweezerao
+t += .001
+off: blowawayttl
+off: blowawayshutter
+%daclinspace: tweezerpow -1 tweezerpow_val 5 10
+t += 10
+
+on: stepdds
+t += .007
+off: stepdds
+
+
+t += 1
+%dac: tweezerpow -2.5
+t += 1
+%call image(imagetime)
+%call imagedoppler()
+%on: red3dnarrow
+%t += 100
+%off: red3dnarrow
+%call imagedoppler()
+
+off: blueshut
+t += .1
+dac: tweezerpow tweezerpow_val
+off: radial
+off: radial2
+dac: imagingPow .4
+
+t += 10
+%call bluemot_steadystate()

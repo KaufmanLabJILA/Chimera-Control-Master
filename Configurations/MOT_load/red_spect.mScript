@@ -1,0 +1,69 @@
+t = 1
+on: trigger 
+t += .1
+off: trigger
+off: tweezermod
+off: redprobe
+
+on: blueshut
+on: slower
+on: tweezerAO
+dac: tweezerpow tweezerpow_val
+
+call blue_mot(40)
+off: slower
+off: blueshut
+dac: blue3dpow 0.01
+call red_mot(40)
+dac: lowermotcoil 0
+dac: uppermotcoil 0
+dac: y1coil -5
+
+%on: red3d
+%t += 10
+%off: red3d
+
+t += 15
+
+%on: redcool
+%t += 50
+off: redcool
+
+
+
+%daclinspace: tweezerpow tweezerpow_val filter_pow 5 10
+%t += 15
+%daclinspace: tweezerpow filter_pow tweezerpow_val 5 10
+%t += 5
+
+%%%%
+on: blowawayshutter
+t += 5
+
+on: redprobe
+t += .05
+off: redprobe
+
+off: tweezerAO
+%on: blowawayttl
+t += .005
+on: tweezerAO
+off: blowawayttl
+off: blowawayshutter
+%%%%
+
+t += .1
+daclinspace: tweezerpow tweezerpow_val -5 1 10
+%dac: tweezerpow -5
+t += 1
+
+call image(0.5)
+
+on: slower
+on: red3d
+t += 2
+on: blueshut
+dac: tweezerpow tweezerpow_val
+t += .1
+call bluemot_steadystate()
+t += .1

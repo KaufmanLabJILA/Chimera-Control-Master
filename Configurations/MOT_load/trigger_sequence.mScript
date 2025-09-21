@@ -1,0 +1,12 @@
+t = 1
+dac: blue3dpow 0.5
+on: trigger
+t += .1
+off: trigger
+
+repeat: 10
+ on: b7
+ t += .1
+ off: b7
+ t += .1
+end

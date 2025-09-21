@@ -1,0 +1,232 @@
+t = 1
+on: trigger
+
+on: resetdds %NEW FOR DDS
+t += .1
+off: resetdds %NEW FOR DDS
+t += .1
+
+on: mmload
+t += .007
+off: mmload
+
+off: trigger
+off: tweezermod
+off: axial
+off: radial
+off: radial2
+off: imag461
+off: blowawayttl
+dac: intensity698 pow698
+
+off: imagshut
+off: andorshut
+off: blowawayshutter
+
+on: blueshut
+off: slower
+on: tweezerAO
+dac: tweezerpow tweezerpow_val
+
+t+= 1
+call blue_mot(50)
+%off: slower
+%off: blueshut
+%off: blowawayshutter
+
+
+call red_mot(100)
+
+
+
+off: andorshut
+%Image red MOT:
+%on: blue3d
+%on: mako1
+%t += .5
+off: mako1
+off: blue3d
+off: blueshut
+off: radial2
+%0
+on: stepdds 
+t += .007 
+off: stepdds
+t += .1
+
+dac: motcoils 0
+%dac: x1coil -.2685
+%dac: x1coil -.355
+%dac: x1coil -.3465
+%dac: x1coil -0.3427
+
+%Zero field values.
+dac: z1coil -.003
+dac: y1coil .017
+dac: x1coil .022
+%Zero field values. 
+
+t += 10 %dropping red MOT
+
+%1
+on: stepdds
+t += .007
+off: stepdds
+t += .1
+
+%on: red3dnarrow
+%t += 30
+%off: red3dnarrow
+
+
+%2
+on: stepdds
+t += .007
+off: stepdds
+t += .1
+
+on: mmload
+t += .007
+off: mmload
+t += 1
+
+%on: red3dnarrow
+%t += 20
+%off: red3dnarrow
+
+
+
+on: blowawayshutter
+t += 4
+%on: tweezermod
+
+%t += 200
+%off: tweezermod
+dac: imagingPow .15
+
+%preimage to realize blockade
+on: rp707
+on: rp679
+on: imag461
+on: red3dnarrow
+t += 40
+off: red3dnarrow
+off: imag461
+
+t += 30
+
+
+dac: imagingPow .15
+
+on: andorshut
+off: blueshut
+on: rp707
+on: rp679
+
+t += 4
+
+call imagetoggle_single()
+
+off: andorshut
+on: blowawayshutter
+
+on: red3dnarrow
+t += 20
+off: red3dnarrow
+
+%%%
+dac: z1coil .4
+
+daclinspace: tweezerpow tweezerpow_val filter_pow 10 50
+t += 10
+%%%
+
+off: rp707
+off: rp679
+
+%3
+on: stepdds
+t += .007
+off: stepdds
+
+dac: imagingPow 0
+off: blowawayshutter
+
+%on: imag461
+%on: axial
+off: radial2
+off: red3dnarrow
+%on: tweezermod
+t += 50
+off: tweezermod
+off: radial
+off: axial
+off: imag461
+off: red3dnarrow
+%on: rp707
+%on: rp679
+
+on: blowawayshutter
+
+%4
+on: stepdds 
+t += .007 
+off: stepdds
+
+%daclinspace: tweezerpow tweezerpow_val filter_pow 10 50
+%t += 15
+dac: z1coil -.003
+
+daclinspace: tweezerpow filter_pow tweezerpow_val 10 50
+t += 15
+
+
+on: imagshut
+dac: imagingPow .15
+
+on: andorshut
+off: blueshut
+t += 4
+call imagetoggle_single()
+dac: z1coil 0
+
+off: andorshut
+
+t += 1
+%5
+on: stepdds 
+t += .007 
+off: stepdds
+t += .1
+
+%6
+on: stepdds
+t += .007
+off: stepdds
+t += .1
+dac: imagingPow .12
+
+%7
+on: stepdds
+t += .007 
+off: stepdds
+
+% don't remove these!
+dac: x1coil 0
+dac: y1coil 0
+dac: z1coil 0
+dac: motcoils 0
+off: red3d
+on: radial
+off: radial2
+off: axial
+on: rp679
+on: rp707
+on: red3dnarrow
+dac: intensity698 pow698
+t += 20
+%%%
+%call bluemot_steadystate()
+
+%t += 150
+

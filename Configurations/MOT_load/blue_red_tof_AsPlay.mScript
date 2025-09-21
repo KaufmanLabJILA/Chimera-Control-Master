@@ -1,0 +1,62 @@
+t = 1
+on: trigger 
+t += .1
+off: trigger
+%on: tweezerAO
+on: slower
+
+%dac: tweezerpow 0.5
+call blue_mot(400)
+
+dac: blue3dpow 0.01
+call red_mot(60)
+t += 1
+on: andorshut
+t += 2
+
+off: slower
+dac: lowermotcoil 0
+dac: uppermotcoil 0
+off: blue3d
+
+dac: blue3dpow .5
+t += 0.01
+%dac: red3dpow .4
+%on: red3d
+
+on: andortrig
+on: mako1
+t += .2
+
+repeat: 10
+
+ on: rp707
+ on: rp679
+ on: imag461
+ %on: blue3d
+ t += 0.1
+ off: imag461
+ off: blue3d
+ %on: red3d
+ on: rp707
+ on: rp679
+ on: red3d
+ %on: blue3d
+ t += .1
+ off: red3d
+
+end
+
+off: andortrig
+off: mako1
+
+on: tweezerAO
+dac: red3dpow .4
+
+t += 50
+off: andorshut
+t += 10
+
+on: slower
+call bluemot_steadystate()
+t += 30

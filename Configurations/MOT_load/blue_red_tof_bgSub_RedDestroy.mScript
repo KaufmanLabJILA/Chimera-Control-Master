@@ -1,0 +1,133 @@
+t = 1
+on: trigger 
+t += .1
+off: trigger
+on: tweezerAO
+on: slower
+call blue_mot(500)
+
+dac: blue3dpow 0.01
+on: imag461
+off: slower
+call red_mot()
+
+
+off: imag461
+t += 5
+
+dac: lowermotcoil 0
+dac: uppermotcoil 0
+off: blue3d
+
+dac: blue3dpow 0.5
+
+
+
+t += .01
+
+
+%dac: red3dpow .4
+%on: red3d
+on: andortrig
+on: mako1
+t += .1
+
+on: rp707
+on: rp679
+%on: imag461
+on: blue3d
+
+
+t += 1
+
+off: andortrig
+off: mako1
+off: imag461
+off: blue3d
+%on: red3d
+
+on: tweezerAO
+dac: red3dpow .4
+
+
+
+t += 10
+
+t += 1
+%on: red3d
+call bluemot_steadystate()
+
+dac: blue3dpow 0.5
+dac: red3dpow 0.4
+on: red3d
+on: slower
+
+% This delay is necessary for now, weird bug with DACs
+t += 10
+
+%%%
+on: trigger 
+t += .1
+off: trigger
+on: tweezerAO
+on: slower
+call blue_mot(500)
+
+dac: blue3dpow 0.01
+off: imag461
+off: slower
+call red_mot()
+
+
+off: imag461
+t += 5
+
+dac: lowermotcoil 0
+dac: uppermotcoil 0
+off: blue3d
+
+dac: blue3dpow 0.5
+
+
+
+t += .01
+
+
+%dac: red3dpow .4
+%on: red3d
+on: andortrig
+on: mako1
+t += .1
+
+on: rp707
+on: rp679
+%on: imag461
+on: blue3d
+
+
+t += 1
+
+off: andortrig
+off: mako1
+off: imag461
+off: blue3d
+%on: red3d
+
+on: tweezerAO
+dac: red3dpow .4
+
+
+
+t += 10
+
+t += 1
+%on: red3d
+call bluemot_steadystate()
+
+dac: blue3dpow 0.5
+dac: red3dpow 0.4
+on: red3d
+on: slower
+
+% This delay is necessary for now, weird bug with DACs
+t += 10

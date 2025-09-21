@@ -1,0 +1,326 @@
+t = 1
+on: trigger
+
+on: resetdds %NEW FOR DDS
+t += .1
+off: resetdds %NEW FOR DDS
+t += .1
+
+on: mmload
+t += .007
+off: mmload
+
+off: trigger
+off: tweezermod
+off: axial
+off: radial
+off: radial2
+off: imag461
+off: blowawayttl
+
+off: imagshut
+off: andorshut
+off: blowawayshutter
+
+on: blueshut
+on: slower
+on: tweezerAO
+dac: tweezerpow tweezerpow_val
+
+t+= 1
+call blue_mot(25)
+off: slower
+off: blueshut
+off: blowawayshutter
+call red_mot(500)
+
+off: andorshut
+%Image red MOT
+on: blue3d
+on: mako1
+t += .5
+off: mako1
+off: blue3d
+
+
+
+%0
+on: stepdds 
+t += .007 
+off: stepdds
+t += .1
+
+dac: motcoils 0
+%dac: x1coil -.2685
+%dac: x1coil -.355
+%dac: x1coil -.3465
+%dac: x1coil -0.3427
+
+dac: x1coil bx
+dac: y1coil .7
+dac: z1coil 0
+
+t += 10 %dropping red MOT
+
+%on: red3d %LAC
+t += 15
+off: red3d
+off: blueshut
+
+%1
+on: stepdds
+t += .007
+off: stepdds
+t += .1
+dac: imagingPow .11
+
+
+
+%on: imagshut
+%t += 4
+%on: imag461
+%t += .1
+%repeat: 20
+%  on: radial2
+%  on: radial
+%  t += .5
+%  off: radial2
+%  off: radial
+%  on: axial
+%  t += .5
+%  off: axial
+%end
+%off: imag461
+%off: imagshut
+
+
+
+%daclinspace: tweezerpow tweezerpow_val scan 10 50
+%t += 10
+
+%on: radial2
+%t += 30
+%off: radial2
+
+%daclinspace: tweezerpow scan tweezerpow_val 10 50
+%t += 10
+
+
+%%%Pre-imaging/ Blue LAC
+%dac: blue3dpow 0.3
+%   dac: imagingDelta -.3
+%   off: red3d
+%   off: rp707
+%   off: rp679
+off: blueshut
+ %%%%%%Image 1%%%%%
+on: imagshut
+t += 4
+on: imag461
+t += .1
+repeat: 20
+  %on: radial2
+  on: radial
+  t += .5
+  off: radial2
+  off: radial
+  on: axial
+  t += .5
+  off: axial
+end
+off: imag461
+off: imagshut
+
+t += .2
+
+%2
+on: stepdds
+t += .007
+off: stepdds
+t += .1
+
+on: blowawayshutter
+
+
+
+dac: x1coil bx
+
+
+
+daclinspace: tweezerpow tweezerpow_val tweez_spect_pow 10 50
+t += 10
+
+
+on: mmload
+t += .007
+off: mmload
+t += 1
+
+%on: red3dnarrow
+%t += 30
+%off: red3dnarrow
+
+%repeat: 1
+%  on: axial
+%  t += .4
+%  off: axial
+%  on: radial2
+%  t += .1
+%  off: radial2
+%  on: axial
+%  t += .4
+%  off: axial
+%  on: radial
+%  t += .1
+%  off: radial
+%end
+
+%daclinspace: tweezerpow tweez_spect_pow filter_pow 5 10
+%t += 15
+%daclinspace: tweezerpow filter_pow tweez_spect_pow 5 10
+%t += 5
+
+t += .01
+%3
+on: stepdds
+t += .007
+off: stepdds
+t += .1
+
+
+on: radial
+t += .1
+off: radial
+%on: blowawayttl
+t += .003
+%off: tweezerao
+t += .001
+on: tweezerao
+t += .001
+off: blowawayttl
+off: blowawayshutter
+
+daclinspace: tweezerpow tweez_spect_pow tweez_imag_pow 10 50
+t += 10
+%daclinspace: x1coil bx 0 10 50
+%daclinspace: y1coil .7 0 10 50
+%t += 10
+
+%4
+on: stepdds 
+t += .007 
+off: stepdds
+
+
+%daclinspace: tweezerpow -1.35 -.5 10 10
+%t += 10
+on: imagshut
+
+
+
+dac: imagingPow .15
+
+on: andorshut
+off: blueshut
+t += 4
+call imagetoggle_single()
+
+off: andorshut
+
+
+%5
+on: stepdds 
+t += .007 
+off: stepdds
+t += 4
+off: rp707
+off: rp679
+%dac: imagingPow .115
+t += .1
+
+
+
+%on: imag461
+%repeat: 75
+%  on: radial
+%  t += .5
+%  off: radial
+%  on: axial
+%  t += .5
+%  off: axial
+%end   
+%off: imag461
+%off: red3dnarrow
+%off: radial
+%t += .1
+%daclinspace: tweezerpow tweez_imag_pow tweez_spect_pow 10 50
+%t += 10
+on: blowawayshutter
+
+on: mmload
+t += .007
+off: mmload
+t += 1
+
+repeat: 1
+  on: axial
+  t += .4
+  off: axial
+  on: radial2
+  t += .1
+  off: radial2
+  on: axial
+  t += .4
+  off: axial
+  on: radial
+  t += .1
+  off: radial
+end
+
+%6
+on: stepdds
+t += .007
+off: stepdds
+t += .1
+dac: imagingPow .12
+
+%7
+on: stepdds
+t += .007 
+off: stepdds
+
+off: andorshut
+on: imagshut
+t += 4
+%call imagetoggle_single()
+
+daclinspace: tweezerpow tweez_imag_pow tweezerpow_val 10 10
+t += 10
+
+off: andorshut
+off: blueshut
+
+t += .1
+off: radial
+off: radial2
+dac: imagingPow .4
+t += .1
+
+% don't remove these!
+dac: x1coil 0
+dac: y1coil 0
+dac: z1coil 0
+dac: motcoils 0
+off: red3d
+off: radial
+off: radial2
+off: axial
+off: rp679
+off: rp707
+on: red3dnarrow
+t += 20
+%%%
+%call bluemot_steadystate()
+
+%t += 150
+

@@ -1,0 +1,170 @@
+pulseon: gmload .0001
+t += 0.1
+
+call setSBcoolPows(0.18, 0.184, 0.18)
+
+call ttlReset() 
+t += 1
+call dac_reset()
+t += 1
+
+%%% MOT %%%
+call set_dds_snapshot(3)
+call blue_mot(bluemottime)
+call red_mot(swapmottime)
+%%% MOT %%%
+
+
+%%% TWEEZER LOADING %%%
+daccosspace: bigzcoil bigz_redmot*bigz_conv bz0 10 50
+call set_dds_snapshot(0)
+call magicfields515()
+off: blueshut %Extra shutter for safety.
+on: shut679
+on: shut707
+%on: imagshut
+t += 12.5 %dropping red MOT
+call setSBcoolPows(0.14, 0.003, 0.226)
+call lacs(5)  % This wants imaging snapshot
+
+pulseon: gmload .0001
+t += .1
+call set_dds_snapshot(0)
+call setsbcoolpows(0.02, 0.004, 0.07)
+call sbcool(1)
+call sbcool_pulsed(time_sbcool_pulsed, pulsenum)
+%%% TWEEZER LOADING %%%
+
+%%% IMAGE AND RECOOL %%%
+call set_dds_snapshot(2)
+call setsbcoolpows(0.1, 0.1, 0.2)
+call image(75, imagpow, 1)
+
+call set_dds_snapshot(0)
+call setsbcoolpows(0.02, 0.004, 0.07)
+call sbcool(1)
+call sbcool_pulsed(time_sbcool_pulsed, pulsenum)
+%%% IMAGE AND RECOOL %%%
+
+
+pulseon: trigger .01
+t += 0.01
+
+%%%% START %%%%
+%SPEC3P1
+
+call set_dds_snapshot(1)
+call setSBcoolPows(0.003+.002, 0.003, 0.003)
+call sbcool(1)
+call spect3p1(1, 0, 0)
+
+%%%% END %%%%
+
+%%%% START %%%%
+%AXIAL PHASE
+
+dac: axialpow ax_lattice_pow
+t += 1
+dac: axialpow ax_lattice_zero
+t += 1
+call filterTweezer()
+
+%%%% END %%%%
+
+%%%% START %%%%
+%AXLAT PROBE
+
+call set_dds_snapshot(1)
+call setSBcoolPows(0.04, 0.005, 0.07)
+call sbcool(1)
+
+daccosspace: axialpow ax_lattice_zero 2.25 20 500
+t += 21
+call spect3p1(1, 0, 0)
+daccosspace: axialpow 2.25 ax_lattice_zero 20 500
+t += 21
+
+%%%% END %%%%
+
+%%%% START %%%%
+%COMBOLAT PROBE
+
+call set_dds_snapshot(1)
+call setSBcoolPows(0.04, 0.005, 0.07)
+call sbcool(1)
+
+daclinspace: latticepow lattice_zero 1.0/3 20 500
+daclinspace: axialpow ax_lattice_zero 0.9/2.0 20 500
+t += 21
+daclinspace: tweezerpow tweezer_pow tweezer_zero 10 500
+t += 11
+off: tweezershut
+t += 5
+call spect3p1(1, 0, 0)
+daclinspace: axialpow scanax ax_lattice_pow 10 150
+t += 11
+on: tweezershut
+t += 5
+daclinspace: tweezerpow tweezer_zero tweezer_pow 10 500
+t += 11
+daclinspace: latticepow 1.0/3 lattice_zero 20 500
+daclinspace: axialpow 0.9/2.0 ax_lattice_zero 20 500
+t += 21
+
+%%%% END %%%%
+
+
+
+%%% IMAGE %%%
+call set_dds_snapshot(2)
+call setsbcoolpows(0.1, 0.1, 0.2)
+call image(75, imagpow, 1)
+off: imagshut
+on: lat813ao
+daccosspace: x1coil -0.29397 0 40 80
+daccosspace: y1coil 0.67 0 40 80
+daccosspace: y2coil 0.67 0 40 80
+t += 1
+t += 15+25 %to remove stripe
+
+off: shut688
+on: tweezershut
+
+
+
+%%%END
+off: andorshut
+
+%dac: x1coil 0
+%dac: y1coil 0
+%dac: y2coil 0
+dac: z1coil 0
+dac: bigzcoil 0
+
+%on: radial
+%on: radial2
+off: slower %DO NOT REMOVE; avoid coating cell.
+%on: imag461
+%on: axial
+on: rp679
+on: rp707
+on: shut679
+on: shut707
+%on: red3dnarrow
+off: blowawayttl
+on: lat813ao
+dac: latticepow lattice_pow
+dac: axialpow ax_lattice_pow
+%off: imag461
+
+on: red3d
+dac: red3dpow 1.5
+
+%call bluemot_steadystate() %DO NOT LEAVE ON; avoid coating cell.
+%call grafanaSnapshot() %DO NOT LEAVE ON; avoid coating cell.
+
+t += 1
+
+pulseon: resetdds .1
+
+ 

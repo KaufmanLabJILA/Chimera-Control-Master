@@ -1,0 +1,474 @@
+t = 1
+%pulseon: trigger .1
+pulseon: resetdds .1
+%pulseon: mmload .007
+pulseon: gmload .0001
+
+t += .1
+off: mirroractive 
+dac: mirror_x mirrorscanx
+dac: mirror_y mirrorscany
+
+%DDS state: MOT
+repeat: 3
+ pulseon: stepdds 0.007
+ t += .1
+end
+
+dac: axial_piezo axial_phase_set
+dac: axial_piezo2 10-axial_phase_set
+
+off: shutuv
+call ttlReset() 
+t += 1
+
+dac: bluetune bluetuneval
+dac: intensity698 0
+dac: imagtune tune461
+dac: int633servo 1.2
+dac: uvintservo 0.7
+
+%dac: tweezerpow 0
+%dac: axialpow ax_lattice_pow
+dac: axialpow ax_lattice_zero
+dac: tweezerpow tweezer_pow
+dac: red3dpow 1.5 %about maximum
+%dac: latticepow lattice_pow
+dac: latticepow lattice_zero
+dac: intensity698 0
+
+
+t += 1
+
+%dac: axialpow -2
+%off: tweezerao
+%off: tweezer813ao
+%off: axlatTTL
+
+%%REMOVE
+t += 1
+
+%on: imagshut
+
+on: blueshut
+on: shut707
+on: shut679
+on: rp707
+on: rp679
+
+%on: shut688
+%on: rp688
+
+%%%%
+%on: imagshut %%Used for mako_image_singleBeam
+%%%%
+%on: blowawayttl
+call blue_mot(30)
+off: blowawayttl
+off: rp707
+off: rp679
+off: rp688
+off: shut707
+off: shut679
+off: shut688
+
+off: metertrig
+off: radial
+
+off: slower
+
+%call mako_image()
+
+off: blueshut %comment out for mako imaging, uncomment to have andor imaging after redmot.
+
+dac: bluetune 0.4 %0.1  %.6 for blue3d imaging.
+
+%%%%%
+%on: axial
+%on: rp688
+%on: shut688
+call red_mot(swapmottime)
+off: rp688
+off: shut688
+
+%off: axial
+%%%%%
+%call mako_image()
+on: metertrig
+
+
+%on: andorshut
+%on: imagshut
+%t += 5
+%call imageshort()
+
+off: mirroractive
+
+dac: bigzcoil 0
+
+call magicfields515()
+%call fieldzero()
+%call fields532()
+
+%dac: latticepow lattice_zero
+on: imagshut
+on: shut707
+on: shut679
+
+off: blueshut %Extra shutter for safety.
+
+t += 12.5 %dropping red MOT
+%call imageshort()
+%%%Light assisted collisions%%%
+%DDS state: Image
+pulseon: resetdds .1
+t += .2
+repeat: 2
+ pulseon: stepdds 0.007
+ t += .1
+end
+%t += .1
+%pulseon: mmload 0.007
+%t += .1
+
+dac: bluetune bluetune_imag
+dac: imagingPow imagpow
+%on: rp707
+
+t += .1
+
+on: rp707
+on: rp679
+on: imag461
+%on: radial2
+on: radial
+on: axial
+t += 15
+off: radial2
+off: axial
+off: radial
+off: imag461
+off: shut707
+off: shut679
+off: rp707
+off: rp679
+
+%off: imagshut
+
+pulseon: gmload .0001
+t += .1
+
+%DDS state: Image
+pulseon: resetdds .1
+t += .2
+repeat: 2
+ pulseon: stepdds 0.007
+ t += .1
+end
+t += .1
+
+dac: latticepow lattice_zero
+t += 5
+
+%%%SB COOL
+%DDS state: SB cooling
+pulseon: resetdds .1
+t += .2
+
+repeat: 50
+ on: axial
+ t += .1
+ off: axial
+% on: radial2
+% t += .1
+% off: radial2
+ on: radial
+ t += .1
+ off: radial
+end
+
+on: lat813ao
+t += 1
+
+call magicfieldsDual813()
+
+call tweezer2lattice(10)
+t += 3
+off: tweezershut
+t += 10
+
+dac: tweezerpow tweezer_pow
+t += .01
+
+%%%Fake image
+
+dac: imagingPow imagpowscan
+
+%on: imagshut
+off: shut688
+off: shut679
+off: shut707
+t += 4
+
+%%%image lattice
+pulseon: resetdds .1
+t += .2
+repeat: 2
+ pulseon: stepdds 0.007
+ t += .1
+end
+t += .1
+
+t += 1
+
+call imagelat(200)
+t += 15
+off: clockttl
+
+%%%SB COOL LATTICE
+pulseon: resetdds .1
+t += .2
+repeat: 4
+ pulseon: stepdds 0.007
+ t += .1
+end
+t += .1
+
+repeat: 50
+ on: radial2
+ t += .1
+ off: radial2
+ %on: radial
+ %t += .1
+ %off: radial
+ on: axial
+ t += .1
+ off: axial
+end
+
+%%% Move atoms
+%dac: tweezerpow tweezer_zero
+%t += 5
+%on: tweezershut
+%t += 5
+
+%call lattice2tweezer(1)
+%t += 5
+%pulseon: gmload .0001
+%t += .1
+%pulseon: gmmove .0001
+%t += 1
+%call tweezer2lattice(1)
+%t += 5
+%off: tweezershut
+%t += 5
+%dac: tweezerpow tweezer_pow
+
+%repeat: 50
+% on: radial2
+% t += .1
+% off: radial2
+% %on: radial
+% %t += .1
+% %off: radial
+% on: axial
+% t += .1
+% off: axial
+%end
+
+%call shelve3p2(1)
+
+%%% clock spectroscopy 
+
+%on: shut679
+%call fieldzero()
+call fieldbigz()
+t += 50
+on: imagshut 
+on: shutuv
+t += 5
+
+%DDS state: spectroscopy2
+pulseon: stepdds 0.007
+t += .1
+
+pulseon: trigger .1
+
+%on: clockTTL
+t += pitime %probetime %/2
+off: clockTTL
+t += .01
+%pulseon: awgtrig 0.0001 %%%Needs to be shorter than duration of awg pulse
+%t += uvtime/1000+.01
+%t += .01
+%on: clockTTL
+%t += pitime
+%off: clockTTL
+%t += .01
+%pulseon: awgtrig 0.0001 %%%Needs to be shorter than duration of awg pulse
+%t += uvtime/1000+.01
+%t += .01
+%on: clockTTL
+%t += pihalvestime %probetime %/2
+%off: clockTTL
+
+%%%phase jump
+%pulseon: stepdds 0.007
+%t += .1
+%t += sigmaztime
+%pulseon: stepdds 0.007
+%t += .1
+%%%
+%on: clockTTL
+%t += probetime/2
+%off: clockTTL
+t += .1
+pulseon: resetdds 0.007
+t += .2
+pulseon: stepdds 0.007
+t += .1
+dac: intensity698 0
+off: shutuv
+
+%on: blowawayttl
+t += 5
+off: blowawayttl
+%on: imagshut
+t += 4
+
+%%% 3p1 Spectroscopy
+pulseon: resetdds .1
+t += .2
+pulseon: stepdds 0.007
+t += .1
+
+%%% VV NOTE: for 2D lattice ONLY probe with radial2.
+
+%on: axial
+%on: radial
+%on: radial2
+t += .1
+off: axial
+off: radial
+off: radial2
+
+%on: blowawayttl
+%on: pi407
+t += .002
+%off: tweezerao
+%off: axlatTTL
+%off: lat813ao
+t += .001
+%on: tweezerao
+on: axlatTTL
+on: lat813ao
+t += .001
+off: blowawayttl
+off: pi407
+off: imagshut
+
+dac: bigzcoil 0
+t += 1
+on: bigzantihelm
+call magicfieldsDual813()
+
+%on: imagshut 
+on: shut707 
+on: shut679 
+t += 4
+on: rp707
+t += 1
+%on: blowawayttl
+%t += 1
+%off: blowawayttl
+t += 0.1 
+on: rp679 
+t += 4 
+off: rp707 
+off: rp679 
+off: shut707 
+off: shut679 
+off: imagshut 
+t += 5
+
+%%% MOVE BACK
+%%%SB COOL LATTICE
+pulseon: resetdds .1
+t += .2
+repeat: 4
+ pulseon: stepdds 0.007
+ t += .1
+end
+t += .1
+%%% Move atoms
+%dac: tweezerpow tweezer_zero
+%t += 5
+%on: tweezershut
+%t += 5
+
+%call lattice2tweezer(1)
+%t += 5
+%pulseon: gmmove .0001
+%t += 1
+%call tweezer2lattice(1)
+%t += 5
+%off: tweezershut
+%t += 5
+
+%repeat: 50
+% on: radial2
+% t += .1
+% off: radial2
+% %on: radial
+% %t += .1
+% %off: radial
+% on: axial
+% t += .1
+% off: axial
+%end
+
+pulseon: resetdds .1
+t += .2
+repeat: 2
+ pulseon: stepdds 0.007
+ t += .1
+end
+call imagelat(200)
+
+t += 15 %Remove stripe from 2nd image - unclear where this coming from
+
+%%%END
+% don't remove these!
+
+off: andorshut
+
+dac: x1coil 0
+dac: y1coil 0
+dac: y2coil 0
+dac: z1coil 0
+dac: bigzcoil 0
+
+on: radial
+on: radial2
+off: slower %DO NOT REMOVE; avoid coating cell.
+on: imag461
+on: axial
+on: rp679
+on: rp707
+on: shut679
+on: shut707
+
+dac: intensity698 pow698
+off: blowawayttl
+on: lat813ao
+on: tweezershut
+dac: tweezerpow tweezer_pow
+dac: latticepow lattice_pow
+dac: axialpow ax_lattice_pow %compensate for duty cycle
+dac: bluetune bluetuneval
+
+on: red3d
+dac: red3dpow 1.5
+
+%call bluemot_steadystate() %DO NOT LEAVE ON; avoid coating cell.
+%call grafanaSnapshot() %DO NOT LEAVE ON; avoid coating cell.

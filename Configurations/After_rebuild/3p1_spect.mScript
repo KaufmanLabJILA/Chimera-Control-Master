@@ -1,0 +1,166 @@
+t = 1
+on: trigger
+
+on: resetdds %NEW FOR DDS
+t += .1
+off: resetdds %NEW FOR DDS
+off: trigger
+off: tweezermod
+off: axial
+off: radial
+off: radial2
+off: imag461
+off: andorshut
+
+on: blueshut
+on: slower
+on: tweezerAO
+dac: tweezerpow tweezerpow_val
+
+t += 1
+
+call blue_mot(90)
+off: slower
+call red_mot(50)
+
+%on: blue3d
+%on: mako1
+%t += 1
+%off: mako1
+%off: blue3d
+
+%0
+on: stepdds 
+t += .007 
+off: stepdds
+
+dac: motcoils 0
+%dac: x1coil -.2685
+dac: x1coil -.355
+dac: y1coil .7
+dac: z1coil 0
+t += 20
+on: red3d
+t += 10
+off: red3d
+%on: blowawayshutter
+off: blueshut
+on: red3dnarrow
+t += 10
+off: red3dnarrow
+
+%1
+on: stepdds
+t += .007
+off: stepdds
+
+
+%%%Pre-imaging/ LAC
+dac: blue3dpow 0.3
+   dac: imagingDelta -.3
+   dac: imagingPow .075
+   off: red3d
+   off: rp707
+   off: rp679
+   off: blueshut
+ %%%%%%Image 1%%%%%
+
+    on: red3dnarrow
+    on: radial
+    on: imag461
+    t += 10
+    off: imag461
+    off: red3dnarrow
+    off: radial
+
+    t += .2
+
+    on: andorshut
+    t += 4
+
+    %on: red3dnarrow
+    %on: radial
+    %t += scan
+    %on: radial
+    % off: red3dnarrow
+
+%on: blowawayttl
+%t += .003
+%off: tweezerao
+%t += .001
+%on: tweezerao
+%t += .001
+%off: blowawayttl
+
+
+
+off: blowawayshutter
+
+%2
+on: stepdds
+t += .007
+off: stepdds
+
+dac: imagingPow 0.06
+
+%daclinspace: x1coil -.355 0 10 25
+%daclinspace: y1coil .7 0 10 25
+%t += 10
+
+daclinspace: tweezerpow tweezerpow_val -.675 5 10
+t += 10
+
+call imagetoggle_single()
+
+%3
+on: stepdds
+t += .007
+off: stepdds
+
+dac: imagingPow .01
+%%%
+t += 20
+
+%on: red3dnarrow
+%on: imag461
+%t += .1
+off: red3dnarrow
+off: imag461
+%dac: imagingPow .1
+%%%
+
+%4
+on: stepdds 
+t += .007 
+off: stepdds
+
+
+
+%dac: x1coil -.255
+dac: imagingPow .06
+
+%call imagetoggle_single()
+daclinspace: tweezerpow -.675 tweezerpow_val 5 10
+t += 10
+
+off: andorshut
+off: blueshut
+t += .1
+dac: tweezerpow tweezerpow_val
+off: radial
+off: radial2
+dac: imagingPow .4
+
+
+% don't remove these!
+dac: x1coil 0
+dac: y1coil 0
+dac: z1coil 0
+dac: motcoils 0
+off: red3d
+on: radial
+off: rp679
+off: rp707
+
+%%%
+%t += 115

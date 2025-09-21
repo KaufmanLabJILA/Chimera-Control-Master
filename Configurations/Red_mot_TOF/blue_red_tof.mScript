@@ -1,0 +1,31 @@
+t = 1
+
+on: trigger 
+t += .1
+off: trigger
+
+call blue_mot(300)
+call red_mot()
+
+t += .1
+
+on: mako1
+t += 0.01
+
+on: rp707
+on: rp679
+on: blue3d
+
+t += 10
+
+
+off: mako1
+
+%off: blue3d
+
+t += 10
+
+t += 1
+on: red3d
+
+

@@ -1,0 +1,87 @@
+
+
+t = 1
+pulseon: resetdds .1
+%pulseon: mmload .007
+
+pulseon: trigger .1
+
+dac: latticepow lattice_zero
+
+%daccosspace: latticepow lattice_zero lattice_pow 50 1000
+dacpartcosspace: latticepow lattice_zero lattice_pow 50*rampfrac 1000*rampfrac rampfrac
+t += 50*rampfrac+0.1
+dac: latticepow lattice_pow
+
+
+
+
+
+
+
+call imagec()
+off: imagshut
+on: lat813ao
+t += 1
+
+t += 15 %Remove stripe from 2nd image - unclear where this coming from
+
+%end
+%%%REPEAT END%%%
+
+%pulseon: mmmove 0.01
+%t += .1
+
+%%%END
+% don't remove these!
+
+%dac: tweezerpow tweezerpow_val
+%dac: axialpow ax_lattice_zero
+%dac: latticepow 0
+
+on: tweezershut
+off: andorshut
+
+dac: x1coil 0
+dac: y1coil 0
+dac: y2coil 0
+dac: z1coil 0
+dac: bigzcoil 0
+
+%on: radial
+%on: radial2
+off: slower %DO NOT REMOVE; avoid coating cell.
+on: imag461
+%on: axial
+on: rp679
+on: rp707
+on: shut679
+on: shut707
+
+%on: red3dnarrow
+%dac: intensity698 pow698
+off: blowawayttl
+on: lat813ao
+%dac: latticepow lattice_pow
+dac: latticepow lattice_pow
+dac: axialpow ax_lattice_pow
+dac: tweezerpow813 tweezer813_pow
+
+%dac: bluetune bluetuneval %outdated as of 240617
+
+%t += 300
+
+on: red3d
+dac: red3dpow 1.5
+
+off: radial
+off: radial2
+off: axial
+t += .1
+
+
+
+%pulseon: stepdds 0.007
+%t += .1
+%call bluemot_steadystate() %DO NOT LEAVE ON; avoid coating cell.
+%call grafanaSnapshot() %DO NOT LEAVE ON; avoid coating cell.

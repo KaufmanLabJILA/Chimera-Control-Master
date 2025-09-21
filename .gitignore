@@ -19,7 +19,6 @@ MFCApplication3/
 *.cConfig
 *.hConfig
 *.vConfig
-*.mScript
 *.catConfig
 *.eConfig
 *.fits

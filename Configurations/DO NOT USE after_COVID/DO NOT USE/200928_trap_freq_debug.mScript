@@ -1,0 +1,290 @@
+t = 1
+pulseon: trigger .1
+pulseon: resetdds .1
+%pulseon: mmload .007
+pulseon: gmload .0001
+
+t += .1
+off: mirroractive
+%on: mirroractive
+dac: mirror_x 2.2
+dac: mirror_y 1.27
+
+%DDS state: MOT
+repeat: 3
+ pulseon: stepdds 0.007
+ t += .1
+end
+
+dac: galvo galvo_set
+dac: axial_piezo axial_phase_set
+
+call ttlReset() 
+t += 1
+
+dac: bluetune bluetuneval
+%dac: intensity698 pow698
+dac: imagtune tune461
+dac: uvpow 1.8
+ %1.5 %.8
+
+%dac: tweezerpow 0
+dac: axialpow ax_lattice_zero
+dac: latticepow lattice_zero
+dac: tweezerpow tweezer_pow
+dac: red3dpow 1.5 %about maximum
+%dac: latticepow lattice_pow
+
+t += 1
+
+%dac: axialpow -2
+%off: tweezerao
+%off: tweezer813ao
+%off: axlatTTL
+
+%%REMOVE
+t += 1
+
+%on: imagshut
+
+on: blueshut
+on: shut707
+on: shut679
+on: rp707
+on: rp679
+%%%%
+on: imagshut %%Used for mako_image_singleBeam
+%%%%
+%on: blowawayttl
+call blue_mot(75)
+off: rp707
+off: rp679
+off: shut707
+off: shut679
+off: metertrig
+
+off: slower
+
+call mako_image()
+
+%on: imagshut
+%on: imag461
+off: blueshut %comment out for mako imaging, uncomment to have andor imaging after redmot.
+%t += 10
+
+dac: bluetune 0.1  %.6 for blue3d imaging.
+
+%%%%%
+call red_mot(swapmottime) 
+%%%%%
+
+%t += 16
+%on: andorshut
+%t += 4
+
+%call mako_image()
+on: metertrig
+%call mako_image_SingleBeam(10)
+%call imageshort()
+%call imageshort_temp()
+
+off: mirroractive
+
+dac: motcoils 0
+
+call magicfields515()
+%call fieldzero()
+%call fields532()
+
+%daclinspace: axialpow -2 ax_lattice_zero 15 15
+%t += 20
+
+dac: latticepow lattice_zero
+on: imagshut
+
+t += 12.5 %dropping red MOT
+
+%%%Light assisted collisions%%%
+%DDS state: Image
+pulseon: resetdds .1
+t += .2
+repeat: 2
+ pulseon: stepdds 0.007
+ t += .1
+end
+
+pulseon: gmload .0001
+t += .1
+
+%pulseon: mmload 0.007
+%t += .1
+
+dac: bluetune bluetune_imag
+dac: imagingPow imagpow
+%on: rp707
+
+t += .1
+
+on: shut707
+on: shut679
+on: rp707
+on: rp679
+on: imag461
+on: radial2
+on: radial
+on: axial
+t += 15
+off: radial2
+off: axial
+off: radial
+off: imag461
+off: shut707
+off: shut679
+off: rp707
+off: rp679
+
+%off: imagshut
+
+pulseon: mmload 0.007
+t += .1
+
+%%%REPEAT START%%%
+%repeat: 1
+
+%on: radial
+
+%DDS state: Image
+pulseon: resetdds .1
+t += .2
+repeat: 2
+ pulseon: stepdds 0.007
+ t += .1
+end
+t += .1
+
+%%%1st image
+%on: radial 
+% t += 10
+%off: radial
+
+%daclinspace: tweezerpow tweezer_pow tweezer_zero 5 25
+% t += 5.1
+%daclinspace: tweezerpow tweezer_zero tweezer_pow 5 25
+%t += 5.1 
+%call imageshort()
+call imagec()
+
+%%%SB COOL
+%DDS state: SB cooling
+pulseon: resetdds .1
+t += .2
+
+repeat: 50
+ on: axial
+ t += .1
+ off: axial
+% on: radial2
+% t += .1
+% off: radial2
+ on: radial
+ t += .1
+ off: radial
+end
+
+%%% 3p1 Spectroscopy 1
+%DDS state: spectroscopy
+pulseon: resetdds .1
+t += .2
+repeat: 1
+ pulseon: stepdds 0.007
+ t += .1
+end
+t += .1
+
+%%% DDS State Spectroscopy 2
+repeat: 3
+ pulseon: stepdds 0.007
+ t += .1
+end
+t += .1
+
+on: imagshut
+t += 4
+
+on: radial
+t += 0.1
+off: radial
+on: blowawayttl
+t += .001 %.003
+off: tweezerao
+%off: axlatTTL
+t += .0025
+on: tweezerao
+%on: axlatTTL
+%t += .001
+off: blowawayttl
+off: imagshut
+
+%%%2nd image, no repumps if doing clock spec
+%DDS state: Image
+pulseon: resetdds .1
+t += .2
+repeat: 2
+ pulseon: stepdds 0.007
+ t += .1
+end
+t += .1
+
+%call imageshort()
+call imagec()
+%call image532()
+off: imagshut
+%on: slower
+
+%daclinspace: axialpow ax_lattice_pow ax_lattice_zero 5 25
+dac: latticepow -.5
+t += 15 %Remove stripe from 2nd image - unclear where this coming from
+
+%end
+%%%REPEAT END%%%
+
+%pulseon: mmmove 0.01
+%t += .1
+
+%%%END
+% don't remove these!
+
+%dac: tweezerpow tweezerpow_val
+%dac: axialpow ax_lattice_zero
+%dac: latticepow 0
+
+off: andorshut
+
+dac: x1coil 0
+dac: y1coil 0
+dac: y2coil 0
+dac: z1coil 0
+dac: motcoils 0
+
+%on: red3d % Just for now so Will can optimize new injection lock
+on: radial
+on: radial2
+off: slower %DO NOT REMOVE; avoid coating cell.
+on: imag461
+on: axial
+on: rp679
+on: rp707
+on: shut679
+on: shut707
+%on: red3dnarrow
+%dac: intensity698 pow698
+off: blowawayttl
+
+dac: bluetune bluetuneval
+t += 1
+
+on: red3d
+dac: red3dpow 1.5
+
+
+%call bluemot_steadystate() %DO NOT LEAVE ON; avoid coating cell.

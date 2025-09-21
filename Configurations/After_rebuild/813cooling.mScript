@@ -1,0 +1,333 @@
+t = 1
+on: trigger
+
+on: resetdds %NEW FOR DDS
+t += .1
+off: resetdds %NEW FOR DDS
+t += .1
+
+on: mmload
+t += .007
+off: mmload
+
+off: trigger
+off: tweezermod
+off: axial
+
+off: radial
+off: radial2
+off: red3d
+off: red3dnarrow
+off: imag461
+off: blowawayttl
+dac: intensity698 pow698
+
+off: imagshut
+off: andorshut
+off: blowawayshutter
+
+on: blueshut
+off: slower
+on: tweezerAO
+dac: tweezerpow tweezerpow_val
+dac: intensity698 pow698
+t+= 1
+
+
+call blue_mot(20)
+%call mako_image()
+%off: slower
+%off: blowawayshutter
+
+call red_mot(100)
+%call mako_image()
+off: blueshut
+
+
+%0 Further cooling step
+on: stepdds 
+t += .007 
+off: stepdds
+t += .1
+
+dac: motcoils 0
+
+
+%Zero field values.
+dac: z1coil -.003
+dac: y1coil .017
+dac: x1coil .022
+%Zero field values. 
+
+t += 10 %dropping red MOT
+
+%1 DDS state for LAC step
+on: stepdds
+t += .007
+off: stepdds
+t += .1
+
+%on: red3dnarrow
+%t += 30
+%off: red3dnarrow
+
+on: mmload
+t += .007
+off: mmload
+t += 1
+
+
+
+on: blowawayshutter
+t += 4
+
+
+%Light assisted collisions step, lac() routine. 
+call lac()
+%%
+
+on: mmload
+t += .007
+off: mmload
+t += 1
+
+%2 DDS state for First Image
+on: stepdds
+t += .007
+off: stepdds
+t += .1
+
+on: andorshut
+off: blueshut
+on: rp707
+on: rp679
+on: radial
+t += 4
+
+%call imagetoggle_single()
+
+%off: rp707
+%off: rp679
+
+%off: andorshut
+%on: blowawayshutter
+
+%%%1st image
+dac: imagingPow .11
+
+on: andortrig
+t += .2 
+
+on: imag461 
+on: radial
+t += 18
+off: imag461	
+off: radial
+off: andortrig
+off: andorshut
+off: axial
+
+%daclinspace: tweezerpow tweezerpow_val filter_pow 5 25
+%t += 25
+ 
+%t += .1
+%t += 50   %delay between two images for camera
+%daclinspace: tweezerpow filter_pow tweezerpow_val 5 25
+%t += 25
+
+
+%3 DDS state for fake Image, post image cooling
+on: stepdds
+t += .007
+off: stepdds
+t += 1
+
+
+%%Fake image%%
+%dac: imagingPow 0.3
+%t += 1
+%repeat: 5
+
+%on: imag461
+%on: radial
+%on: axial
+%t += 18
+%off: imag461
+%off: radial
+%off: axial
+%on: rp707
+%on: rp679
+
+%Recool
+%t += .1
+%on: radial
+%t += 30
+%off: radial 
+%t += .1
+%end
+%%Fake image%%
+
+%%%%%%%%%%%%%Sideband cooling%%%%%
+
+%%%Change field values%%%
+dac: z1coil 0.2
+dac: x1coil .27
+
+t += 20
+
+
+%post image cooling: 10% power, 83MHz freq
+%on: radial
+%on: red3dnarrow
+%t += 70 %70 ms
+%off: radial
+off: red3dnarrow
+
+%on: radial
+%t += 10
+%off: radial
+
+repeat: 10
+
+on: radial
+t += .7
+off: radial
+
+on: axial
+t += 1
+off: axial
+
+on: radial2
+t += .7
+off: radial2
+
+on: axial
+t += 1
+off: axial
+end
+
+t += 1
+
+dac: x1coil .017 %return field x to 0 
+
+
+%%Spectroscopy sequence%%
+%off: rp707 %Actuates beginning of clock pulse
+%off: rp679
+off: blowawayshutter
+on: rp707
+on: rp679
+
+
+
+dac: z1coil 0.4
+daclinspace: tweezerpow tweezerpow_val filter_pow 15 50
+t += 20
+
+t += 1
+off: rp707 %Actuates beginning of clock pulse
+off: rp679
+
+%dac: intensity698 pow698
+
+%4 DDS state for spectroscopy
+on: stepdds
+t += .007
+off: stepdds
+t += 1
+
+%clock pulse length, 50 typical
+t += 25
+
+%5, 2nd image settings, terminates clock pulse
+on: stepdds 
+t += .007
+off: stepdds
+t += 1
+
+on: blowawayshutter
+
+%%Return to imaging conditions
+dac: z1coil -.003
+daclinspace: tweezerpow filter_pow tweezerpow_val 15 50
+t += 15
+
+
+
+%%%2nd image, no repumps if doing clock spec
+on: rp707
+on: rp679
+on: radial
+
+
+dac: imagingPow .11
+on: andorshut
+t += 4
+on: andortrig
+t += .2 
+
+on: imag461 
+on: radial
+t += 18
+off: imag461
+off: radial
+off: axial
+off: andortrig
+off: andorshut
+
+%%%
+
+on: imagshut
+dac: imagingPow .15
+
+on: andorshut
+off: blueshut
+on: rp707
+on: rp679
+
+t += 4
+%call imagetoggle_single()
+dac: z1coil 0
+
+off: andorshut
+
+t += 1
+%6
+on: stepdds 
+t += .007 
+off: stepdds
+t += .1
+
+%7
+on: stepdds
+t += .007
+off: stepdds
+t += .1
+%dac: imagingPow .12
+
+%8
+on: stepdds
+t += .007 
+off: stepdds
+
+
+% don't remove these!
+dac: x1coil 0
+dac: y1coil 0
+dac: z1coil 0
+dac: motcoils 0
+%on: red3d
+on: radial
+on: imag461
+on: radial2
+off: axial
+on: rp679
+on: rp707
+on: red3dnarrow
+dac: intensity698 pow698
+t += 1
+%%%
+%call bluemot_steadystate()
+
+%t += 150
+

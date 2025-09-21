@@ -1,0 +1,76 @@
+% Master-Script See the "?" for info on commands.
+% Time starts at 1 ms.
+call ttlreset()
+call dac_reset()
+t = 1000
+
+on: bigzantihelm
+t += 10
+
+daccosspace: bigzcoil 0 bigz_bluemot*bigz_conv 30 100
+dac: z1coil bmbz
+dac: y1coil bmby
+dac: y2coil bmby
+dac: x1coil bmbx
+t += 40
+daccosspace: bigzcoil bigz_bluemot*bigz_conv bigz_redmot*bigz_conv 30 100
+dac: z1coil rmbz
+daccosspace: y1coil bmby rmby 30 50 
+daccosspace: y2coil bmby rmby 30 50
+dac: x1coil rmbx
+t += 200
+daccosspace: bigzcoil bigz_redmot*bigz_conv 0 30 100
+dac: z1coil 0
+dac: y1coil 0
+dac: y2coil 0
+dac: x1coil 0
+t += 100
+off: bigzantihelm
+t += 10
+daccosspace: bigzcoil 0 bigz_clock*bigz_conv 30 100
+t += 100
+daccosspace: bigzcoil bigz_clock*bigz_conv 0 75 100
+t += 75
+
+
+%call blue_mot(bluemottime)
+%call red_mot(swapmottime)
+%daccosspace: bigzcoil bigz_redmot*bigz_conv 0 30 100
+%daccosspace: x1coil rmbx 0 30 100
+%daccosspace: y1coil rmby 0 30 100
+%daccosspace: y1coil rmby 0 30 100
+%daccosspace: z1coil rmbz 0 30 100
+%t += 30
+
+
+%dac: x1coil rmbx
+%dac: y1coil rmby
+%dac: y2coil rmby
+%dac: z1coil rmbz
+%t += 200
+
+%call magicfields515()
+%t += 20
+%call magicfieldsdual813()
+%t += 100
+
+%dac: z1coil .0133
+%daccosspace: y1coil 0.7 .007 40 80
+%daccosspace: y2coil 0.7 .007 40 80
+%dac: x1coil .0044
+
+%t += 40
+
+%call magicfieldsdual813()
+%t += 100
+
+%daccosspace: y1coil 0.7 0 40 80
+%daccosspace: y2coil 0.7 0 40 80
+%dac: z1coil 0
+%dac: x1coil 0
+%daccosspace: x1coil -0.29397 0 40 80
+
+%t += 40
+
+
+%

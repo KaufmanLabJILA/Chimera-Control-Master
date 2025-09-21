@@ -1,0 +1,338 @@
+pulseon: gmload .0001
+t += .1
+
+call setsbcoolpows(0.16, 0.075, 0.001)
+
+call ttlReset() 
+t += 1
+call dac_reset()
+t += 1
+
+%%%%
+%on: imagshut %%Used for mako_image_singleBeam
+pulseon: trigger .1
+%t += .1
+call set_dds_snapshot(3)
+call blue_mot(bluemottime)
+%call imageshort()
+%call mako_image()
+%call mako_image_singleBeam(6)
+off: blueshut %comment out for mako imaging, uncomment to have andor imaging after redmot.
+
+call red_mot(swapmottime)
+%call mako_image()
+%call imageshort()
+%%%%
+call magicfields515()
+%call fieldzero()
+%call fields532()
+off: imagshut
+on: shut707
+on: shut679
+off: blueshut %Extra shutter for safety.
+%t += 4
+%t += 12.5 %dropping red MOT
+%call imageshort()
+
+%%%Light assisted collisions%%%
+%dac: tweezerpow -2.2
+%call enhanced_lacs(75) % this wants MOT snapshot
+%dac: tweezerpow tweezer_pow
+%t += .1
+%% regular lacs after enhanced loading 
+call set_dds_snapshot(2)
+call setsbcoolpows(0.201, 0.03, 0.07)
+daccosspace: bigzcoil bigz_conv*bigz_redmot bz0 10 50
+%call magicfields515()
+%on: imagshut
+t += 12.5 %dropping red MOT
+call lacs(4)  % This wants imaging snapshot
+
+%off: imagshut
+
+pulseon: gmload .0001
+t += .1
+
+%%SB COOL
+call set_dds_snapshot(0)
+call setsbcoolpows(0.02, 0.004, 0.07)
+%call setsbcoolpows(0.025, 0.004, 0.08)
+call sbcool(1)
+pulseon: tektronixtrig .01
+t += .01
+call sbcool_pulsed(0.2, 50)
+
+%%%1st image
+call set_dds_snapshot(2)
+call setsbcoolpows(0.1, 0.1, 0.2)
+%call fieldzero()
+%t += 30
+call image(75, imagpow, 1)
+
+
+%%%SB COOL
+%DDS state: SB cooling
+pulseon: tektronixtrig 0.01
+t += .2
+call set_dds_snapshot(0)
+call setsbcoolpows(0.04, 0.005, 0.07)
+call sbcool(5)
+call sbcool_pulsed(time_sbcool_pulsed, 50)
+
+
+%daclinspace: tweezerpow tweezer_pow scan 5 15
+%t += 100
+
+%%%%%%%% moves: do not uncomment until consulting aaron
+
+%pulseon: gmmove .0001
+%t += .1
+%t += 10
+%%t += holdtime
+%pulseon: gmmove .0001
+%t += .1
+%t += 10
+
+%pulseon: gmload .0001
+%t += 1
+
+%repeat: 1
+%  pulseon: gmmove .0001
+%  t += .5
+%%  t += 500
+%end
+
+%repeat: 1
+%  pulseon: gmmove .0001
+%  t += 0.001
+%%  t += 500
+%end
+
+%t += 20
+
+%repeat: 1
+%  pulseon: gmmove .0001
+%  t += 0.001
+%%  t += 500
+%end
+
+%repeat: 1
+%  pulseon: gmmove .0001
+%  t += .5
+%%  t += 500
+%end
+
+%daclinspace: tweezerpow scan tweezer_pow 5 15
+%t += 20
+
+%repeat: 50
+% on: axial
+% t += .1
+% off: axial
+% on: radial2
+% t += .1
+% off: radial2
+% on: radial
+% t += .1
+% off: radial
+%end
+
+%on: lat813ao
+%t += 1
+
+%%% 3p1 Spectroscopy
+
+%call fieldbigz()
+%t += 15
+
+%call magicfieldsdual813()
+%t += 35
+
+%call magicfields813()
+%_axial() %NOTE this takes 10 ms to complete ramp
+
+%daclinspace: tweezerpow813 tweezer813_zero tweezer813_pow 10 10
+%daclinspace: tweezerpow tweezer_pow filter_pow 10 10
+%daclinspace: tweezerpow tweezer_pow tweezer_zero 10 10
+%daclinspace: tweezerpow tweezer_pow -.08 10 10
+%pulseon: trigger .1
+
+%daclinspace: tweezerpow tweezer_pow scan 10 10
+%t += 11
+
+%daclinspace: latticepow lattice_zero -5 10 10
+%t += 1
+
+
+%%% for light shift calibration
+%daclinspace: latticepow lattice_zero 0.42 10 20
+%daclinspace: axialpow ax_lattice_zero 0.62 10 10
+%t += 11
+
+%daclinspace: latticepow lattice_zero 1.0/3 20 500
+%daclinspace: axialpow ax_lattice_zero 0.9/2.0 20 500
+%t += 21
+%daclinspace: tweezerpow tweezer_pow tweezer_zero 10 500
+%t += 11
+%off: tweezershut
+%t += 5
+
+
+%pulseon: trigger .01
+%t += 1000
+
+%% for lattice center
+call setsbcoolpows(0.04, 0.005, 0.07)
+%% for spectroscopy
+%call setsbcoolpows(0.003+.002, 0.003, 0.003)
+call set_dds_snapshot(1)
+call sbcool(1)
+
+%daccosspace: axialpow ax_lattice_zero 2.25 20 500
+%daccosspace: axialpow ax_lattice_zero 0.001 20 500
+%daclinspace: latticepow lattice_zero 1.45 20 500
+%t += 21
+
+%call setsbcoolpows(0.04, 0.005, 0.07)
+
+
+%call fieldzero()
+%t += 30
+
+%daclinspace: tweezerpow tweezer_pow tweezer_zero 20 500
+%t += 21
+
+%t += 1
+%call spect3p1(1, 0, 0)
+%daclinspace: tweezerpow tweezer_zero tweezer_pow 20 500
+%t += 21
+
+%t += 1000
+%pulseon: gmload .0001
+%t += .1
+%repeat: 48
+%pulseon: gmmove .0001
+%t += 300
+%end
+
+%call magicfields515()
+%daclinspace: tweezerpow -0.08 tweezer_pow 10 10
+%daclinspace: tweezerpow filter_pow tweezer_pow 10 10
+%daclinspace: tweezerpow tweezer_zero tweezer_pow 10 10
+%t += 10
+%daclinspace: tweezerpow813 tweezer813_pow tweezer813_zero 10 10
+
+%on: tweezershut
+%t += 5
+%daclinspace: tweezerpow tweezer_zero tweezer_pow 10 500
+%t += 11
+%daclinspace: latticepow 1.0/3 lattice_zero 20 500
+%daclinspace: axialpow 0.9/2.0 ax_lattice_zero 20 500
+%t += 21
+
+%%% For light shift calibration
+%daclinspace: latticepow 0.42 lattice_zero 10 10
+%daclinspace: axialpow 0.62 ax_lattice_zero 10 10
+%t += 11
+
+%pulseon: trigger .1
+%t += .1
+%pulseon: awgtrig .1
+
+%t += 1
+%call parametric_heat()
+%daccosspace: axialpow 2.25 ax_lattice_zero 20 500
+%daclinspace: latticepow 1.45 lattice_zero 20 500
+%daccosspace: axialpow 0.005 ax_lattice_zero 20 500
+%t += 21
+%call filterTweezer()
+
+%%% Axial phase quench protocol
+dac: axialpow ax_lattice_pow
+t += 1
+dac: axialpow ax_lattice_zero
+t += 1
+call filterTweezer()
+
+%t += 300
+
+%daclinspace: tweezerpow scan tweezer_pow 10 10
+%t += 11
+
+
+%dac: bigzcoil 0
+%call magicfields515()
+%t += 30
+
+
+%%%2nd image, no repumps if doing clock spec
+call set_dds_snapshot(2)
+call setsbcoolpows(0.1, 0.1, 0.2)
+call image(75, imagpow, 1)
+off: imagshut
+on: lat813ao
+daccosspace: x1coil -0.29397 0 40 80
+daccosspace: y1coil 0.67 0 40 80
+daccosspace: y2coil 0.67 0 40 80
+t += 1
+t += 15+25 %Remove stripe from 2nd image - unclear where this coming from
+
+%end
+%%%REPEAT END%%%
+
+%pulseon: mmmove 0.01
+%t += .1
+
+%%%END
+% don't remove these!
+
+%dac: tweezerpow tweezerpow_val
+%dac: axialpow ax_lattice_zero
+%dac: latticepow 0
+
+on: tweezershut
+off: andorshut
+
+dac: x1coil 0
+%dac: y1coil 0
+%dac: y2coil 0
+dac: z1coil 0
+dac: bigzcoil 0
+
+%on: radial
+%on: radial2
+off: slower %DO NOT REMOVE; avoid coating cell.
+on: imag461
+%on: axial
+on: rp679
+on: rp707
+on: shut679
+on: shut707
+
+%on: red3dnarrow
+%dac: intensity698 pow698
+off: blowawayttl
+on: lat813ao
+%dac: latticepow lattice_pow
+dac: latticepow lattice_pow
+dac: axialpow ax_lattice_pow
+dac: tweezerpow813 tweezer813_pow
+
+%dac: bluetune bluetuneval %outdated as of 240617
+
+%t += 300
+
+on: red3d
+dac: red3dpow 1.5
+
+off: radial
+off: radial2
+off: axial
+t += .1
+
+
+%pulseon: stepdds 0.007
+%t += .1
+%call bluemot_steadystate() %DO NOT LEAVE ON; avoid coating cell.
+%call grafanaSnapshot() %DO NOT LEAVE ON; avoid coating cell.
+%

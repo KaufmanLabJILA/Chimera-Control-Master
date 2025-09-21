@@ -1,0 +1,15 @@
+pulseon: trigger .001
+dac: tweezerpow tweezer_pow
+repeat: 8
+daclinspace: tweezerpow tweezer_pow tweezer_zero 200 scan/2
+t += 200
+daclinspace: tweezerpow tweezer_zero tweezer_pow 200 scan/2
+t += 200
+end
+
+%repeat: 16300/2
+%on: clockttl
+%t += .01
+%off: clockttl
+%t += .01
+%end

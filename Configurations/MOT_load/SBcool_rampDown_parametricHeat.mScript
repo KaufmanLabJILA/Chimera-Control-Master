@@ -1,0 +1,86 @@
+t = 1
+on: trigger
+on: resetdds %NEW FOR DDS
+t += .1
+off: resetdds %NEW FOR DDS
+off: trigger
+off: tweezermod
+off: redprobe
+off: axial
+off: redcool
+
+on: blueshut
+on: slower
+on: tweezerAO
+dac: tweezerpow tweezerpow_val
+
+call blue_mot(50)
+off: slower
+off: blueshut
+dac: blue3dpow 0.01
+
+call red_mot(40)
+dac: lowermotcoil 0
+dac: uppermotcoil 0
+dac: x1coil 1.25
+dac: y1coil -10
+dac: z1coil 0.44
+
+%LAC:
+on: red3d
+t += 1
+off: red3d
+t += 1
+
+%0
+on: stepdds
+t += .001
+off: stepdds
+
+on: red3dnarrow
+t += 20
+off: red3dnarrow
+
+
+repeat: 10
+  on: redcool
+  t += 2
+  off: redcool
+  on: axial
+  t += 2
+  off: axial
+end
+
+%on: tweezermod
+t += 1
+off: tweezermod
+
+daclinspace: tweezerpow tweezerpow_val filter_pow 5 10
+t += 15
+daclinspace: tweezerpow filter_pow tweezerpow_val 5 10
+t += 5
+
+
+%1
+on: stepdds
+t += .001
+off: stepdds
+
+
+%t += 1
+%dac: tweezerpow -2.5
+%t += 1
+%call image(imagetime)
+%call imagedoppler()
+%on: red3dnarrow
+%t += 100
+%off: red3dnarrow
+call imagedoppler()
+
+off: blueshut
+t += .1
+dac: tweezerpow tweezerpow_val
+on: redcool
+
+call bluemot_steadystate()
+t += .1
