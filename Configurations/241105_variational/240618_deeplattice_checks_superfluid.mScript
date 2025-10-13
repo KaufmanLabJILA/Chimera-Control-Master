@@ -87,6 +87,32 @@ call sbcool_pulsed(time_sbcool_pulsed, pulsenum)
 call setSBcoolPows(0.002, 0.002, 0.002)
 call sbcool(1)
 
+ %%% uv sample and hold
+ off: cavityunlock %% relock UV doubler
+ off: shutuv
+ t += 15
+
+ dac: int633servo uvpow
+
+ off: uv2ttl
+ on: uvttl
+ off: holduv
+ off: shutuv
+ off: shut407
+
+ off: shut707
+ off: shut679
+ off: rp707
+ off: rp679
+ t += 5
+ on: holduv
+ off: uvttl
+ t += 0.1
+ on: uv2ttl
+ on: shutuv
+ on: shut407
+ on: pi407
+
 %%%dummy image lattice
 %call set_dds_snapshot(9)
 %call setSBcoolPows(radpow_img_fast, rad2pow_img_fast, axpow_img_fast)
@@ -113,8 +139,23 @@ call sbcool(1)
 call set_dds_snapshot(3)
 %%% set powers for 3p1 rabi flops
 %call setSBcoolPows(radpow_flop, rad2pow_flop, axpow_flop)
+call setSBcoolPows(0.1, rad2pow_flop, 0.1)
 %call rabi3p1(rabitime_3p1)
-%call spect3p1(1, 0, 0)
+
+ call photoionize(photoion_time)
+
+ t += 5
+ off: shutuv
+ off: shut407
+ %off: uvcavshut
+ t += .001
+
+ off: uvttl 
+ t += .001
+ on: cavityunlock
+ t += .001
+
+%call spect3p1(0, 0, 1)
 %daclinspace: latticepow scan2d lattice_pow 10 150
 %t += 11
 %daclinspace: axialpow scanax ax_lattice_pow 10 150

@@ -1,0 +1,34 @@
+% Master-Script See the "?" for info on commands.
+def photoionize(duration):
+  % insert commands here...
+  on: imagshut
+  t += 4
+  off: coolSH
+  on: radial
+  t += .01 
+
+%t += photoion_time
+
+ %%% rydberg pulse
+ repeat: 1
+   off: uv2ttl
+   on: uvttl
+   off: pi407
+   t += .001
+   pulseon: awgtrig .001
+   pulseon: keysightgate .001
+   t += (awgblinkdelay+1.08)/1000
+   %t += 5/1000
+   t += duration
+   t += .0002
+   off: uvttl
+   t += 0.1
+   on: uv2ttl
+   on: pi407
+   t += .001
+ end
+    
+
+ t += .01
+ off: radial
+ on: coolSH

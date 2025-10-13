@@ -199,19 +199,19 @@ uvpm_h
 uvpm_v
 0 - 10
 0
-76
-rmbx 0.00301
-rmby 0.01241
-rmbz 0.02302
+92
+rmbx 0.00225
+rmby 0.01432
+rmbz 0.02296
 tune461 -0.2
 bluetuneval 0.075
 bluetune_imag 0.075
 tweezer_zero 0.013
-lattice_pow 1.85
+lattice_pow 1.4
 lattice_zero 0.0175
-ax_lattice_pow 2.85
+ax_lattice_pow 2.1
 ax_lattice_zero -0.009
-axial_phase_set 4.6
+axial_phase_set 5.1
 xoff 0
 yoff 7.2
 xoff813 0
@@ -232,17 +232,16 @@ imagpow 2
 dmbz 0.4
 by_lacs 0.025
 f_lac -1.64
-c_3p0 153.901762
+c_3p0 153.944962
 fcool 0.095
 c_3p1_lat 80.0139
 bluemottime 20
-uvpm_v_set 5.8
-__t0__ 1758486034
+uvpm_v_set 5.42
+__t0__ 1759940320
 dr_3p1 0.0039
-uvpm_h_set -2
+uvpm_h_set -1.84
 narrowmottime 125
 tweezerattn_off 0.45
-spec3p0 11.82212987
 f_rad_813_imag 84.35
 fmby_813 0.619
 f_rad_813 0.11
@@ -251,7 +250,7 @@ imagpow813 0.28
 c_3p1_813 79.975
 fmbx_813 0.48
 f_rad_3d_cool 0.14
-imagpowlat_fast 2
+imagpowlat_fast 2.4
 f_rad_3d_fast 0.16
 f_ax_3d_imag_fast 0.13
 bz0 -0.001
@@ -264,7 +263,7 @@ bzservo0 -0.003
 fast_image_toggle 1
 imag_lat_time 300
 imag_lat_time_fast 150
-offset_689 346.1494073
+offset_689 346.1955543
 f_rad_shallow_cool 0.055
 f_rad2_shallow_cool 0.055
 strobefreq 495.51
@@ -276,4 +275,21 @@ bmbx -0.065
 bmby 0.065
 bmbz -0.11
 time_sbcool_pulsed 0.2
+spec3p0 13.27242005
+pitime 0.4126582378
+spec3p0_bare 11.73829318
+pihalvestime 0.2061791003
+clock_calib_pipulsenum 101
+delayuv12 0.158
+time407 0.1
+awgblinkdelay 0.3
+pow_407 18
+f_407 240
+uv407delay 0.007
+awgamp 100
+awgamp2 75
+ryd_freq 231.175
+uvpow 0.48
+uvtime 1
+uvtime_pi 0.17
 110 410 1 100 400 1

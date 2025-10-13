@@ -4,8 +4,8 @@ def rabi3p1(rabitime):
  on: imagshut
  t += 4
  off: coolSH
- on: axial
- %on: radial
+ %on: axial
+ on: radial
  %on: radial2
  t += rabitime
  off: axial
@@ -13,13 +13,13 @@ def rabi3p1(rabitime):
  off: radial2
  on: coolSH
 
- on: latticehold
- on: latblink
- on: blowawayttl
- t += 0.0005
- off: blowawayttl
- off: latblink
- off: latticehold
- %off: pi407
- %off: imagshut
+ %on: latticehold
+ %on: latblink
+ %on: blowawayttl
+ %t += 0.0005
+ %off: blowawayttl
+ %off: latblink
+ %off: latticehold
+ %%off: pi407
+ %%off: imagshut
 

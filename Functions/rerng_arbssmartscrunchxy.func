@@ -14,7 +14,7 @@ t += 5
 
 on: radial
 on: radial2
-%on: axial
+on: axial
 
 % change number of repeats according to number of initx columns (n)
 % number of repeats should be n * 2 - 1

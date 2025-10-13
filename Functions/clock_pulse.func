@@ -10,18 +10,16 @@ def clock_pulse(time, a, b, c, sh):
 
   %% perform pulse
   on: clockttl
-  t += .005
-  variableon: coolSH sh
-  t += (time-.03)
-  on: coolSH
-  t += .005
-  off: clockttl
   t += .01
+  variableon: clockhold sh
+  t += (time-.02)
+  on: clockhold
+  t += .01
+  off: clockttl
+  t += .005
   
-  %% turn RF back on but away from resonance to keep AO warm
-  on: wiesera
+  %% set to probe shift compensation snapshot
+  off: wiesera
   on: wieserb
   on: wieserc
-  t += .001
-  on: clockttl
   t += .001

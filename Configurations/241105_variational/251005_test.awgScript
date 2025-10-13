@@ -1,0 +1,48 @@
+% start by resetting synthesizer
+reset
+
+setsingle 0 0 0 ryd_freq 1 0
+setsingle 0 1.08 awgamp ryd_freq 0 0
+%setsingle 0 1.08 awgamp/10 (ryd_freq+ryd_det) 0 0
+setsingle 0 1.08+uvtime 0 ryd_freq 0 0
+
+
+program 0
+
+%%% for monitoring:
+
+setsingle 1 0 0 ryd_freq 1 0
+setsingle 1 1.08+delayuv12 awgamp-25 ryd_freq 0 0
+setsingle 1 1.08+uvtime+delayuv12 0 ryd_freq 0 0
+
+%setsingle 1 (uvtime + ramseytime + 1.08 + delayuv12) awgamp-25 ryd_freq 0 0
+%setsingle 1 (2*uvtime + ramseytime + 1.08 + delayuv12) 0 ryd_freq 0 0
+
+%setsingle 1 0 0 (ryd_freq+ryd_det) 1 0
+
+%setsingle 1 0 40 ryd_freq/10 1 0
+%setsingle 1 uvtime 0 ryd_freq/10 0 0
+%setsingle 1 10 0 ryd_freq/10 0 0
+
+%setsingle 1 0 awgamp ryd_freq/10 1 0
+%setsingle 1 uvtime 0 ryd_freq/10 0 0
+
+program 1
+
+%setsingle 2 0 75 ryd_freq 1 50 
+%setsingle 0 uvtime 0 ryd_freq 0 0
+
+%setsingle 2 0 0 (ryd_freq+ryd_det) 1 0
+
+
+program 2
+
+setsingle 3 0 0 f_407 1 0
+setsingle 3 1.08 pow_407 f_407 0 0
+setsingle 3 1.08+uvtime 0 f_407 0 0
+
+program 3
+
+% Software trigger for testing
+%trigger
+%trigger%

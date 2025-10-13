@@ -23,7 +23,7 @@ def ttlReset():
   on: imageSH
   off: blowawayttl
   %% clock
-  %off: clockttl
+  off: clockttl
   %% rydberg
   off: uvttl
   on: holduv

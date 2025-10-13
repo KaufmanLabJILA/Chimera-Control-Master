@@ -27,14 +27,14 @@ on: shut707
 %on: imagshut
 t += 12.5 %dropping red MOT
 call setSBcoolPows(0.14, 0.003, 0.226)
-call lacs(20)  % This wants imaging snapshot
+call lacs(10)  % This wants imaging snapshot
 
 pulseon: gmload .0001
 t += .1
 
 call set_dds_snapshot(5)
 call setsbcoolpows(0.02, 0.004, 0.03)
-%call sbcool(1)
+call sbcool(1)
 call sbcool_pulsed(time_sbcool_pulsed, pulsenum)
 %%% TWEEZER LOADING %%% 
 call magicfieldsdual813()
@@ -48,7 +48,7 @@ call tweezer2lattice(2)
 
 call set_dds_snapshot(0)
 call setSBcoolPows(radpow_sbcool, rad2pow_sbcool, axpow_sbcool)
-%call sbcool(1)
+call sbcool(1)
 call sbcool_pulsed(time_sbcool_pulsed, pulsenum)
 
 
@@ -71,7 +71,7 @@ off: shut679
 off: shut688
 off: blueshut
 off: imagshut
-t += 135 %necessary for rearrangement
+t += 135.1 %necessary for rearrangement
 
 call set_dds_snapshot(0)
 
@@ -86,7 +86,7 @@ call rerng_filterarbssmartscrunchxy()
 %%%lattice SB cool
 call set_dds_snapshot(0)
 call setSBcoolPows(radpow_sbcool, rad2pow_sbcool, axpow_sbcool)
-%call sbcool(1)
+call sbcool(1)
 call sbcool_pulsed(time_sbcool_pulsed, pulsenum)
 
 %%%image lattice
@@ -112,18 +112,12 @@ call sbcool_pulsed(time_sbcool_pulsed, pulsenum)
 
 
 
- %%% Clock spectroscopy
- call fieldbigz(bigz_clock)
+ %%% Prep for clock/Rydberg
  off: cavityunlock
-
  off: shutuv
- t += 10
- %%% first clock dds channel or RIGOL
- off: wiesera
- off: wieserb
- t += .001
+ call fieldbigz(bigz_clock)
+ t += .01
  daccosspace: axialpow ax_lattice_pow ax_lattice_pow/20 4 60 
- %%% uv sample and hold
  dac: int633servo uvpow
  off: uv2ttl
  on: uvttl
@@ -131,23 +125,32 @@ call sbcool_pulsed(time_sbcool_pulsed, pulsenum)
  t += 5
  on: holduv
  off: uvttl
- t += 0.1
+ t += 0.01
  on: uv2ttl
  on: shutuv
  on: shut407
- t += 5
+ call clock_pulse(shutdelay, 1, 1, 1, 0)
  pulseon: tektronixtrig .01
  pulseon: trigger .01
- t += .01
+ t += .1
 
 
 
+
+
+call clock_pulse(pihalvestime, 0, 0, 0, 0)
+t += ramseytime
+call clock_pulse(pihalvestime, 0, 0, 0, 0)
 
  
 off: shutuv 
 off: shut407
 on: cavityunlock
 t += .001
+
+
+call blowaway_pulse(6)
+call clock_pulse(pitime, 0, 0, 0, 0)
 
 
 daccosspace: axialpow ax_lattice_pow/20 ax_lattice_pow 74 60 

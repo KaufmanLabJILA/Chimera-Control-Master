@@ -1,0 +1,244 @@
+pulseon: gmload .0001
+t += 0.1
+
+call setSBcoolPows(0.18, 0.184, 0.18)
+
+call ttlReset() 
+t += 1
+call dac_reset()
+t += 1
+on: latticehold
+t += 0.01
+
+
+%%% MOT %%%
+call set_dds_snapshot(4)
+call blue_mot(bluemottime)
+call red_mot(swapmottime)
+%%% MOT %%%
+
+%%% TWEEZER LOADING %%%
+daccosspace: bigzcoil bigz_redmot*bigz_conv bz0 10 50
+call set_dds_snapshot(0)
+call magicfields515()
+off: blueshut %Extra shutter for safety.
+on: shut679
+on: shut707
+%on: imagshut
+t += 12.5 %dropping red MOT
+call setSBcoolPows(0.14, 0.003, 0.226)
+call lacs(10)  % This wants imaging snapshot
+
+pulseon: gmload .0001
+t += .1
+
+call set_dds_snapshot(5)
+call setsbcoolpows(0.02, 0.004, 0.03)
+call sbcool(1)
+call sbcool_pulsed(time_sbcool_pulsed, pulsenum)
+%%% TWEEZER LOADING %%% 
+call magicfieldsdual813()
+dac: bigzcoil 0
+on: bigzantihelm
+t += 1
+
+
+%%% HANDOFF TO LATTICE AND IMAGE %%%
+call tweezer2lattice(2)
+
+call set_dds_snapshot(0)
+call setSBcoolPows(radpow_sbcool, rad2pow_sbcool, axpow_sbcool)
+call sbcool(1)
+call sbcool_pulsed(time_sbcool_pulsed, pulsenum)
+
+
+%%% image lattice fast
+call set_dds_snapshot(9)
+call setSBcoolPows(radpow_img_fast, rad2pow_img_fast, axpow_img_fast)
+call image(imag_lat_time_fast, imagpowlat_fast, 1)
+t += 0.01
+
+%%%lattice SB cool
+call set_dds_snapshot(0)
+call setsbcoolpows(radpow_sbcool, rad2pow_sbcool, axpow_sbcool)
+%call sbcool(time_sbcool)
+call sbcool_pulsed(time_sbcool_pulsed, pulsenum)
+
+%%%MOVES
+
+off: shut707
+off: shut679
+off: shut688
+off: blueshut
+off: imagshut
+t += 135.1 %necessary for rearrangement
+
+call set_dds_snapshot(0)
+
+%call setsbcoolpows(0.033, 0.027, 0.105)
+
+%call rerng_arbscrunchy()
+%call rerng_filterarbscrunchy()
+%call rerng_filterarbscrunchycompressx()
+call rerng_filterarbssmartscrunchxy()
+%call rerng_nntest()
+
+%%%lattice SB cool
+call set_dds_snapshot(0)
+call setSBcoolPows(radpow_sbcool, rad2pow_sbcool, axpow_sbcool)
+call sbcool(1)
+call sbcool_pulsed(time_sbcool_pulsed, pulsenum)
+
+%%%image lattice
+repeat: 1-fast_image_toggle 
+ call set_dds_snapshot(1)
+ call setSBcoolPows(radpow_img, rad2pow_img, axpow_img)
+ call image(imag_lat_time, imagpowlat, 1)
+end
+%%% image lattice fast
+repeat: fast_image_toggle
+ call set_dds_snapshot(9)
+ call setSBcoolPows(radpow_img_fast, rad2pow_img_fast, axpow_img_fast)
+ call image(imag_lat_time_fast, imagpowlat_fast, 1)
+end
+t += 0.01
+
+
+%%%lattice SB cool
+call set_dds_snapshot(0)
+call setsbcoolpows(radpow_sbcool, rad2pow_sbcool, axpow_sbcool)
+call sbcool(time_sbcool)
+call sbcool_pulsed(time_sbcool_pulsed, pulsenum)
+
+
+
+ %%% Prep for clock/Rydberg
+ off: cavityunlock
+ off: shutuv
+ call fieldbigz(bigz_clock)
+ t += .01
+ daccosspace: axialpow ax_lattice_pow ax_lattice_pow/20 4 60 
+ dac: int633servo uvpow
+ off: uv2ttl
+ on: uvttl
+ off: holduv
+ t += 5
+ on: holduv
+ off: uvttl
+ t += 0.01
+ on: uv2ttl
+ on: shutuv
+ on: shut407
+ call clock_pulse(shutdelay, 1, 1, 1, 0)
+ pulseon: tektronixtrig .01
+ pulseon: trigger .01
+ t += .1
+
+
+
+
+repeat: clock_calib_pipulsenum*2
+off: wiesera
+off: wieserb
+off: wieserc
+t += .001
+on: clockttl
+t += .01
+off: clockhold
+t += pihalvestime-.02
+on: clockhold
+t += .01
+off: clockttl
+t += .005
+off: wiesera
+on: wieserb
+on: wieserc
+t += .1
+end
+
+
+ 
+off: shutuv 
+off: shut407
+on: cavityunlock
+t += .001
+
+
+call blowaway_pulse(6)
+call clock_pulse(pitime, 0, 0, 0, 0)
+
+
+daccosspace: axialpow ax_lattice_pow/20 ax_lattice_pow 74 60 
+call magicfieldsDual813()
+t += 1
+dac: z1coil dmbz+dmbz_bigz_shift
+daccosspace: bigzcoil bigz_conv*bigz_clock bz0 74 60
+t += 75
+
+ off: uvttl
+ on: bigzantihelm
+ on: shut707 
+ on: shut679
+ t += 5
+
+ %%% Blowaway gnd, 3P2, repump 3P0
+ on: rp707 
+ on: rp679 
+ t += .5
+ off: rp707 
+ off: rp679 
+ off: shut707 
+ off: shut679 
+ % reset to load for next cycle
+ pulseon: gmload .0001
+ t += .1
+%%%image lattice
+repeat: 1-fast_image_toggle 
+ call set_dds_snapshot(1)
+ call setSBcoolPows(radpow_img, rad2pow_img, axpow_img)
+ call image(imag_lat_time, imagpowlat, 1)
+end
+%%% image lattice fast
+repeat: fast_image_toggle
+ call set_dds_snapshot(9)
+ call setSBcoolPows(radpow_img_fast, rad2pow_img_fast, axpow_img_fast)
+ call image(imag_lat_time_fast, imagpowlat_fast, 1)
+end
+off: imagshut
+daccosspace: y1coil 0.7 0 40 160
+daccosspace: y2coil 0.7 0 40 160
+daccosspace: z1coil dmbz+dmbz_bigz_shift 0 40 160
+t += 15+25 %to remove stripe
+on: tweezershut
+%%%END
+off: andorshut
+dac: x1coil 0
+%dac: y1coil 0 %% now above with removing stripe
+%dac: y2coil 0
+%dac: z1coil 0
+dac: bigzcoil 0
+
+on: radial
+on: radial2
+off: slower %DO NOT REMOVE; avoid coating cell.
+%on: imag461
+on: axial
+on: rp679
+on: rp707
+on: shut679
+on: shut707
+%on: red3dnarrow
+off: blowawayttl
+on: lat813ao
+dac: latticepow lattice_pow
+dac: axialpow ax_lattice_pow
+%off: imag461
+
+on: red3d
+dac: red3dpow 1.5
+
+%call bluemot_steadystate() %DO NOT LEAVE ON; avoid coating cell.
+%call grafanaSnapshot() %DO NOT LEAVE ON; avoid coating cell.
+t += 1
+
+pulseon: resetdds .1
